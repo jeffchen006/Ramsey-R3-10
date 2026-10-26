@@ -1,0 +1,5 @@
+file F_full.cnf sha256 81dcdd64c9c4dea18b069b121a2101fae471c86e2dab05513e2639c27537cda3
+n=14 s=5 order=colex clauses=2366
+  IS                             2002
+  TRI                            364
+RESULT: OK (every clause is valid or listed as extra)

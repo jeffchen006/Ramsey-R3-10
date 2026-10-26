@@ -1,0 +1,119 @@
+\section{Certified SAT computations}\label{sec:sat}
+
+Status labels as in Sec.~\ref{sec:sym}: \textbf{certified} = every step is re-checked by a checker that does not trust the
+search code (see~\ref{sec:sat-chain}); \textbf{enumeration} = a complete solver run with no checked proof; \textbf{open}.
+Code: \code{sms/} (solver build, encoder, scripts), \code{cert/} (checkers, glue). Full notes: \code{notes/sms.md},
+\code{notes/cert_design.md} (v3; critic Reviews 11, 14, 17, 18), \code{notes/core_plan.md}.
+
+\subsection{Solver: SAT Modulo Symmetries with a lazy independent-set propagator}\label{sec:sat-solver}
+We use SAT Modulo Symmetries (SMS)~\cite{KS24}: CaDiCaL
+(IPASIR-UP fork 2.1.3) plus a minimality propagator. During search it tests whether the partial graph can
+still be lex-minimal (row-wise upper-triangle edge vector, $0 < 1$). If not, it adds a clause together with a
+permutation witness. Build: \url{github.com/markirch/sat-modulo-symmetries} commit 63958bd, with our patches
+(\code{sms/sms-src}):
+\begin{enumerate}
+\item \texttt{--forbid-independent-set k}: a lazy propagator for $\alpha < k$. On each call it searches a $k$-clique in the
+   graph of pairs assigned ``non-edge'' (bitset branch and bound) and adds the clause ``some pair of this
+   $k$-set is an edge'' (45 positive literals for $k = 10$). It also runs on every full assignment, so it is exact.
+   For $(3,10,40)$ the eager encoding has $\binom{40}{10} = 847{,}660{,}528$ clauses; the lazy one adds only the clauses
+   the search needs.
+\item \texttt{--proof-log}: a CaDiCaL tracer that logs every original clause (input clauses AND clauses added by the
+   propagators) with its ID, and every derived clause with LRAT hints. The stock \texttt{--lrat-output} omits the
+   external clauses, so its LRAT does not check.
+\item Cube support: \texttt{--cutoff-edge-vars-only},\\ \texttt{--lookahead-only-edge-vars}, \texttt{--cube-only-decisions}.
+\end{enumerate}
+Encoder \code{sms/gen_ramsey.py}: triangle clauses, Sinz counters for degree/edge bounds, MTF, $N(0) = \{1..d\}$
+(with \texttt{--initial-partition}, so SMS uses only partition-preserving permutations).
+
+Validation (enumeration; 1 CPU; every output graph checked by nauty \texttt{shortg} and \code{tools/check_graph.py}):
+SMS reproduces McKay's counts of all $R(3,k;n)$ graphs for $k \le 6$ (e.g.\ 275,086 for $(3,6,13)$),
+$R(3,7;21) = 1{,}118{,}436$ (743\,s), $R(3,7;22) = 191$, and 0 for $(3,5,14)$, $(3,6,18)$, $(3,7,23)$.
+Calibration of the cube-R shape: $(3,8,28)$ 7-regular, MTF, $N(0)$ fixed: UNSAT 1846\,s; $(3,9,36)$ 8-regular,
+MTF, $N(0)$ fixed: UNSAT 724\,s. (8-regularity of a $(3,9,36)$-graph is a known lemma; this is a calibration,
+not a new proof of $R(3,9) = 36$.) Limit: SMS canonicity makes it slow at FINDING graphs ($(3,8,27)$: first graph
+431\,s with SMS, 1.3\,s without), so we use it only for UNSAT.
+
+\subsection{Certificate chain}\label{sec:sat-chain}
+No step trusts the search code (CaDiCaL, SMS, the cube generator). The search gives hints; checkers
+re-check them. For one problem $P = (\Phi + \text{cube constraints} + \text{symmetry breaking } SB)$, split into cubes $c_j$:
+
+\begin{center}\footnotesize
+\begin{tabular}{@{}p{1.8cm} p{4.6cm} p{8.4cm}@{}}
+\toprule
+link & statement & checked by \\
+\midrule
+(a) encoding & the input CNF says what the cube says & Lean cube file (\code{lean/out/cube_*.opb}, from the Lean Cover Lemma, Sec.~\ref{sec:lean}) $\to$ SMS base CNF by a VeriPB~\cite{VeriPB23} proof (aux definitions by \texttt{red}, Sinz counters by \texttt{pol}/\texttt{rup}), checked by VeriPB and by CakePB~\cite{CakePB24}; \code{cert/base40_cert.py} also regenerates the SMS base exactly \\
+(b) lazy IS clauses & each clause added by the IS propagator is a valid 10-set clause & \code{cert/check_cnf.py} (exact shape: 10 vertices, all 45 pairs, positive); it also checks that every triangle clause is present \\
+(c) SB clauses & each SMS minimality clause is valid under the one lex order & Lean-verified checker \texttt{sbcheck} (\code{R310.SB.checkSB_sound}, with block partitions \code{Gen.checkGB_sound}) + Lean lex-leader lemma (\code{R310/LexLeader.lean}, \code{Gen.lexleader_inv}); \code{cert/check_sb.py} as a second, independent check \\
+(d) cover & $\Phi_{\text{base}} + \lnot c_1 + \dots + \lnot c_m$ is UNSAT & one SMS run with proof log $\to$ LRAT $\to$ cake\_lpr~\cite{cakelpr21} \\
+(e) cubes & $\Phi_{\text{base}} + \text{units}(c_j) + L_j + SB_j$ is UNSAT for each $j$ & per cube: SMS proof log $\to$ LRAT $\to$ cake\_lpr; (b) and (c) on that cube's $L_j$ and $SB_j$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Verdicts are read from stdout only (``\texttt{s VERIFIED ...}''): cake\_lpr and CakePB exit 0 also on failure, and
+cake\_lpr's range mode prints ``\texttt{VERIFIED INTERVALS COVER}'' also without an empty clause; the glue tests for that.
+VeriPB/CakePB proofs of SB were run on samples only; the full SB lists are checked by \texttt{sbcheck} (route (c)),
+which needs no VeriPB. Trusted: the Lean kernel and compiler, \texttt{sbcheck}'s 100-line parser, cake\_lpr and CakePB
+(verified checkers), \code{check_cnf.py} (about 120 lines), the glue scripts, and the hypotheses of the Lean lemmas
+(published facts, Sec.~\ref{sec:prelim}). [TODO cert: checker versions/commits.]
+Negative tests (cert): a reversed SB clause, a removed IS clause, a changed triangle clause, a shortened
+SB clause and a summary without empty clause are all rejected. Positive controls at $n - 1$ ($(3,5,13)$, $(3,6,17)$)
+find the known graphs with the same SB and cubes.
+
+\subsection{Certified edge bounds}\label{sec:sat-edge}
+Each row: ``no $(3,k,m)$-graph with at most $E$ edges'', degree $\le k-1$ implied, SMS UNSAT with proof log; then
+the full chain of~\ref{sec:sat-chain} (one cube). F1 is the hypothesis $e(3,8,m) \ge 6m - 91$, $23 \le m \le 27$, of the Lean Cover
+Lemma (Sec.~\ref{sec:structure}--\ref{sec:lean}). The published values are larger (\cite{GR} Table 3 / 13, D-E7/D-E8); these runs make three of
+the five F1 instances independent of the literature.
+
+\begin{center}\footnotesize
+\begin{tabular}{@{}p{3.8cm} r p{3.7cm} p{1.9cm} p{2.3cm}@{}}
+\toprule
+statement & SMS UNSAT & lazy IS / SB clauses checked & cake\_lpr & status \\
+\midrule
+$e(3,7,17) \ge 25$ (no graph with $\le 24$ edges) & 1.6\,s & 1,292 IS; 851 SB (sbcheck 0.1\,s) & 14.3\,s, VERIFIED & certified (re-run 2026-10-26) \\
+$e(3,7,18) \ge 30$ ($\le 29$) & 4.4\,s & 1,975 IS; 1,588 SB (sbcheck 0.2\,s) & 18.2\,s, VERIFIED & certified (re-run 2026-10-26) \\
+$e(3,7,19) \ge 37$ ($\le 36$) & 24.3\,s & 3,871 IS; all SB by full VeriPB + CakePB (no sbcheck) & VERIFIED & certified \\
+$e(3,7,20) \ge 44$ ($\le 43$) & 151\,s & 7,410 IS; all SB by full VeriPB + CakePB (no sbcheck) & VERIFIED & certified \\
+F1, $m = 23$: $e(3,8,23) \ge 47$ ($\le 46$) & 3,094\,s & 27,522 IS; 71,031 SB (sbcheck 10.4\,s) & 403\,s, VERIFIED & certified \\
+F1, $m = 24$: $e(3,8,24) \ge 53$ ($\le 52$) & 8,970\,s & 45,786 IS; 112,512 SB (18.4\,s) & 898\,s, VERIFIED & certified \\
+F1, $m = 27$: $e(3,8,27) \ge 71$ ($\le 70$) & 5,503\,s & 52,044 IS; 65,321 SB (12.6\,s) & 701\,s, VERIFIED & certified \\
+F1, $m = 25, 26$ & not run to the end & & & published only \cite{GR} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Logs: \code{runs/cert/f1/cert_*.log} (``\texttt{RESULT: OK ... certified}''), \code{runs/sms/f1_*.log}, \code{runs/sms/emin_*.log}.
+These bounds are weaker than the published values ($e(3,8,23..27) = 49, 56, 65, 73, 85$); they are exactly
+what the Cover Lemma needs. An edge bound is not implied by $\Phi$, so these runs use pure vertex-permutation
+witnesses and no MTF (\texttt{check\_pbp.py --perm-only}; \code{notes/cert_design.md} Sec.~1.2).
+
+\subsection{The sub-case \texorpdfstring{$R(7)$}{R(7)}: partial certified result}\label{sec:sat-r7}
+Setting (Sec.~\ref{sec:structure}: Lemma Mc, Lemma R7; Lean \code{R7.r7_count}, \code{R7.r7_cover}, \code{Rc7.prc7_inv}; hypotheses F2 and
+$e(3,8,27) \ge 85$ [D-E8]). In the 9-regular cube R, let a non-adjacent pair $(0,10)$ have the maximum codegree
+$\cstar = 7$. Then the formula PRc7 is: $\Phi$ + cube R (9-regular, MTF, $N(0) = \{1..9\}$) + $N(10) \cap \{1..9\} = \{1..7\}$
++ the 6 edge units 10-11, 10-12, 8-11, 8-12, 9-11, 9-12 ($A$--$B$ complete) + all non-adjacent codegrees $\le 7$
++ $e(\{13..39\}) = 85$. SMS runs with the block partition $\{0\}$, $\{1..7\}$, $\{8,9\}$, $\{10\}$, $\{11,12\}$, $\{13..39\}$.
+If PRc7 + SB is UNSAT, then every 9-regular $(3,10,40)$-graph has all non-adjacent codegrees $\le 6$
+(\code{R7.no_codeg7}).
+\begin{itemize}
+\item Base CNF \code{sms/cnf/Rc7b.cnf} (444,210 variables, 893,163 clauses): derived from Lean's cube R + the case
+  constraints by VeriPB, checked by VeriPB and CakePB (2.4\,min, \code{runs/cert/base_Rc7b.log}: RESULT OK).
+\item Cubes: 464 cubes from SMS lookahead (\code{sms/cubes/Rc7b_L300.cubes}).
+\item Cover (link d): UNSAT in 14\,s; 4,214 lazy IS clauses + 684 SB clauses; cake\_lpr ``\texttt{s VERIFIED UNSAT}'';
+  sbcheck ``\texttt{s VERIFIED 684 clauses}'' (coarse blocks and fine blocks); check\_cnf OK.
+  \textbf{certified} (\code{runs/sms/Rc7b_cover/}; full re-check 2026-10-26: ``\texttt{s VERIFIED cube}'').
+\item Cubes (link e), \code{runs/sms/Rc7b_cert/SUMMARY.txt}: 6\,h limit per cube, 38 CPUs, 18.9\,h wall.
+  \textbf{365 of 464 cubes UNSAT and certified} (each: cake\_lpr + sbcheck with both block partitions + partition
+  test + check\_cnf). 99 cubes reached the 6\,h limit (\textbf{open}). No cube was SAT.
+  CPU per solved cube: median 5.2\,s, mean 506\,s, p90 256\,s, p99 16,910\,s, max 20,372\,s. Total solve CPU
+  26\,d 17\,h (a lower bound: timeouts counted at 6\,h); checks 5\,h 43\,min.
+\item Re-split of the 99 timeouts (lookahead at 360 assigned edge variables): 37 parents (1 kept whole) $\to$ 12,409
+  sub-cubes; 62 parents (6 kept whole) $\to$ 1,668,706 (\code{runs/sms/rc7_splitA.log}, \code{rc7_splitB.log}). In 9.3\,h on 31 CPUs, 37 sub-cubes were UNSAT and certified;
+  28 of the 31 sub-cubes in progress ran longer than 8\,h. So one more split level does not make these cubes
+  easy. We stopped (author's decision, 2026-10-26).
+\end{itemize}
+
+\textbf{Result (certified, partial).} For 365 of the 464 cubes $c_j$ of a certified cover of PRc7, PRc7 + SB + $c_j$
+is UNSAT. $R(7)$ as a whole is \textbf{open}: 99 cubes remain. So the bound ``codegree $\le 6$'' is NOT proved.

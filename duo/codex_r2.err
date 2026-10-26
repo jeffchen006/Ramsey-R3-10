@@ -1,0 +1,2121 @@
+OpenAI Codex v0.164.0
+--------
+workdir: .
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: xhigh
+reasoning summaries: none
+session id: <id>
+--------
+user
+This is Claude (model claude-opus-5-5), team agent `duo`. The lead asked me to work with you, back and forth, on a provable structure that cuts the hard core by orders of magnitude. Read-only as before. My log is notes/duo.md; my scripts are in duo/.
+
+## My verdicts on your round 1
+
+1. J9 seed. Correct. I checked the published values in runs/lit/txt/GR_K10e_e3j13.txt (Table 2 row n=30: e(3,J9,30) = 117; exactly 7 critical graphs for R(3,J9) on 30 vertices, so R(3,J9) = 31). But it is only symmetry breaking (fixes 36 edge variables of one seed among very many embeddings). gluing's MCMC already showed the analogous seeded classes (C13(1,5)+4K1, R(3,7,21)+2K1) are 1-4% of R(3,9;30,99). Expected SAT gain: small constant. I park it as an optional SAT cut for sms, not a reduction.
+
+2. Matching lemma. Correct (Konig: alpha(G[N(u)+N(v)]) = d(u)+d(v)-c-nu(A,B)). It improves Lemma P to g >= (8,7,6,5,4,3,4). But for SAT it adds nothing: a Hall violation U in A with |N_B(U)| < |U| IS a fully decided independent 10-set U + (B - N_B(U)) + C, so the lazy independent-set propagator fires at exactly the same partial assignment. It only adds rows to counting LPs. Your 6.8% toy figure is not a reduction of the search.
+   I also ran the codegree-typed pair LP myself (n_c for c=1..7, sum n_c = 600, sum c n_c = 1440, n_1 <= 180 by private vertices, g_c in [max(9-c, e(3,8,20+c)-18-9c), (9-c)^2], sum over non-adjacent pairs of g = 11520 - 4 C4, sum C(c,2) n_c = 2 C4). duo/pairlp.py: feasible; C4 in [540, 1050]; every single n_c can be 0 (n1 <= 180, n7 <= 84).
+
+3. SDP. Not refuted, but the prior is weak: unconditioned 10-vertex flags give R(3,10) <= 54, and we need 40. We have numpy/scipy/networkx only; no SDP solver yet (I can install cvxpy+SCS in duo/ if a concrete formulation is worth it).
+
+Agreed: scalar spectral bounds are dead. (My numbers: Shearer 1991 gives alpha >= 7.85 at n=40, d=9.)
+
+## Facts from my tests (use them)
+
+- 40/40 MCMC samples of R(3,9;30,99) (gluing/samp30_99.g6) admit 9 distinct independent 8-sets T_x with every y covered exactly 9 - deg_H(y) times (the necessary "multicover" for H = G - N[v], T_x = N(x) - v). So the multicover is not the filter; yet gluing found 0 outputs for all 482 samples (3 ms each). Failure comes from alpha <= 9 across several T's.
+- Analogues (d-regular, triangle-free, alpha = d), codegree counts over non-adjacent pairs:
+  C35(1,7,11,16) (d=8, n=35): {1:140, 2:210, 4:105}; n1 = n d/2, i.e. EVERY x in N(v) has exactly one private vertex in H_v; no codegree 3.
+  the 10 six-regular graphs in R(3,7,22) (d=6, n=22): c* in {3,4}, e.g. {1:55,2:55,3:55}, {1:35,2:95,3:35}.
+  Clebsch (d=5, n=16): all codegrees 2. C13(1,5) (d=4), Wagner (d=3), C5 (d=2).
+  So any lemma like "c* >= 5" is suspicious: the analogues have small c*.
+- SMS Knuth probes per max-codegree sub-cube R(c*) (CPU-s): R(7) mean 1.9e7 (being closed), R(6) mean 1.9e12, R(4) one probe 7.5e8, R(3) median 1.2e6 / mean 8.1e9, R(5) no finished probe. Whole R: mean 8e14.
+
+## Main obstacle (my view; please attack it)
+
+In case R all 40 roots see the same class R(3,9;30,99). Choosing a clever root v (or pair, or s-set) helps only if some GLOBAL argument forces an ATYPICAL local configuration to exist; averaging alone only forces configurations at the average, which typical H already have. Every successful reduction so far (Theorem A) used a forced extreme (min e(H_v)), and 9-regularity kills that.
+
+## What I ask for in round 2 (pick the best 1-2 and go deep; <= 1500 words)
+
+(a) A global forcing statement for 9-regular (3,10,40)-graphs whose forced object lives in a SMALL published class, so that the case splits into "forced object exists -> glue from a small class" with no complement. Candidates: an independent s-set with |X_S| at the bound (s=5: X_S = C13(1,5); s=4: X_S in R(3,6,17), 7 graphs; s=3: R(3,7,22), 191 graphs), or a pair with c >= 6. Show whether double counting / Lemma H / the matching lemma / eigenvalues can force one. Test against the analogues above (e.g. does C35(1,7,11,16) have the d=8 analogue of the forced object?).
+
+(b) Angeltveit's regular trick (arXiv 2401.00392 Sec 5, text in runs/lit/txt/arxiv_2401.00392.txt): for 7-regular R(3,9,32,112) he glued pairs of dual neighbourhoods along G' = intersection, with exact degree matching via a hash map. For us: non-adjacent v,w with codegree c, X = G - N[v] - N[w] in R(3,8,20+c, e = 18+9c+g), H_v = X + w + (N(w)-C), H_w = X + v + (N(v)-C). Unknowns besides H_v, H_w: the A-B edges and C-X edges, with deg_G(x) = 9 for every x. Is there a choice of (pair, c) for which (# X) x (# extensions of X to H) is far below 9.5e17, and which every 9-regular G must contain? Give numbers using published counts (GR2013 Tables for R(3,8,n,e)) and say which counts are missing.
+
+(c) Anything better you see. Be concrete: statement, proof, which class remains, its size, and a test I can run on CPUs 68-71 within a few hours.
+
+codex
+I agree that neither round-one lemma gives a demonstrated search reduction. I will check the overlap method and look for a global forcing argument. I will use the smaller regular graphs to reject claims that fail on known examples.
+exec
+/usr/bin/bash -lc 'head -n 160 duo/pairlp.py
+head -n 8 gluing/samp30_99.g6' in .
+ succeeded in 0ms:
+# codegree-typed pair LP for case R (9-regular, n=40). Vars: n_c (c=1..7), G_c = sum of g over pairs with codeg c, C4.
+import numpy as np
+from scipy.optimize import linprog
+e38={21:35,22:42,23:49,24:56,25:65,26:73,27:85}
+cs=range(1,8); nv=7+7+1
+A_eq=[];b_eq=[]
+def row(): return np.zeros(nv)
+r=row(); r[:7]=1; A_eq.append(r); b_eq.append(600)
+r=row(); r[:7]=list(cs); A_eq.append(r); b_eq.append(1440)
+r=row(); r[7:14]=1; r[14]=4; A_eq.append(r); b_eq.append(11520)      # sum g = 11520 - 4 C4
+r=row(); r[:7]=[c*(c-1)/2 for c in cs]; r[14]=-2; A_eq.append(r); b_eq.append(0)  # sum C(c,2) n_c = 2 C4
+A_ub=[];b_ub=[]
+for i,c in enumerate(cs):
+    lo=max(9-c, e38[20+c]-18-9*c); hi=(9-c)**2
+    r=row(); r[i]=lo; r[7+i]=-1; A_ub.append(r); b_ub.append(0)
+    r=row(); r[i]=-hi; r[7+i]=1; A_ub.append(r); b_ub.append(0)
+r=row(); r[0]=1; A_ub.append(r); b_ub.append(180)
+for obj,name in [(14,'C4')]+[(i,'n%d'%(i+1)) for i in range(7)]:
+    out=[]
+    for s in (1,-1):
+        cvec=row(); cvec[obj]=s
+        res=linprog(cvec,A_ub=A_ub,b_ub=b_ub,A_eq=A_eq,b_eq=b_eq,bounds=[(0,None)]*nv)
+        out.append(s*res.fun if res.status==0 else res.status)
+    print(name,'range',out)
+]C@@GGS?[OOAqGg?G@gCDoCD?g?w@OEEL@_QA@DB__ABGD?B?S??`@GcGooAca???GIE[SZ?P?
+]d?CS@?@@YAGC?F?Go`?_?W|@A?OC?DWK?B@i@?Gl?Go@a@?fo?@hc?CMGOaA?dSECBG?X_o_?
+]d@cS@?@B??G?_B?IQ_kGGh?TAAoC?DwK?B?gDo???Go@@PEJ_?@o?ilIAC_AasOAEEG?@aoC?
+]D?dC@ODBA?AO?bBIO_HG?@?T?GoK?D_KOB@y@@G?@co`@H_M_A@WIgLGACB?aOOAeC??`a_CG
+]@?K???CpE??`?p?GASA?EJLU_Q`O?K?cAFOQB_Oo?@O?cpGKOApH?ALWo??bB?_IC?XEhCd??
+]K_@]AA?OQBa`AGHDAOC_?GA?W?_qOAB?WALPIKGAKoS?@IO@coQCo@ED??A??MPC?HAoD@w?_
+]KQ@W?OS_eGGTO?gOAG@Hi??H_AGPGCCgAEIC@OT??G@dC@@DQOHC@CDM?Q?OAcOoASGZ?_@`O
+]HADOb?H?hGwiOJ?G??`kE@@GWA?cT??wL_@?AiA?U@OA?BIAG`?WOCAOCPGFB??_CIAOO@EoG
+
+exec
+/usr/bin/bash -lc "head -n 240 notes/duo.md
+rg --files duo | head -n 65
+rg -n '"'^5 |regular|hash|intersection|112|506'"' runs/lit/txt/arxiv_2401.00392.txt | head -n 85" in .
+ succeeded in 0ms:
+# duo: research with Codex on the hard core (agent duo, CPUs 68-71)
+
+Started 2026-10-25 ~07:45. Codex session <id> (gpt-6.1-sol, xhigh, read-only).
+Files: duo/ (scripts, Codex prompts/answers), this log.
+
+## Test bed (d-regular triangle-free graphs with alpha <= d; analogues of the 9-regular case)
+duo/regstat.py. Known: C5 (d=2,n=5), Wagner (3,8), C13(1,5) (4,13), Clebsch (5,16),
+10 six-regular graphs in R(3,7,22) (McKay r37_22.g6), C35(1,7,11,16) (8,35; r39_35.g6).
+A lemma for d = 9, n = 40 must be consistent with these where it has an analogue.
+
+## Log
+duo/codex_r2.md
+duo/reg6_22.g6
+duo/s40.g6
+duo/codex_r2.txt
+duo/regstat.py
+duo/profile.py
+duo/pairlp.py
+duo/codex_r2.err
+duo/multicover.py
+39:                                          verifying that the census of R(3, 9, 32, e ≤ 112) graphs is complete. I would also
+56:    (1) R(3, 9, 32, e ≤ 112)
+61:{5, 6, 7, 8, 9}. Because 41 is odd, Γ cannot be regular of degree 9 and must have at
+64:vertex v of degree 8 then the dual neighbourhood of v is in R(3, 9, 32, e ≤ 112). If
+84:             v ) =         −      d(wi ) ≤          − (72 −        ) = 112.
+88:neighbourhood of some vertex of Γ is in R(3, 9, 32, e ≤ 112).
+143:    (1) R(3, 9, 32, e ≤ 112) (1 554 928 360 graphs)
+153:   We remark that R(3, 8, 24, e = 63) is only needed to generate the regular degree
+154:7 graphs in R(3, 9, 32, e = 112). For all the remaining graphs it suffices to consider
+219:and that we are looking for graphs in R(3, 9, 32, e ≤ 112). Then we are looking for
+239:puter to produce graphs in R(3, 9, 32, e ≤ 112), and a similar number of graphs in
+242:5. The special case of extending R(3, 8, 24, e = 63) to R(3, 9, 32, e = 112)
+244:needed to find the regular degree 7 graphs in R(3, 9, 32, e = 112) only. With the
+246:but we can take advantage of the fact that we only need them to find the regular
+249:    If Γ ∈ R(3, 9, 32, e = 112) is regular of degree 7 then every vertex of Γ has dual
+253:v and w in Γ are disjoint, and the intersection of the dual neighbourhoods of
+255:G1 , G2 ∈ R(3, 8, 63, e = 112) along G′ ∈ R(3, 7, 16).
+286:    This produced a total of 506 regular degree 7 graphs in R(3, 9, 32, e = 112), in
+290:   In the end we had about 1.6 billion graphs in R(3, 9, 32, e ≤ 112), 14395 graphs
+327:R(3, 10, 40)-graph might be regular of degree 9 and then the dual neighbourhood of
+329:more graphs than R(3, 9, 32, e ≤ 112).
+337:    put., 60:94–112, 2014.
+
+exec
+/usr/bin/bash -lc "sed -n '240,290p' runs/lit/txt/arxiv_2401.00392.txt
+cat duo/profile.py
+head -n 240 duo/regstat.py
+head -n 200 duo/multicover.py
+sed -n '70,185p' cases/etables.py" in .
+ succeeded in 0ms:
+R(3, 9, 32) per second to produce (hypothetical) graphs in R(3, 10, 41).
+
+5. The special case of extending R(3, 8, 24, e = 63) to R(3, 9, 32, e = 112)
+  There are approximately 150 billion graphs in R(3, 8, 24, e = 63), and these are
+needed to find the regular degree 7 graphs in R(3, 9, 32, e = 112) only. With the
+obvious algorithm this would take much longer than any of the other calculations,
+but we can take advantage of the fact that we only need them to find the regular
+degree 7 graphs to produce a much more efficient algorithm.
+                                           5
+    If Γ ∈ R(3, 9, 32, e = 112) is regular of degree 7 then every vertex of Γ has dual
+neighbourhood in R(3, 8, 24, e = 63).
+    Suppose in addition that the dual neighbourhood of some vertex v of Γ in
+R(3, 8, 24, e = 63) has a degree 7 vertex w. That means the neighbourhoods of
+v and w in Γ are disjoint, and the intersection of the dual neighbourhoods of
+v and w is a graph G′ ∈ R(3, 7, 16). Hence Γ is given by gluing two graphs
+G1 , G2 ∈ R(3, 8, 63, e = 112) along G′ ∈ R(3, 7, 16).
+    For a fixed G′ ∈ R(3, 7, 16) we first find all G ∈ R(3, 8, 24, e = 63) with G′ as a
+dual neighbourhood using the usual Neighbourhood Gluing Extension Method. For
+each pair G1 , G2 ∈ R(3, 8, 24, e = 63) intersecting in G′ we can then compute the
+degree of each vertex x ∈ V G′ considered in Γ, and each must have degree exactly
+7. That is a very strong condition, so very few pairs are compatible. For a fixed
+G′ there might be several hundred million extensions to R(3, 8, 24, e = 63), so that
+leaves approximately 1017 pairs in that case. To avoid having to check every pair,
+we put the graphs in a HashMap based on the degree sequence of the vertices in
+V G′ considered in G. Then, for each G1 ∈ R(3, 8, 24, e = 63) extending G′ we can
+simply look up the compatible G2 in the HashMap.
+    After finding a pair that is compatible, we do the following: For each neighbour
+vi of v and neighbour wj of w, we add an edge between vi and wj if this does not
+introduce a triangle. This can be checked with a single bitwise and for each pair
+(vi , wj ). If every vertex now has degree at least 7, we check if this is an R(3, 9, 32)-
+graph. If it is, we then remove edges in all possible ways between degree ≥ 8 vertices
+and record the R(3, 9, 32)-graphs we get.
+    A similar algorithm works for G′ ∈ R(3, 7, 17) or G′ ∈ R(3, 7, 18). The restriction
+on the degree of the vertices in G′ considered in Γ is weaker, but we also have fewer
+pairs.
+    Because this has to work for every neighbourhood, we can exclude any graph
+G ∈ R(3, 8, 24, e = 63) that has already been considered. It is possible to do this
+without storing R(3, 8, 24, e = 63), for example as follows:
+    We first ran this program for G′ ∈ R(3, 7, 16, e = 24). Next, we ran it for G′ ∈
+R(3, 7, 17, e = 30) while excluding any output in R(3, 8, 24, e = 63) with some dual
+neighbourhood in R(3, 7, 16, e = 24). Next we considered R(3, 7, 18, e = 36) while
+excluding any output in R(3, 7, 16, e = 24) or R(3, 7, 17, e = 30). After that we
+considered R(3, 7, 16, e = 23) while excluding the graphs with a dual neighbourhood
+in one of the previous cases, and so on until covering all of R(3, 7, 16, e ≤ 24),
+R(3, 7, 17, e ≤ 30) and R(3, 7, 18, e ≤ 36). Finally we also considered R(3, 7, 19, e ≤
+40) (which is small and only required a simple one-point extender.)
+    This produced a total of 506 regular degree 7 graphs in R(3, 9, 32, e = 112), in
+about 6 months of CPU time.
+
+                  6. Extending the necessary R(3, 9)-graphs
+   In the end we had about 1.6 billion graphs in R(3, 9, 32, e ≤ 112), 14395 graphs
+import sys, gzip, numpy as np, networkx as nx
+from collections import Counter
+for line in open(sys.argv[1]):
+    line=line.strip()
+    if not line: continue
+    G=nx.from_graph6_bytes(line.encode()); A=nx.to_numpy_array(G); n=len(A)
+    A2=A@A; cod=Counter(int(A2[i,j]) for i in range(n) for j in range(i+1,n) if A[i,j]==0)
+    ev=np.sort(np.linalg.eigvalsh(A))
+    print(n, G.number_of_edges(), dict(sorted(cod.items())), 'lmin %.3f l2 %.3f'%(ev[0],ev[-2]))
+import sys, gzip, networkx as nx
+from collections import Counter
+fn=sys.argv[1]
+op=gzip.open if fn.endswith('.gz') else open
+cnt=Counter()
+with op(fn,'rt') as f:
+    for line in f:
+        line=line.strip()
+        if not line: continue
+        G=nx.from_graph6_bytes(line.encode())
+        ds=sorted(set(d for _,d in G.degree()))
+        cnt[(G.number_of_nodes(),G.number_of_edges(),tuple(ds))]+=1
+for k,v in sorted(cnt.items()): print(k,v)
+# For H in R(3,9;30,99): does H have 9 distinct independent 8-sets T_1..T_9 with each y in exactly 9-deg_H(y) of them?
+# (necessary for H = G - N[v] in a 9-regular (3,10,40)-graph; T_x = N(x)-v)
+import sys, numpy as np, networkx as nx
+from scipy.optimize import milp, LinearConstraint, Bounds
+def indep_sets(adj, n, k):
+    out=[]
+    def rec(start, cur, cand):
+        if len(cur)==k: out.append(cur); return
+        for i in range(start,n):
+            if cand>>i &1:
+                rec(i+1, cur+[i], cand & ~adj[i] & ~((1<<(i+1))-1))
+    rec(0,[], (1<<n)-1); return out
+res=[]
+for line in open(sys.argv[1]):
+    line=line.strip()
+    if not line: continue
+    H=nx.from_graph6_bytes(line.encode()); n=H.number_of_nodes()
+    adj=[sum(1<<j for j in H[i]) for i in range(n)]
+    S=indep_sets(adj,n,8)
+    need=np.array([9-H.degree(i) for i in range(n)])
+    M=np.zeros((n,len(S)))
+    for j,s in enumerate(S): M[s,j]=1
+    cons=[LinearConstraint(M,need,need), LinearConstraint(np.ones((1,len(S))),9,9)]
+    r=milp(np.zeros(len(S)),constraints=cons,integrality=np.ones(len(S)),bounds=Bounds(0,1))
+    res.append((len(S), r.status==0))
+    print(len(S), r.status, flush=True)
+print('feasible', sum(f for _,f in res), 'of', len(res))
+
+web search: 
+web search: https://arxiv.org/html/2401.00392v2
+exec
+/usr/bin/bash -lc "rg -n 'Table 13|Number of.*3, 8|35 +|42 +|49 +|\\|R\\(3, 8' runs/lit/txt/arxiv_1210.5826.txt | tail -n 35
+sed -n '870,1005p' runs/lit/txt/arxiv_1210.5826.txt
+head -n 140 cases/etables.py" in .
+ succeeded in 0ms:
+446:          21                          51 35 25 18 13            10    9    8       7    6
+447:          22                          60 42 30 21 16            11   10    9       8    7
+448:          23                          ∞ 49 35 25 19             14   11   10       9    8
+450:          25                             65 46 35 25            20   15   12      11   10
+452:          27                             85 61 45 35            26   21   16      13   12
+454:          29                                77 58 45            35   27   22      17   14
+456:          31                                95 73 56            45   35   28      23   18
+497:                      35      140       Theorem 3
+528:        35        107
+535:        42         ∞         hence R(3, 10) ≤ 42, new bound, Theorem 6
+570:isomorphism) 8-regular (3, 9; 35)-graph. We note that it is a cyclic graph on 35 ver-
+587:                              1    6     35 185         25   4
+600:                              0    0     42 189        168   0
+607:   Note that for all 0 ≤ s ≤ 4 we have 0 ≤ n7 ≤ s, n8 + 2n7 = 2s, n9 = 42 − n8 − n7 ,
+640:3421512 (3, 8; 24, ≤ 59)-graphs (see Table 13 in Appendix 1), and there are many more
+654:that H has a vertex v of degree 7 with no neighbors of degree 6. Then ZH (v) = 49 and
+663:(Table 13 in Appendix 1). The result is that there are no (3, 9; 32, 108)-graphs not in X .
+692:any further improvement to either of the bounds in 40 ≤ R(3, 10) ≤ 42 will be very
+738:            35      83         84 [13], credit to [1]
+745:            42     149
+753:            49       237       245 maximum
+772:The exact values of e(3, 12, ≤ 34) are determined by Theorem 2. The bounds for 35 ≤
+782:             35      67t         68 [13], 68 is exact [1, 2]
+789:             42     119          119 [13], 120 in [1]
+796:             49     191
+823:             42      97         100 [13], 101 [1]
+830:             49     157         158 [13]
+997:                 35         ?         ?     2216896
+1045: 35        ?        ?         1
+1051: 42        ?        ?         ?        21
+1056: 49        ?        ?         ?         ?        102
+1089:                  Table 13: Number of (3, 8; n, e)-graphs, for n ≥ 19.
+1099:  42       2089
+1105:  49         ?     306415
+1152:  135                                                                                                      ≥ 20
+              70     381
+              71     398          407 required for R(3, 15) ≤ 86
+              72     415          414 required for R(3, 15) ≤ 87, Theorem 7
+              73     432
+              74     449
+              75     468
+              76     486          494 maximum
+              77      ∞           hence R(3, 14) ≤ 77, new bound
+              78      ∞           hence R(3, 14) ≤ 78, old bound
+
+                     Table 10: Lower bounds on e(3, 14, n), for n ≥ 66.
+
+
+
+
+                                             20
+Lower bounds for e(3, 15, n)
+The exact values of e(3, 15, ≤ 44) are determined by Theorem 2. Only lower bounds on
+e(3, 15, ≥ 81) are included in the second column of Table 11, since these are relevant
+for further analysis of R(3, 16). They are based on solving integer constraints (4), using
+lower bounds on e(3, 14, n) listed in Table 10. They are better than those in [13] for all
+81 ≤ n ≤ 87.
+
+             n e(3, 15, n) ≥ comments
+             81     497      498, proof based on Table 10 [2]
+             82     515      518 required for R(3, 16) ≤ 97
+                             511 required for R(3, 16) ≤ 98, Theorem 7
+             83     533
+             84     552
+             85     572
+             86     592      602 maximum
+             87      ∞       hence R(3, 15) ≤ 87, new bound
+             88      ∞       hence R(3, 15) ≤ 88, old bound
+
+                    Table 11: Lower bounds on e(3, 15, n), for n ≥ 81.
+
+
+
+Acknowledgements
+We are very grateful to Jörgen Backelin for careful reading the draft, numerous comments
+improving the presentation, his patient guidance through the maze of lower bounds on
+e(3, k, n), and the last minute improvements to some of the bounds (see the comments
+column of Tables 5, 8, 10 and 11 with credit to [2]).
+    This work was carried out using the Stevin Supercomputer Infrastructure at Ghent
+University. Jan Goedgebeur is supported by a Ph.D. grant from the Research Foundation
+of Flanders (FWO).
+
+
+
+References
+ [1] J. Backelin, Contributions to a Ramsey Calculus, unpublished, 2000-2012.
+ [2] J. Backelin, personal communication, 2012.
+ [3] G. Brinkmann, K. Coolsaet, J. Goedgebeur and H. Mélot, House of Graphs: A
+     database of interesting graphs, Discrete Applied Mathematics, 161 (2013) 311–314.
+     Available at http://hog.grinvin.org
+ [4] G. Brinkmann, J. Goedgebeur and J.C. Schlage-Puchta, Ramsey Numbers R(K3 , G)
+     for Graphs of Order 10, Electronic Journal of Combinatorics, 19(4) (2012).
+
+
+                                           21
+ [5] G. Exoo, On Two Classical Ramsey Numbers of the Form R(3, n), SIAM Journal of
+     Discrete Mathematics, 2 (1989) 488–490.
+ [6] G. Exoo, personal communication, 2012.
+ [7] J. Goedgebeur, House of Graphs: Minimal Ramsey Graphs, http://hog.grinvin.
+     org/MinRamsey.
+ [8] J.E. Graver and J. Yackel, Some Graph Theoretic Results Associated with Ramsey’s
+     Theorem, Journal of Combinatorial Theory, 4 (1968) 125–175.
+ [9] R.E. Greenwood and A.M. Gleason, Combinatorial Relations and Chromatic Graphs,
+     Canadian Journal of Mathematics, 7 (1955) 1–7.
+[10] C. Grinstead and S. Roberts, On the Ramsey Numbers R(3, 8) and R(3, 9), Journal
+     of Combinatorial Theory, Series B, 33 (1982) 27–51.
+[11] J.G. Kalbﬂeisch, Chromatic Graphs and Ramsey’s Theorem, Ph.D. thesis, University
+     of Waterloo, January 1966.
+[12] J.H. Kim, The Ramsey Number R(3, k) Has Order of Magnitude t2 / log t, Random
+     Structures and Algorithms, 7 (1995) 173–207.
+[13] A. Lesser, Theoretical and Computational Aspects of Ramsey Theory, Examensar-
+     beten i Matematik, Matematiska Institutionen, Stockholms Universitet, 3 (2001).
+[14] B.D. McKay, Practical graph isomorphism, 10th Manitoba Conference on Numerical
+     Mathematics and Computing, Winnipeg 1980, Congressus Numerantium, 30 (1981)
+     45–87.
+[15] B.D. McKay, nauty User’s Guide (Version 2.4), Technical Report TR-CS-90-02, De-
+     partment of Computer Science, Australian National University, (1990). The latest
+     version of the software is available at http://cs.anu.edu.au/~bdm/nauty.
+[16] B.D. McKay and Zhang Ke Min, The Value of the Ramsey Number R(3, 8), Journal
+     of Graph Theory, 16 (1992) 99–105.
+[17] S.P. Radziszowski, Small Ramsey Numbers, Electronic Journal of Combinatorics,
+     Dynamic Survey DS1, revision #13 (2011), http://www.combinatorics.org.
+[18] S.P. Radziszowski and D.L. Kreher, On R(3, k) Ramsey Graphs: Theoretical and
+     Computational Results, Journal of Combinatorial Mathematics and Combinatorial
+     Computing, 4 (1988) 37–52.
+[19] S.P. Radziszowski and D.L. Kreher, Upper Bounds for Some Ramsey Numbers
+     R(3, k), Journal of Combinatorial Mathematics and Combinatorial Computing, 4
+     (1988) 207–212.
+[20] S.P. Radziszowski and D.L. Kreher, Minimum Triangle-Free Graphs, Ars Combina-
+     toria, 31 (1991) 65–92.
+[21] J. Spencer, Eighty Years of Ramsey R(3, k) ... and Counting!, in Ramsey Theory: Yes-
+     terday, Today and Tomorrow (ed. A. Soifer), Progress in Mathematics 285, Springer-
+     Birkhauser 2011, 27–39.
+
+
+                                           22
+Appendix 1: Graph Counts
+Tables 12–15 below contain all known exact counts of (3, k; n, e)-graphs for speciﬁed n,
+for k = 7, 8, 9 and 10, respectively. All graph counts were obtained by the algorithms
+described in Section 3. Empty entries indicate 0. In all cases, the maximum number
+of edges is bounded by ∆(G)n/2 ≤ (k − 1)n/2. All (3, ≤ 9; n, ≤ e(3, k, n) + 1)-graphs
+which were constructed by our programs can be obtained from the House of Graphs [3]
+by searching for the keywords “minimal ramsey graph” or from [7].
+
+
+                edges                        number of vertices n
+                  e        16       17        18         19           20        21     22
+                 20         2
+                 21        15
+                 22        201
+                 23       2965
+                 24      43331
+                 25      498927       2
+                 26     4054993      30
+                 27         ?       642
+                 28         ?      13334
+                 29         ?     234279
+                 30         ?     2883293       1
+                 31         ?         ?         15
+                 32         ?         ?        382
+                 33         ?         ?       8652
+                 34         ?         ?      160573
+                 35         ?         ?     2216896
+                 36         ?         ?          ?
+                 37         ?         ?          ?       11
+                 38         ?         ?          ?       417
+                 39         ?         ?          ?     10447
+                 40         ?         ?          ?     172534
+                 41         ?         ?          ?    1990118
+                42-43       ?         ?          ?        ?
+                 44         ?         ?          ?        ?            15
+"""Exact e(3,k,n) = min edges of a triangle-free n-vertex graph with alpha < k.
+Source: [GR] Goedgebeur-Radziszowski, EJC 20(1) #P30 (2013), Table 3 (n <= 31) and Table 4
+(e(3,9,32..35) = 104, 118, 129, 140). Parsed from data/papers/arxiv_1210.5826.pdf by agent cases;
+values for k = 8, 9, 10 agree with notes/edge_tables.md (lit). None = no such graph (n >= R(3,k))."""
+
+E = {
+    3: {3: 1, 4: 2, 5: 5, 6: None},
+    4: {4: 1, 5: 2, 6: 3, 7: 6, 8: 10, 9: None},
+    5: {5: 1, 6: 2, 7: 3, 8: 4, 9: 7, 10: 10, 11: 15, 12: 20, 13: 26, 14: None},
+    6: {6: 1, 7: 2, 8: 3, 9: 4, 10: 5, 11: 8, 12: 11, 13: 15, 14: 20, 15: 25, 16: 32, 17: 40, 18: None},
+    7: {7: 1, 8: 2, 9: 3, 10: 4, 11: 5, 12: 6, 13: 9, 14: 12, 15: 15, 16: 20, 17: 25, 18: 30, 19: 37, 20: 44, 21: 51, 22: 60, 23: None},
+    8: {8: 1, 9: 2, 10: 3, 11: 4, 12: 5, 13: 6, 14: 7, 15: 10, 16: 13, 17: 16, 18: 20, 19: 25, 20: 30, 21: 35, 22: 42, 23: 49, 24: 56, 25: 65, 26: 73, 27: 85, 28: None},
+    9: {9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 6, 15: 7, 16: 8, 17: 11, 18: 14, 19: 17, 20: 20, 21: 25, 22: 30, 23: 35, 24: 40, 25: 46, 26: 52, 27: 61, 28: 68, 29: 77, 30: 86, 31: 95, 32: 104, 33: 118, 34: 129, 35: 140, 36: None},
+}
+
+
+def e3(k, n):
+    """e(3,k,n); 0 for n < k; None if n >= R(3,k)."""
+    if n < k:
+        return 0
+    return E[k][n]
+
+exec
+/usr/bin/bash -lc "rg --files data | head -n 110
+rg -n 'r35|r34|R\\(3,5|R\\(3, 5|R\\(3,6' gluing/README.md notes/*.md | head -n 70
+rg --files gluing/cls | head -n 55
+rg -n 'forbid-dominated|B1|13|C13' notes/status/sms.md notes/sms.md | tail -n 25" in .
+ succeeded in 0ms:
+data/papers/arxiv_2601.03572.pdf
+data/papers/RK1988_paper14.pdf
+data/papers/arxiv_1608.07489.pdf
+data/papers/arxiv_2502.06055.pdf
+data/papers/GR_K10e_e3j13.pdf
+data/papers/exoo2013/exoo_v20i1p68.pdf
+data/papers/RK1988_paper15.pdf
+data/papers/Lesser2001.pdf
+data/papers/KirS_TOCL2024.pdf
+data/papers/GR_ber12_slides.pdf
+data/papers/RK1991_paper18.pdf
+data/papers/Ang_EJC_v32i4p30.pdf
+data/papers/DS1_rev18.pdf
+data/papers/arxiv_2401.00392.pdf
+data/graphs/hog/Ramseygraphs_3_8_25_e65.g6
+data/graphs/hog/Ramseygraphs_3_9_24_e40.g6
+data/graphs/hog/Ramseygraphs_3_10_29_e58.g6
+data/graphs/hog/Ramseygraphs_3_8_24_e56.g6
+data/graphs/hog/Ramseygraphs_3_8_27_e85.g6
+data/graphs/hog/Ramseygraphs_3_9_26_e52.g6
+data/graphs/hog/Ramseygraphs_3_8_20_e30.g6
+data/graphs/hog/Ramseygraphs_3_10_33_e90.g6.gz
+data/graphs/hog/Ramseygraphs_3_8_23_e49.g6
+data/graphs/hog/Ramseygraphs_3_9_34_e129_some.g6
+data/graphs/hog/Ramseygraphs_3_8_22_e42.g6
+data/graphs/hog/Ramseygraphs_3_9_27_e61.g6
+data/graphs/hog/Ramseygraphs_3_10_30_e66.g6
+data/graphs/hog/Ramseygraphs_3_9_31_e95.g6
+data/graphs/hog/Ramseygraphs_3_10_31_e73.g6
+data/graphs/hog/Ramseygraphs_3_9_28_e68.g6
+data/graphs/hog/Ramseygraphs_3_9_25_e46.g6
+data/graphs/hog/Ramseygraphs_3_8_19_e25.g6
+data/papers/algal-lab/fixed_remainder__README.md
+data/papers/algal-lab/vertex_transitive__README.md
+data/papers/algal-lab/demand_certificates__README.md
+data/papers/e3k12.pdf
+data/papers/arxiv_1210.5826.pdf
+data/graphs/hog/Ramseygraphs_3_10_32_e81.g6.gz
+data/papers/arxiv_1309.7874.pdf
+data/graphs/hog/Ramseygraphs_3_9_29_e77.g6
+data/papers/arxiv_2306.10427.pdf
+data/graphs/hog/Ramseygraphs_3_9_30_e86.g6
+data/papers/algal-lab/degree_six__RESULTS.md
+data/graphs/hog/Ramseygraphs_3_9_32_e104.g6
+data/papers/algal-lab/discoveries__articles__narrowing-a-ramsey-search.md
+data/graphs/hog/Ramseygraphs_3_9_23_e35.g6
+data/papers/algal-lab/degree_six__README.md
+data/graphs/hog/Ramseygraphs_3_9_33_e118_some.g6
+data/papers/algal-lab/plan.md
+data/papers/algal-lab/frontier-review-20260928.md
+data/graphs/hog/Ramseygraphs_3_9_35_e140.g6
+data/papers/algal-lab/incidence_extension__README.md
+data/papers/algal-lab/degree_four__README.md
+data/graphs/hog/Ramseygraphs_3_8_26_e73.g6
+data/graphs/hog/Ramseygraphs_3_8_21_e35.g6
+data/graphs/mckay/r36_17.g6
+data/graphs/mckay/r37_21.g6.gz
+data/graphs/mckay/r38_27.g6.gz
+data/graphs/mckay/r37_22.g6
+data/graphs/mckay/r39_35.g6
+data/graphs/exoo/r3.10.39
+data/graphs/exoo/g.3.11.46
+data/graphs/exoo/exoo39.g6
+data/graphs/exoo/r3.11.46
+notes/sms.md:12:  Their Ramsey results (Sec. 8, Table 9): all R(3,5,n) (1029 graphs, 0.24 s) and all R(4,4,n)
+notes/prior_methods.md:120:- Ramsey results (Table 9): all R(3,5,n) (1 029 graphs, 0.24 s total) and all R(4,4,n) (3 432 184 graphs,
+notes/gluing.md:55:| rebuild all R(3,3..6;n) from scratch (min-degree gluing + shortg) | R(3,4;n) = 1,2,3,6,9,15,9,3; R(3,5;13) = 1, (12) = 12, (11) = 105; R(3,6;17) = 7, (16) = 2576, (15) = 64732 | McKay's tables; [Ang] Table 1 |
+notes/gluing.md:56:| R(3,7;22) from R(3,6;15..17) | 191 | [GR] T12, [Ang] T1 |
+notes/gluing.md:57:| R(3,7;21) from R(3,6;14..17) | 1,118,436 (each e = 51..63 equal to [GR] T12) | [GR] T12 |
+notes/gluing.md:77:| labelled ratios R(3,6;16), R(3,7;21), all e | within 1% / ln-error <= 0.04 | own exact sets | - |
+notes/data_sources.md:86:| triangleramsey (Brinkmann–Goedgebeur–Schlage-Puchta) | http://caagt.ugent.be/triangleramsey/ (triangleramsey-1.1.zip, manual triangleramsey-manual.txt) | 1.1, zip sha256 6d16c21b…f548a | tools/bin/triangleramsey (n<=32), triangleramsey-64 (n<=64) | reviewed (tools): MTF counts n=9..12 = geng; Ramsey mode gives R(3,6)=18, R(3,7)=23. PREFERRED | MTF graphs and triangle Ramsey graphs R(K3,G); GPL; needs nauty >= 2.5 files; paper EJC 19(4) #P36 (2012) |
+notes/data_sources.md:87:| MTF (Brandt–Brinkmann–Harmuth) | http://caagt.ugent.be/mtf/ (mtf.c, MTF_manual.pdf) | mtf.c (1998), sha256 4fc06111…a648 | tools/bin/mtf | reviewed (tools): same MTF counts; ramsey_kn 6 gives R(3,6)=18; old output format (not multicode) | maximal triangle-free generator; Graphs Combin. 16 (2000) 149-157 |
+notes/DEPENDENCIES.md:69:| D-G3 | |R(3,7;22)| = 191; |R(3,6;17)| = 7; |R(3,5;13)| = 1 | [McKayWeb]; [Ang] Table 1; [DS1] 2.1.d |
+notes/DEPENDENCIES.md:70:| D-G3b | |R(3,7;21)| = 1 118 436; |R(3,6;16)| = 2576; |R(3,4;8)| = 3; the (3,5;13)-graph is C13(1,5) (all graph files public) | [McKayWeb] (r37_21 found by Brinkmann–Goedgebeur); [DS1] 2.1.d |
+notes/cases.md:456:|R(3,7,22)| = 191, |R(3,6,16)| = 2576, |R(3,6,17)| = 7, |R(3,5,13)| = 1 (C13(1,5)), |R(3,4,8)| = 3.
+notes/cases.md:504:| s=4, m=17 | R(3,6,17): 7 | 20 / 8 | e(X) = 9 + f >= 40 |
+notes/cases.md:505:| s=4, m=16 | R(3,6,16): 2576 | 19 / 8 | e(X) = f >= 32 |
+notes/cases.md:506:| s=5, m=13 | R(3,5,13): 1 (C13(1,5)) | 17 / 8 | e(X) = 26 = f - 18, so f = 44 |
+gluing/cls/B5.g6
+gluing/cls/r38_22_le42.g6
+gluing/cls/A6.g6.parts.V2R3/out.0
+gluing/cls/A6.g6.parts.V2R3/in.0
+gluing/cls/B6.g6.parts.8wVO/out.0
+gluing/cls/B6.g6.parts.8wVO/in.0
+gluing/cls/B6.g6.parts.8wVO/in.2
+gluing/cls/B6.g6.parts.8wVO/out.2
+gluing/cls/B6.g6.parts.8wVO/in.1
+gluing/cls/B6.g6.parts.8wVO/out.1
+gluing/cls/r37_18_le33.g6
+gluing/cls/r37_19_le37.g6
+gluing/cls/r38_24_le58.g6
+gluing/cls/B7.g6
+gluing/cls/r37_16_le20.g6
+gluing/cls/r37_17_le27.g6
+gluing/cls/r38_23_le51.g6
+gluing/cls/A7.g6.parts.NHrH/out.5
+gluing/cls/A7.g6.parts.NHrH/in.3
+gluing/cls/A7.g6.parts.NHrH/in.4
+gluing/cls/A7.g6.parts.NHrH/out.2
+gluing/cls/A7.g6.parts.NHrH/in.0
+gluing/cls/A7.g6.parts.NHrH/out.1
+gluing/cls/A7.g6.parts.NHrH/in.5
+gluing/cls/A7.g6.parts.NHrH/out.3
+gluing/cls/A7.g6.parts.NHrH/out.4
+gluing/cls/A7.g6.parts.NHrH/in.2
+gluing/cls/A7.g6.parts.NHrH/out.0
+gluing/cls/A7.g6.parts.NHrH/in.1
+notes/sms.md:43:  existence search (adding edges cannot raise alpha). Tested on (3,5,12/13).
+notes/sms.md:46:  1333, 15130, 20106 = number of vertex orbits of degree d (pynauty) over all 2576 graphs.
+notes/sms.md:59:| (3,5,10..13) | 313, 105, 12, 1 | same | <= 0.04 | <= 0.04 |
+notes/sms.md:61:| (3,6,13) | 275086 | 275086 | 21.4 | 20.4 |
+notes/sms.md:65:| (3,6,17) | 7 | 7 | 0.13 | 0.22 |
+notes/sms.md:113:| (3,8,27) all graphs (477,142) | >= 137 graphs in 2494 s, stopped: too slow |
+notes/status/sms.md:4:(blocks {0},{1..7},{8,9},{10},{11,12},{13..39}); cube_check.sh checks only coarse D blocks; please add
+notes/status/sms.md:13:  --forbid-dominated s m). Tools: sms/gen_ramsey.py, lratlog2lrat (C++), check_ext.py,
+notes/status/sms.md:20:- CPU 67: R_notA5_13 (R + every independent 5-set dominates >= 23; jobctl, 24 h).
+notes/status/sms.md:24:- Re-estimate with knuth_probe.py when cases/B1 give stronger cube structure.
+
+exec
+/usr/bin/bash -lc "rg --files gluing sms duo data runs/sms | rg 'r35|r34|r36|enum_5|3_5|k5|k4' | head -n 90
+sed -n '1037,1091p' runs/lit/txt/arxiv_1210.5826.txt
+rg --files gluing | head -n 70
+sed -n '1,115p' notes/sms.md" in .
+ succeeded in 0ms:
+data/graphs/mckay/r36_17.g6
+gluing/val/r3_5_4.g6
+gluing/val/r3_3_5.g6
+gluing/val/r3_5_5.g6
+gluing/val/r3_5_7.g6
+gluing/val/r3_5_6.g6
+gluing/val/r3_5_2.g6
+gluing/val/r3_5_3.g6
+gluing/val/r3_5_1.g6
+gluing/val/r3_5_0.g6
+gluing/val/r3_5_9.g6
+gluing/val/r3_5_10.g6
+gluing/val/r3_5_11.g6
+gluing/val/r3_5_8.g6
+gluing/val/r3_5_13.g6
+gluing/val/r3_5_12.g6
+sms/proofs/r3_5_14_lazy.ext
+sms/proofs/r3_5_14_lazy.sym.json
+sms/proofs/r3_5_14_eager.sym.json
+sms/proofs/r3_5_14_eager.lrat
+sms/proofs/r3_5_14_lazy.cnf
+sms/proofs/r3_5_14.sym.json
+sms/proofs/r3_5_14.log
+sms/proofs/r3_5_14_lazy.log
+sms/proofs/r3_5_14_lazy.plog
+sms/proofs/r3_5_14_eager.log
+sms/proofs/r3_5_14_eager.cnf
+sms/proofs/r3_5_14_lazy.lrat
+sms/proofs/r3_5_14.lrat
+sms/proofs/r3_5_14_eager.ext
+sms/proofs/r3_5_14_eager.plog
+sms/cnf/r3_5_14_lazy.cnf
+sms/cnf/r3_5_13_lazy.cnf
+sms/cnf/r3_5_14_eager_p.cnf
+sms/cnf/r3_5_14_lazy_p.cnf
+sms/cnf/r3_5_12_lazy.cnf
+sms/cnf/u3_5_14_degmtf.cnf
+sms/cnf/u3_5_14_deg.cnf
+sms/cnf/r3_5_11_lazy.cnf
+sms/cnf/r3_5_14_eager.cnf
+sms/cnf/r3_5_12_eager.cnf
+sms/cnf/r3_5_13_eager.cnf
+sms/cnf/r3_5_10_eager.cnf
+sms/cnf/r3_5_11_eager.cnf
+sms/cnf/u3_5_14_mtf.cnf
+sms/cnf/r3_5_10_lazy.cnf
+sms/cnf/u3_5_14_plain.cnf
+runs/sms/u3_5_14_degmtf.log
+runs/sms/r3_5_13_lazy.short.g6
+runs/sms/u3_5_14_mtf.log
+runs/sms/r3_5_12_eager.g6
+runs/sms/r3_5_11_lazy.g6
+runs/sms/r3_5_12_eager.log
+runs/sms/r3_5_14_lazy.log
+runs/sms/r3_5_13_eager.g6
+runs/sms/r3_5_14_lazy.short.g6
+runs/sms/u3_5_14_mtf.g6
+runs/sms/r3_5_11_eager.short.g6
+runs/sms/r3_5_10_lazy.log
+runs/sms/r3_5_11_lazy.log
+runs/sms/r3_5_14_eager.short.g6
+runs/sms/r3_5_10_lazy.g6
+runs/sms/r3_5_14_eager.g6
+runs/sms/r3_5_14_lazy.g6
+runs/sms/r3_5_11_lazy.short.g6
+runs/sms/r3_5_10_lazy.short.g6
+runs/sms/r3_5_12_lazy.g6
+runs/sms/r3_5_12_eager.short.g6
+runs/sms/u3_5_14_deg.g6
+runs/sms/u3_5_14_plain.log
+runs/sms/r3_5_12_lazy.log
+runs/sms/r3_5_13_eager.short.g6
+runs/sms/r3_5_13_lazy.g6
+runs/sms/r3_5_10_eager.g6
+runs/sms/u3_5_14_degmtf.g6
+runs/sms/r3_5_12_lazy.short.g6
+runs/sms/r3_5_13_lazy.log
+runs/sms/r3_5_14_eager.log
+runs/sms/r3_5_10_eager.short.g6
+runs/sms/u3_5_14_deg.log
+runs/sms/r3_5_11_eager.g6
+runs/sms/r3_5_11_eager.log
+runs/sms/u3_5_14_plain.g6
+runs/sms/r3_5_10_eager.log
+runs/sms/r3_5_13_eager.log
+ 27      763
+ 28     16939
+ 29        ?
+ 30        ?        3
+ 31        ?       60
+ 32        ?      1980
+ 33        ?     58649
+ 34        ?    1594047
+ 35        ?        ?         1
+ 36        ?        ?        20
+ 37        ?        ?       950
+ 38        ?        ?      35797
+ 39        ?        ?     1079565
+40-41      ?        ?         ?
+ 42        ?        ?         ?        21
+ 43        ?        ?         ?       1521
+ 44        ?        ?         ?      72353
+ 45        ?        ?         ?     2331462
+46-48      ?        ?         ?         ?
+ 49        ?        ?         ?         ?        102
+ 50        ?        ?         ?         ?       8241
+ 51        ?        ?         ?         ?      356041
+ 52        ?        ?         ?         ?     10326716
+53-55      ?        ?         ?         ?         ?
+ 56        ?        ?         ?         ?         ?           51
+ 57        ?        ?         ?         ?         ?          3419
+ 58        ?        ?         ?         ?         ?         129347
+ 59        ?        ?         ?         ?         ?        3288695
+ 60        ?        ?         ?         ?         ?       64233886
+61-64      ?        ?         ?         ?         ?            ?
+ 65        ?        ?         ?         ?         ?            ?        396
+ 66        ?        ?         ?         ?         ?            ?       21493
+ 67                 ?         ?         ?         ?            ?      613285
+ 68                 ?         ?         ?         ?            ?     11946369
+69-72               ?         ?         ?         ?            ?         ?
+ 73                           ?         ?         ?            ?         ?         62
+ 74                                     ?         ?            ?         ?        1625
+ 75                                     ?         ?            ?         ?        23409
+ 76                                     ?         ?            ?         ?       216151
+ 77                                     ?         ?            ?         ?      1526296
+78-84                                             ?            ?         ?          ?
+ 85                                                                      ?          ?        4
+ 86                                                                      ?          ?       92
+ 87                                                                      ?          ?      1374
+ 88                                                                                 ?     11915
+ 89                                                                                 ?     52807
+ 90                                                                                 ?     122419
+ 91                                                                                 ?     151308
+ 92                                                                                       99332
+ 93                                                                                       33145
+ 94                                                                                        4746
+
+                  Table 13: Number of (3, 8; n, e)-graphs, for n ≥ 19.
+
+
+gluing/start16.g6
+gluing/bin/glue2
+gluing/bin/glue
+gluing/bin/mcount2
+gluing/bin/mcount
+gluing/bin/onepoint
+gluing/ext32_99.g6
+gluing/ext32_98.g6
+gluing/st38_26.g6
+gluing/samp30_96.g6
+gluing/s100.g6
+gluing/st38_24.g6
+gluing/samp31_97.g6
+gluing/samp31_96.g6
+gluing/st38_25.g6
+gluing/start34.g6
+gluing/st32b.g6
+gluing/samp30_88.g6
+gluing/st32a.g6
+gluing/src/onepoint.c
+gluing/start21.g6
+gluing/src/par.sh
+gluing/src/mkx.py
+gluing/src/exact_lab.py
+gluing/src/build_all.py
+gluing/src/tcheck.py
+gluing/src/mkh.py
+gluing/src/satglue.py
+gluing/src/target.sh
+gluing/src/glue2.c
+gluing/src/selftest.py
+gluing/src/gutil.h
+gluing/src/satx.py
+gluing/src/glue.c
+gluing/src/combine.py
+gluing/src/mcount.c
+gluing/src/tscan.py
+gluing/src/topt.py
+gluing/src/mkstart.py
+gluing/st30a.g6
+gluing/gr2013.txt
+gluing/samp30_92.g6
+gluing/st38_22.g6
+gluing/st38_23.g6
+gluing/README.md
+gluing/st30b.g6
+gluing/st38_27.g6
+gluing/start31.g6
+gluing/start30.g6
+gluing/samp30_98.g6
+gluing/ext32_96.g6
+gluing/samp30_99b.g6
+gluing/ang.txt
+gluing/start33.g6
+gluing/samp31_98.g6
+gluing/start32.g6
+gluing/cls/r38_22_le42.g6
+gluing/cls/A6.g6.parts.V2R3/out.0
+gluing/cls/A6.g6.parts.V2R3/in.0
+gluing/cls/r38_24_le58.g6
+gluing/cls/B7.g6
+gluing/cls/B5.g6
+gluing/cls/B6.g6.parts.8wVO/out.0
+gluing/cls/B6.g6.parts.8wVO/in.0
+gluing/cls/B6.g6.parts.8wVO/in.2
+gluing/cls/B6.g6.parts.8wVO/out.2
+gluing/cls/B6.g6.parts.8wVO/out.1
+gluing/cls/B6.g6.parts.8wVO/in.1
+gluing/cls/r37_18_le33.g6
+gluing/cls/r37_19_le37.g6
+# SAT Modulo Symmetries (SMS) for (3,k)-graphs — evaluation (agent sms)
+
+Status: v1 final, 2026-10-25.
+
+## 1. What SMS is and what I used
+
+- SMS = CaDiCaL (IPASIR-UP fork) + a "minimality check" propagator: during search it checks if
+  the partially assigned graph can still be lex-canonical; if not, it adds a clause (with a
+  permutation witness). Result: only one graph per isomorphism class is generated.
+  Paper: Kirchweger, Szeider, "SAT Modulo Symmetries for Graph Generation and Enumeration",
+  ACM TOCL 25(3) Art. 18 (2024), doi 10.1145/3670405 (local: data/papers/KirS_TOCL2024.pdf).
+  Their Ramsey results (Sec. 8, Table 9): all R(3,5,n) (1029 graphs, 0.24 s) and all R(4,4,n)
+  (3,432,184 graphs, 883 s); eager encoding of independent sets/cliques; no larger R(3,k).
+- Code: github.com/markirch/sat-modulo-symmetries, commit 63958bd (2026-08-10), CaDiCaL fork
+  2.1.3 (submodule cadical_sms @ b023aaf). Own build in sms/sms-src (gcc 11.4, Release).
+  The repo ships NO Ramsey example except pysms `--ramsey a w` (eager: all C(n,a) clauses).
+- Canonical form: lex-MIN (0 < 1) of the row-wise upper-triangle edge vector
+  (e(0,1), e(0,2), ..., e(0,n-1), e(1,2), ...); variable of e(i,j) = its position (1-based).
+  Permutation witness in `--sym-break-clauses` JSON: H'(i,j) = H(perm[i], perm[j]); the clause
+  forbids partial graphs where H' < H for every completion (checked: sms/check_ext.py; cert's
+  VeriPB check agrees: lex-min 46/46, lex-max 0/46).
+
+### My additions (patch in sms/sms-src; `git -C sms/sms-src diff` + 3 new files)
+1. `--forbid-independent-set k` (src/graphPropagators/independentSet.{hpp,cpp}): LAZY
+   "no independent k-set". On each propagation call (frequency 1, option
+   `--independent-set-frequency`) it searches a k-clique in the graph of pairs assigned
+   "non-edge" (bitset branch and bound, greedy colouring bound). If found, it adds the clause
+   "some pair of this k-set is an edge". Exact, because it is also run on every full assignment.
+2. `--proof-log FILE` (src/proofLogTracer.hpp): CaDiCaL Tracer that logs original clauses
+   (input AND external clauses from SMS propagators) with their IDs, and derived clauses with
+   LRAT hints. Needed because stock `--lrat-output` omits the external clauses, so the
+   LRAT file refers to undefined clause IDs and `lrat-check` fails (tested: "NOT VERIFIED").
+3. Tools (sms/): gen_ramsey.py (encoder), lratlog2lrat.py (log -> CNF + LRAT + list of
+   external clauses), check_ext.py (independent check of external clauses), edges2g6.py,
+   bench.sh, run1.sh, scale_unsat.sh, reg_series.sh.
+
+### Encoder (sms/gen_ramsey.py)
+- Triangle clauses (eager, C(n,3)); independent sets eager (`--eager-is`, C(n,k) clauses) or
+  lazy (smsg `--forbid-independent-set k`).
+- Degree / edge-count bounds: Sinz sequential counters (tested: (3,6,15) with 4 bound sets gives
+  the same counts as filtering the full list: 239, 7145, 55315, 265).
+- `--mtf`: maximal triangle-free (every non-adjacent pair has a common neighbour); WLOG for an
+  existence search (adding edges cannot raise alpha). Tested on (3,5,12/13).
+- `--fix-nbhd d`: N(0) = {1..d}; must be run with `--initial-partition 1 d n-1-d` so that SMS
+  only uses partition-preserving permutations. Tested: rooted counts for (3,6,16), d = 3,4,5:
+  1333, 15130, 20106 = number of vertex orbits of degree d (pynauty) over all 2576 graphs.
+
+## 2. Reproduction of known counts (task step 2)
+
+All runs: 1 CPU (taskset, nice 5), AMD/Intel host of the team, smsg with `--cutoff 0` (exact up
+to isomorphism; the default cutoff can print isomorphic copies), lazy IS unless "eager".
+Every output graph was checked: nauty `shortg` (no isomorphic duplicates) and
+`tools/check_graph.py --k K` (triangle-free, alpha < K). Reference counts: McKay, "Ramsey
+graphs" data page, users.cecs.anu.edu.au/~bdm/data/ramsey.html (read 2026-10-24).
+Raw table: runs/sms/sweep_small.txt.
+
+| (3,k,n) | count (McKay) | SMS count | lazy s | eager s |
+|---|---|---|---|---|
+| (3,5,10..13) | 313, 105, 12, 1 | same | <= 0.04 | <= 0.04 |
+| (3,5,14) | 0 | 0 | 0.01 | 0.02 |
+| (3,6,13) | 275086 | 275086 | 21.4 | 20.4 |
+| (3,6,14) | 263520 | 263520 | 27.2 | 25.5 |
+| (3,6,15) | 64732 | 64732 | 7.1 | 6.7 |
+| (3,6,16) | 2576 | 2576 | 0.74 | 0.74 |
+| (3,6,17) | 7 | 7 | 0.13 | 0.22 |
+| (3,6,18) | 0 | 0 | 0.05 | 0.14 |
+| (3,7,21) | 1118436 | 1118436 | 743 | - |
+| (3,7,22) | 191 | 191 | 10.7 | 19.6 |
+| (3,7,23) | 0 | 0 | 1.04 | 5.3 |
+
+Lazy and eager are equal for k <= 6; lazy is 2-5x faster at k = 7 and the only option at k >= 9
+(eager C(n,k) clauses: (3,9,35) 70.6e6, (3,10,40) 8.5e8 clauses of 36/45 literals).
+
+## 3. Harder cases and scaling (task step 3)
+
+1 CPU each, lazy IS, no proof log unless stated. "no result" = stopped or time limit, no answer.
+
+### UNSAT at n = R(3,k)
+| instance | encoding | time |
+|---|---|---|
+| (3,5,14) / (3,6,18) / (3,7,23) | plain | 0.01 / 0.05 / 1.0 s |
+| same | + deg bounds / MTF / both | k=7: 1.1 / 1.8 / 1.6 s (no gain at small k) |
+| (3,8,28) | plain | no result at 79 min (also 47 min dup.) |
+| (3,8,28) | MTF | no result at 77 min |
+| (3,8,28) | MTF, deg 5..D, D = d(0) max degree, N(0) = {1..D}, partition 1 D 27-D | D=5 0.38 s, D=6 0.58 s, D=7 4269 s: total ~71 min |
+| (3,8,28) | 7-regular, MTF, N(0) fixed | 1846 s |
+| (3,9,36) | 8-regular, MTF, N(0) fixed | 724 s |
+
+delta >= 5 in the (3,8,28) split is n - R(3,7) = 28 - 23. 8-regularity of a (3,9,36)-graph is a
+known lemma (cited by Li et al.); the 8-regular run is a calibration of the cube-R shape, not a new
+proof of R(3,9) = 36.
+
+Comparison: Li, Duggan, Bright, Ganesh, IJCAI 2025 (arXiv:2502.06055): SAT+CAS (MathCheck)
+R(8,3) sequential 11 h, R(3,8) 59 h, R(9,3) 26 h wall with parallel cube-and-conquer; plain
+CaDiCaL > 7 days. satcore (CaDiCaL 3.0.1 + lazy IS + static lex, notes/satcore.md): (3,8,28)
+D=7, 7-regular, 8-regular (3,9,36): all UNKNOWN at 1 h. So SMS symmetry breaking is the main gain
+on hard UNSAT cases.
+
+### Edge-minimum UNSAT ("no (3,k,m)-graph with <= E edges", deg <= k-1, proof log on)
+| (k,m,E) | time | proof |
+|---|---|---|
+| (7,17,24), (7,18,29) | 1.6 s, 4.4 s | certified end to end by cert |
+| (7,19,36), (7,20,43) | 24.3 s, 151 s | converted, given to cert |
+| (8,22,41) | 802 s | converted (LRAT 3.4 GB), given to cert |
+| F1 (8,23,46), (8,24,52) | 3094 s, 8970 s | converted, cert certifies |
+| F1 (8,25,58), (8,26,64), (8,27,70) | running | |
+Split by maximum degree (N(0) fixed) did NOT help F1: (8,23,46) D=5 alone took 3991 s.
+
+### Enumeration and SAT-finding
+| instance | result |
+|---|---|
+| (3,7,21) all graphs | 1,118,436 in 743 s (= McKay) |
+| (3,8,27) all graphs (477,142) | >= 137 graphs in 2494 s, stopped: too slow |
+| (3,9,35) all graphs (1) | no result at 2.2 h |
+| (3,9,35) 8-regular MTF N(0) fixed, find | no result at 59 min |
+
+codex
+For \(c>0\), the overlap method leaves unresolved edges from the common neighbours into the overlap. I will derive the degree conditions for those edges. I will also test a counting LP that uses exact small graph types, rather than only their sizes and edge bounds.
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import runpy,sys,networkx as nx,numpy as np
+from math import comb
+from scipy.optimize import linprog
+sys.path.insert(0,'cases'); mod=runpy.run_path('cases/b2_profile_lp.py',run_name='readonly')
+idx={('I',s):s-1 for s in range(1,11)}
+for s in range(1,10):
+ for m in range(41):
+  if mod['ebounds'](s,m) is not None: idx[('p',s,m)]=len(idx)
+base=len(idx); types=[]
+def poly(H):
+ n=len(H); adj=[sum(1<<j for j in H[i]) for i in H]; out=[0]*6
+ def rec(can,k):
+  out[k]+=1
+  while can:
+   bit=can&-can;can"'^=bit;v=bit.bit_length()-1
+   rec(can&~adj[v],k+1)
+ rec((1<<n)-1,0)
+ return out
+for n in range(14):
+ for line in open('"'gluing/val/r3_5_%d.g6'%n):
+  line=line.strip()
+  if not line or line.startswith('>>'):continue
+  H=nx.from_graph6_bytes(line.encode()); b=mod['ebounds'](5,n)
+  if b is not None and b[0]<=H.number_of_edges()<=b[1]: types.append((n,poly(H)))
+print('exact_X5_types',len(types),flush=True)
+def lifted(c,**kw):
+ q=len(types); cnew=np.pad(c,(0,q)); au=np.pad(kw['A_ub'],((0,0),(0,q))); ae=np.pad(kw['A_eq'],((0,0),(0,q)))
+ be=list(kw['b_eq']);extra=[]
+ for m in range(14):
+  r=np.zeros(base+q);r[idx['p',5,m]]=-1
+  for j,(n,p) in enumerate(types):
+   if n==m:r[base+j]=1
+  extra.append(r);be.append(0)
+ for t in range(1,5):
+  r=np.zeros(base+q);r[idx['I',5+t]]=-comb(5+t,t)
+  for j,(n,p) in enumerate(types):r[base+j]=p[t]
+  extra.append(r);be.append(0)
+ ae=np.vstack([ae,np.array(extra)]);bounds=kw['bounds']+[(0,None)]*q
+ for j,(n,p) in enumerate(types):
+  if n==13:bounds[base+j]=(0,0)
+ return linprog(cnew,A_ub=au,b_ub=kw['b_ub'],A_eq=ae,b_eq=be,bounds=bounds,method='highs')
+mod['main'].__globals__['linprog']=lifted
+mod['main']()
+PY" in .
+ succeeded in 605ms:
+exact_X5_types 1030
+s=1: allowed m = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35]
+s=2: allowed m = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+s=3: allowed m = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
+s=4: allowed m = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+s=5: allowed m = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+s=6: allowed m = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+s=7: allowed m = [0, 1, 2, 3, 4, 5]
+s=8: allowed m = [0, 1, 2]
+s=9: allowed m = [0]
+I_4 min = 16160.0
+I_4 max = 21724.0
+I_5 min = 24064.0
+I_5 max = 67110.2
+I_6 min = 11136.0
+I_6 max = 126325.0
+I_7 min = 1144.0
+I_7 max = 138356.0
+I_8 min = 180.0
+I_8 max = 76697.3
+I_9 min = 40.0
+I_9 max = 17043.9
+
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import runpy,sys,networkx as nx,numpy as np
+from math import comb
+from scipy.optimize import linprog
+sys.path.insert(0,'cases'); mod=runpy.run_path('cases/b2_profile_lp.py',run_name='readonly')
+idx={('I',s):s-1 for s in range(1,11)}
+for s in range(1,10):
+ for m in range(41):
+  if mod['ebounds'](s,m) is not None:idx['p',s,m]=len(idx)
+b=len(idx);types=[]
+def poly(H):
+ n=len(H);adj=[sum(1<<j for j in H[i]) for i in H];out=[0]*6
+ def rec(can,k):
+  out[k]+=1
+  while can:
+   bit=can&-can;can"'^=bit;v=bit.bit_length()-1;rec(can&~adj[v],k+1)
+ rec((1<<n)-1,0);return out
+for n in range(14):
+ for line in open('"'gluing/val/r3_5_%d.g6'%n):
+  line=line.strip()
+  if line and not line.startswith('>>'):types.append((n,poly(nx.from_graph6_bytes(line.encode()))))
+# Capture the base LP, without writing any file.
+saved={}
+def capture(c,**kw):
+ saved.update(kw)
+ return linprog(c,**kw)
+mod['main'].__globals__['linprog']=capture
+import contextlib,io
+with contextlib.redirect_stdout(io.StringIO()):mod['main']()
+for M in range(3,8):
+ for caps in (False,True):
+  q=len(types);N=b+q+7; eq=list(np.pad(saved['A_eq'],((0,0),(0,N-b))));be=list(saved['b_eq']);ub=list(np.pad(saved['A_ub'],((0,0),(0,N-b))));bu=list(saved['b_ub']);bd=saved['bounds']+[(0,None)]*(N-b)
+  def row():return np.zeros(N)
+  def e(r,v=0):eq.append(r);be.append(v)
+  def u(r,v=0):ub.append(r);bu.append(v)
+  for m in range(14):
+   r=row();r[idx['p',5,m]]=-1
+   for j,(n,p) in enumerate(types):
+    if n==m:r[b+j]=1
+   e(r)
+  for t in range(1,5):
+   r=row();r[idx['I',5+t]]=-comb(5+t,t)
+   for j,(n,p) in enumerate(types):r[b+j]=p[t]
+   e(r)
+  # Pair variables G_c; n_c is p[2][20+c].
+  for m in range(41):
+   if ('p',2,m) in idx and not 21<=m<=20+M:bd[idx['p',2,m]]=(0,0)
+  c4=row();c4[idx['I',4]]=1
+  for c in range(1,8):c4[idx['p',2,20+c]]=-comb(c,2)/2
+  e(c4,17920)
+  r=row();r[idx['I',4]]=4;r[b+q:]=1;e(r,11520+4*17920)
+  for c in range(1,8):
+   ni=idx['p',2,20+c];gi=b+q+c-1
+   lo=max(9-c,mod['e3'](8,20+c)-18-9*c)
+   hi=min((9-c)**2,M*(9-c))
+   r=row();r[ni]=lo;r[gi]=-1;u(r)
+   r=row();r[ni]=-hi;r[gi]=1;u(r)
+  bd[idx['p',2,21]]=(0,160)
+  r=row();r[idx['p',8,2]]=-1;r[idx['p',2,21]]=2;u(r)
+  r=row();r[idx['p',8,1]]=-1;r[idx['p',2,21]]=-2;u(r,-360)
+  if caps:
+   for s,cap in [(3,22),(4,17),(5,13),(6,8)]:
+    for m in range(cap,41):
+     if ('p',s,m) in idx:bd[idx['p',s,m]]=(0,0)
+   for j,(n,p) in enumerate(types):
+    if n==13:bd[b+j]=(0,0)
+  obj=row();obj[idx['I',9]]=1
+  ans=linprog(obj,A_ub=np.array(ub),b_ub=bu,A_eq=np.array(eq),b_eq=be,bounds=bd,method='highs')
+  print('cmax',M,'forbid_tight',caps,'status',ans.status,'I9min',ans.fun,flush=True)
+PY" in .
+ succeeded in 524ms:
+cmax 3 forbid_tight False status 0 I9min 40.0
+cmax 3 forbid_tight True status 0 I9min 40.0
+cmax 4 forbid_tight False status 0 I9min 40.0
+cmax 4 forbid_tight True status 0 I9min 40.0
+cmax 5 forbid_tight False status 0 I9min 40.0
+cmax 5 forbid_tight True status 0 I9min 40.0
+cmax 6 forbid_tight False status 0 I9min 40.0
+cmax 6 forbid_tight True status 0 I9min 40.0
+cmax 7 forbid_tight False status 0 I9min 40.0
+cmax 7 forbid_tight True status 0 I9min 40.0
+
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import networkx as nx
+from collections import Counter
+files=['data/graphs/mckay/r39_35.g6','duo/reg6_22.g6']
+R={3:6,4:9,5:14,6:18,7:23,8:28}
+for fn in files:
+ for index,line in enumerate(open(fn)):
+  if not line.strip() or line.startswith('>>'):continue
+  G=nx.from_graph6_bytes(line.strip().encode()); n=len(G);d=next(iter(dict(G.degree()).values()));adj=[sum(1<<j for j in G[v]) for v in G];full=(1<<n)-1
+  answer={}
+  for k in [4,5,6]:
+   s=d-k
+   if s<1:continue
+   stats=Counter()
+   def rec(can,mask,nb,t):
+    if t==s:
+     stats[(full&~(mask|nb)).bit_count()]+=1;return
+    while can.bit_count()>=s-t:
+     bit=can&-can;can"'^=bit;v=bit.bit_length()-1;rec(can&~adj[v],mask|bit,nb|adj[v],t+1)
+   rec(full,0,0,0)
+   answer[(s,k)]=(max(stats),R[k+1]-1,stats[R[k+1]-1])
+  print(fn,index,'"'n,d',n,d,'(s,alphaX):(max_m,R_bound,tight_count)',answer,flush=True)
+PY" in .
+ succeeded in 68ms:
+data/graphs/mckay/r39_35.g6 0 n,d 35 8 (s,alphaX):(max_m,R_bound,tight_count) {(4, 4): (13, 13, 210), (3, 5): (16, 17, 0), (2, 6): (21, 22, 0)}
+duo/reg6_22.g6 0 n,d 22 6 (s,alphaX):(max_m,R_bound,tight_count) {(2, 4): (12, 13, 0), (1, 5): (15, 17, 0)}
+duo/reg6_22.g6 1 n,d 22 6 (s,alphaX):(max_m,R_bound,tight_count) {(2, 4): (12, 13, 0), (1, 5): (15, 17, 0)}
+duo/reg6_22.g6 2 n,d 22 6 (s,alphaX):(max_m,R_bound,tight_count) {(2, 4): (12, 13, 0), (1, 5): (15, 17, 0)}
+duo/reg6_22.g6 3 n,d 22 6 (s,alphaX):(max_m,R_bound,tight_count) {(2, 4): (12, 13, 0), (1, 5): (15, 17, 0)}
+duo/reg6_22.g6 4 n,d 22 6 (s,alphaX):(max_m,R_bound,tight_count) {(2, 4): (12, 13, 0), (1, 5): (15, 17, 0)}
+duo/reg6_22.g6 5 n,d 22 6 (s,alphaX):(max_m,R_bound,tight_count) {(2, 4): (12, 13, 0), (1, 5): (15, 17, 0)}
+duo/reg6_22.g6 6 n,d 22 6 (s,alphaX):(max_m,R_bound,tight_count) {(2, 4): (12, 13, 0), (1, 5): (15, 17, 0)}
+duo/reg6_22.g6 7 n,d 22 6 (s,alphaX):(max_m,R_bound,tight_count) {(2, 4): (11, 13, 0), (1, 5): (15, 17, 0)}
+duo/reg6_22.g6 8 n,d 22 6 (s,alphaX):(max_m,R_bound,tight_count) {(2, 4): (11, 13, 0), (1, 5): (15, 17, 0)}
+duo/reg6_22.g6 9 n,d 22 6 (s,alphaX):(max_m,R_bound,tight_count) {(2, 4): (11, 13, 0), (1, 5): (15, 17, 0)}
+
+exec
+/usr/bin/bash -lc "rg --files gluing | rg 'samp|26|27' | head -n 65
+head -n 100 gluing/src/satx.py
+head -n 140 gluing/src/mcount.c
+rg -n 'R6|26,|c = 6|81' notes/*.md | head -n 55" in .
+ succeeded in 0ms:
+gluing/samp30_88.g6
+gluing/samp30_92.g6
+gluing/st38_27.g6
+gluing/st38_26.g6
+gluing/samp30_96.g6
+gluing/samp31_97.g6
+gluing/samp31_96.g6
+gluing/samp30_98.g6
+gluing/samp30_99b.g6
+gluing/samp31_98.g6
+gluing/cls/r37_17_le27.g6
+gluing/samp30_99.g6
+"""Hybrid test 2: fix X = G - N[u] - N[w] (u, w non-adjacent) in R(3,8;27), i.e. |X| = 27,
+and let SAT find the other 13 vertices (u, w, Y = N(u) | N(w), |Y| = 11) of a (3,10;40)-graph.
+No degree or regularity assumption beyond Delta <= 9.
+
+vars: au[y], aw[y] (y ~ u, y ~ w), with au|aw for all y (every y is in N(u) | N(w));
+      e[y][y'] (11*10/2), f[y][x] (11*27).
+constraints: triangle-free; Delta <= 9 (seq counters); alpha <= 9 lazily (CEGAR: independent
+10-set found in a model -> clause "one of its variable pairs is an edge");
+symmetry: rows of Y lex-ordered (Y vertices are interchangeable).
+usage: python3 satx.py X.g6 [max] [skip]
+"""
+import sys, time, itertools
+from pysat.solvers import Cadical153
+from pysat.card import CardEnc, EncType
+from pysat.formula import IDPool
+
+sys.setrecursionlimit(10000)
+
+def g6dec(s):
+    n = ord(s[0]) - 63; bits = []
+    for ch in s[1:]:
+        x = ord(ch) - 63; bits += [(x >> (5 - t)) & 1 for t in range(6)]
+    adj = [0] * n; k = 0
+    for j in range(1, n):
+        for i in range(j):
+            if bits[k]: adj[i] |= 1 << j; adj[j] |= 1 << i
+            k += 1
+    return n, adj
+
+def find_indep(adj, m, k):
+    if k <= 0: return 0
+    if bin(m).count('1') < k: return None
+    best, bd = -1, -1; t = m
+    while t:
+        v = (t & -t).bit_length() - 1; t &= t - 1
+        d = bin(adj[v] & m).count('1')
+        if d > bd: bd, best = d, v
+    if bd == 0:
+        r = 0; t = m
+        for _ in range(k):
+            v = (t & -t).bit_length() - 1; t &= t - 1; r |= 1 << v
+        return r
+    r = find_indep(adj, m & ~adj[best] & ~(1 << best), k - 1)
+    if r is not None: return r | (1 << best)
+    return find_indep(adj, m & ~(1 << best), k)
+
+def all_indep(adj, m, k, cur, out, cap):
+    if len(out) >= cap: return
+    if k == 0:
+        out.append(cur); return
+    if bin(m).count('1') < k: return
+    v = (m & -m).bit_length() - 1
+    all_indep(adj, m & ~adj[v] & ~(1 << v), k - 1, cur | (1 << v), out, cap)
+    all_indep(adj, m & ~(1 << v), k, cur, out, cap)
+
+CAP = int(__import__('os').environ.get('SATX_CAP', '200'))
+
+def solve(s):
+    nX, xadj = g6dec(s)
+    NY = 11
+    # vertex ids in G: X = 0..26, Y = 27..37, u = 38, w = 39
+    Y = list(range(nX, nX + NY)); U, Wv = nX + NY, nX + NY + 1
+    pool = IDPool()
+    var = {}
+    def ev(a, b):
+        if a > b: a, b = b, a
+        return var.setdefault((a, b), pool.id((a, b)))
+    S = Cadical153()
+    for y in Y:
+        S.add_clause([ev(y, U), ev(y, Wv)])
+    # triangle-free
+    for y in Y:
+        for x in range(nX):
+            for x2 in range(x + 1, nX):
+                if xadj[x] >> x2 & 1:
+                    S.add_clause([-ev(y, x), -ev(y, x2)])
+        for y2 in Y:
+            if y2 <= y: continue
+            for x in range(nX):
+                S.add_clause([-ev(y, y2), -ev(y, x), -ev(y2, x)])
+            for z in (U, Wv):
+                S.add_clause([-ev(y, y2), -ev(y, z), -ev(y2, z)])
+            for y3 in Y:
+                if y3 <= y2: continue
+                S.add_clause([-ev(y, y2), -ev(y, y3), -ev(y2, y3)])
+    # degrees <= 9
+    def atmost(lits, b):
+        if b < 0:
+            S.add_clause([]); return
+        if len(lits) <= b: return
+        for c in CardEnc.atmost(lits=lits, bound=b, vpool=pool, encoding=EncType.seqcounter).clauses:
+            S.add_clause(c)
+    atmost([ev(y, U) for y in Y], 9)
+    atmost([ev(y, Wv) for y in Y], 9)
+    for y in Y:
+        atmost([ev(y, z) for z in list(range(nX)) + [q for q in Y if q != y] + [U, Wv]], 9)
+    for x in range(nX):
+        atmost([ev(y, x) for y in Y], 9 - bin(xadj[x]).count('1'))
+    # lex order of Y rows: row(y) = [au, aw, f[y][0..26]] (edges among Y excluded for simplicity)
+    rows = [[ev(y, U), ev(y, Wv)] + [ev(y, x) for x in range(nX)] for y in Y]
+/* mcount.c - Monte Carlo estimate of edge-count ratios g(e+1)/g(e) for
+ * labelled (3,K;n,e)-graphs (triangle-free, alpha < K), K given as -k.
+ *
+ * Chain: states = valid labelled graphs with elo <= e <= ehi.
+ * Moves: toggle a random pair (add/remove one edge), or swap (remove random edge,
+ * add random non-edge). Acceptance min(1, w(e')/w(e)), w = exp(-lng) learned by
+ * Wang-Landau, then fixed for the production phase.
+ * Estimator (broad histogram / transition matrix):
+ *   g(e) * <a>_e = g(e+1) * <r>_{e+1}
+ * a(G) = #non-edges that can be added (no triangle), r(G) = #edges that can be
+ * removed (alpha stays < K). Within a level the chain is uniform, so these
+ * level averages are unbiased.
+ *
+ * usage: mcount -n N -k K -l ELO -h EHI -s SEED -w WLSTEPS -p PRODSTEPS < start.g6
+ * start graph: any (3,K;N)-graph; the chain first walks into [ELO,EHI].
+ */
+#include "gutil.h"
+#include <math.h>
+#include <getopt.h>
+#include <time.h>
+
+static int n, K, elo, ehi;
+static set_t adj[64];
+static int ne;                  /* current edges */
+static uint64_t rng_s[2];
+static inline uint64_t rnd(void)
+{   /* xorshift128+ */
+    uint64_t s1 = rng_s[0], s0 = rng_s[1];
+    rng_s[0] = s0; s1 ^= s1 << 23;
+    rng_s[1] = s1 ^ s0 ^ (s1 >> 17) ^ (s0 >> 26);
+    return rng_s[1] + s0;
+}
+static inline int rndint(int m) { return (int)((rnd() >> 11) % (uint64_t)m); }
+static inline double rnd01(void) { return (rnd() >> 11) * (1.0 / 9007199254740992.0); }
+
+/* edge and non-edge lists with index maps */
+static int P;                   /* number of pairs */
+static int pu[2048], pv[2048];  /* pair id -> endpoints */
+static int pid[64][64];
+static int elist[2048], epos[2048], nel;  /* edges */
+static int flist[2048], fpos[2048], nfl;  /* non-edges */
+
+static void lists_build(void)
+{
+    nel = nfl = 0;
+    for (int p = 0; p < P; p++) {
+        if (adj[pu[p]] & BIT(pv[p])) { epos[p] = nel; elist[nel++] = p; }
+        else { fpos[p] = nfl; flist[nfl++] = p; }
+    }
+    ne = nel;
+}
+static void move_to_edges(int p)
+{
+    int i = fpos[p], q = flist[--nfl]; flist[i] = q; fpos[q] = i;
+    epos[p] = nel; elist[nel++] = p;
+}
+static void move_to_nonedges(int p)
+{
+    int i = epos[p], q = elist[--nel]; elist[i] = q; epos[q] = i;
+    fpos[p] = nfl; flist[nfl++] = p;
+}
+
+static set_t ALL;
+/* after removing edge u-v: is there an independent K-set? (must contain u and v) */
+static inline int removal_bad(int u, int v)
+{
+    set_t m = ALL & ~adj[u] & ~adj[v] & ~BIT(u) & ~BIT(v);
+    return has_indep(adj, m, K - 2);
+}
+
+static int count_a(void)
+{
+    int a = 0;
+    for (int i = 0; i < nfl; i++) { int p = flist[i]; if (!(adj[pu[p]] & adj[pv[p]])) a++; }
+    return a;
+}
+static int count_r(void)
+{
+    int r = 0;
+    for (int i = 0; i < nel; i++) {
+        int p = elist[i], u = pu[p], v = pv[p];
+        adj[u] &= ~BIT(v); adj[v] &= ~BIT(u);
+        if (!removal_bad(u, v)) r++;
+        adj[u] |= BIT(v); adj[v] |= BIT(u);
+    }
+    return r;
+}
+
+#define MAXL 400
+static double lng[MAXL];       /* indexed by e */
+static double H[MAXL];
+static double sa[MAXL], sr[MAXL], sa2[MAXL], sr2[MAXL]; static long long ns[MAXL];
+
+/* one Metropolis step; returns 1 if state changed */
+static long long acc_t, acc_s, try_t, try_s;
+static int step(void)
+{
+    if (rnd() & 1) {
+        /* toggle */
+        int p = rndint(P), u = pu[p], v = pv[p];
+        try_t++;
+        if (adj[u] & BIT(v)) {
+            int e2 = ne - 1;
+            if (e2 < elo) return 0;
+            double d = lng[ne] - lng[e2];
+            if (d < 0 && rnd01() >= exp(d)) return 0;
+            adj[u] &= ~BIT(v); adj[v] &= ~BIT(u);
+            if (removal_bad(u, v)) { adj[u] |= BIT(v); adj[v] |= BIT(u); return 0; }
+            move_to_nonedges(p); ne--; acc_t++; return 1;
+        } else {
+            int e2 = ne + 1;
+            if (e2 > ehi) return 0;
+            if (adj[u] & adj[v]) return 0;
+            double d = lng[ne] - lng[e2];
+            if (d < 0 && rnd01() >= exp(d)) return 0;
+            adj[u] |= BIT(v); adj[v] |= BIT(u);
+            move_to_edges(p); ne++; acc_t++; return 1;
+        }
+    } else {
+        /* swap: remove edge p, add non-edge q */
+        if (nel == 0 || nfl == 0) return 0;
+        try_s++;
+        int p = elist[rndint(nel)], q = flist[rndint(nfl)];
+        int a = pu[p], b = pv[p], c = pu[q], d = pv[q];
+        adj[a] &= ~BIT(b); adj[b] &= ~BIT(a);
+        if (adj[c] & adj[d]) { adj[a] |= BIT(b); adj[b] |= BIT(a); return 0; }
+        adj[c] |= BIT(d); adj[d] |= BIT(c);
+        if (removal_bad(a, b)) {
+            adj[c] &= ~BIT(d); adj[d] &= ~BIT(c);
+            adj[a] |= BIT(b); adj[b] |= BIT(a); return 0;
+        }
+        move_to_nonedges(p); move_to_edges(q); acc_s++; return 1;
+    }
+}
+
+int main(int argc, char **argv)
+{
+    long long wlsteps = 100000000, prodsteps = 100000000;
+    uint64_t seed = 1;
+    int sampint = 0, c;
+notes/symsat.md:134:| 7 | 5 | 5 | 120 | UNSAT | 6.81 | satcore | VERIFIED |
+notes/symmetric_search_lit.md:15:  - Sequence A000789 (n = 2..12): 2,5,8,13,16,21,26,35,38,45,48. For n = 9: 35 = R(3,9)-1
+notes/symmetric_search_lit.md:26:  SmallGroup(81,5) (Exoo's web page). Nothing for (3,10) at n = 40 in the literature.
+notes/symmetric_search_lit.md:38:  local data/papers/exoo2013/exoo_v20i1p68.pdf). Sec "R(3,10)": "810 pairwise non-isomorphic colorings of K40
+notes/symmetric_search_lit.md:57:   groups of degree 40** (TransGrp 3.6.5; count matches Holt–Royle arXiv:1811.09015 Tables 1-2:
+notes/symmetric_search_lit.md:80:| 7 | f = 5, 12, 19, 26, 33 | 5, 4, 3, 2, 1 | all 5: f >= 12 by Theorem B, (7,5) by 30 DRAT certificates | — |
+notes/step0_literature.md:28:  (e(G) = 180, e(H) = 180 - 81). Angeltveit: this set has "many orders of magnitude more graphs"
+notes/sms.md:106:| F1 (8,25,58), (8,26,64), (8,27,70) | running | |
+notes/satcore.md:35:| 8 | 28 | UNSAT, case Delta=6 | same with 6 | 0.12 s | 814 |
+notes/cert_design.md:277:| (3,6,18) | 24 / 24 equal | OK / OK; OK / OK | 816 / 310 / 5831 | s VERIFIED UNSAT |
+notes/cert_design.md:359:cube_{R,S8,N}.opb (TRI + MTF full definitions with aux id 781 + 38 p(i,j) + r + cube
+notes/cert_design.md:550:| 23 | no (3,8,23)-graph with <= 46 edges | 3,094 s | 98,858 | 71,031 (10 s) | 27,522 / 1,771 / 101,810 | 403 s | 2026-10-24 22:15 |
+notes/prior_methods.md:16:- Sec 6 / Lemma 5 / Thm 6: all (3,9;32,108)-graphs: 2 104 151 (set X), from extending (3,8;27), (3,8;26,<=77),
+notes/prior_methods.md:30:(3,7;21,<=55), (3,7;22), (3,8;26,<=76), (3,8;27,<=88); counts agree with [RK], Backelin. NO proof certificates.
+notes/prior_methods.md:45:  R(3,8,25,<=70) 2 120 846 970; R(3,8,26,<=77) 1 767 543; R(3,8,27) 477 142.
+notes/cases_local.md:31:| 5 | 4 | 13 | 22 | e(3,5,m): 13:26, 12:20, 11:15, 10:10, 9:7, 8:4 |
+notes/cases_local.md:68:**9-regular specialisation** (e = 180, Z = 81): |X| = 20 + c, e(X) = 18 + 9c + g,
+notes/cases_local.md:78:| 6 | 26 | 72 + g | 73 | 1 | R(3,8,26, 73..81) |
+notes/cases_local.md:79:| 7 | 27 | 81 + g | 85 | 4 = (9-7)^2 | R(3,8,27,85): 4 graphs, and A-B is complete K_{2,2} |
+notes/cases_local.md:89:e = 180 - N/2, Z(u) = 81 - eps(u)): with w(C) = sum_{x in C} (9 - d(x)),
+notes/cases_local.md:136:R(3,8,26,73..81), estimated ~1.9e9 graphs (known39, from gluing's MCMC; e = 73..77 published:
+notes/anneal.md:51:  810 colourings of K40 with exactly one triangle and no independent 10-set (data not on
+notes/gluing.md:80:| R(3,9;32,105..108) | 880 / 18,130 / 233,000 / 2.10e6 | 952 / 18,598 / 234,681 / 2,104,151 | [GR] T14 |
+notes/gluing.md:82:| R(3,9;33,119..121) | 73 / 1481 / 17.5e3 | 69 / >=1223 / >=13081 (total <=121: 14,395) | [GR] T14, [Ang] |
+notes/gluing.md:87:| R(3,8;26,<=77) | 1.80e6 | 1,767,543 | [Ang] 3.2 |
+notes/edge_tables.md:98:| 32 | 81  | exact | [GR] Table 5 |
+notes/edge_tables.md:148:R(3,8,26,e<=77) = 1 767 543; R(3,8,27) = 477 142.
+notes/edge_tables.md:155:| 27 | 61:700, 62:95164, 63:6498191 |
+notes/edge_tables.md:156:| 28 | 68:126, 69:17223, 70:1202362 |
+notes/edge_tables.md:160:| 32 | 104:39, 105:952, 106:18598, 107:234681, 108:2104151 |
+notes/edge_tables.md:161:| 33 | 118:5, 119:69, 120:>=1223, 121:>=13081, 122:>=90235, 123:>=401731, 124:>=1188400, 125:>=2366474, 126:>=3198596, 127:>=2915795, 128:>=1758241, 129:>=673600, 130:>=153676, 131:>=18502, 132:>=922 |
+notes/edge_tables.md:168:Checks: 34: 1+4 = 5 agrees. 33: [GR] gives 5+69+>=1223+>=13081 = >=14378 <= 14395. Consistent;
+notes/edge_tables.md:177:- Unsolved Lab web report (unsolvedlab.com/problems/ramsey-r310, Oct 2026, NOT peer reviewed,
+notes/edge_tables.md:188:| 32 | 81:6592 |
+notes/PROGRESS.md:24:  F1 claims: no (3,8,m)-graph with <= E edges, (m,E) = (23,46), (24,52), (25,58), (26,64), (27,70). RUNNING
+notes/DEPENDENCIES.md:37:| D-R6 | R(3,11) >= 47 | [Ex13] (graph on 46 vertices) |
+notes/DEPENDENCIES.md:57:| D-E10 | e(3,10,n), n = 29..34 (exact): 58, 66, 73, 81, 90, 99 | [GR] Table 5 |
+notes/DEPENDENCIES.md:73:| D-G6 | Exoo found 810 non-isomorphic 40-vertex graphs with alpha <= 9 and exactly one triangle (data not public) | [Ex13] Sec "R(3,10)" |
+notes/DEPENDENCIES.md:87:| D-C9c | (3,9;32): 104:39, 105:952, 106:18598, 107:234681, 108:2104151; R(3,9,32,<=112) = 1 554 928 360; 506 7-regular graphs in R(3,9,32,112) | [GR] T14; [Ang] 3.3, Sec 5 |
+notes/DEPENDENCIES.md:90:| D-C9f | (3,9;26..29): 26: 52:1, 53:1, 54:444, 55:58484; 27: 61:700, 62:95164, 63:6498191; 28: 68:126, 69:17223, 70:1202362; 29: 77:1342, 78:156686 | [GR] T14 |
+notes/DEPENDENCIES.md:91:| D-C10 | (3,10;29..34): 29: 58:5, 59:1364; 30: 66:5084, 67:1048442; 31: 73:2657, 74:580667; 32: 81:6592; 33: 90:57099; 34: 99:>=1 | [GR] T15 |
+notes/DEPENDENCIES.md:131:| D-O1 | Theorem: every finite transitive group contains a minimal transitive subgroup; 1963 minimal transitive groups of degree 40 (315 842 transitive groups of degree 40) | Holt, Royle, arXiv:1811.09015, Tables 1-2 |
+notes/data_sources.md:19:| hog/Ramseygraphs_3_9_{23..35}_e*.g6 | all (3,9;n,e(3,9,n))-graphs, n = 23..35 | 4,2,1,1,700,126,1342,1800,560,39,5,1,1 | same |
+notes/data_sources.md:48:| Exoo's 810 near-miss 40-vertex graphs (alpha <= 9, exactly 1 triangle) | 810 | Exoo | Exoo, EJC 20(1) #P68 (2013), Sec "R(3,10)" |
+notes/data_sources.md:75:  on SmallGroup(81,5)).
+notes/data_sources.md:92:| TransGrp (transitive groups library) | https://www.math.colostate.edu/~hulpke/transgrp/ (transgrp3.6.5.tar.gz) | 3.6.5 | — | listed | used by algal-lab VT census; Holt–Royle arXiv:1811.09015 |
+notes/critic.md:29:  first is checked. Fix: require len = header + ceil(n(n-1)/12) bytes, chars 63..126,
+notes/critic.md:66:  degrees = 180 - 81 = 99, alpha(G_v) <= 8. Correct.
+notes/critic.md:264:  = 4, 11, 15, 19, 22, 26, 28, 30, 31 for s = 1..9: all OK.
+notes/critic.md:342:Dependencies, stated correctly: F1 (computer results: RK 1988 for m <= 26, BGS 2012 for m = 27;
+notes/critic.md:483:- Running: same check, d = 9, on 200 random graphs of the 1800 R(3,9;30,86) (seed 2026,
+notes/cases.md:29:| \|R(3,9,32,104..108)\| | 39, 952, 18598, 234681, 2104151 | [GR] Table 14 |
+notes/cases.md:130:9-regular; contradiction. If G is 9-regular, e(H_v) = 180 - 81 = 99 for all v. QED
+notes/cases.md:290:| 18 | 171 | 81 | 96 | 96 | 96 | 96 | 37 | 96 |
+notes/b1_counts_38.md:3:Sources: [GR] = Goedgebeur–Radziszowski, EJC 20(1) #P30 (2013), arXiv:1210.5826, Appendix Table 13
+
+exec
+/usr/bin/bash -lc "cat notes/b1_counts_38.md
+head -n 160 gluing/src/combine.py
+sed -n '140,225p' gluing/src/mcount.c" in .
+ succeeded in 0ms:
+# B1 data: counts of (3,8;n,e)-graphs with e <= e(3,8,n)+t (known39, 2026-10-25)
+
+Sources: [GR] = Goedgebeur–Radziszowski, EJC 20(1) #P30 (2013), arXiv:1210.5826, Appendix Table 13
+(local data/papers/arxiv_1210.5826.pdf); [Ang] = Angeltveit, EJC 32(4) #P4.30 (2025), Sec 3.2 (cumulative
+counts; "d" = derived by me as [Ang] cumulative minus [GR] entries). "?" = not published.
+
+## Count of (3,8;n, e(3,8,n)+t)-graphs (exact e, not cumulative)
+| n | e(3,8,n) | t=0 | t=1 | t=2 | t=3 | t=4 | t=5 | t=6 | t=7 | t=8 | t=9 | t=10 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 20 | 30 | 3 | 60 | 1980 | 58649 | 1594047 | ? | ? | ? | ? | ? | ? |
+| 21 | 35 | 1 | 20 | 950 | 35797 | 1079565 | ? | ? | ? | ? | ? | ? |
+| 22 | 42 | 21 | 1521 | 72353 | 2331462 | ? | ? | ? | ? | ? | ? | ? |
+| 23 | 49 | 102 | 8241 | 356041 | 10326716 | 228163616 d | ? | ? | ? | ? | ? | ? |
+| 24 | 56 | 51 | 3419 | 129347 | 3288695 | 64233886 | t5+t6 = 14577633303 d | | ~1.5e11 [Ang] | ? | ? | ? |
+| 25 | 65 | 396 | 21493 | 613285 | 11946369 | t4+t5 = 2108265427 d | | ? | ? | ? | ? | ? |
+| 26 | 73 | 62 | 1625 | 23409 | 216151 | 1526296 | ? | ? | ? | ? | ? | ? |
+| 27 | 85 | 4 | 92 | 1374 | 11915 | 52807 | 122419 | 151308 | 99332 | 33145 | 4746 | 0 |
+(n = 19, e(3,8,19) = 25: 2, 37, 763, 16939, then ?.) [Ang] cumulative: R(3,8,26,e<=77) = 1 767 543 = sum of the
+[GR] row (check OK); R(3,8,27) = 477 142 total (all e, 85..94).
+
+## Local lists checked (data/graphs/)
+- mckay/r38_27.g6.gz: all 477 142 (3,8,27)-graphs; edge distribution by countg = [GR] row 27 exactly;
+  500 random graphs pass check_graph --k 8 --n 27.
+- mckay/r37_21.g6.gz (downloaded 2026-10-25, users.cecs.anu.edu.au/~bdm/data/r37_21.g6.gz): all 1 118 436
+  (3,7,21)-graphs; edge distribution 51..63 = [GR] Table 12 n=21 exactly; 500 random pass --k 7 --n 21.
+- mckay/r37_22.g6: all 191 (3,7,22)-graphs, e 60..66 = [GR] Table 12; all pass.
+- hog/Ramseygraphs_3_8_{19..27}_e*.g6: the t = 0 sets; counts = column t=0; all pass --k 8.
+- Published complete (3,7,n) lists exist only for n = 21, 22 (McKay) and t = 0 (HoG, n = 16..22).
+  Counts of (3,7;n,e) for n >= 16 are in [GR] Table 12.
+
+## What is feasible to compute (estimate, not run)
+- Per row, counts grow ~20-40x per extra edge. The "?" cells for t >= 4/5 are 1e8 .. 1e12 graphs each.
+  t <= 10 for n = 20..26 is out of reach (n = 24, t = 7 alone is ~1.5e11 [Ang], ~6 CPU months of his work).
+- Cheapest new cells: (19,29), (20,35), (21,40), (22,46), (26,78): ~1e5 .. 1e8 graphs each, by gluing on a
+  maximum-degree vertex (G - N[v] is a (3,7)-graph) or SMS with an edge bound. Not started: I wait for
+  cases/gluing to say which (n, e) cells they need.
+
+## Estimate for cases: |R(3,8;26,e)|, e = 78..81 (2026-10-25, no enumeration)
+Source: gluing's MCMC level ratios runs/gluing/mc38_n26.out (one seed, ~1e6 samples per level), combined with
+gluing/src/combine.py anchored at the published e=77 count 1 526 296 ([GR] Table 13).
+| e | t | estimate | check vs [GR] |
+|---|---|---|---|
+| 73 | 0 | 48 | 62 (-22%; small level, symmetric graphs) |
+| 74 | 1 | 1536 | 1625 (-5%) |
+| 75 | 2 | 22 710 | 23 409 (-3%) |
+| 76 | 3 | 212 800 | 216 151 (-2%) |
+| 78 | 5 | 1.0e7 | - |
+| 79 | 6 | 6.5e7 | - |
+| 80 | 7 | 3.6e8 | - |
+| 81 | 8 | 1.5e9 | - |
+Sum e = 78..81 ~ 1.9e9 (with e = 73..77: ~1.9e9). Error: about +-10% per level near the anchor, compounding
+to perhaps +-25% at e = 81 (one seed only; the published levels agree within 5% for t = 1..3).
+"""Combine mcount outputs: per-level ratios g(e+1)/g(e) = <a>_e / <r>_{e+1}.
+
+usage: python3 combine.py ANCHOR_E ANCHOR_COUNT file1.out [file2.out ...]
+Prints ln g(e) - ln g(anchor) and estimated iso-class counts (labelled ratio x anchor
+count; assumes trivial automorphism groups at both levels), per seed and pooled.
+"""
+import sys, math
+
+def load(fn):
+    d = {}
+    for line in open(fn):
+        if line.startswith('#') or not line.strip():
+            continue
+        e, ns, ma, sa, mr, sr, lw = line.split()
+        d[int(e)] = (int(ns), float(ma), float(mr), float(lw))
+    return d
+
+def curve(levels):
+    es = sorted(levels)
+    lg = {es[0]: 0.0}
+    for e in es[:-1]:
+        ns0, a0, _, _ = levels[e]
+        ns1, _, r1, _ = levels[e + 1]
+        if ns0 == 0 or ns1 == 0 or a0 <= 0 or r1 <= 0:
+            lg[e + 1] = float('nan')
+        else:
+            lg[e + 1] = lg[e] + math.log(a0) - math.log(r1)
+    return lg
+
+def main():
+    ae, ac = int(sys.argv[1]), float(sys.argv[2])
+    files = sys.argv[3:]
+    data = [load(f) for f in files]
+    curves = [curve(d) for d in data]
+    # pooled: sample-weighted means
+    pool = {}
+    for e in data[0]:
+        ns = sum(d[e][0] for d in data)
+        if ns == 0:
+            pool[e] = (0, 0, 0, 0)
+            continue
+        ma = sum(d[e][0] * d[e][1] for d in data) / ns
+        mr = sum(d[e][0] * d[e][2] for d in data) / ns
+        pool[e] = (ns, ma, mr, 0)
+    pc = curve(pool)
+    es = sorted(pc)
+    print("e  samples  ratio(e/e-1)  lnG-lnG(anchor) per seed ...  | pooled est. count")
+    cum_pool = 0.0
+    for e in es:
+        per = [c[e] - c[ae] for c in curves]
+        lp = pc[e] - pc[ae]
+        est = ac * math.exp(lp)
+        if e >= ae:
+            cum_pool += est
+        rat = math.exp(pc[e] - pc[e - 1]) if e - 1 in pc else float('nan')
+        sd = (sum((x - sum(per) / len(per)) ** 2 for x in per) / max(1, len(per) - 1)) ** 0.5
+        print(f"{e:4d} {pool[e][0]:9d} {rat:8.3f}  " + " ".join(f"{x:8.3f}" for x in per)
+              + f"  sd={sd:.3f} | {est:.4g}  cum(>=anchor)={cum_pool:.4g}")
+
+main()
+    int sampint = 0, c;
+    double flat = 0.8, fmin = 1e-5;
+    const char *lngfile = NULL, *dumpfile = NULL;
+    int dumpe = -1; long long dumpmax = 0, ndump = 0; FILE *df = NULL;
+    while ((c = getopt(argc, argv, "n:k:l:h:s:w:p:i:f:L:o:O:N:")) != -1) {
+        switch (c) {
+        case 'n': n = atoi(optarg); break;
+        case 'k': K = atoi(optarg); break;
+        case 'l': elo = atoi(optarg); break;
+        case 'h': ehi = atoi(optarg); break;
+        case 's': seed = strtoull(optarg, 0, 10); break;
+        case 'w': wlsteps = atoll(optarg); break;
+        case 'p': prodsteps = atoll(optarg); break;
+        case 'i': sampint = atoi(optarg); break;
+        case 'f': fmin = atof(optarg); break;
+        case 'L': lngfile = optarg; break;
+        case 'o': dumpe = atoi(optarg); break;
+        case 'O': dumpfile = optarg; break;
+        case 'N': dumpmax = atoll(optarg); break;
+        }
+    }
+    rng_s[0] = seed * 0x9E3779B97F4A7C15ULL + 12345; rng_s[1] = (seed + 7) * 0xBF58476D1CE4E5B9ULL;
+    for (int i = 0; i < 20; i++) rnd();
+    char line[4096];
+    if (!fgets(line, sizeof line, stdin)) { fprintf(stderr, "no start graph\n"); return 1; }
+    line[strcspn(line, "\r\n")] = 0;
+    graph_t g; if (g6_read(line, &g)) return 1;
+    if (g.n != n) { fprintf(stderr, "start graph has n=%d\n", g.n); return 1; }
+    if (!g_trianglefree(&g) || !alpha_le(&g, K - 1)) { fprintf(stderr, "start graph not (3,%d)\n", K); return 1; }
+    memcpy(adj, g.adj, sizeof(adj));
+    ALL = BIT(n) - 1;
+    P = 0;
+    for (int i = 0; i < n; i++) for (int j = i + 1; j < n; j++) { pu[P] = i; pv[P] = j; pid[i][j] = pid[j][i] = P; P++; }
+    lists_build();
+    if (!sampint) sampint = n;
+    /* phase 0: walk into range with unbiased toggles toward range */
+    int lo0 = elo, hi0 = ehi;
+    elo = 0; ehi = P;
+    for (int e = 0; e < MAXL; e++) lng[e] = 0;
+    long long it = 0;
+    while (ne < lo0 || ne > hi0) {
+        /* bias: favour moving toward range */
+        for (int e = 0; e < MAXL; e++) lng[e] = (e < lo0) ? 3.0 * (lo0 - e) : (e > hi0 ? 3.0 * (e - hi0) : 0);
+        step();
+        if (++it % 100000000 == 0) fprintf(stderr, "phase0 it=%lld e=%d\n", it, ne);
+    }
+    elo = lo0; ehi = hi0;
+    fprintf(stderr, "in range after %lld steps, e=%d\n", it, ne);
+    for (int e = 0; e < MAXL; e++) lng[e] = 0;
+    if (lngfile) {
+        FILE *f = fopen(lngfile, "r");
+        int e; double x;
+        while (f && fscanf(f, "%d %lf", &e, &x) == 2) if (e >= 0 && e < MAXL) lng[e] = x;
+        if (f) fclose(f);
+        wlsteps = 0;
+    }
+    /* phase 1: Wang-Landau */
+    double fmod = 1.0;
+    long long t = 0;
+    clock_t t0 = clock();
+    while (t < wlsteps && fmod > fmin) {
+        step(); t++;
+        lng[ne] += fmod; H[ne] += 1;
+        if (t % 1000000 == 0) {
+            double mn = 1e300, mean = 0; int L = ehi - elo + 1;
+            for (int e = elo; e <= ehi; e++) { mean += H[e]; if (H[e] < mn) mn = H[e]; }
+            mean /= L;
+            if (mn > flat * mean) {
+                fprintf(stderr, "WL t=%lld f=%g flat; lng:", t, fmod);
+                for (int e = elo; e <= ehi; e++) fprintf(stderr, " %.2f", lng[e] - lng[elo]);
+                fprintf(stderr, "\n");
+                fmod /= 2; for (int e = elo; e <= ehi; e++) H[e] = 0;
+            }
+            if (t % 100000000 == 0) {
+                fprintf(stderr, "WL t=%lld f=%g H:", t, fmod);
+                for (int e = elo; e <= ehi; e++) fprintf(stderr, " %.0f", H[e]);
+                fprintf(stderr, "\n");
+            }
+        }
+    }
+    fprintf(stderr, "WL done t=%lld f=%g cpu=%.1fs\n", t, fmod, (double)(clock() - t0) / CLOCKS_PER_SEC);
+    /* phase 2: production with fixed weights */
+    for (long long s = 0; s < prodsteps; s++) {
+        step();
+        if (s % sampint == 0) {
+            double a = count_a(), r = count_r();
+
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import networkx as nx
+from collections import Counter
+from itertools import islice
+for fn in ['data/graphs/mckay/r39_35.g6','duo/reg6_22.g6']:
+ for i,line in enumerate(open(fn)):
+  G=nx.from_graph6_bytes(line.strip().encode());n=len(G);d=G.degree(0);adj=[sum(1<<w for w in G[v]) for v in G];full=(1<<n)-1
+  def has(can,k):
+   if k<=0:return True
+   if can.bit_count()<k:return False
+   while can.bit_count()>=k:
+    bit=can&-can;can"'^=bit;v=bit.bit_length()-1
+    if has(can&~adj[v],k-1):return True
+   return False
+  stat=Counter()
+  for u,v in G.edges():
+   X=full&~(adj[u]|adj[v]);s=sum(1 for a in G[u] if a!=v for b in G[v] if b!=u and G.has_edge(a,b))
+   stat[('"'critical' if has(X,d-1) else 'noncritical',s)]+=1
+  print(fn,i,dict(sorted(stat.items())),flush=True)
+PY" in .
+ succeeded in 61ms:
+data/graphs/mckay/r39_35.g6 0 {('critical', 12): 140}
+duo/reg6_22.g6 0 {('critical', 5): 10, ('critical', 6): 28, ('critical', 7): 18, ('critical', 8): 2, ('noncritical', 6): 4, ('noncritical', 7): 4}
+duo/reg6_22.g6 1 {('critical', 5): 6, ('critical', 6): 32, ('critical', 7): 16, ('critical', 8): 6, ('noncritical', 7): 2, ('noncritical', 8): 4}
+duo/reg6_22.g6 2 {('critical', 5): 10, ('critical', 6): 22, ('critical', 7): 20, ('critical', 8): 8, ('noncritical', 8): 4, ('noncritical', 9): 2}
+duo/reg6_22.g6 3 {('critical', 5): 6, ('critical', 6): 32, ('critical', 7): 16, ('critical', 8): 6, ('noncritical', 7): 2, ('noncritical', 8): 4}
+duo/reg6_22.g6 4 {('critical', 5): 8, ('critical', 6): 28, ('critical', 7): 22, ('critical', 8): 2, ('noncritical', 7): 6}
+duo/reg6_22.g6 5 {('critical', 5): 6, ('critical', 6): 18, ('critical', 7): 40, ('critical', 9): 2}
+duo/reg6_22.g6 6 {('critical', 6): 26, ('critical', 7): 40}
+duo/reg6_22.g6 7 {('critical', 5): 11, ('critical', 6): 22, ('critical', 7): 11, ('critical', 8): 22}
+duo/reg6_22.g6 8 {('critical', 5): 10, ('critical', 6): 40, ('critical', 7): 15, ('noncritical', 5): 1}
+duo/reg6_22.g6 9 {('critical', 5): 11, ('critical', 6): 40, ('critical', 7): 15}
+
+web search: 
+web search: "triangle-free" "40" "9-regular" graph ...
+web search: 
+web search: https://arxiv.org/abs/2607.12461
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import networkx as nx,numpy as np
+from scipy.optimize import linprog, milp,LinearConstraint,Bounds
+from itertools import islice
+for index,line in enumerate(islice(open('gluing/samp30_99.g6'),12)):
+ H=nx.from_graph6_bytes(line.strip().encode());n=len(H);adj=[sum(1<<j for j in H[v]) for v in H];sets=[]
+ def rec(can,cur,k):
+  if k==8:sets.append(cur);return
+  while can.bit_count()>=8-k:
+   bit=can&-can;can"'^=bit;v=bit.bit_length()-1;rec(can&~adj[v],cur|bit,k+1)
+ rec((1<<n)-1,0,0)
+ q=len(sets);M=np.array([[(S>>v)&1 for S in sets] for v in range(n)]+[[1]*q],dtype=float);need=np.array([9-H.degree(v) for v in H]+[9]);D=np.array([[int(not(S&T)) for S in sets] for T in sets],dtype=float)
+ r=linprog(np.zeros(q),A_eq=M,b_eq=need,A_ub=D,b_ub=np.ones(q),bounds=(0,1),method='"'highs')
+ print(index,'I8',q,'pair_packing_LP',r.status,flush=True)
+ if r.status==0:
+  z=milp(np.zeros(q),integrality=np.ones(q),bounds=Bounds(0,1),constraints=[LinearConstraint(M,need,need),LinearConstraint(D,0,1)],options={'time_limit':2})
+  print('integer_status',z.status,'selected',None if z.x is None else round(sum(z.x)),flush=True)
+PY" in .
+ succeeded in 4869ms:
+0 I8 968 pair_packing_LP 2
+1 I8 839 pair_packing_LP 2
+2 I8 770 pair_packing_LP 2
+3 I8 777 pair_packing_LP 2
+4 I8 749 pair_packing_LP 2
+5 I8 738 pair_packing_LP 2
+6 I8 752 pair_packing_LP 2
+7 I8 715 pair_packing_LP 2
+8 I8 845 pair_packing_LP 2
+9 I8 850 pair_packing_LP 2
+10 I8 838 pair_packing_LP 2
+11 I8 743 pair_packing_LP 2
+
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import networkx as nx,numpy as np
+from scipy.optimize import linprog
+from itertools import islice
+for idx,line in enumerate(islice(open('gluing/samp30_99.g6'),8)):
+ H=nx.from_graph6_bytes(line.strip().encode());n=len(H);adj=[sum(1<<j for j in H[v]) for v in H];Ss=[]
+ def rec(can,k,cur):
+  if k==8:Ss.append(cur);return
+  while can.bit_count()>=8-k:
+   bit=can&-can;can"'^=bit;v=bit.bit_length()-1;rec(can&~adj[v],k+1,cur|bit)
+ rec((1<<n)-1,0,0);q=len(Ss);D=np.array([[not(S&T) for S in Ss] for T in Ss],float);deg=D.sum(0)
+ R=linprog(-np.ones(q),A_ub=D,b_ub=np.ones(q),bounds=(0,None),method='"'highs')
+ M=np.array([[(S>>v)&1 for S in Ss] for v in H],float);need=np.array([9-H.degree(v) for v in H]);Q=linprog(-np.ones(q),A_ub=np.vstack([D,M]),b_ub=np.r_[np.ones(q),need],bounds=(0,None),method='highs')
+ print(idx,q,'Ddegree',(int(min(deg)),round(float(np.mean(deg)),1),int(max(deg))),'openpack',R.status,None if R.fun is None else -R.fun,'capacity_openpack',Q.status,None if Q.fun is None else -Q.fun,flush=True)
+PY" in .
+ succeeded in 4055ms:
+0 968 Ddegree (7, 118.1, 253) openpack 0 7.467368110200307 capacity_openpack 0 7.373374320824812
+1 839 Ddegree (20, 92.5, 246) openpack 0 7.681013675586425 capacity_openpack 0 7.573572147114352
+2 770 Ddegree (15, 86.9, 246) openpack 0 7.523517791820555 capacity_openpack 0 7.502207742404606
+3 777 Ddegree (28, 114.5, 211) openpack 0 7.2512963585015076 capacity_openpack 0 7.248330411568715
+4 749 Ddegree (21, 117.4, 200) openpack 0 6.650477957379316 capacity_openpack 0 6.633974984930979
+5 738 Ddegree (25, 97.5, 205) openpack 0 6.8419810244455155 capacity_openpack 0 6.840511960290994
+6 752 Ddegree (31, 109.4, 201) openpack 0 7.007201053355445 capacity_openpack 0 7.005030594070146
+7 715 Ddegree (27, 98.0, 198) openpack 0 7.056087170289809 capacity_openpack 0 7.0558780773254135
+
+codex
+The next test found a larger gap. All 12 sampled \(H\) graphs failed the multicover LP after I added the pair-compatibility constraints. In eight samples, even the LP without degree constraints allowed only 6.65–7.68 selected sets, below the required nine. I will test known 39-vertex neighbourhoods as controls and extract an exact certificate for one sample.
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import networkx as nx,numpy as np
+from scipy.optimize import linprog
+from itertools import islice
+from math import ceil
+
+def inspect(H,k,label,cert=False):
+ H=nx.convert_node_labels_to_integers(H);n=len(H);adj=[sum(1<<j for j in H[v]) for v in H];Ss=[]
+ def rec(can,t,cur):
+  if t==k:Ss.append(cur);return
+  while can.bit_count()>=k-t:
+   bit=can&-can;can"'^=bit;v=bit.bit_length()-1;rec(can&~adj[v],t+1,cur|bit)
+ rec((1<<n)-1,0,0);q=len(Ss);D=np.array([[not(S&T) for S in Ss] for T in Ss],dtype=np.int64)
+ R=linprog(-np.ones(q),A_ub=D,b_ub=np.ones(q),bounds=(0,None),method='"'highs')
+ value=None if R.fun is None else -R.fun
+ if cert and R.status==0:
+  W=np.array([ceil(max(0,-y)*1000000) for y in R.ineqlin.marginals],dtype=np.int64);tot=int(W.sum());L=int((D@W).min())
+  print(label,'n,e,I_k',n,H.number_of_edges(),q,'LP',value,'dual_support',int((W>0).sum()),'sumW',tot,'min_disjoint_sum',L,'exact_upper',tot/L,'cert_lt9',tot<9*L,flush=True)
+ else:print(label,'n,e,I_k',n,H.number_of_edges(),q,'status',R.status,'LP',value,flush=True)
+ return value
+G=nx.from_graph6_bytes(open('data/graphs/mckay/r39_35.g6').readline().strip().encode());inspect(G.subgraph(set(G)-set(G[0])-{0}),7,'C35_control')
+found=False
+for line in open('known39/out/sample1000_39.g6'):
+ G=nx.from_graph6_bytes(line.strip().encode())
+ for v in G:
+  if G.degree(v)==9 and all(G.degree(w)==9 for w in G[v]):
+   inspect(G.subgraph(set(G)-set(G[v])-{v}),8,'known39_control');found=True;break
+ if found:break
+vals=[]
+for i,line in enumerate(islice(open('gluing/samp30_99.g6'),40)):
+ H=nx.from_graph6_bytes(line.strip().encode());vals.append(inspect(H,8,'sample%d'%i,cert=True))
+print('summary',len(vals),'finite',[min(v for v in vals if v is not None),max(v for v in vals if v is not None)],'all_lt9',all(v is not None and v<9 for v in vals),flush=True)
+PY" in .
+ succeeded in 8970ms:
+C35_control n,e,I_k 26 76 768 status 0 LP 7.999999999999972
+known39_control n,e,I_k 29 88 1198 status 0 LP 10.377447603972023
+sample0 n,e,I_k 30 99 968 LP 7.467368110200307 dual_support 97 sumW 7467419 min_disjoint_sum 1000003 exact_upper 7.467396597810207 cert_lt9 True
+sample1 n,e,I_k 30 99 839 LP 7.681013675586425 dual_support 71 sumW 7681053 min_disjoint_sum 1000002 exact_upper 7.6810376379247245 cert_lt9 True
+sample2 n,e,I_k 30 99 770 LP 7.523517791820555 dual_support 99 sumW 7523571 min_disjoint_sum 1000004 exact_upper 7.523540905836376 cert_lt9 True
+sample3 n,e,I_k 30 99 777 LP 7.2512963585015076 dual_support 97 sumW 7251347 min_disjoint_sum 1000003 exact_upper 7.251325246024262 cert_lt9 True
+sample4 n,e,I_k 30 99 749 LP 6.650477957379316 dual_support 106 sumW 6650526 min_disjoint_sum 1000004 exact_upper 6.650499398002408 cert_lt9 True
+sample5 n,e,I_k 30 99 738 LP 6.8419810244455155 dual_support 98 sumW 6842032 min_disjoint_sum 1000005 exact_upper 6.84199779001105 cert_lt9 True
+sample6 n,e,I_k 30 99 752 LP 7.007201053355445 dual_support 95 sumW 7007247 min_disjoint_sum 1000004 exact_upper 7.007218971124115 cert_lt9 True
+sample7 n,e,I_k 30 99 715 LP 7.056087170289809 dual_support 104 sumW 7056139 min_disjoint_sum 1000003 exact_upper 7.056117831646505 cert_lt9 True
+sample8 n,e,I_k 30 99 845 LP 7.026540952520882 dual_support 104 sumW 7026592 min_disjoint_sum 1000003 exact_upper 7.026570920287239 cert_lt9 True
+sample9 n,e,I_k 30 99 850 LP 6.913856641463592 dual_support 109 sumW 6913911 min_disjoint_sum 1000004 exact_upper 6.913883344466623 cert_lt9 True
+sample10 n,e,I_k 30 99 838 LP 7.410128400671923 dual_support 102 sumW 7410180 min_disjoint_sum 1000003 exact_upper 7.410157769526691 cert_lt9 True
+sample11 n,e,I_k 30 99 743 LP 7.20761675136486 dual_support 82 sumW 7207660 min_disjoint_sum 1000004 exact_upper 7.207631169475322 cert_lt9 True
+sample12 n,e,I_k 30 99 786 LP 7.182229843338326 dual_support 111 sumW 7182281 min_disjoint_sum 1000004 exact_upper 7.182252270990916 cert_lt9 True
+sample13 n,e,I_k 30 99 816 LP 7.328320774206998 dual_support 92 sumW 7328368 min_disjoint_sum 1000003 exact_upper 7.328346014961955 cert_lt9 True
+sample14 n,e,I_k 30 99 645 LP 7.54900200879271 dual_support 95 sumW 7549052 min_disjoint_sum 1000003 exact_upper 7.549029352911941 cert_lt9 True
+sample15 n,e,I_k 30 99 800 LP 7.286395531341922 dual_support 97 sumW 7286443 min_disjoint_sum 1000004 exact_upper 7.286413854344582 cert_lt9 True
+sample16 n,e,I_k 30 99 780 LP 7.9222096341052595 dual_support 83 sumW 7922253 min_disjoint_sum 1000002 exact_upper 7.922237155525689 cert_lt9 True
+sample17 n,e,I_k 30 99 704 LP 6.847270637601639 dual_support 100 sumW 6847320 min_disjoint_sum 1000005 exact_upper 6.847285763571183 cert_lt9 True
+sample18 n,e,I_k 30 99 684 LP 6.9424346790868245 dual_support 100 sumW 6942487 min_disjoint_sum 1000004 exact_upper 6.942459230163079 cert_lt9 True
+sample19 n,e,I_k 30 99 701 LP 6.664304934922329 dual_support 109 sumW 6664359 min_disjoint_sum 1000004 exact_upper 6.66433234267063 cert_lt9 True
+sample20 n,e,I_k 30 99 769 LP 7.54252828715242 dual_support 99 sumW 7542578 min_disjoint_sum 1000003 exact_upper 7.542555372333883 cert_lt9 True
+sample21 n,e,I_k 30 99 815 LP 7.229663869225646 dual_support 98 sumW 7229713 min_disjoint_sum 1000001 exact_upper 7.229705770294229 cert_lt9 True
+sample22 n,e,I_k 30 99 769 LP 7.029627260964934 dual_support 99 sumW 7029671 min_disjoint_sum 1000003 exact_upper 7.029649911050267 cert_lt9 True
+sample23 n,e,I_k 30 99 768 LP 7.14020966114072 dual_support 102 sumW 7140257 min_disjoint_sum 1000003 exact_upper 7.140235579293262 cert_lt9 True
+sample24 n,e,I_k 30 99 808 LP 6.891103443278445 dual_support 95 sumW 6891149 min_disjoint_sum 1000003 exact_upper 6.8911283266150205 cert_lt9 True
+sample25 n,e,I_k 30 99 631 LP 7.184076265711945 dual_support 96 sumW 7184133 min_disjoint_sum 1000004 exact_upper 7.184104263582945 cert_lt9 True
+sample26 n,e,I_k 30 99 786 LP 6.983462146307642 dual_support 97 sumW 6983508 min_disjoint_sum 1000003 exact_upper 6.9834870495388515 cert_lt9 True
+sample27 n,e,I_k 30 99 881 LP 7.133981410184172 dual_support 83 sumW 7134022 min_disjoint_sum 1000002 exact_upper 7.134007731984536 cert_lt9 True
+sample28 n,e,I_k 30 99 720 LP 6.880498646766167 dual_support 101 sumW 6880547 min_disjoint_sum 1000003 exact_upper 6.880526358420925 cert_lt9 True
+sample29 n,e,I_k 30 99 732 LP 6.938224687715252 dual_support 97 sumW 6938272 min_disjoint_sum 1000003 exact_upper 6.938251185246444 cert_lt9 True
+sample30 n,e,I_k 30 99 729 LP 7.296368282211025 dual_support 98 sumW 7296420 min_disjoint_sum 1000004 exact_upper 7.296390814436743 cert_lt9 True
+sample31 n,e,I_k 30 99 778 LP 6.999424317675535 dual_support 99 sumW 6999474 min_disjoint_sum 1000004 exact_upper 6.999446002215991 cert_lt9 True
+sample32 n,e,I_k 30 99 821 LP 6.757232495339046 dual_support 101 sumW 6757285 min_disjoint_sum 1000004 exact_upper 6.757257970968116 cert_lt9 True
+sample33 n,e,I_k 30 99 795 LP 6.971448454699864 dual_support 107 sumW 6971506 min_disjoint_sum 1000005 exact_upper 6.971471142644287 cert_lt9 True
+sample34 n,e,I_k 30 99 729 LP 7.22231329390159 dual_support 93 sumW 7222361 min_disjoint_sum 1000003 exact_upper 7.222339332982001 cert_lt9 True
+sample35 n,e,I_k 30 99 772 LP 7.369279674770686 dual_support 117 sumW 7369335 min_disjoint_sum 1000005 exact_upper 7.369298153509233 cert_lt9 True
+sample36 n,e,I_k 30 99 900 LP 6.807693509358311 dual_support 134 sumW 6807760 min_disjoint_sum 1000006 exact_upper 6.807719153685078 cert_lt9 True
+sample37 n,e,I_k 30 99 753 LP 7.191385682637108 dual_support 95 sumW 7191433 min_disjoint_sum 1000004 exact_upper 7.191404234383063 cert_lt9 True
+sample38 n,e,I_k 30 99 788 LP 7.449809548866613 dual_support 86 sumW 7449848 min_disjoint_sum 1000003 exact_upper 7.4498256505230485 cert_lt9 True
+sample39 n,e,I_k 30 99 831 LP 7.348710973431944 dual_support 93 sumW 7348761 min_disjoint_sum 1000003 exact_upper 7.348738953783139 cert_lt9 True
+summary 40 finite [6.650477957379316, 7.9222096341052595] all_lt9 True
+
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import networkx as nx
+G=nx.from_graph6_bytes(open('data/graphs/mckay/r39_35.g6').readline().strip().encode())
+# Use an independent four-set, so the induced 31-vertex graph has 108 edges.
+D=next(S for S in __import__('itertools').combinations(G,4) if not any(G.has_edge(u,v) for i,u in enumerate(S) for v in S[i+1:]))
+K=G.subgraph(set(G)-set(D)).copy();z=next(v for v in K if K.degree(v)==8)
+V=sorted(K);adj={v:set(K[v]) for v in K}
+def has(can,k):
+ if k<=0:return True
+ if len(can)<k:return False
+ while len(can)>=k:
+  v=min(can);can=can-{v}
+  if has(can-adj[v],k-1):return True
+ return False
+for a,b in list(K.edges()):
+ if z in (a,b):continue
+ adj[a].remove(b);adj[b].remove(a)
+ # Any new independent nine-set must contain both a,b.
+ if not has(set(K)-adj[a]-adj[b]-{a,b},7):
+  K.remove_edge(a,b);H=K.subgraph(set(K)-{z}).copy()
+  print('removed_D',D,'z',z,'removed_edge',(a,b),'K_n_e_alpha_le8',len(K),K.number_of_edges(),True,'H_n_e',len(H),H.number_of_edges(),'independent8_isolate_in_disjointness_graph',sorted(K[z]),flush=True)
+  print('H_g6',nx.to_graph6_bytes(nx.convert_node_labels_to_integers(H),header=False).decode().strip(),flush=True)
+  break
+ adj[a].add(b);adj[b].add(a)
+else:print('No example for this D,z')
+PY" in .
+ succeeded in 52ms:
+removed_D (0, 9, 12, 19) z 20 removed_edge (2, 31) K_n_e_alpha_le8 31 107 True H_n_e 30 99 independent8_isolate_in_disjointness_graph [3, 7, 11, 14, 23, 24, 27, 30]
+H_g6 ]?????OA?GgC?R?kaO?I?Ai@@gA_ASOR`_aocCf?WCGC_l_[_?ObO?GqI@@@[GK@eaC@@d__OG
+
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import networkx as nx,numpy as np
+from scipy.optimize import linprog
+s=']?????OA?GgC?R?kaO?I?Ai@@gA_ASOR"'`_aocCf?WCGC_l_[_?ObO?GqI@@@[GK@eaC@@d__OG'"'
+H=nx.from_graph6_bytes(s.encode());adj=[sum(1<<j for j in H[v]) for v in H];ss=[]
+def rec(can,k,cur):
+ if k==8:ss.append(cur);return
+ while can.bit_count()>=8-k:
+  bit=can&-can;can"'^=bit;v=bit.bit_length()-1;rec(can&~adj[v],k+1,cur|bit)
+rec((1<<30)-1,0,0);q=len(ss);D=np.array([[not(S&T) for S in ss] for T in ss],float);M=np.array([[(S>>v)&1 for S in ss] for v in H],float);need=np.array([9-H.degree(v) for v in H]);print('"'q,isolate',q,int((D.sum(0)==0).sum()))
+for bounded in (False,True):
+ R=linprog(-np.ones(q),A_ub=D,b_ub=np.ones(q),bounds=(0,1) if bounded else (0,None),method='highs');print('bounded',bounded,'status',R.status,'max',None if R.fun is None else -R.fun)
+R=linprog(np.zeros(q),A_ub=D,b_ub=np.ones(q),A_eq=np.vstack([M,np.ones(q)]),b_eq=np.r_[need,9],bounds=(0,1),method='highs');print('multicover_pair',R.status)
+PY" in .
+ succeeded in 1180ms:
+q,isolate 1127 10
+bounded False status 3 max None
+bounded True status 0 max 22.0
+multicover_pair 0
+
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import networkx as nx,numpy as np
+from scipy.optimize import linprog,milp,LinearConstraint,Bounds
+s=']?????OA?GgC?R?kaO?I?Ai@@gA_ASOR"'`_aocCf?WCGC_l_[_?ObO?GqI@@@[GK@eaC@@d__OG'"';H=nx.from_graph6_bytes(s.encode());adj=[sum(1<<j for j in H[v]) for v in H];ss=[]
+def rec(can,k,cur):
+ if k==8:ss.append(cur);return
+ while can.bit_count()>=8-k:
+  bit=can&-can;can"'^=bit;v=bit.bit_length()-1;rec(can&~adj[v],k+1,cur|bit)
+rec((1<<30)-1,0,0);q=len(ss);D=np.array([[not(S&T) for S in ss] for T in ss],float);M=np.array([[(S>>v)&1 for S in ss] for v in H]+[[1]*q],float);need=np.array([9-H.degree(v) for v in H]+[9]);isolates=D.sum(0)==0
+for forb in [False,True]:
+ upper=np.where(isolates&forb,0.,1.)
+ R=linprog(np.zeros(q),A_ub=D,b_ub=np.ones(q),A_eq=M,b_eq=need,bounds=list(zip(np.zeros(q),upper)),method='"'highs');print('forbid_D_isolate',forb,'LP_status',R.status,flush=True)
+ R=milp(np.zeros(q),integrality=np.ones(q),bounds=Bounds(np.zeros(q),upper),constraints=[LinearConstraint(M,need,need),LinearConstraint(D,0,1)],options={'time_limit':3})
+ print('forbid_D_isolate',forb,'MILP_status',R.status,flush=True)
+ if R.x is not None:
+  selected=[j for j,x in enumerate(R.x) if x>.5];print('selected_sets',len(selected),'selected_isolates',sum(isolates[j] for j in selected),flush=True)
+PY" in .
+ succeeded in 14923ms:
+forbid_D_isolate False LP_status 0
+forbid_D_isolate False MILP_status 1
+forbid_D_isolate True LP_status 2
+forbid_D_isolate True MILP_status 1
+
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import networkx as nx,numpy as np
+from collections import Counter
+s=']?????OA?GgC?R?kaO?I?Ai@@gA_ASOR"'`_aocCf?WCGC_l_[_?ObO?GqI@@@[GK@eaC@@d__OG'"';H=nx.from_graph6_bytes(s.encode());adj=[sum(1<<j for j in H[v]) for v in H];ss=[]
+def rec(can,k,cur):
+ if k==8:ss.append(cur);return
+ while can.bit_count()>=8-k:
+  bit=can&-can;can"'^=bit;v=bit.bit_length()-1;rec(can&~adj[v],k+1,cur|bit)
+rec((1<<30)-1,0,0)
+iso=[S for S in ss if all(S&T for T in ss)]
+print('"'isolate_complement_edges',dict(Counter(99-sum(H.degree(v) for v in H if S>>v&1) for S in iso)))
+PY" in .
+ succeeded in 131ms:
+isolate_complement_edges {50: 1, 57: 2, 52: 2, 54: 2, 55: 2, 56: 1}
+
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import networkx as nx
+from collections import Counter
+for fn in ['gluing/samp30_99.g6','gluing/samp30_99b.g6','duo/s40.g6']:
+ c=Counter();tight=[]
+ for i,line in enumerate(open(fn)):
+  H=nx.from_graph6_bytes(line.strip().encode());ds=[d for _,d in H.degree()];adj=[set(H[v]) for v in H];M=max(len(adj[u]&adj[v]) for u in H for v in H if u<v and not H.has_edge(u,v))
+  c[(min(ds),M)]+=1
+  if min(ds)>=6 and M<=3:tight.append(i)
+ print(fn,dict(c),'Mc3_necessary_survivors',tight[:30],len(tight))
+PY" in .
+ succeeded in 572ms:
+gluing/samp30_99.g6 {(4, 5): 22, (5, 4): 225, (5, 5): 175, (6, 4): 33, (4, 6): 2, (6, 5): 11, (4, 4): 12, (5, 6): 2} Mc3_necessary_survivors [] 0
+gluing/samp30_99b.g6 {(5, 4): 248, (5, 5): 163, (4, 4): 8, (4, 5): 25, (6, 4): 19, (6, 5): 7, (4, 6): 1, (5, 6): 1} Mc3_necessary_survivors [] 0
+duo/s40.g6 {(4, 5): 2, (5, 4): 18, (5, 5): 16, (6, 4): 3, (4, 6): 1} Mc3_necessary_survivors [] 0
+
+codex
+The bounded packing LP passes a deliberately constructed \(H\), so the sample result does not give a universal exclusion. That \(H\) has ten independent eight-sets that meet every other independent eight-set. I will now add the next constraint: an independent seven-set can avoid at most two selected neighbourhoods. This gives a precise LP test without an SDP solver.
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import networkx as nx,numpy as np,time
+from scipy.optimize import linprog
+from scipy.sparse import csr_matrix,vstack
+s=']?????OA?GgC?R?kaO?I?Ai@@gA_ASOR"'`_aocCf?WCGC_l_[_?ObO?GqI@@@[GK@eaC@@d__OG'"';H=nx.from_graph6_bytes(s.encode());adj=[sum(1<<j for j in H[v]) for v in H];sets={7:[],8:[]}
+def rec(can,k,cur):
+ if k in sets:sets[k].append(cur)
+ if k==8:return
+ while can:
+  bit=can&-can;can"'^=bit;v=bit.bit_length()-1;rec(can&~adj[v],k+1,cur|bit)
+rec((1<<30)-1,0,0);Ss=np.array(sets[8],dtype=np.uint64);q=len(Ss);M=np.array([[(int(S)>>v)&1 for S in Ss] for v in H]+[[1]*q],float);need=np.array([9-H.degree(v) for v in H]+[9]);print('"'I7,I8',len(sets[7]),q,flush=True)
+AA=[];bb=[]
+for k in [8,7]:
+ indptr=[0];indices=[]
+ for T in sets[k]:
+  indices.extend(np.flatnonzero((Ss&np.uint64(T))==0));indptr.append(len(indices))
+ mat=csr_matrix((np.ones(len(indices)),np.array(indices),np.array(indptr)),shape=(len(sets[k]),q));AA.append(mat);bb.extend([9-k]*len(sets[k]));print('k',k,'nnz',len(indices),flush=True)
+ R=linprog(np.zeros(q),A_ub=vstack(AA),b_ub=bb,A_eq=M,b_eq=need,bounds=(0,1),method='highs');print('through_k',k,'LP_status',R.status,R.message,flush=True)
+PY" in .
+ succeeded in 8839ms:
+I7,I8 5189 1127
+k 8 nnz 130468
+through_k 8 LP_status 0 Optimization terminated successfully. (HiGHS Status 7: Optimal)
+k 7 nnz 783987
+through_k 7 LP_status 2 The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)
+
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import networkx as nx,numpy as np
+from scipy.optimize import linprog
+from collections import Counter
+examples=[('sample0',open('gluing/samp30_99.g6').readline().strip()),('exception',']?????OA?GgC?R?kaO?I?Ai@@gA_ASOR"'`_aocCf?WCGC_l_[_?ObO?GqI@@@[GK@eaC@@d__OG'"')]
+for label,s in examples:
+ H=nx.from_graph6_bytes(s.encode());n=len(H);adj=[sum(1<<j for j in H[v]) for v in H];deg=[H.degree(v) for v in H];full=(1<<n)-1;sets={7:[],8:[]};types={};items=[]
+ def rec(can,k,cur,nb,ds):
+  if k in sets:
+   ty=(k,(full&~(cur|nb)).bit_count(),ds)
+   if ty not in types:types[ty]=len(types)
+   items.append((cur,types[ty],9-k));sets[k].append(cur)
+  if k==8:return
+  while can:
+   bit=can&-can;can"'^=bit;v=bit.bit_length()-1;rec(can&~adj[v],k+1,cur|bit,nb|adj[v],ds+deg[v])
+ rec(full,0,0,0,0);S=np.array(sets[8],dtype=np.uint64);p=len(types);dclasses=sorted(set(deg));A=np.zeros((len(S),p+len(dclasses)));obj=np.zeros(p+len(dclasses))
+ for T,j,rhs in items:
+  inds=np.flatnonzero((S&np.uint64(T))==0);A[inds,j]+=1;obj[j]+=rhs
+ for j,d in enumerate(dclasses):
+  obj[p+j]=deg.count(d)*(9-d)
+  for i,mask in enumerate(S):A[i,p+j]=sum(1 for v in H if deg[v]==d and int(mask)>>v&1)
+ R=linprog(obj,A_ub=-A,b_ub=-np.ones(len(S)),bounds=(0,None),method='"'highs');print(label,'type_vars',p,'bound',R.fun,'status',R.status,'nonzero',None if R.x is None else int((R.x>1e-8).sum()),flush=True)
+PY" in .
+ succeeded in 537ms:
+sample0 type_vars 52 bound 9.0 status 0 nonzero 5
+exception type_vars 47 bound 8.999999999999998 status 0 nonzero 4
+
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import networkx as nx,numpy as np
+from scipy.optimize import linprog
+from scipy.sparse import csr_matrix,vstack
+from math import ceil
+s=']?????OA?GgC?R?kaO?I?Ai@@gA_ASOR"'`_aocCf?WCGC_l_[_?ObO?GqI@@@[GK@eaC@@d__OG'"';H=nx.from_graph6_bytes(s.encode());adj=[sum(1<<j for j in H[v]) for v in H];sets={7:[],8:[]}
+def rec(can,k,cur):
+ if k in sets:sets[k].append(cur)
+ if k==8:return
+ while can:
+  bit=can&-can;can"'^=bit;v=bit.bit_length()-1;rec(can&~adj[v],k+1,cur|bit)
+rec((1<<30)-1,0,0);Ss=np.array(sets[8],dtype=np.uint64);q=len(Ss);mat=[];rhs=[]
+for k in [8,7]:
+ ip=[0];ix=[]
+ for T in sets[k]:ix.extend(np.flatnonzero((Ss&np.uint64(T))==0));ip.append(len(ix))
+ mat.append(csr_matrix((np.ones(len(ix)),np.array(ix),np.array(ip)),shape=(len(sets[k]),q)));rhs.extend([9-k]*len(sets[k]))
+M=np.array([[(int(S)>>v)&1 for S in Ss] for v in H],dtype=np.int64);need=[9-H.degree(v) for v in H];mat.append(csr_matrix(M));rhs.extend(need);A=vstack(mat);rhs=np.array(rhs,dtype=np.int64)
+R=linprog(-np.ones(q),A_ub=A,b_ub=rhs,bounds=(0,1),method='"'highs');print('maximum_selected_mass',-R.fun,'status',R.status,flush=True)
+W=np.array([ceil(max(0,-x)*1000000) for x in R.ineqlin.marginals],dtype=np.int64);eta=np.array([ceil(max(0,-x)*1000000) for x in R.upper.marginals],dtype=np.int64);col=np.rint(A.T@W).astype(np.int64)+eta;L=int(col.min());B=int(rhs@W+eta.sum());print('certificate_L_B',L,B,'bound',B/L,'less_than9',B<9*L,'support',int((W>0).sum()+ (eta>0).sum()),flush=True)
+PY" in .
+ succeeded in 9367ms:
+maximum_selected_mass 8.945263090294876 status 0
+certificate_L_B 1000007 8945370 bound 8.94530738284832 less_than9 True support 123
+
+exec
+/usr/bin/bash -lc "tools/venv/bin/python -B - <<'PY'
+import networkx as nx,numpy as np
+from scipy.optimize import linprog
+from scipy.sparse import csr_matrix,vstack
+from collections import Counter
+s=']?????OA?GgC?R?kaO?I?Ai@@gA_ASOR"'`_aocCf?WCGC_l_[_?ObO?GqI@@@[GK@eaC@@d__OG'"';H=nx.from_graph6_bytes(s.encode());adj=[sum(1<<j for j in H[v]) for v in H];allb=(1<<30)-1;ss=[];t7=[];hist=Counter()
+def rec(can,k,cur,nb):
+ if k==7:
+  ext=(allb&~(cur|nb)).bit_count();hist[ext]+=1
+  if ext==0:t7.append(cur)
+ if k==8:ss.append(cur);return
+ while can:
+  bit=can&-can;can"'^=bit;v=bit.bit_length()-1;rec(can&~adj[v],k+1,cur|bit,nb|adj[v])
+rec(allb,0,0,0);S=np.array(ss,dtype=np.uint64);q=len(S);A=[];b=[]
+for Tlist,rhs in [(ss,1),(t7,2)]:
+ ip=[0];ix=[]
+ for T in Tlist:ix.extend(np.flatnonzero((S&np.uint64(T))==0));ip.append(len(ix))
+ A.append(csr_matrix((np.ones(len(ix)),np.array(ix),np.array(ip)),shape=(len(Tlist),q)));b.extend([rhs]*len(Tlist))
+M=np.array([[(int(U)>>v)&1 for U in S] for v in H]+[[1]*q],float);need=np.array([9-H.degree(v) for v in H]+[9]);R=linprog(np.zeros(q),A_ub=vstack(A),b_ub=b,A_eq=M,b_eq=need,bounds=(0,1),method='"'highs');print('I7_extension_hist',dict(hist),'maximal7_rows',len(t7),'LP_status',R.status,flush=True)
+PY" in .
+ succeeded in 1012ms:
+I7_extension_hist {2: 3835, 1: 1346, 0: 8} maximal7_rows 8 LP_status 0
+
+codex
+I have one concrete new LP experiment. It detects an obstruction that the multicover test misses. I still cannot prove that it excludes every \(H\), or force a small published class.
+
+**1. Test fractional gluing with seven-set and eight-set constraints.**
+
+For \(H\in R(3,9;30,99)\), let \(\mathcal F\) be its independent eight-sets. Introduce \(0\le z_S\le1\), for \(S\in\mathcal F\). Require
+\[
+\sum_S z_S=9,\qquad
+\sum_{S\ni y}z_S=9-d_H(y)\quad(y\in V(H)),
+\]
+and, for every independent \(T\subseteq V(H)\) of size seven or eight,
+\[
+\boxed{\sum_{S\cap T=\varnothing}z_S\le9-|T|.}
+\tag{*}
+\]
+
+This is a necessary condition for every root of a nine-regular candidate.
+
+**Proof.** The nine neighbours of the root give nine distinct independent eight-sets \(S_i\). Their incidences give the degree equations. If more than \(9-|T|\) selected sets avoid \(T\), their corresponding root-neighbours, together with \(T\), form an independent ten-set. Thus their indicator vector satisfies \((*)\).
+
+The proposed research target is:
+
+> **Unproved:** No \(H\in R(3,9;30,99)\) satisfies this LP.
+
+A proof would close case R. It would require no integrality argument and no SDP solver.
+
+I ran these read-only tests:
+
+- On the first 40 graphs in `gluing/samp30_99.g6`, the eight-set inequalities alone bounded \(\sum z_S\) between **6.65048 and 7.92221**, even without degree equations.
+- I converted all 40 dual solutions into integer certificates. For sample 0, nonnegative integer weights \(w_T\) satisfy
+  \[
+  \min_{S\in\mathcal F}\sum_{T\cap S=\varnothing}w_T=1\,000\,003,
+  \qquad \sum_Tw_T=7\,467\,419.
+  \]
+  Nine selected sets would imply \(9\,000\,027\le7\,467\,419\), a contradiction.
+- The analogue from \(C_{35}\), namely \(H\) on 26 vertices with 76 edges and independent seven-sets, gives optimum **8**, as required.
+- A suitable root of a known 39-vertex graph gives an eight-set packing optimum **10.37745**, which permits the required nine.
+
+These are sample results, not a bound on the number of surviving \(H\).
+
+I also constructed an adversarial example. Using the labels in `data/graphs/mckay/r39_35.g6`:
+
+1. Delete vertices \(\{0,9,12,19\}\).
+2. Delete edge \(\{2,31\}\).
+3. Delete vertex \(20\).
+
+The resulting \(H\) has 30 vertices, 99 edges and \(\alpha(H)\le8\). It **passes the fractional multicover plus eight-set inequalities**. Its disjointness graph has ten isolated vertices. Thus a universal claim based only on the eight-set packing bound is false.
+
+However, adding the seven-set inequalities excludes it. With vertex capacities \(\sum_{S\ni y}z_S\le9-d_H(y)\), the maximum selected mass is **8.94526309**. I obtained an integer dual certificate giving
+\[
+\sum_S z_S\le \frac{8\,945\,370}{1\,000\,007}<9.
+\]
+
+This example separates the proposed test from the pair constraints.
+
+There is a useful reduction in the seven-set rows. If \(T\) has two extensions \(a,b\) to maximum eight-sets, then \(ab\) is an edge. Every independent \(S\) avoids at least one endpoint. Adding the rows for \(T+a\) and \(T+b\) proves the row for \(T\). Those rows are redundant.
+
+Do **not** retain only maximal seven-sets. The adversarial example has eight such sets, and their rows do not exclude it. Its seven-sets with a unique extension matter.
+
+**Test for CPUs 68–71.** Generate several hundred adversarial \(H\) from deletions and edge deletions of \(C_{35}\). Test \((*)\), then add six-set rows with right-hand side three if needed. Search actively for a fractionally feasible example.
+
+With all independent \(T\) and binary \(z\), these constraints describe exact regular gluing. The question is whether the fractional relaxation already fails universally at the seven-set level, or shortly below it.
+
+This LP is slower than the 3 ms gluer. Its potential value is a uniform weighted inequality that proves non-gluability. It is not a faster enumeration filter.
+
+**2. The overlap method has an exact degree equation, but it loses Angeltveit’s exact hash match.**
+
+For a nonadjacent pair, retain \(C,A,B,X\) and \(c=|C|\). Let \(h_1(x),h_2(x)\) be the degrees of \(x\in X\) in the two proposed dual neighbourhoods. Then the missing number of \(C\)-neighbours is
+\[
+\boxed{q_x=9+d_X(x)-h_1(x)-h_2(x).}
+\]
+Necessarily,
+\[
+0\le q_x\le c,\qquad \sum_{x\in X}q_x=7c.
+\]
+
+Moreover, \(q\) must be the incidence sum of **\(c\) independent seven-sets of \(X\)**. These are the neighbourhoods in \(X\) of the vertices of \(C\).
+
+This explains the difficulty with copying [Angeltveit’s §5 method](https://arxiv.org/html/2401.00392v2). When \(c=0\), the degree vector determines its compatible partner exactly. Here, the partner depends on an unresolved incidence vector \(q\).
+
+There is a stronger restriction for \(c=6\). Let \(U\) be the union of those six seven-sets. Since \(C\) is independent,
+\[
+X_C=A\cup B\cup(X-U),\qquad \alpha(X_C)\le3.
+\]
+Hence \(|X_C|\le8\), so
+\[
+|U|\ge24.
+\]
+Thus at most two coordinates of \(q\) can be zero. This is substantially stronger than merely checking \(q_x\in[0,6]\).
+
+The input counts remain problematic:
+
+| Pair type | Necessary \(X\) | Input count |
+|---|---|---:|
+| \(c=7\) | \(R(3,8;27,85)\) | 4 |
+| \(c=6\) | \(R(3,8;26,75\ldots81)\) | 1,765,856 at edges 75–77; about \(1.9\times10^9\) including 78–81 |
+| \(c\le5\) | Smaller, less restricted overlaps | Large ranges lack published counts |
+
+The 75–77 counts are published in GR2013. The estimate through 81 is the team’s MCMC estimate. Exact counts at 78–81 and extension counts \(X\to H\) are missing.
+
+Nothing established forces \(c\ge6\). A feasible pair-count assignment is
+\[
+n_2=360,\quad n_3=240,\quad C_4=540,\quad
+g_2=18,\quad g_3=12.
+\]
+It places the overlaps at \((22,54)\) and \((23,57)\), outside the small published ranges. This is a feasible counting profile, not a graph.
+
+A useful cost test is therefore to sample \(X\) at edges 75–81 and measure extension-bin sizes **after requiring realization of \(q\)** by six independent seven-sets covering at least 24 vertices. Counting degree-vector matches alone will underestimate the work.
+
+Finally, I strengthened the global profile LP using all **1,030 exact \(R(3,5)\) types, including the empty graph**, and the identities
+\[
+\sum_S i_t(X_S)=\binom{5+t}{t}I_{5+t},\qquad t=1,\ldots,4.
+\]
+It remained feasible when all four proposed tight types were forbidden, for each codegree cap 3–7, even with the pair constraints and \(n_1\le160\).
+
+The analogue tests also caution against forcing the larger tight sets: \(C_{35}\) has 210 tight four-sets with remainder \(C_{13}\), but its three-set remainder reaches only 16, below 17. None of the ten regular 22-vertex examples has the tight \(C_{13}\) analogue.
+
+I would spend the next few CPU-hours trying to refute the fractional-gluing target in item 1. It has exact sample certificates, valid controls, and a structured example that requires the next level of constraints.
+tokens used
+471,011

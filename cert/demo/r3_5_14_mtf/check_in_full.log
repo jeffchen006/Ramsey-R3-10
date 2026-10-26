@@ -1,0 +1,6 @@
+triangle clauses present: 364 distinct of 364
+file in_full.opb sha256 f9978d5c9c0f6716451ea97fdf63d8a2bb48b7bc00d4de938069073e1cc6c0b9
+n=14 s=5 order=colex clauses=2366
+  IS                             2002
+  TRI                            364
+RESULT: OK (every clause is valid or listed as extra)

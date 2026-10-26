@@ -1,0 +1,48 @@
+section triangles                                   816 clauses: regenerated OK
+section lex rows 0 >= 1 aux=154..168                 46 clauses: regenerated OK
+section lex rows 1 >= 2 aux=169..183                 46 clauses: regenerated OK
+section lex rows 2 >= 3 aux=184..198                 46 clauses: regenerated OK
+section lex rows 3 >= 4 aux=199..213                 46 clauses: regenerated OK
+section lex rows 4 >= 5 aux=214..228                 46 clauses: regenerated OK
+section lex rows 5 >= 6 aux=229..243                 46 clauses: regenerated OK
+section lex rows 6 >= 7 aux=244..258                 46 clauses: regenerated OK
+section lex rows 7 >= 8 aux=259..273                 46 clauses: regenerated OK
+section lex rows 8 >= 9 aux=274..288                 46 clauses: regenerated OK
+section lex rows 9 >= 10 aux=289..303                46 clauses: regenerated OK
+section lex rows 10 >= 11 aux=304..318               46 clauses: regenerated OK
+section lex rows 11 >= 12 aux=319..333               46 clauses: regenerated OK
+section lex rows 12 >= 13 aux=334..348               46 clauses: regenerated OK
+section lex rows 13 >= 14 aux=349..363               46 clauses: regenerated OK
+section lex rows 14 >= 15 aux=364..378               46 clauses: regenerated OK
+section lex rows 15 >= 16 aux=379..393               46 clauses: regenerated OK
+section lex rows 16 >= 17 aux=394..408               46 clauses: regenerated OK
+section mtf aux=409..2856 order: pairs colex, m    5049 clauses: regenerated OK
+section card degree vertex=0 lo=4 hi=5 encoding=    261 clauses: regenerated OK
+section card degree vertex=1 lo=4 hi=5 encoding=    261 clauses: regenerated OK
+section card degree vertex=2 lo=4 hi=5 encoding=    261 clauses: regenerated OK
+section card degree vertex=3 lo=4 hi=5 encoding=    261 clauses: regenerated OK
+section card degree vertex=4 lo=4 hi=5 encoding=    261 clauses: regenerated OK
+section card degree vertex=5 lo=4 hi=5 encoding=    261 clauses: regenerated OK
+section card degree vertex=6 lo=4 hi=5 encoding=    261 clauses: regenerated OK
+section card degree vertex=7 lo=4 hi=5 encoding=    261 clauses: regenerated OK
+section card degree vertex=8 lo=4 hi=5 encoding=    261 clauses: regenerated OK
+section card degree vertex=9 lo=4 hi=5 encoding=    261 clauses: regenerated OK
+section card degree vertex=10 lo=4 hi=5 encoding    261 clauses: regenerated OK
+section card degree vertex=11 lo=4 hi=5 encoding    261 clauses: regenerated OK
+section card degree vertex=12 lo=4 hi=5 encoding    261 clauses: regenerated OK
+section card degree vertex=13 lo=4 hi=5 encoding    261 clauses: regenerated OK
+section card degree vertex=14 lo=4 hi=5 encoding    261 clauses: regenerated OK
+section card degree vertex=15 lo=4 hi=5 encoding    261 clauses: regenerated OK
+section card degree vertex=16 lo=4 hi=5 encoding    261 clauses: regenerated OK
+section card degree vertex=17 lo=4 hi=5 encoding    261 clauses: regenerated OK
+VeriPB tri: ['s VERIFIED OUTPUT EQUISATISFIABLE', 's VERIFIED NO CONCLUSION'] | CakePB: ['s VERIFIED NO CONCLUSION', 's VERIFIED OUTPUT EQUISATISFIABLE']
+VeriPB full: ['s VERIFIED OUTPUT EQUISATISFIABLE', 's VERIFIED NO CONCLUSION'] | CakePB: ['s VERIFIED NO CONCLUSION', 's VERIFIED OUTPUT EQUISATISFIABLE']
+card proof (18 sections, 4698 clauses): VeriPB True, CakePB True, check_pbp True
+check_cnf:   EXTRA:extra_mtf_lex.cnf        10529 |   IS                             63 |   TRI                            816 | RESULT: OK (every clause is valid or listed as extra)
+cake_lpr (satcore LRAT): c Checking failed at line: 2. Reason: clause not empty or singleton after reduction
+cake_lpr (re-solved with CaDiCaL): s VERIFIED UNSAT
+RESULT: OK (all checks passed; verdicts read from stdout, not exit codes)
+
+real	0m24.618s
+user	0m9.430s
+sys	0m2.784s

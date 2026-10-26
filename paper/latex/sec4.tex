@@ -1,0 +1,63 @@
+\section{Formal verification in Lean 4}\label{sec:lean}
+
+\subsection{Setting}\label{sec:lean-setting}
+Lean~4~\cite{Lean4} v4.35.0 with Mathlib~\cite{Mathlib20} tag v4.35.0 (commit 56a0058); project \code{lean/} (library \code{R310}). A build checks
+every theorem below in the Lean kernel. There is no \texttt{sorry}, no new \texttt{axiom} and no \texttt{native\_decide};
+\texttt{\#print axioms} gives only \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound} for all 263 theorems
+(\code{scripts/Axioms.lean}). A $(3,10,40)$-graph is \texttt{G : SimpleGraph (Fin 40)} with \texttt{G.CliqueFree 3} and
+\texttt{G.indepNum $\le$ 9}; $\Gv{v}$ is \texttt{G.induce (V $\setminus$ N[v])}, and MTF is \texttt{Maximal ($\cdot$.CliqueFree 3) G}.
+
+\subsection{Hypotheses}\label{sec:lean-hyp}
+Published facts are never proved in Lean. Each theorem that needs one takes it as an explicit argument:
+
+\begin{center}\footnotesize
+\begin{tabular}{@{}l p{5.6cm} p{3.6cm}@{}}
+\toprule
+Lean hypothesis & meaning & source \\
+\midrule
+\texttt{Ramsey3Le 9 36} & $R(3,9) \le 36$ & D-R3 \\
+\texttt{Ramsey3Le 8 28} (= \texttt{FactF2}) & $R(3,8) \le 28$ & D-R2 (F2) \\
+\texttt{FactF1} & $e(3,8,m) \ge 6m - 91$ for $23 \le m \le 27$ & F1 (D-E8; \status{cert} for $m = 23, 24, 27$) \\
+\texttt{E39Table} & $e(3,9,m) \ge 86, 95, 104, 118, 129, 140$ for $m = 30..35$ & D-E9 \\
+\texttt{EdgeLowerBound 10 40 161} & $e(3,10,40) \ge 161$ & D-E10b \\
+\texttt{EdgeLowerBound 8 27 85} & $e(3,8,27) \ge 85$ & D-E8 (Lemma R7 only) \\
+\texttt{Regular35} & every $(3,9;35)$-graph is 8-regular & D-G1 (L7 only) \\
+\texttt{Glue U G} & no vertex of degree $d$ has $e(\Gv{v}) \le U_d$, for $(d, U_d)$ in $U$ & gluing runs, Sec.~\ref{sec:glue} \status{enum} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{What is formal}\label{sec:lean-formal}
+\begin{enumerate}
+\item \textbf{All hand lemmas of Sec.~\ref{sec:degrees}--\ref{sec:thmA}} (L1--L9, M0--M3, the class-LP rows with weighted Mantel, Theorems A, A$''$,
+   B, C), with the Lean names given there.
+\item \textbf{Cover Lemma} (Sec.~\ref{sec:cover}) from F1 and F2 only: \code{cover_lemma}; over SAT assignments \code{Enc.cover_assign}
+   (with \code{Enc.fdef_iff}: the clauses TRI + IS(10) hold iff the assignment's graph is a $(3,10,40)$-graph);
+   over the cube files \code{Files.cover_files}. \texttt{lake env lean scripts/EmitCubes.lean} writes the cubes as OPB files
+   (99,701 / 99,700 / 99,700 constraints for R / S8 / N), which the SAT pipeline compares with its own formulas.
+\item \textbf{Case tables} (Sec.~\ref{sec:dist}): for pinned outputs of \code{cases/degseq.py} (\code{lean/data/cases_pin1}, with SHA-256 sums),
+   the kernel checks by \texttt{decide +kernel} that the enumeration and all 19,890 LP certificates are correct:
+   \code{caseTable_<tag>} (\texttt{distOf G} is in the list) for the four tags gr, gr\_mtf, self, self\_mtf, and
+   \code{t9_<tag>_<scenario>_main} (given \texttt{Glue U G}, some 9-vertex has $e(\Gv{v}) \le t_9$). A Python mirror of the
+   Lean rule set gives the same distribution sets for all four tags.
+\item \textbf{Case R lemmas}: \code{Mc.lemma_Mc}, \code{R7.r7_count}, \code{R7.r7_cover}, \code{R7.no_codeg7}, \code{Rc7.prc7_inv}, \code{Rc7.lexleader_rc7}.
+\item \textbf{Symmetry breaking}: the lex-leader lemma \code{Files.cover_files_sb} (a model of a cube gives a model of the cube
+   plus every valid symmetry-breaking clause whose witness fixes 0 and $\{1..d\}$); the general-$n$ form
+   \code{Gen.lexleader_gen}, \code{Gen.lexleader_inv} (any formula invariant under the witnesses) and
+   \code{Gen.edgeLowerBound_of_unsat} (UNSAT + valid SB clauses give an \texttt{EdgeLowerBound}, the form of F1).
+\item \textbf{Verified checker \texttt{sbcheck}}: \code{SB.checkSB_sound} and \code{Gen.checkG_sound} prove that a clause accepted by the
+   executable is a valid SB clause in exactly the sense of item 5. Trusted: the input parser (\code{SBMain.lean}) and the
+   Lean compiler. It prints ``\texttt{s VERIFIED k clauses}'' only if every clause passes (0.66\,ms per clause per CPU).
+   It is used for the symmetry-breaking clauses of the certified SAT runs (Sec.~\ref{sec:sat}).
+\end{enumerate}
+
+\subsection{What is not formal}\label{sec:lean-notformal}
+\begin{itemize}
+\item The published facts of Sec.~\ref{sec:lean-hyp} (hypotheses).
+\item The gluing enumerations (Sec.~\ref{sec:glue}): they enter only through \texttt{Glue U G}.
+\item The SAT proofs themselves: they are checked by cake\_lpr / VeriPB (Sec.~\ref{sec:sat}). Lean covers the link from the
+  mathematical statement to the cube formulas (items 2, 5, 6).
+\item Lemmas H, P, F, N, W and the excess lemma (Sec.~\ref{sec:caseR}--\ref{sec:local}): hand proofs, reviewed only.
+\item The 7 Farkas certificates of the sel profile ILP: checked in exact rational arithmetic by a Python script.
+\item The case tables are checked for the pinned outputs only; a change of \code{cases/degseq.py} needs a re-pin.
+\end{itemize}

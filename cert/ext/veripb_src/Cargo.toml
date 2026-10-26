@@ -1,0 +1,110 @@
+[workspace]
+members = [
+	"veripb-checker",
+    "veripb-formula",
+    "veripb-rules",
+    "veripb-parser",
+    "veripb-propagator",
+]
+resolver = "3"
+
+
+[workspace.package]
+authors = ["Andy Oertel <andy.oertel@cs.lth.se>"]
+edition = "2024"
+license = "MIT OR Apache-2.0"
+rust-version = "1.92.0"
+repository = "https://gitlab.com/MIAOresearch/software/VeriPB"
+
+
+[package]
+name = "veripb"
+version = "3.0.2"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+readme = "README.md"
+description = "VeriPB is a proof checker for verifying pseudo-Boolean certificates of satisfiability, unsatisfiability, and optimality bounds."
+keywords = ["pseudo-Boolean", "checker", "certification", "satisfiability", "optimization"]
+categories = ["command-line-utilities", "science"]
+exclude = [
+    "tests/instances"
+]
+autobenches = false
+default-run = "veripb"
+
+
+[dependencies]
+ahash = "0.8.12"
+anyhow = "1.0.104"
+clap = { version = "4.6.6", features = ["derive"] }
+clap-verbosity-flag = "3.0"
+colored = "3.1.1"
+env_logger = "0.11.11"
+git-version = "0.3.9"
+itertools = "0.15.0"
+log = "0.4"
+mimalloc = "=0.1.48"
+thiserror = "2.0.20"
+
+[dependencies.veripb-checker]
+version = "0.1.0"
+path = "veripb-checker"
+
+[dependencies.veripb-formula]
+version = "0.1.2"
+path = "veripb-formula"
+
+[dependencies.veripb-parser]
+version = "0.1.2"
+path = "veripb-parser"
+
+
+[dev-dependencies]
+flate2 = "1"
+glob = "0.3.4"
+libtest-mimic = "0.8.2"
+tempfile = "3.27.0"
+xz2 = "0.1"
+zstd = "0.13"
+
+[dev-dependencies.veripb-propagator]
+version = "0.1.2"
+path = "veripb-propagator"
+
+
+[lib]
+name = "veripb"
+path = "src/lib.rs"
+
+
+[[bin]]
+name = "veripb"
+path = "src/bin/main.rs"
+
+[[bin]]
+name = "compare_benchmarks"
+path = "benches/compare_benchmarks.rs"
+
+[[bench]]
+name = "veripb-bench"
+path = "benches/bench.rs"
+harness = false
+
+
+[[test]]
+name = "integration"
+path = "tests/integration.rs"
+harness = false
+
+
+[profile.release]
+lto = true
+panic = "abort"
+# Comment out the following line for profiling to enable debug symbols.
+# debug = true
+
+[profile.bench]
+debug = true

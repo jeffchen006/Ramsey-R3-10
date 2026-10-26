@@ -1,0 +1,59 @@
+[workspace]
+dependencies_update = true # update dependencies with `cargo update`
+
+
+[changelog]
+header = """# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html),
+except that the major and minor version of the main VeriPB package are kept in sync
+with the latest proof format version.
+
+## [Unreleased]
+"""
+
+body = """
+
+## {{ version }} - {{ timestamp | date(format="%Y-%m-%d") }}
+{% for group, commits in commits | filter(attribute="merge_commit", value=false) | group_by(attribute="group") %}
+### {{ group | upper_first }}
+
+    {% for commit in commits %}
+        {%- if commit.scope -%}
+            - *({{commit.scope}})* {% if commit.breaking %}[**breaking**] {% endif %}\
+                {{ commit.message }}\
+                {%- if commit.links %} \
+                    ({% for link in commit.links %}[{{link.text}}]({{link.href}}) {% endfor -%})\
+                {% endif %}
+        {% else -%}
+            - {% if commit.breaking %}[**breaking**] {% endif %}{{ commit.message }}
+        {% endif -%}
+    {% endfor -%}
+{% endfor %}
+"""
+
+commit_parsers = [
+  { message = "^feat", group = "<!-- 0 -->New features" },
+  { message = "^Add", group = "<!-- 0 -->New features" },
+  { message = "^add", group = "<!-- 0 -->New features" },
+  { message = "^change", group = "<!-- 2 -->Changed" },
+  { message = "^Change", group = "<!-- 2 -->Changed" },
+  { message = "^Move", group = "<!-- 2 -->Changed" },
+  { message = "^Rename", group = "<!-- 2 -->Changed" },
+  { message = "^Update", group = "<!-- 2 -->Changed" },
+  { message = "^fix", group = "<!-- 1 -->Bug fixes" },
+  { message = "^Fix", group = "<!-- 1 -->Bug fixes" },
+  { message = "^improve", group = "<!-- 3 -->Performance" },
+  { message = "^Improve", group = "<!-- 3 -->Performance" },
+  { message = "^optimize", group = "<!-- 3 -->Performance" },
+  { message = "^perf", group = "<!-- 3 -->Performance" },
+  { message = "^chore", group = "<!-- 8 -->Miscellaneous" },
+  { message = "^doc", group = "<!-- 4 -->Documentation" },
+  { message = "^Merge branch", attribute = "merge_commit" },
+  # Somehow, changing the name of the attribute makes the config fail.
+  { message = "^maintain", attribute = "merge_commit" },
+  { message = "^.*", group = "<!-- 9 -->Other" },
+]

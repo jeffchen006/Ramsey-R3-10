@@ -1,0 +1,21 @@
+name = "R310"
+defaultTargets = ["R310"]
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4.git"
+rev = "v4.35.0"
+
+[[lean_lib]]
+name = "R310"
+leanOptions = { autoImplicit = false }
+
+# Heavy kernel checks of the case tables of agent `cases` (build with scripts/build_tag.sh).
+[[lean_lib]]
+name = "R310Cases"
+leanOptions = { autoImplicit = false }
+
+# Verified per-clause SB checker (R310.SB.checkSB_sound).
+[[lean_exe]]
+name = "sbcheck"
+root = "SBMain"

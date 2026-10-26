@@ -1,0 +1,19 @@
+# cert/cases40.txt - fixed case constraints for n = 40, s = 10 (notes/cases.md Sec. 4a, Cover Lemma;
+# notes/cert_design.md sec. 3.9). Solver CNFs of a case are checked against these rows, never
+# against the solver's own tags. Edge variable (i,j) as in each solver; H_0 = V - N[0].
+# case  kind        argument                   justification
+R       degree      all=9                      cube R (Cover Lemma)
+R       nbhd0       1..9                       cube R (relabelling inside the Cover Lemma)
+R       mtf         optional                   M3: a 9-regular (3,10,40)-graph is MTF
+R       h0edges     =99                        optional (Note 2): follows from cube R
+S8      mtf         required                   M0
+S8      degree0     =8                         cube S8
+S8      nbhd0       1..8                       cube S8
+S8      h0edges     <=96                       cube S8 (Theorem A + A'', needs F1, F2)
+S8      degree      6..9 optional              M1 (MTF)
+N       mtf         required                   M0
+N       degree0     =9                         cube N
+N       nbhd0       1..9                       cube N
+N       h0edges     <=98                       cube N (Theorem A + A'', needs F1, F2)
+N       degree      6..9 optional              M1 (MTF)
+*       symmetry    fix 0, N(0), V-N[0]        Note 3: every SB witness preserves these sets

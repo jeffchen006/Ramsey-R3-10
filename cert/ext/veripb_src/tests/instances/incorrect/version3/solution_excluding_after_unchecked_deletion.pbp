@@ -1,0 +1,10 @@
+pseudo-Boolean proof version 3.0
+% INTEGRATION-TEST: allow-unchecked-deletion
+f 2;
+% Checked deletion fails, so the checker switches to unchecked deletion.
+del id 1;
+% solx is not allowed once the guarantees of checked deletion are lost.
+solx x1 x2;
+output NONE;
+conclusion NONE;
+end pseudo-Boolean proof;

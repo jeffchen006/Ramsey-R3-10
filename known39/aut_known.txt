@@ -1,0 +1,8 @@
+n=35 e=140 aut=210 orbits=[35] p2:(fix,2-cycles)=[(1, 17)] p3:(fix,3-cycles)=[(5, 10)] p5:(fix,5-cycles)=[(0, 7)] p7:(fix,7-cycles)=[(0, 5)] bsaCCA?O?O_aC??`c@O@b?RcHQ?DcA@H?PC_@QO@@Q?DA@MP?RgKADoH?aR?KCbOC_JE?xO@AALC@AJPG?__V?_K@ROO_A@dOG@?_
+n=34 e=129 aut=6 orbits=[6, 6, 6, 6, 6, 2, 2] p2:(fix,2-cycles)=[(0, 17)] p3:(fix,3-cycles)=[(4, 10)] ac?_XOAB?Bg@OKMHAgpcK`Oa_?a_????[A@AAH?bc?AGcAG???NAAB_sQCGSWSAC_KKIA?I?{A_OX_?bgH??BPEA?????^w
+n=33 e=118 aut=2 orbits=[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1] p2:(fix,2-cycles)=[(1, 16)] ``GX?OECPB@E@cCoO@y?]hPAG?A?@???\AG?__C`@ECKKCG???NcP_OPAAKAOoACC_B__COCw@GaKC?`CX_????@~
+n=33 e=118 aut=6 orbits=[6, 6, 6, 6, 6, 2, 1] p2:(fix,2-cycles)=[(1, 16)] p3:(fix,3-cycles)=[(3, 10)] `c?_XOAB?Bg@OKMHAgpcK`Oa_?a_????[A@AAH?bc?AGcAG???NgCGOo@?F_OO[C?\@GAKI@AA_OX_?EaKC????@~
+n=33 e=118 aut=2 orbits=[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1] p2:(fix,2-cycles)=[(1, 16)] `c?_XOAB?Bg@OKMHAgpcK`Oa_?a_????[A@AAH?bc?AGcAG???NbA_OOAED?_OX_AAB_aaO`A?bgH??EaKC????@~
+n=33 e=118 aut=6 orbits=[6, 6, 6, 6, 6, 2, 1] p2:(fix,2-cycles)=[(1, 16)] p3:(fix,3-cycles)=[(3, 10)] `c?_XOAB?Bg@OKMHAgpcK`Oa_?a_????[A@AAH?bc?AGcAG???N_aO_oI?MA__WCBA`GAgG`_CBgCC??_Xw????@~
+n=33 e=118 aut=2 orbits=[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1] p2:(fix,2-cycles)=[(1, 16)] ``GX?OECPB@E@cCoO@y?]h@AW?A?@???\@?_aCCcAKCHBG????NgGOWIP?GOK_KC?Gb__??K{Cc?bGBB@AC????@~
+n=39 e=167 aut=1 orbits=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]  fhcKIC`DK@GBH@C_`HK@GOCcc@Gc@GQOc_P@D?KGCOOoG_`OG_hA`@?oGOSI@AA`GCKACSGGDHC@OG_aOGCSGcA_D_C_SOIGA_PC_???AaAaADABGCOAgH@COT?O_

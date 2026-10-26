@@ -1,0 +1,580 @@
+#!/usr/bin/python3
+"""cuberun: cube-and-conquer / many-job runner with resumable results (owner: agent tools).
+
+  cuberun run OUTDIR --cmd TEMPLATE INPUT [options]
+  cuberun summary OUTDIR [--json] [--tsv] [--timeouts FILE]
+
+Start it as a job:  jobctl start AGENT NAME -- cuberun run OUTDIR ...
+Workers share the CPUs the process may use (the jobctl/taskset list); each worker is pinned to its
+own --threads-per-job CPUs.
+
+INPUT (exactly one)
+  --cubes FILE     one cube per line: "a 1 -2 3 0" (march_cu/iCNF) or "1 -2 3 0"; c/p/blank lines
+                   skipped. id = 1-based cube number; {lineno} = its line number in FILE.
+  --cnfs LISTFILE  one CNF path per line (id = 1-based).
+  --jobs LISTFILE  one job per line: "TAG<TAB>ARGS" or just "ARGS" (tag = id); {args} {tag}.
+  --cnf BASE       base CNF ({cnf}; needed for {cubecnf}).
+Placeholders in --cmd / --check / --on-sat (run with bash -c; other braces are left alone):
+  {cnf} base or this job's CNF   {id}  {tag}  {args}  {lits} "1 -2 3"   {lineno}  {cubefile} (--cubes FILE)
+  {cube} file "a <lits> 0"   {units} file of unit clauses "lit 0"   {cubecnf} base CNF + units (one file)
+  {proof} OUTDIR/proofs/<id><--proof-ext>   {model} OUTDIR/sat/<id>.out   {dir} OUTDIR   {log} job log
+Status: exit 10 = SAT, 20 = UNSAT; else stdout "s SATISFIABLE"/"s UNSATISFIABLE" (--sat-re/--unsat-re);
+  else exit 0 = UNKNOWN; else ERROR. TIMEOUT kills the job's process group.
+Options
+  -j N  --threads-per-job K  --timeout DUR (e.g. 600s, 2h)
+  --proof-ext EXT            default ".proof"
+  --proof-files LIST         comma-separated templates of the proof files (default "{proof}");
+                             hashed (sha256); after a VERIFIED check: --after-check keep|delete|zstd
+  --keep-files LIST          templates of files to hash and always keep (e.g. "{proof}.full.cnf")
+  --keep-cubecnf             keep {cubecnf} as OUTDIR/cnf/<id>.cnf (hashed) instead of deleting it
+  --check TEMPLATE           run after each UNSAT job; verdict ONLY from stdout --check-ok REGEX
+                             (default "^s VERIFIED"); FAILED/TIMEOUT/NO_PROOF -> ALERT_errors.txt,
+                             files kept
+  --check-timeout DUR        --check-parallel K (max checks at once; default = workers)
+  --on-sat TEMPLATE          run after each SAT (e.g. extract graphs + check_graph); output -> sat/<id>.onsat
+  --stop-on-sat  --sat-expected (no FOUND_SAT files)  --keep-logs (also keep UNSAT logs)
+  --order file|shuffle  --seed S  --sample K  --retry timeout,error,unknown
+Files in OUTDIR: config.json; results.jsonl (one JSON line per finished job: id, tag, status, rc, wall_s,
+  cpu_s, maxrss_mb, cpus, cube, lineno, files{path: {bytes, sha256}}, check, check_s, last line);
+  logs/ (kept unless UNSAT), proofs/, sat/, cnf/; FOUND_SAT_<id>.txt; ALERT_errors.txt; DONE.json.
+Memory: run it under jobctl (the whole run then has the agent's cap). Outside jobctl, --agent A is
+  required: cuberun then restarts itself under A's CPUs and memory cap. --mem-per-job GB also caps
+  each job (solver + check) on its own (cgroup scope; must be <= the agent's cap).
+Exit code of run: 0 done, 1 done with errors/failed checks, 10 stopped on SAT, 130 interrupted.
+Re-running the same command resumes (finished ids are skipped).
+"""
+import glob as _glob
+import hashlib
+import json
+import os
+import random
+import re
+import shlex
+import signal
+import statistics
+import subprocess
+import sys
+import threading
+import time
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "lib"))
+from r310common import parse_duration, fmt_dur, now_iso, read_json, write_json, cpulist_str  # noqa
+from r310common import mem_wrap, agent_mem_gb, agent_cpus  # noqa
+
+FINAL = {"SAT", "UNSAT"}
+KEYS = ("cnf", "id", "tag", "args", "lits", "lineno", "cubefile", "cube", "units", "cubecnf",
+        "proof", "model", "dir", "log")
+PLACEHOLDER = re.compile(r"\{(%s)\}" % "|".join(KEYS))
+RAW = {"lits", "args"}  # inserted without shell quoting
+
+
+def die(msg, code=2):
+    sys.stderr.write("cuberun: %s\n" % msg)
+    sys.exit(code)
+
+
+def read_cubes(path):
+    cubes = []
+    for ln, line in enumerate(open(path), 1):
+        t = line.split()
+        if not t or t[0] in ("c", "p"):
+            continue
+        if t[0] == "a":
+            t = t[1:]
+        if not t or t[-1] != "0":
+            die("cube line %d without final 0: %r" % (ln, line.strip()[:60]))
+        cubes.append((ln, [int(x) for x in t[:-1]]))
+    return cubes
+
+
+def cnf_header(path):
+    with open(path) as f:
+        for line in f:
+            if line.startswith("p"):
+                p = line.split()
+                return int(p[2]), int(p[3])
+    die("no 'p cnf' header in %s" % path)
+
+
+def sha256(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for b in iter(lambda: f.read(1 << 22), b""):
+            h.update(b)
+    return h.hexdigest()
+
+
+def tail_text(path, nbytes=1 << 20):
+    try:
+        with open(path, "rb") as f:
+            f.seek(0, 2)
+            f.seek(max(0, f.tell() - nbytes))
+            return f.read().decode("utf-8", "replace")
+    except OSError:
+        return ""
+
+
+def last_line(text):
+    for line in reversed(text.splitlines()):
+        if line.strip():
+            return line.strip()[:200]
+    return ""
+
+
+class Runner:
+    def __init__(self, outdir, opt, nworkers):
+        self.outdir, self.opt = outdir, opt
+        self.lock = threading.Lock()
+        self.stop = threading.Event()
+        self.running = {}
+        self.errors = 0
+        self.sat_stop = False
+        self.check_sem = threading.Semaphore(int(opt["check_parallel"] or nworkers))
+        for d in ("logs", "proofs", "sat", "tmp", "cnf"):
+            os.makedirs(os.path.join(outdir, d), exist_ok=True)
+        self.results = open(os.path.join(outdir, "results.jsonl"), "a")
+        tmpl = " ".join(filter(None, [opt["cmd"], opt["check"], opt["on_sat"]]))
+        self.uses = set(PLACEHOLDER.findall(tmpl))
+
+    def record(self, rec):
+        with self.lock:
+            self.results.write(json.dumps(rec) + "\n")
+            self.results.flush()
+            os.fsync(self.results.fileno())
+
+    def alert(self, text):
+        with self.lock:
+            self.errors += 1
+            with open(os.path.join(self.outdir, "ALERT_errors.txt"), "a") as f:
+                f.write("%s %s\n" % (now_iso(), text))
+
+    def run_proc(self, worker, cpus, cmd, log, timeout):
+        """bash -c cmd pinned to cpus, own process group; (rc, wall, cpu, maxrss_mb, timed_out)."""
+        t0 = time.time()
+        with open(log, "wb") as lf:
+            wrap = mem_wrap(self.opt["mem_per_job"], "cuberun-w%d" % worker) if self.opt["mem_per_job"] else []
+            p = subprocess.Popen(wrap + ["taskset", "-c", cpus, "bash", "-c", cmd], stdin=subprocess.DEVNULL,
+                                 stdout=lf, stderr=subprocess.STDOUT, start_new_session=True)
+        with self.lock:
+            self.running[(worker, p.pid)] = p.pid
+        timed_out = False
+        while True:
+            pid, status, ru = os.wait4(p.pid, os.WNOHANG)
+            if pid:
+                break
+            if (timeout and time.time() - t0 > timeout) or self.stop.is_set():
+                timed_out = not self.stop.is_set()
+                try:
+                    os.killpg(p.pid, signal.SIGKILL)
+                except OSError:
+                    pass
+                pid, status, ru = os.wait4(p.pid, 0)
+                break
+            time.sleep(0.2)
+        p.returncode = 0  # already reaped by wait4
+        try:
+            os.killpg(p.pid, signal.SIGKILL)  # leftovers of the job's group
+        except OSError:
+            pass
+        with self.lock:
+            self.running.pop((worker, p.pid), None)
+        return (os.waitstatus_to_exitcode(status), time.time() - t0, ru.ru_utime + ru.ru_stime,
+                round(ru.ru_maxrss / 1024), timed_out)
+
+    def fill(self, tmpl, job):
+        return PLACEHOLDER.sub(lambda m: str(job[m.group(1)]) if m.group(1) in RAW
+                               else shlex.quote(str(job[m.group(1)])), tmpl)
+
+    def file_list(self, templates, job):
+        out = []
+        for t in templates:
+            p = PLACEHOLDER.sub(lambda m: str(job[m.group(1)]), t)
+            out.extend(sorted(_glob.glob(p)) if any(c in p for c in "*?[") else [p])
+        return [p for p in out if os.path.isfile(p)]
+
+    def do_job(self, worker, cpus, job):
+        o, jid = self.opt, job["id"]
+        log = job["log"]
+        made = []
+        if "cube" in self.uses:
+            with open(job["cube"], "w") as f:
+                f.write("a %s 0\n" % job["lits"])
+            made.append(job["cube"])
+        if "units" in self.uses:
+            with open(job["units"], "w") as f:
+                f.write("".join("%s 0\n" % x for x in job["lits"].split()))
+            made.append(job["units"])
+        if "cubecnf" in self.uses:
+            nv, nc = o["base_header"]
+            lits = job["lits"].split()
+            with open(job["cubecnf"], "w") as f, open(o["cnf"]) as b:
+                f.write("p cnf %d %d\n" % (nv, nc + len(lits)))
+                for line in b:
+                    if not line.startswith(("p", "c")):
+                        f.write(line)
+                f.write("".join("%s 0\n" % x for x in lits))
+            if not o["keep_cubecnf"]:
+                made.append(job["cubecnf"])
+        rc, wall, cpu, rss, to = self.run_proc(worker, cpus, self.fill(o["cmd"], job), log, o["timeout"])
+        if self.stop.is_set() and not to:
+            for m in made:
+                if os.path.exists(m):
+                    os.remove(m)
+            return  # interrupted: not recorded; runs again on resume
+        out = tail_text(log)
+        if to:
+            status = "TIMEOUT"
+        elif rc == 10 or re.search(o["sat_re"], out, re.M):
+            status = "SAT"
+        elif rc == 20 or re.search(o["unsat_re"], out, re.M):
+            status = "UNSAT"
+        elif rc == 0:
+            status = "UNKNOWN"
+        else:
+            status = "ERROR"
+        rec = {"id": jid, "tag": job["tag"], "status": status, "rc": rc, "wall_s": round(wall, 3),
+               "cpu_s": round(cpu, 3), "maxrss_mb": rss, "cpus": cpus, "end": now_iso(), "last": last_line(out)}
+        if job["lits"] and len(job["lits"]) <= 4000:
+            rec["cube"] = job["lits"]
+        for k in ("lineno", "args", "path"):
+            if job.get(k):
+                rec[k] = job[k]
+        files = {}
+        keepers = self.file_list(o["keep_files"], job)
+        if o["keep_cubecnf"] and "cubecnf" in self.uses:
+            keepers.append(job["cubecnf"])
+        for p in keepers:
+            files[os.path.relpath(p, self.outdir)] = {"bytes": os.path.getsize(p), "sha256": sha256(p)}
+        proofs = self.file_list(o["proof_files"], job) if status == "UNSAT" else []
+        for p in proofs:
+            files[os.path.relpath(p, self.outdir)] = {"bytes": os.path.getsize(p), "sha256": sha256(p)}
+        if files:
+            rec["files"] = files
+        if status == "UNSAT" and o["check"]:
+            if not proofs:
+                rec["check"] = "NO_PROOF"
+                self.alert("UNSAT without proof file for id %s" % jid)
+            else:
+                clog = log + ".check"
+                with self.check_sem:
+                    crc, cwall, ccpu, crss, cto = self.run_proc(worker, cpus, self.fill(o["check"], job), clog,
+                                                               o["check_timeout"])
+                if self.stop.is_set() and not cto:
+                    return
+                cout = tail_text(clog)
+                ok = (not cto) and re.search(o["check_ok"], cout, re.M) is not None
+                rec.update(check="VERIFIED" if ok else ("TIMEOUT" if cto else "FAILED"), check_s=round(cwall, 3),
+                           check_cpu_s=round(ccpu, 3), check_maxrss_mb=crss, check_rc=crc,
+                           check_last=last_line(cout))
+                if ok:
+                    os.remove(clog)
+                    for p in proofs:
+                        key = os.path.relpath(p, self.outdir)
+                        if o["after_check"] == "delete":
+                            os.remove(p)
+                            files[key]["deleted"] = True
+                        elif o["after_check"] == "zstd":
+                            subprocess.run(["zstd", "-q", "--rm", "-T1", p], check=True)
+                            files[key]["zstd"] = key + ".zst"
+                else:
+                    self.alert("check %s for id %s (log %s)" % (rec["check"], jid, clog))
+        if status == "SAT":
+            os.replace(log, job["model"])
+            rec["model"] = os.path.relpath(job["model"], self.outdir)
+            note = ""
+            if o["on_sat"]:
+                job2 = dict(job, log=job["model"])
+                srun = self.run_proc(worker, cpus, self.fill(o["on_sat"], job2),
+                                     os.path.join(self.outdir, "sat", "%s.onsat" % jid), None)
+                note = "on-sat rc=%d, output sat/%s.onsat:\n%s\n" % (
+                    srun[0], jid, tail_text(os.path.join(self.outdir, "sat", "%s.onsat" % jid), 4000))
+            if not o["sat_expected"]:
+                with open(os.path.join(self.outdir, "FOUND_SAT_%s.txt" % jid), "w") as f:
+                    f.write("SAT for id %s tag %s\ncube: %s\nargs: %s\ncnf: %s\nfull solver output: %s\n%s" % (
+                        jid, job["tag"], job["lits"], job["args"], job["cnf"], job["model"], note))
+            if o["stop_on_sat"]:
+                self.sat_stop = True
+                self.stop.set()
+        elif status == "UNSAT" and not o["keep_logs"]:
+            os.remove(log)
+        if status == "ERROR":
+            self.alert("ERROR rc=%s for id %s (log %s)" % (rc, jid, log))
+        for m in made:
+            if os.path.exists(m):
+                os.remove(m)
+        self.record(rec)
+
+    def worker_loop(self, worker, cpus, queue):
+        while not self.stop.is_set():
+            with self.lock:
+                if not queue:
+                    return
+                job = queue.pop(0)
+            self.do_job(worker, cpus, job)
+
+    def kill_all(self, *a):
+        self.stop.set()
+        with self.lock:
+            pids = list(self.running.values())
+        for pid in pids:
+            try:
+                os.killpg(pid, signal.SIGKILL)
+            except OSError:
+                pass
+
+
+def load_results(outdir):
+    latest = {}
+    path = os.path.join(outdir, "results.jsonl")
+    if os.path.exists(path):
+        for line in open(path):
+            line = line.strip()
+            if line:
+                try:
+                    r = json.loads(line)
+                except ValueError:
+                    continue  # a line cut by a crash
+                latest[str(r["id"])] = r
+    return latest
+
+
+def cmd_run(argv):
+    if not argv or argv[0].startswith("-"):
+        die("usage: cuberun run OUTDIR --cmd TEMPLATE (--cubes FILE | --cnfs LIST | --jobs LIST) ...")
+    outdir = os.path.abspath(argv[0])
+    o = {"cmd": None, "cubes": None, "cnf": None, "cnfs": None, "jobs": None, "j": None, "tpj": 1,
+         "timeout": None, "proof_ext": ".proof", "proof_files": "{proof}", "keep_files": "",
+         "check": None, "check_ok": r"^s VERIFIED", "check_timeout": None, "check_parallel": None,
+         "after_check": "keep", "on_sat": None, "stop_on_sat": False, "sat_expected": False,
+         "keep_logs": False, "keep_cubecnf": False, "order": "file", "seed": 1, "sample": None, "retry": "",
+         "sat_re": r"^s SATISFIABLE", "unsat_re": r"^s UNSATISFIABLE", "agent": None, "mem_per_job": None}
+    flags = {"--stop-on-sat": "stop_on_sat", "--sat-expected": "sat_expected", "--keep-logs": "keep_logs",
+             "--keep-cubecnf": "keep_cubecnf"}
+    vals = {"--cmd": "cmd", "--cubes": "cubes", "--cnf": "cnf", "--cnfs": "cnfs", "--jobs": "jobs", "-j": "j",
+            "--threads-per-job": "tpj", "--timeout": "timeout", "--proof-ext": "proof_ext",
+            "--proof-files": "proof_files", "--keep-files": "keep_files", "--check": "check",
+            "--check-ok": "check_ok", "--check-timeout": "check_timeout", "--check-parallel": "check_parallel",
+            "--after-check": "after_check", "--on-sat": "on_sat", "--order": "order", "--seed": "seed",
+            "--sample": "sample", "--retry": "retry", "--sat-re": "sat_re", "--unsat-re": "unsat_re",
+            "--agent": "agent", "--mem-per-job": "mem_per_job"}
+    i = 1
+    while i < len(argv):
+        a = argv[i]
+        if a in flags:
+            o[flags[a]] = True
+            i += 1
+        elif a in vals:
+            if i + 1 >= len(argv):
+                die("%s needs a value" % a)
+            o[vals[a]] = argv[i + 1]
+            i += 2
+        else:
+            die("unknown option %s" % a)
+    if not o["cmd"]:
+        die("--cmd is required")
+    agent = os.environ.get("JOBCTL_AGENT")
+    if not agent:  # not under jobctl: restart under the agent's CPUs and memory cap
+        if not o["agent"]:
+            die("run it under jobctl (jobctl start AGENT NAME -- cuberun run ...) or give --agent AGENT")
+        env = dict(os.environ, JOBCTL_AGENT=o["agent"])
+        cpus = cpulist_str(agent_cpus(o["agent"]))
+        if not cpus:
+            die("agent %s has no CPUs in TEAM_RULES" % o["agent"])
+        full = mem_wrap(agent_mem_gb(o["agent"]), "cuberun-" + o["agent"]) + \
+            ["taskset", "-c", cpus, "nice", "-n", "5", sys.executable, os.path.realpath(__file__), "run"] + argv
+        os.execvpe(full[0], full, env)
+    if o["mem_per_job"]:
+        o["mem_per_job"] = float(o["mem_per_job"])
+        if not 0 < o["mem_per_job"] <= agent_mem_gb(agent):
+            die("--mem-per-job must be > 0 and <= %s's cap of %d GB" % (agent, agent_mem_gb(agent)))
+    if sum(bool(o[k]) for k in ("cubes", "cnfs", "jobs")) != 1:
+        die("give exactly one of --cubes, --cnfs, --jobs")
+    alltmpl = " ".join(filter(None, [o["cmd"], o["check"], o["on_sat"]]))
+    if "cubecnf" in PLACEHOLDER.findall(alltmpl) and not (o["cubes"] and o["cnf"]):
+        die("{cubecnf} needs --cubes and --cnf")
+    if o["after_check"] not in ("keep", "delete", "zstd"):
+        die("--after-check must be keep, delete or zstd")
+    for k in ("timeout", "check_timeout"):
+        o[k] = parse_duration(o[k]) if o[k] else None
+    o["check_timeout"] = o["check_timeout"] or o["timeout"]
+    o["tpj"] = int(o["tpj"])
+    o["retry"] = [x.strip().upper() for x in o["retry"].split(",") if x.strip()]
+    o["proof_files"] = [x for x in o["proof_files"].split(",") if x]
+    o["keep_files"] = [x for x in o["keep_files"].split(",") if x]
+    for k in ("cubes", "cnf", "cnfs", "jobs"):
+        if o[k]:
+            o[k] = os.path.abspath(o[k])
+    os.makedirs(outdir, exist_ok=True)
+    cfgf = os.path.join(outdir, "config.json")
+    old = read_json(cfgf)
+    keycfg = {k: o[k] for k in ("cmd", "cubes", "cnf", "cnfs", "jobs", "proof_ext", "order", "seed", "sample")}
+    if old and old.get("key") != keycfg:
+        die("OUTDIR has results of a different command/input; use a new OUTDIR\n old: %s\n new: %s"
+            % (old.get("key"), keycfg))
+    base = {"cnf": o["cnf"] or "", "lits": "", "lineno": "", "cubefile": o["cubes"] or "", "args": "", "path": ""}
+    if o["cubes"]:
+        items = [dict(base, id=str(k + 1), lits=" ".join(map(str, c)), lineno=ln)
+                 for k, (ln, c) in enumerate(read_cubes(o["cubes"]))]
+        if o["cnf"]:
+            o["base_header"] = cnf_header(o["cnf"])
+    elif o["cnfs"]:
+        paths = [l.strip() for l in open(o["cnfs"]) if l.strip() and not l.startswith("#")]
+        items = [dict(base, id=str(k + 1), cnf=os.path.abspath(p), path=p) for k, p in enumerate(paths)]
+    else:
+        items = []
+        k = 0
+        for l in open(o["jobs"]):
+            l = l.rstrip("\n")
+            if not l.strip() or l.startswith("#"):
+                continue
+            k += 1
+            tag, args = (l.split("\t", 1) if "\t" in l else (None, l))
+            items.append(dict(base, id=str(k), tag=tag or str(k), args=args))
+    for it in items:
+        it.setdefault("tag", it["id"])
+    n_input = len(items)
+    if o["order"] == "shuffle" or o["sample"]:
+        random.Random(int(o["seed"])).shuffle(items)
+    if o["sample"]:
+        items = items[:int(o["sample"])]
+    write_json(cfgf, {"key": keycfg, "opts": {k: v for k, v in o.items() if k != "base_header"},
+                      "n_input": n_input, "n_jobs": len(items), "created": (old or {}).get("created", now_iso())})
+    done = load_results(outdir)
+    keep = FINAL | ({"TIMEOUT", "ERROR", "UNKNOWN"} - set(o["retry"]))
+    for it in items:
+        jid = it["id"]
+        it.update(cube=os.path.join(outdir, "tmp", jid + ".icnf"), units=os.path.join(outdir, "tmp", jid + ".units"),
+                  cubecnf=os.path.join(outdir, "cnf" if o["keep_cubecnf"] else "tmp", jid + ".cnf"), dir=outdir,
+                  proof=os.path.join(outdir, "proofs", jid + o["proof_ext"]),
+                  model=os.path.join(outdir, "sat", jid + ".out"), log=os.path.join(outdir, "logs", jid + ".log"))
+    queue = [it for it in items if not (it["id"] in done and done[it["id"]]["status"] in keep)]
+    cpus = sorted(os.sched_getaffinity(0))
+    nw = int(o["j"]) if o["j"] else max(1, len(cpus) // o["tpj"])
+    if nw * o["tpj"] > len(cpus):
+        die("-j %d x %d CPUs needs %d CPUs, only %d allowed (%s)" % (nw, o["tpj"], nw * o["tpj"], len(cpus),
+                                                                    cpulist_str(cpus)))
+    print("cuberun %s: %d jobs, %d already done, %d to run; %d workers x %d CPUs (%s)" % (
+        now_iso(), len(items), len(items) - len(queue), len(queue), nw, o["tpj"], cpulist_str(cpus)), flush=True)
+    r = Runner(outdir, o, nw)
+    signal.signal(signal.SIGTERM, r.kill_all)
+    signal.signal(signal.SIGINT, r.kill_all)
+    threads = []
+    for w in range(nw):
+        wc = cpulist_str(cpus[w * o["tpj"]:(w + 1) * o["tpj"]])
+        t = threading.Thread(target=r.worker_loop, args=(w, wc, queue), daemon=True)
+        t.start()
+        threads.append(t)
+    while any(t.is_alive() for t in threads):
+        for t in threads:
+            t.join(0.5)
+    s = summarize(outdir)
+    interrupted = r.stop.is_set() and not r.sat_stop
+    write_json(os.path.join(outdir, "INTERRUPTED.json" if interrupted else "DONE.json"), s)
+    print_summary(s)
+    if r.sat_stop:
+        return 10
+    if interrupted:
+        return 130
+    return 1 if r.errors else 0
+
+
+def quant(xs, q):
+    xs = sorted(xs)
+    if not xs:
+        return None
+    k = (len(xs) - 1) * q
+    lo = int(k)
+    return xs[lo] + (xs[min(lo + 1, len(xs) - 1)] - xs[lo]) * (k - lo)
+
+
+def summarize(outdir):
+    cfg = read_json(os.path.join(outdir, "config.json"), {})
+    res = load_results(outdir)
+    n_jobs, n_input = cfg.get("n_jobs", len(res)), cfg.get("n_input", len(res))
+    by, checks = {}, {}
+    for r in res.values():
+        by[r["status"]] = by.get(r["status"], 0) + 1
+        if "check" in r:
+            checks[r["check"]] = checks.get(r["check"], 0) + 1
+    solved = [r for r in res.values() if r["status"] in FINAL]
+    allr = [r for r in res.values() if r["status"] in FINAL | {"TIMEOUT"}]
+    cpu_s = [r["cpu_s"] for r in solved]
+    s = {"outdir": outdir, "time": now_iso(), "jobs": n_jobs, "input_jobs": n_input, "finished": len(res),
+         "status": by, "checks": checks, "cpu_used_s": round(sum(r["cpu_s"] for r in res.values()), 1),
+         "check_cpu_s": round(sum(r.get("check_cpu_s", 0) for r in res.values()), 1),
+         "max_rss_mb": max([r.get("maxrss_mb", 0) for r in res.values()] or [0]),
+         "file_bytes": sum(f["bytes"] for r in res.values() for f in r.get("files", {}).values()
+                           if not f.get("deleted"))}
+    if cpu_s:
+        s["solved_cpu_s"] = {"mean": statistics.mean(cpu_s), "median": quant(cpu_s, .5), "p90": quant(cpu_s, .9),
+                             "p99": quant(cpu_s, .99), "max": max(cpu_s), "sum": sum(cpu_s)}
+    if allr:
+        mean_all = statistics.mean(r["cpu_s"] for r in allr)  # TIMEOUT counted at its time: lower bound
+        rem = max(0, n_jobs - len(allr))
+        s["est_total_cpu_s"] = round(sum(r["cpu_s"] for r in allr) + rem * mean_all, 1)
+        s["est_input_cpu_s"] = round(n_input * mean_all, 1)
+        s["estimate_is_lower_bound"] = by.get("TIMEOUT", 0) > 0
+    return s
+
+
+def print_summary(s):
+    st = " ".join("%s=%d" % kv for kv in sorted(s["status"].items())) or "none"
+    print("%s: %d/%d jobs finished (%s)%s" % (s["outdir"], s["finished"], s["jobs"], st,
+          ("; checks " + " ".join("%s=%d" % kv for kv in sorted(s["checks"].items()))) if s["checks"] else ""))
+    if "solved_cpu_s" in s:
+        c = s["solved_cpu_s"]
+        print("  cpu per solved job: mean %.2fs median %.2fs p90 %.2fs p99 %.2fs max %.2fs" % (
+            c["mean"], c["median"], c["p90"], c["p99"], c["max"]))
+    print("  cpu used: solve %s, check %s; max RSS %d MB; stored files %.1f MB" % (
+        fmt_dur(s["cpu_used_s"]), fmt_dur(s["check_cpu_s"]), s["max_rss_mb"], s["file_bytes"] / 1e6))
+    if "est_total_cpu_s" in s:
+        lb = " (LOWER BOUND: timeouts counted at the timeout)" if s["estimate_is_lower_bound"] else ""
+        print("  estimated solve cpu: %s for these %d jobs; %s for all %d input jobs%s" % (
+            fmt_dur(s["est_total_cpu_s"]), s["jobs"], fmt_dur(s["est_input_cpu_s"]), s["input_jobs"], lb))
+
+
+def cmd_summary(argv):
+    if not argv:
+        die("usage: cuberun summary OUTDIR [--json] [--tsv] [--timeouts FILE]")
+    outdir = os.path.abspath(argv[0])
+    if "--timeouts" in argv:
+        path = argv[argv.index("--timeouts") + 1]
+        res = load_results(outdir)
+        n = 0
+        with open(path, "w") as f:
+            for r in sorted(res.values(), key=lambda r: int(r["id"]) if r["id"].isdigit() else 0):
+                if r["status"] == "TIMEOUT":
+                    if "cube" in r:
+                        f.write("a %s 0\n" % r["cube"])
+                    else:
+                        f.write("%s\t%s\n" % (r.get("tag", r["id"]), r.get("args", r.get("path", ""))))
+                    n += 1
+        print("wrote %d TIMEOUT jobs to %s" % (n, path))
+        return 0
+    if "--tsv" in argv:
+        print("id\ttag\tstatus\twall_s\tcpu_s\tmaxrss_mb\tcheck\tcube")
+        for r in load_results(outdir).values():
+            print("\t".join(str(r.get(k, "")) for k in ("id", "tag", "status", "wall_s", "cpu_s", "maxrss_mb",
+                                                        "check", "cube")))
+        return 0
+    s = summarize(outdir)
+    if "--json" in argv:
+        print(json.dumps(s, indent=1))
+    else:
+        print_summary(s)
+    return 0
+
+
+def main():
+    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help", "help"):
+        print(__doc__)
+        return 0
+    if sys.argv[1] == "run":
+        return cmd_run(sys.argv[2:])
+    if sys.argv[1] == "summary":
+        return cmd_summary(sys.argv[2:])
+    die("unknown command %s" % sys.argv[1])
+
+
+if __name__ == "__main__":
+    sys.exit(main())

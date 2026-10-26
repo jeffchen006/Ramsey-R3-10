@@ -1,0 +1,10 @@
+pseudo-Boolean proof version 3.0
+f 2;
+% Excludes the 4 solutions with x2 = 1.
+solx *x1 x2 *x3;
+% The remaining solution ~x1 ~x2 x3 is obtained by propagation.
+solx;
+rup >= 1 ;
+output NONE;
+conclusion ENUMERATION_COMPLETE 5;
+end pseudo-Boolean proof;

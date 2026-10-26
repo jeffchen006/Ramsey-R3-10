@@ -1,0 +1,11 @@
+# certified demo: no (3,6,18)-graph   (cert/demo.py, 2026-10-24 18:50)
+(a) F_full.cnf sha256 1d38004d7bb61bbda76af57314f39de8983ce3db6a76c0d478ed0f8b7d7f836f : check_cnf OK (only TRI/IS clauses)
+(b) 18 cubes c_d (d = deg(0) under SB); lazy solving 2.0 s; 1828 SB clauses, 4073 lazy IS clauses
+(e) check_sb: RESULT: OK
+(e) full: VeriPB OK (8.7 s), CakePB OK (101.6 s): F_full SAT => F_full + SB SAT
+(e) tri: VeriPB OK (0.2 s), CakePB OK (5.8 s): F_tri SAT => F_tri + SB SAT
+(f) F_cert.cnf sha256 f3b283eeb1dd2cc7cf22715012078aed85ab312dd99de439220a8548375c9367 : 6717 clauses, check_cnf OK
+(c,d) 19 summary lines (18 cubes + cover); 19 ranges VERIFIED; solve 0.3 s, check 3.8 s, LRAT 5.0 MB
+(c,d) cake_lpr -check: s VERIFIED INTERVALS COVER 0-19
+(c,d) summary.txt md5 c1bbb4cd96a9868bf87e4cfb881ed1f4, last line is the empty clause: True
+CONCLUSION: F_cert UNSAT (cake_lpr) and F_cert <= F_full + SB (check_cnf) and F_full SAT => F_full + SB SAT (VeriPB, CakePB) => F_full UNSAT => no (3,6,18)-graph (given gen.py encodes the definition; link (a)).

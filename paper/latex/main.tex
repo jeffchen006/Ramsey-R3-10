@@ -1,0 +1,62 @@
+% Release version (Zenodo DOI 10.5281/zenodo.23677795), 2026-10-26.
+% Converted from paper/draft.md by agent `cases` (2026-10-26). Numbers, claims and status labels are those of draft.md.
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=green!40!black,urlcolor=blue!50!black]{hyperref}
+
+\hypersetup{pdftitle={On (3,10,40)-graphs: structure, symmetry, and certified computations},pdfauthor={Zhiyang Chen}}
+\setlength{\emergencystretch}{3em}
+\setlist{nosep,leftmargin=*}
+
+% ---------- theorem environments (names as in draft.md) ----------
+\theoremstyle{plain}
+\newcommand{\thmnamehere}{}
+\newtheorem*{genericthm*}{\thmnamehere}
+\newenvironment{namedthm}[1]{\renewcommand{\thmnamehere}{#1}\begin{genericthm*}}{\end{genericthm*}}
+\theoremstyle{definition}
+\newtheorem*{genericdef*}{\thmnamehere}
+\newenvironment{nameddef}[1]{\renewcommand{\thmnamehere}{#1}\begin{genericdef*}}{\end{genericdef*}}
+
+% ---------- notation ----------
+\newcommand{\status}[1]{\textsf{\small[#1]}}   % status label: pub, hand, Lean, cert, enum, cond: X, ...
+\newcommand{\code}{\path}                       % code, files, Lean names (verbatim-like, allows _)
+\newcommand{\Gv}[1]{G_{#1}}                     % G_v = G - N[v]
+\newcommand{\Nb}[1]{N[#1]}                      % closed neighbourhood
+\newcommand{\cg}{c}                             % codegree c(u,w)
+\newcommand{\Rset}[1]{\mathcal{R}(#1)}          % R(3,k;n,e): set of graphs
+\newcommand{\nadj}{\not\sim}
+\newcommand{\cstar}{c^{*}}
+
+\title{On $(3,10,40)$-graphs: structure, symmetry, and certified computations}
+\author{Zhiyang Chen}
+\date{26 October 2026\\[2pt]\small DOI: \href{https://doi.org/10.5281/zenodo.23677795}{10.5281/zenodo.23677795}\quad Code and data: \url{https://github.com/jeffchen006/Ramsey-R3-10}}
+
+\begin{document}
+\maketitle
+
+\noindent\textit{How this work was done.} The computations, notes and this text were produced by a team of AI agents
+(Claude, with OpenAI Codex as a research assistant) under the direction of the author; an independent reviewer agent
+(``critic'') checked every claim. Every claim carries its status (CONFIRMED / certified / enumeration-only) and cites
+exact numbers from logs. The author does not guarantee results that are not marked as certified.
+
+\input{sec1}
+\input{sec2}
+\input{sec3}
+\input{sec4}
+\input{sec5}
+\input{sec6}
+\input{sec7}
+\input{sec8}
+\input{sec9}
+
+\bibliographystyle{keys}
+\bibliography{refs}
+\end{document}

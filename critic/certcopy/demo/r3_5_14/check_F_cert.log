@@ -1,0 +1,6 @@
+file F_cert.cnf sha256 35d53ed3c7fca5162ffa17a7fa4920734d711874c7133bc4828944ee221b9878
+n=14 s=5 order=colex clauses=1460
+  EXTRA:sb_all.cnf               454
+  IS                             642
+  TRI                            364
+RESULT: OK (every clause is valid or listed as extra)

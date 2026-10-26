@@ -1,0 +1,62 @@
+\section{Preliminaries and published facts used}\label{sec:prelim}
+
+\subsection{Notation}\label{sec:notation}
+All graphs are simple. A \emph{$(3,k;n)$-graph} is a triangle-free graph on $n$ vertices with independence number
+$\alpha \le k-1$; $R(3,k;n,e)$ is the set of $(3,k;n)$-graphs with $e$ edges (up to isomorphism), and $e(3,k,n)$ is the
+least $e$ for which it is non-empty (infinite if empty). A \emph{$(3,10,40)$-graph} $G$ is a $(3,10;40)$-graph; we assume
+one exists and derive structure. $d(v)$ is the degree, $n_d$ the number of vertices of degree $d$, $e = e(G)$,
+$N(v)$ the neighbourhood, $\Nb{v} = N(v) + v$, and
+\[
+  \Gv{v} = G - \Nb{v} \quad (39 - d(v) \text{ vertices; also written } H_v \text{ in the notes}), \qquad Z(v) = \sum_{u \in N(v)} d(u).
+\]
+The \emph{deficiency} is $N = \sum_v (9 - d(v)) = 360 - 2e$. For non-adjacent $u, w$ the \emph{codegree} is
+$c(u,w) = |N(u) \cap N(w)|$. $G$ is \emph{maximal triangle-free} (MTF) if adding any edge creates a triangle,
+i.e.\ every non-adjacent pair has a common neighbour.
+
+\subsection{Status labels}\label{sec:status}
+Every statement in Sections~\ref{sec:structure}--\ref{sec:lean} carries one of these labels.
+\begin{itemize}
+\item \status{pub} published result, used as a hypothesis (ID in Sec.~\ref{sec:pub}; not re-verified by us).
+\item \status{hand} hand proof in this paper, checked by an independent reviewer agent (``CONFIRMED'', with the
+  review number of \code{notes/critic.md}).
+\item \status{Lean} proved in Lean~4 / Mathlib, with the published facts it uses as explicit hypotheses (Sec.~\ref{sec:lean}).
+\item \status{cert} a computation whose result is checked by a verified checker (exact Farkas certificates in
+  rational arithmetic, or SAT proofs checked by cake\_lpr / VeriPB, Sec.~\ref{sec:sat}).
+\item \status{enum} an exhaustive enumeration without a proof certificate (gluing runs, Sec.~\ref{sec:glue}).
+\item \status{cond: X} proved, but only under the hypothesis X, which is NOT established.
+\end{itemize}
+
+\subsection{Published facts}\label{sec:pub}
+IDs are those of our dependency list (\code{notes/DEPENDENCIES.md}). We use only results published in journals or
+on arXiv. \cite{GR} = Goedgebeur, Radziszowski; \cite{Ang} = Angeltveit;
+\cite{McZ} = McKay, Zhang; \cite{GrR} = Grinstead, Roberts;
+\cite{DuLBG} = Li, Duggan, Bright, Ganesh.
+
+\begin{center}\small
+\begin{tabular}{@{}l p{6.4cm} p{3.4cm} p{2.6cm}@{}}
+\toprule
+ID & statement & source & used in \\
+\midrule
+D-R1 & $R(3,k) = 6, 9, 14, 18, 23, 28, 36$ for $k = 3..9$ & \cite{GR} Table 1 & Lemma H (\ref{sec:local}) \\
+D-R2 & $R(3,8) = 28$ & \cite{McZ}; DRAT-certified in \cite{DuLBG} & L6, Thm A$''$, Cover Lemma (``F2'') \\
+D-R3 & $R(3,9) = 36$ & \cite{GrR}; certified in \cite{DuLBG} & L1 \\
+D-R4 & $40 \le R(3,10) \le 41$ & Exoo 1989~\cite{Ex89}; \cite{Ang} Thm 1 & Sec.~\ref{sec:intro} \\
+D-E8 & $e(3,8,n) = 25, 30, 35, 42, 49, 56, 65, 73, 85$ for $n = 19..27$ & \cite{GR} Tables 3, 13 & Lemmas P, R7, F \\
+D-E9 & $e(3,9,n) = 86, 95, 104, 118, 129, 140$ for $n = 30..35$ & \cite{GR} Tables 3, 4 & L3, Thm A, case tables \\
+D-E10b & $e(3,10,40) \ge 161$ & \cite{GR} Table 5 & $\Delta = 9$, case tables (``GR161'') \\
+D-G1 & $R(3,9;35) = \{C_{35}(1,7,11,16)\}$, 8-regular, 140 edges & \cite{GR} Thm 3 & L7 (degree-4 vertices) \\
+D-C8d & $|R(3,8;26,e)| = 62, 1625, 23409, 216151, 1526296$ for $e = 73..77$ (1,767,543 with $e \le 77$) & \cite{GR} Table 13; \cite{Ang} Sec.~3.2 & Lemma F, $R(6)$ branch \\
+D-C8e & $|R(3,8;27,85)| = 4$ & \cite{GR} Table 13 & Lemma R7 \\
+D-C9a--e & $|R(3,9;30,86)| = 1800$, $|R(3,9;30,87)| = 147{,}335$; $|R(3,9;31,95/96)| = 560 / 35{,}154$; $|R(3,9;32,{\le}112)| = 1{,}554{,}928{,}360$; $|R(3,9;33,{\le}121)| = 14{,}395$ & \cite{GR} Table 14; \cite{Ang} Sec.~3.3 & gluing scenarios (\ref{sec:open}, Sec.~\ref{sec:glue}) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Two base facts and their status}\label{sec:basefacts}
+The coarse case split (Cover Lemma, Sec.~\ref{sec:cover}) uses only:
+\begin{itemize}
+\item \textbf{F1}: $e(3,8,m) \ge 6m - 91$ for $23 \le m \le 27$. \status{pub} D-E8 (true values $49, 56, 65, 73, 85 \ge 47, 53, 59,
+  65, 71$). In addition \status{cert} for $m = 23, 24, 27$ (SAT, our runs, Sec.~\ref{sec:sat}); $m = 25, 26$ rest on D-E8 only.
+\item \textbf{F2}: $R(3,8) \le 28$. \status{pub} D-R2, with the DRAT certificate of \cite{DuLBG}.
+\end{itemize}
+The refined case tables (Sec.~\ref{sec:open}) also use D-E9 and D-E10b.

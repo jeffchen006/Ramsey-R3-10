@@ -1,0 +1,1286 @@
+                                             New Computational Upper Bounds
+                                                for Ramsey Numbers R(3, k)
+arXiv:1210.5826v4 [math.CO] 20 Mar 2013
+
+
+
+
+                                                                          Jan Goedgebeur
+                                                      Department of Applied Mathematics and Computer Science
+                                                             Ghent University, B-9000 Ghent, Belgium
+                                                                     <email>
+
+
+                                                                    Stanislaw P. Radziszowski
+                                                                  Department of Computer Science
+                                                    Rochester Institute of Technology, Rochester, NY 14623, USA
+                                                                           spr@cs.rit.edu
+
+
+
+                                                           Submitted: XX; Accepted: XX; Published: XX
+                                                          AMS Subject Classifications: 05C55, 05C30, 68R10
+
+
+
+                                                                                Abstract
+                                          Using computational techniques we derive six new upper bounds on the classical two-
+                                          color Ramsey numbers: R(3, 10) ≤ 42, R(3, 11) ≤ 50, R(3, 13) ≤ 68, R(3, 14) ≤ 77,
+                                          R(3, 15) ≤ 87, and R(3, 16) ≤ 98. All of them are improvements by one over the
+                                          previously best published bounds.
+                                              Let e(3, k, n) denote the minimum number of edges in any triangle-free graph on
+                                          n vertices without independent sets of order k. The new upper bounds on R(3, k)
+                                          are obtained by completing the computation of the exact values of e(3, k, n) for
+                                          all n with k ≤ 9 and for all n ≤ 33 for k = 10, and by establishing new lower
+                                          bounds on e(3, k, n) for most of the open cases for 10 ≤ k ≤ 15. The enumeration
+                                          of all graphs witnessing the values of e(3, k, n) is completed for all cases with k ≤ 9.
+                                          We prove that the known critical graph for R(3, 9) on 35 vertices is unique up to
+                                          isomorphism. For the case of R(3, 10), first we establish that R(3, 10) = 43 if and
+                                          only if e(3, 10, 42) = 189, or equivalently, that if R(3, 10) = 43 then every critical
+                                          graph is regular of degree 9. Then, using computations, we disprove the existence
+                                          of the latter, and thus show that R(3, 10) ≤ 42.
+
+                                          Keywords: Ramsey number; upper bound; computation
+
+
+
+
+                                                                                     1
+1     Definitions and Preliminaries
+
+In this paper all graphs are simple and undirected. Let G be such a graph. The vertex
+set of G is denoted by V (G), the edge set of G by E(G), and the number of edges in G by
+e(G). The set of neighbors of v in G will be written as Nv (G) (or just N(v) if G is ﬁxed).
+The independence number of G, denoted α(G), is the order of the largest independent
+set in G, degG (v) is the degree of vertex v ∈ V (G), and δ(G) and ∆(G) are the minimum
+and maximum degree of vertices in G, respectively. For graphs G and H, G ∼     = H means
+that they are isomorphic.
+    For positive integers k and l, the Ramsey number R(k, l) is the smallest integer n
+such that if we arbitrarily color the edges of the complete graph Kn with 2 colors, then
+it contains a monochromatic Kk in the ﬁrst color or a monochromatic Kl in the second
+color. If the edges in the ﬁrst color are interpreted as a graph G and those in the second
+color as its complement G, then R(k, l) can be deﬁned equivalently as the smallest n such
+that every graph on n vertices contains Kk or has independence α(G) ≥ l. A regularly
+updated dynamic survey by the second author [17] lists the values and the best known
+bounds on various types of Ramsey numbers.
+    Any Kk -free graph G on n vertices with α(G) < l and e(G) = e will be called a
+(k, l; n, e)-graph, and by R(k, l; n, e) we will denote the set of all (k, l; n, e)-graphs. We
+will often omit the parameter e, or both e and n, or give some range to either of these
+parameters, when referring to special (k, l; n, e)-graphs or sets R(k, l; n, e). For example,
+a (k, l)-graph is a (k, l; n, e)-graph for some n and e, and the set R(3, 9; 35, ≤ 139) consists
+of all 35-vertex triangle-free graphs with α(G) ≤ 8 and at most 139 edges (later we will
+prove that this set is empty). Any (k, l; R(k, l) − 1)-graph will be called critical for (k, l).
+    Let e(k, l, n) denote the minimum number of edges in any (k, l; n)-graph (or ∞ if no
+such graph exists). The sum of the degrees of all neighbors of v in G will be denoted by
+ZG (v) (or Z(v) if G is ﬁxed), i.e.
+                                              X
+                             Z(v) = ZG (v) =         degG (u).                       (1)
+                                               {u,v}∈E(G)
+
+    In the remainder of this paper we will study only triangle-free graphs. Note that
+for any G ∈ R(3, k) we have ∆(G) < k, since all neighborhoods of vertices in G are
+independent sets.
+    Let G be a (3, k; n, e)-graph. For any vertex v ∈ V (G), we will denote by Gv the
+graph induced in G by the set V (G) \ (NG (v) ∪ {v}). If d = degG (v), then clearly Gv is a
+(3, k − 1; n − d − 1, e(G) − ZG (v))-graph. Note that this implies that
+                γ(v) = γ(v, k, G) = e − ZG (v) − e(3, k − 1, n − d − 1) ≥ 0,                (2)
+where γ(v) is the so called deficiency of vertex v [8]. Finally, the deﬁciency of the graph
+G is deﬁned as                          X
+                               γ(G) =         γ(v, k, G) ≥ 0.                            (3)
+                                         v∈V (G)
+
+
+                                               2
+The condition that γ(G) ≥ 0 will be often suﬃcient to derive good lower bounds on
+e(k, l, n), though a stronger condition that all summands γ(v, k, G) of (3) are non-negative
+sometimes implies even better bounds. It is easy to compute γ(G) just from the degree
+sequence of G [8, 10]. If a (3, k; n, e)-graph G has ni vertices of degree i, then
+                                   X
+                                        ni i2 + e(3, k − 1, n − i − 1) ≥ 0,
+                                                                      
+                     γ(G) = ne −                                                         (4)
+                                  i
+            Pk−1                Pk−1
+where n =     i=0 ni and 2e =    i=0 ini .
+
+
+
+
+2    Summary of Prior and New Results
+
+In 1995, Kim [12] obtained a breakthrough result by establishing the exact asymptotics
+of R(3, k) using probabilistic arguments. Recently, the fascinating story of developments
+and results related to the inﬁnite aspects of R(3, k) was written by Spencer [21].
+Theorem 1 ([12]) R(3, k) = Θ(n2 / log n).
+
+    Theorem 1 gives the exact asymptotics of R(3, k), while computing the values for
+concrete cases remains an open problem for all k ≥ 10. Still, the progress obtained in
+the last 50 years in this area is remarkable. Known exact values of R(3, k) for k ≤ 9,
+and the best lower and upper bounds for higher k, are listed in [17] together with all the
+references. We note that much of this progress was obtained with the use of knowledge
+about e(3, k, n). This direction is also the main focus of our paper: we compute new exact
+values of e(3, k, n) in several cases and give improved lower bounds for many other, which
+in turn permits us to prove new upper bounds on R(3, k) for k = 10, 11, 13, 14, 15 and 16.
+Likely, more new upper bounds could be obtained for some 17 ≤ k ≤ 21, but we did not
+perform these computations.
+
+   General formulas for e(3, k, n) are known for all n ≤ 13k/4 − 1 and for n = 13k/4
+when k = 0 mod 4.
+
+Theorem 2 ([18, 20]) For all n, k ≥ 1, for which e(3, k + 1, n) is finite,
+                              
+                              
+                                0          if n ≤ k,
+                                 n − k      if k < n ≤ 2k,
+                              
+                              
+                              
+             e(3, k + 1, n) =    3n − 5k    if 2k < n ≤ 5k/2,                           (5)
+                                 5n − 10k if 5k/2 < n ≤ 3k,
+                              
+                              
+                              
+                              
+                                 6n − 13k if 3k < n ≤ 13k/4 − 1.
+                              
+
+Furthermore, e(3, k + 1, n) = 6n − 13k for k = 4t and n = 13t, and the inequality
+e(3, k+1, n) ≥ 6n−13k holds for all n and k. All the critical graphs have been characterized
+whenever the equality in the theorem holds for n ≤ 3k.
+
+                                             3
+    Theorem 2 is a cumulative summary of various contributions [8, 10, 18, 19, 20]. It
+captures many of the small cases, as presented in Table 3 in Section 4. For example,
+Theorem 2 gives the exact values of e(3, 9, n) for all n ≤ 26, of e(3, 10, n) for n ≤ 28, and
+of e(3, 13, n) for all n ≤ 39.
+    The inequality e(3, k + 1, n) ≥ (40n − 91k)/6, which is better than e(3, k + 1, n) ≥
+6n−13k for larger parameters, and a number of other improvements and characterizations
+of graphs realizing speciﬁc number of edges, was credited in 2001 by Lesser [13] to an
+unpublished manuscript by Backelin [1]. As of 2012, the manuscript by Backelin already
+exceeds 500 pages and it contains numerous additional related results [1, 2], but it still
+needs more work before it can be published. Therefore, in the remainder of this paper
+we will not rely on the results included therein, however in several places we will cite
+the bounds obtained there for reference. In summary, the behavior of e(3, k + 1, n) is
+clear for n ≤ 13k/4 − 1, it seems regular but very diﬃcult to deal with for n slightly
+larger than 13k/4, and it becomes hopelessly hard for even larger n. In this work we
+apply computational techniques to establish lower bounds for e(3, k, n) for larger n, for
+k ≤ 15. Immediately, our results imply better upper bounds on R(3, k) in several cases,
+but we hope that they also may contribute to further progress in understanding the general
+behavior of e(3, k, n).
+    Full enumeration of the sets R(3, ≤ 6) was established in [18, 16]. The knowledge of
+the exact values of e(3, 7, n) was completed in [18], those of e(3, 8, ≤ 26) in [19], and the
+last missing value for α(G) < 8, namely e(3, 8, 27) = 85, was obtained in [4]. The thesis by
+Lesser [13] contains many lower bounds on e(3, k, n) better than those in [19]. We match
+or improve them in all cases for k ≤ 10. For k ≥ 11 and n slightly exceeding 13k/4 − 1,
+the bounds by Lesser (in part credited also to [1]) are better than ours in several cases,
+however we obtain signiﬁcantly better ones for larger n.
+    The general method we use is ﬁrst to compute, if feasible, the exact value of e(3, k, n)
+for concrete k and n, or to derive a lower bound using a combination of (2), (3) and
+(4), and computations. Better lower bounds on e(3, k − 1, m) for m = n − d − 1 and
+various d, lead in general to better lower bounds on e(3, k, n). If we manage to show that
+e(3, k, n) = ∞, i.e. no (3, k; n)-graph exists, then we obtain an upper bound R(3, k) ≤ n.
+An additional specialized algorithm was needed to establish R(3, 10) ≤ 42.
+
+    Section 3 describes extension algorithms which we used to exhaustively construct all
+(3, k; n, e)-graphs for a number of cases of (n, e), for k ≤ 10. These results are described
+in detail in the sequel. This leads to many new lower bounds on e(3, k, n) and full
+enumerations of (3, k; n)-graphs with the number of edges equal to or little larger than
+e(3, k, n), which are presented in Section 4 (and Appendix 1). These results are then
+used in Section 5 to prove that there exists a unique critical 35-vertex graph for the
+Ramsey number R(3, 9). It is known that [5] 40 ≤ R(3, 10) ≤ 43 [19]. We establish
+that R(3, 10) = 43 if and only if e(3, 10, 42) = 189, or equivalently, that if R(3, 10) = 43
+then every critical graph in this case is regular of degree 9. Then, in Section 6, using
+computations we prove that the latter do not exist, and thus obtain R(3, 10) ≤ 42. Finally,
+in Section 7, we describe the second stage of our computations, which imply many new
+
+                                             4
+lower bounds on e(3, ≥ 11, n). This stage uses only degree sequence analysis of potential
+(3, k; n, e)-graphs, which have to satisfy (4). This in turn leads to the new upper bounds
+on the classical two-color Ramsey numbers marked in bold in Table 1, which presents the
+values and best bounds on the Ramsey numbers R(3, k) for k ≤ 16. All the improvements
+in this work are better by one over the results listed in the latest 2011 revision #13 of the
+survey [17]. The bound R(3, 16) ≤ 98 was also obtained by Backelin in 2004, though it
+was not published [1, 2]. The lower bound R(3, 11) ≥ 47 was recently obtained by Exoo
+[6]. The references for all other bounds and values, and the previous upper bounds, are
+listed in [17].
+
+
+                                  k   R(3, k)       k    R(3, k)
+                                  3      6          10   40–42
+                                  4      9          11   47–50
+                                  5     14          12   52–59
+                                  6     18          13   59–68
+                                  7     23          14   66–77
+                                  8     28          15   73–87
+                                  9     36          16   79–98
+
+                        Table 1: Ramsey numbers R(3, k), for k ≤ 16.
+
+
+
+
+3     Algorithms
+Maximum Triangle-Free Method
+One method to determine e(3, k, n) is by ﬁrst generating all maximal triangle-free (3, k; n)-
+graphs. A maximal triangle-free graph (in short, an mtf graph) is a triangle-free graph
+such that the insertion of any new edge forms a triangle. It is easy to see that there
+exists a (3, k; n)-graph if and only if there is an mtf (3, k; n)-graph. In [4], an algorithm
+is described that can generate all mtf (3, k; n)-graphs eﬃciently. Using this algorithm, it
+is much easier to generate all mtf (3, k; n)-graphs instead of all (3, k; n)-graphs, because
+the number of the former is in most cases much smaller. For example, there are 477142
+(3, 8; 27)-graphs, but only 21798 mtf graphs with the same parameters. By recursively
+removing edges in all possible ways from these mtf (3, k; n)-graphs and testing if the
+resulting graphs G still satisfy α(G) < k, the complete set R(3, k; n) can be obtained.
+    We applied this method to generate the sets R(3, 7; 21), R(3, 7; 22), R(3, 8; 26, ≤ 77)
+and R(3, 8; 27) (see Appendix 1 for detailed results). All (3, 7; 22)- and (3, 7; n, e(3, k, n))-
+graphs were already known [18], other enumerations are new. This mtf method is infeasible
+for generating (3, ≥ 9; n)-graphs for n which were needed in this work. Nevertheless, we
+used it for verifying the correctness of our other enumerations, and the results agreed in
+all cases in which more than one method was used (see Appendix 2).
+
+
+                                                5
+Minimum Degree Extension Method
+In their 1992 paper establishing R(3, 8) = 28, McKay and Zhang [16] proved that the set
+R(3, 8; 28) is empty by generating several sets R(3, k; n, e) with additional restrictions on
+the minimum degree δ(G). Suppose that one wants to generate all (3, k; n, e)-graphs. If G
+is such a graph and one considers its minimum degree vertex v, then we can reconstruct G
+given all possible graphs Gv . McKay and Zhang described such dependencies, designed an
+algorithm to reconstruct G, and completed the proof of R(3, 8) = 28 using this algorithm.
+    We implemented and used this method by McKay and Zhang [16], and in all cases
+where more than one algorithm was used it agreed with the other results. However, using
+this method it was not feasible to generate most classes of graphs with higher parameters
+needed for our project. For example, we could not generate all (3, 9; 28, ≤ 69)-graphs with
+this method, as the graphs with δ(G) = 4 are obtained from (3, 8; 23, ≤ 53)-graphs, but
+there are already 10691100 (3, 8; 23, ≤ 52)-graphs (Table 13 in Appendix 1).
+
+Neighborhood Gluing Extension Method
+Our general extension algorithm for an input (3, k; m)-graph H produces all (3, k+1; n, e)-
+graphs G, often with some speciﬁc restrictions on n and e, such that for some vertex
+v ∈ V (G) graph H is isomorphic to Gv . We used the following strategy to determine if
+the parameters of input graphs to our extender were such that the output was guaranteed
+to contain all (3, k + 1; n, ≤ e)-graphs.
+    Let mi = n − i − 1, where i ranges over possible degrees in any graph G we look
+for, δ(G) ≤ i ≤ ∆(G). In the broadest case we have δ(G) = max{n − R(3, k), 0} and
+∆(G) = k, but we also identiﬁed a number of special cases where this range was more
+restricted. Let ti be an integer such that we have extended all (3, k; mi , < e(3, k, mi ) + ti )-
+graphs as potential Gv ’s of G. Now, if we use e(3, k, mi ) + ti instead of e(3, k, mi ) in (4)
+for all relevant values of i, and (4) has no solutions for (3, k + 1; n, ≤ e)-graphs, then we
+can conclude that all such graphs were already generated. We illustrate this process by
+an example.
+
+Example. Table 2 lists speciﬁc parameters of the general process when used to obtain
+all (3, 8; 25, ≤ 65)-graphs. Every vertex v in any (3, 8; 25, ≤ 65)-graph has degree i, for
+some 2 ≤ i ≤ 7. The corresponding graph Gv is of type (3, 7; mi , e(Gv )). The values of
+e(3, 7, m) are included in Table 3 of Section 4, and let ti ’s be as in Table 2. If we use the
+values e(3, 7, mi ) + ti instead of e(3, 7, mi ) in (4), then there are no solutions for degree
+sequences of (3, 8; 25, ≤ 65)-graphs. Thus, if we run the extender for all possible graphs
+Gv with the number of edges listed in the last column of Table 2, then we will obtain all
+(3, 8; 25, e)-graphs for e ≤ 65.
+    The set of increments ti accomplishing this goal is not unique, there are others which
+work. We just tried to minimize the amount of required computations in a greedy way.
+Note that the largest increments ti to e(3, 7, mi ) occur for i’s which are close to the average
+degree of G.
+
+
+                                                6
+             i = degG (v) mi = |V (Gv )| e(3, 7, mi )     ti   e(Gv ) = e − Z(v)
+                  2            22            60           1            60
+                  3            21            51           1            51
+                  4            20            44           2          44, 45
+                  5            19            37           3       37, 38, 39
+                  6            18            30           2          30, 31
+                  7            17            25           1            25
+
+                        Table 2: Obtaining all (3, 8; 25, ≤ 65)-graphs.
+
+
+
+Implementation
+In this section we present some details about the extension algorithms implementations for
+the minimum degree and neighborhood gluing method. Implementation of the algorithm
+to generate maximal triangle-free Ramsey graphs is described in [4].
+     Given a (3, k; n, f )-graph G′ as input and an expansion degree d, a desired maximum
+number of edges e, and the minimum degree dm as parameters, our program constructs
+all (3, k + 1; n + d + 1, ≤ e)-graphs G with δ(G) ≥ dm for which there is a vertex v ∈ V (G)
+such that deg(v) = d and Gv ∼     = G′ . More speciﬁcally, the program adds to G′ a vertex
+v with neighbors u1 , ..., ud and connects them to independent sets of G′ in all possible
+ways, so that the resulting graph is a (3, k + 1; n + d + 1, ≤ e)-graph with δ(G) ≥ dm .
+Note that the neighbors of v have to be connected to independent sets of G′ , otherwise
+the expanded graph would contain triangles, and, clearly, ∆(G) ≤ k.
+     The extension program ﬁrst determines all independent sets of G′ of orders t that are
+possible, namely dm −1 ≤ t ≤ k −1. The program then recursively assigns the d neighbors
+of v to the eligible independent sets of G′ , adds the edges joining ui ’s to their associated
+independent sets, and tests if the resulting G is a valid (3, k + 1; n + d + 1, ≤ e)-graph.
+If it is, then we output it. This general process is greatly accelerated by the techniques
+described in the following.
+     We bound the recursion if a given partial assignment cannot lead to any (3, k + 1; n +
+d + 1, ≤ e)-graphs. Suppose that i independent sets S1 , . . . , Si have already been assigned.
+If V (G′ )\(S1 ∪...∪Si ) induces an independent set I of order k +1−i, then this assignment
+cannot lead to any output since I ∪ {u1 , . . . , ui } would form an independent set of order
+k + 1 in G. We could test this property for all subsets of Si ’s, but we found it to be
+most eﬃcient to do it only for all pairs. Namely, if S1 , . . . , Si is already assigned and we
+consider the next independent set S, we test if for all j, 1 ≤ j ≤ i, V (G′ ) \ (Sj ∪ S) does
+not induce any independent set of order k − 1. The list of independent sets which can
+still be assigned is dynamically updated.
+     For the eﬃciency of the algorithm it is vital that testing for independence in V (G′ ) \
+(S1 ∪ ... ∪ Si ) is fast, and hence we precompute the independence numbers of all induced
+subgraphs of G′ . This precomputation also needs to be done very eﬃciently. We represent
+a set of vertices S ⊂ V (G′ ) by a bitvector. The array indep_number[S] of 2n elements
+
+
+                                              7
+stores the independence number of the graph induced by S in G′ . It is very important
+that indep_number[] ﬁts into the memory. On the computers on which we performed
+the expansions this was still feasible up to n = 31. We investigated various approaches to
+precompute indep_number[S], and Algorithm 1 below was by far be the most eﬃcient
+one. If the superset S ′ of S already has indep_number[S’] ≥ j, then we can break the
+recursion of making the supersets. Usually one can break very quickly. For small extension
+degrees d ≤ 3, it is more eﬃcient not to precompute these independence numbers, but
+instead to compute them as needed.
+
+Algorithm 1 Precomputing independence number
+ for i = 0 upto 2n − 1 do
+   set indep_number[i] = 0
+ end for
+ for j = k − 1 downto k + 1 − d do
+   for all independent sets S of order j in G′ do
+      Recursively make all supersets S ′ of S, and
+      if indep_number[S’] = 0 then set indep_number[S’] = j
+      else break making supersets of S
+   end for
+ end for
+
+     If a neighbor ui of v has been assigned to an independent set S, we also update the
+degrees of the vertices in G′ . If ui is being connected to S, the degree of every vertex of
+S increases by one. If the degree of a vertex w of G′ becomes k, then other neighbors of v
+cannot be assigned to independent sets which contain w. We call such vertices which are
+no longer eligible forbidden vertices, and all of them are stored in a dynamically updated
+bitvector. We also dynamically update the list of independent sets which can still be
+assigned to ui ’s. Independent sets which contain forbidden vertices are removed from the
+list of eligible independent sets. We perform bitvector operations whenever suitable. If no
+eligible independent sets are left, we can bound the recursion. Note that we cannot break
+the recursion when the number of eligible independent sets is smaller than the number
+of neighbors of v that still have to be considered, since they can be assigned to the same
+independent set. If i neighbors of v are already assigned and the forbidden vertices form
+an independent of set order k + 1 −(d −i), then the recursion can also be bounded, though
+this criterion in general is weak.
+     We assign the neighbors ui of v to independent sets in ascending order, i.e. if ui is
+assigned to Si , then |Si | ≤ |Si+1 | for all 1 ≤ i < d. Doing this rather than in descending
+order allows us to eliminate many candidate independent sets early in the recursion. If
+|Si | is small, then it is very likely that V (G′ ) \ Si induces a large independent set. Hence,
+it is also very likely that Si cannot be assigned to a new ui or that assigning Si eliminates
+many eligible independent sets.
+     Assigning sets in ascending order also gives us an easy lower bound for the number of
+edges in any potential output graph which can be obtained from the current graph and
+
+                                               8
+assignment. If the sets S1 , . . . , Si have already been assigned to neighbors of v and the
+current minimal order of eligible independent sets is t, then any expanded graph will have
+at least f = e(G′ ) + d + |S1 | + ... + |Si | + t(d − i) edges. If f > e, then we can bound the
+recursion as well.
+    The pseudocode of the recursive extension is listed below as Algorithm 2. It is as-
+sumed that indep_number[] (see Algorithm 1) and the list of eligible independent sets
+are already computed. The parameters for Construct() are the order of the sets which
+are currently being assigned and the number of neighbors of v which were already assigned
+to independent sets. The recursion is bounded if any of the bounding criteria described
+above can be applied.
+
+Algorithm 2 Construct(current order, num assigned)
+  if num assigned = d then
+     expand graph G′ to G
+     if G is a (3, k + 1; n + d + 1, ≤ e)-graph then
+        output G
+     end if
+  else
+     for every eligible set S of order current order do
+        assign S to unum assigned+1
+        update the set of eligible independent sets
+        Construct(current order, num assigned + 1)
+     end for
+     if current order < k − 1 then
+        Construct(current order + 1, num assigned)
+     end if
+  end if
+
+   Our extension program does not perform any isomorphism rejection. We canonically
+label the output graphs with nauty [14, 15] and remove the isomorphic copies. This is
+not a bottleneck as there are usually only a few (3, k + 1; n + d + 1, ≤ e)-graphs which
+are constructed by our program. The results obtained by our extension algorithms are
+described in Sections 4 and 6. In the appendices we describe how the correctness of our
+implementation was tested.
+
+Degree Sequence Feasibility
+Suppose we know the values or lower bounds on e(3, k, m) for some ﬁxed k and we wish
+to know all feasible degree sequences of (3,
+                                          Pk + 1; n, e)-graphs. We construct the system
+of integer constraints consisting of n = ki=0 ni , 2e = ki=0 ini , and (4). If it has no
+                                                          P
+solutions then we conclude that e(3, k + 1, n) > e. Otherwise, we obtain solutions for ni ’s
+which include all desired degree sequences. This algorithm is similar in functionality to
+the package FRANK developed by Lesser [13].
+
+                                              9
+4    Progress on Computing Small e(3, k, n)
+
+       vertices                                    k
+          n        3    4    5    6    7     8    9 10 11       12 13 14 15 16
+          3        1
+          4        2    1
+          5        5    2    1
+          6       ∞     3    2    1
+          7             6    3    2    1
+          8            10    4    3    2  1
+          9            ∞     7    4    3  2  1
+          10                10    5    4  3  2  1
+          11                15    8    5  4  3  2 1
+          12                20   11    6  5  4  3 2              1
+          13                26   15    9  6  5  4 3              2    1
+          14                ∞    20   12  7  6  5 4              3    2    1
+          15                     25   15 10  7  6 5              4    3    2       1
+          16                     32   20 13  8  7 6              5    4    3       2    1
+          17                     40   25 16 11  8 7              6    5    4       3    2
+          18                     ∞    30 20 14  9 8              7    6    5       4    3
+          19                          37 25 17 12 9              8    7    6       5    4
+          20                          44 30 20 15 10             9    8    7       6    5
+          21                          51 35 25 18 13            10    9    8       7    6
+          22                          60 42 30 21 16            11   10    9       8    7
+          23                          ∞ 49 35 25 19             14   11   10       9    8
+          24                             56 40 30 22            17   12   11      10    9
+          25                             65 46 35 25            20   15   12      11   10
+          26                             73 52 40 30            23   18   13      12   11
+          27                             85 61 45 35            26   21   16      13   12
+          28                             ∞ 68 51 40             30   24   19      14   13
+          29                                77 58 45            35   27   22      17   14
+          30                                86 66 50            40   30   25      20   15
+          31                                95 73 56            45   35   28      23   18
+
+               Table 3: Exact values of e(3, k, n), for 3 ≤ k ≤ 16, 3 ≤ n ≤ 31.
+
+
+Table 3 presents the exact values of e(3, k, n) for small cases, where clear regularities are
+well described by Theorem 2. Empty entries in the upper-right triangle of the table are
+0’s, while those in the lower-left triangle are equal to ∞. The columns correspond to
+ﬁxed values of k. Almost all entries are given by Theorem 2. We list them for a better
+perspective and completeness. The entries beyond the range of Theorem 2 are marked
+in bold, and they were obtained as follows: e(3, 6, 16) and e(3, 6, 17) in [8], all cases for
+
+                                             10
+k = 7 in [8, 10, 18], all cases for k = 8 and 22 ≤ n ≤ 26 in [19], e(3, 8, 27) = 85 was
+computed in [4], and those for k ≥ 9 are obtained here. The smallest n for which we
+found an open case is 32, namely that of e(3, 11, 32). However, Backelin had claimed the
+values e(3, 11, 32) = 63, e(3, 11, 33) = 70 and e(3, 11, 34) = 77 [1, 2]. Tables 4 and 5 below
+and 7–11 in Section 7 present the details of what we found about these harder parts of
+each column k, for 9 ≤ k ≤ 16.
+   The exact counts of (3, k; n, e)-graphs for k = 7, 8, 9, 10 which were obtained by the
+algorithms described in Section 3 are listed in Tables 12, 13, 14, 15, respectively, in Ap-
+pendix 1. All (3, ≤ 9; n, ≤ e(3, k, n) + 1)-graphs which were constructed by our programs
+can be obtained from the House of Graphs [3] by searching for the keywords “minimal
+ramsey graph” or from [7].
+
+Exact values of e(3, 9, n)
+The values of e(3, 9, ≤ 26) are determined by Theorem 2. The values of e(3, 9, n) for
+27 ≤ n ≤ 34 were obtained by computations, mostly by the gluing extender algorithm
+described in Section 3, and they are presented in Table 4. All of these values improve
+over previously reported lower bounds [19, 13]. The equality e(3, 9, 35) = 140 will be
+established by Theorem 3 in Section 5.
+
+                      n    e(3, 9, n)   comments
+                      27       61
+                      28       68       the same as in [1]
+                      29       77
+                      30       86
+                      31       95
+                      32      104       not enough for R(3, 10) ≤ 42
+                      33      118       just enough for Theorem 4
+                      34      129       122 required for R(3, 10) ≤ 43
+                      35      140       Theorem 3
+                      36      ∞         hence R(3, 9) ≤ 36, old bound
+
+                        Table 4: Exact values of e(3, 9, n), for n ≥ 27
+
+
+
+Values and lower bounds on e(3, 10, n)
+The values of e(3, 10, ≤ 28) are determined by Theorem 2. The values for 29 ≤ n ≤ 34
+were obtained by the gluing extender algorithm described in Section 3. The lower bounds
+on e(3, 10, ≥ 35) are included in the second column of Table 5. They are based on solving
+integer constraints (3) and (4), using the exact values of e(3, 9, n) listed in Table 4, and
+results from the gluing extender algorithm used similarly as in the example of Section 3.
+Our bounds on e(3, 10, n) improve over previously reported lower bounds [19, 13] for all
+n ≥ 30.
+
+
+                                              11
+    By Theorem 4 (see Section 5) we know that any (3, 10; 42)-graph must be 9-regular
+with 189 edges, and thus all its graphs Gv are necessarily of the type (3, 9; 32, 108). There
+exists a very large number of the latter graphs. Their generation, extensions to possible
+(3, 10; 42, 189)-graphs, and implied nonexistence of any (3, 10; 42)-graphs will be described
+in Section 6.
+
+        n    e(3, 10, n) ≥   comments
+        29         58        exact, the same as in [13]
+        30         66        exact
+        31         73        exact
+        32         81        exact
+        33         90        exact
+        34         99        exact, (3, 10; 34, 99)-graph constructed by Backelin [2]
+        35        107
+        36        117
+        37        128
+        38        139        146 required for R(3, 11) ≤ 49
+        39        151        as required for R(3, 11) ≤ 50, Theorem 7
+        40        161
+        41        172        184 maximum
+        42         ∞         hence R(3, 10) ≤ 42, new bound, Theorem 6
+        43         ∞         hence R(3, 10) ≤ 43, old bound
+
+                Table 5: Values and lower bounds on e(3, 10, n), for n ≥ 29.
+
+
+
+   All lower bounds in Tables 4 and 5 required computations of our gluing extender
+algorithm. We did not perform any such computations in an attempt to improve the
+lower bounds on e(3, ≥ 11, n). All results presented in Section 7 for k ≥ 11 depend only
+on the degree sequence analysis and the results for k ≤ 10.
+
+
+5    Better Lower Bounds for e(3, 9, 35) and e(3, 10, 42)
+Sometimes we can improve on the lower bounds on e(3, k, n) implied by (3) and (4) by
+a more detailed analysis of feasible degree sequences. Such improvements typically can
+be done in cases for which (4) gives a small number of possible degree sequences, none
+of which is of a regular graph, furthermore with only one heavily dominating degree. We
+have such a situation in the proofs of the two following theorems.
+
+Theorem 3 There exists a unique (3, 9; 35)-graph, and e(3, 9, 35) = 140.
+
+Proof. Any (3, 9; 35)-graph G has ∆(G) ≤ 8, hence we have e(G) ≤ 140. Suppose
+G ∈ R(3, 9; 35, 140 − s) for some s ≥ 0. Since R(3, 8) = 28, the degrees of vertices in G
+
+                                             12
+are 7 or 8, and let there be n7 and n8 of them, respectively. We have n7 +n8 = 35, n7 = 2s.
+In this case there are ﬁve solutions to (4) with 0 ≤ s ≤ 4. In particular, this shows that
+e(3, 9, 35) ≥ 136. If n7 > 0 (equivalently s > 0), then consider graph H induced in G by
+n7 vertices of degree 7. Observe that δ(H) ≤ s, since H is triangle-free on 2s vertices.
+Let v be a vertex in V (G) of degree 7 connected to at most s other vertices of degree 7.
+Thus we have ZG (v) ≥ 7s + 8(7 − s) = 56 − s, and e(Gv ) ≤ (140 − s) − (56 − s) = 84.
+However Gv is a (3, 8; 27)-graph which contradicts the fact that e(3, 8, 27) = 85.
+    The computations extending all (3, 8; 26, 76)-graphs, using the neighborhood gluing
+extension method described in Section 3, established that there exists a unique (up to
+isomorphism) 8-regular (3, 9; 35)-graph. We note that it is a cyclic graph on 35 ver-
+tices with circular distances {1,7,11,16}, found by Kalbﬂeisch [11] in 1966. Clearly, any
+(3, 9; 35, 140)-graph must be 8-regular, and thus the theorem follows.                   ✷
+
+
+Theorem 4 R(3, 10) = 43       if and only if    e(3, 10, 42) = 189.
+Proof. It is known that R(3, 10) ≤ 43 [19], i.e. there are no (3, 10; 43)-graphs. We
+will prove the theorem by showing that any (3, 10; 42)-graph must be regular of degree 9.
+The essence of the reasoning is very similar to that for e(3, 9, 35) = 140 in the previous
+theorem, except that this time it is little more complicated.
+    Suppose G ∈ R(3, 10; 42, 189 − s) for some s ≥ 0. The computations described in
+Section 3 established that G cannot have the unique (3, 9; 35)-graph as one of its Gv ’s.
+Hence, 7 ≤ degG (v) ≤ 9 for all vertices v ∈ V (G). The solutions ni to (4) which contain
+all possible degree sequences for G with this restriction are presented in Table 6.
+
+                              n7   n8    n9 e(G)      γ(G)   s
+                              0    8     34 185         24   4
+                              1    6     35 185         25   4
+                              2    4     36 185         26   4
+                              3    2     37 185         27   4
+                              4    0     38 185         28   4
+                              0    6     36 186         60   3
+                              1    4     37 186         61   3
+                              2    2     38 186         62   3
+                              3    0     39 186         63   3
+                              0    4     38 187         96   2
+                              1    2     39 187         97   2
+                              2    0     40 187         98   2
+                              0    2     40 188        132   1
+                              1    0     41 188        133   1
+                              0    0     42 189        168   0
+
+                  Table 6: Solutions to (4) for (3, 10; 42, 189 − s)-graphs.
+
+
+
+                                               13
+   Note that for all 0 ≤ s ≤ 4 we have 0 ≤ n7 ≤ s, n8 + 2n7 = 2s, n9 = 42 − n8 − n7 ,
+and e(G) = 189 − s. Since e(3, 9, 34) = 129, using (2) we see that Z(v) ≤ 60 − s for every
+vertex v of degree 7. Similarly, since e(3, 9, 33) = 118, Z(v) ≤ 71 − s for every vertex v of
+degree 8. If s = 0, then we are done, otherwise consider graph H induced in G by 2s − n7
+vertices of degree 7 or 8. Observe that δ(H) ≤ s − n7 /2, since H is triangle-free.
+Case 1: n7 = 0. Let v be a vertex in V (G) of degree 8 connected to at most s other
+vertices of degree 8. This gives ZG (v) ≥ 8s + 9(8 − s) = 72 − s, which is a contradiction.
+Case 2: n8 = 0. Let v be a vertex in V (G) of degree 7 connected to at most s/2 other
+vertices of degree 7 (in this case |V (H)| = s). This gives ZG (v) ≥ 7s/2+9(7−s/2) = 63−s,
+which is a contradiction.
+Case 3: n7 = 1. If v is the only vertex of degree 7, then n8 = 2s − 2 and we easily have
+ZG (v) ≥ 8n8 + 9(7 − n8 ) = 65 − 2s > 60 − s, which again is a contradiction.
+Case 4: n7 = 2. Both vertices of degree 7 must have ZG (v) ≥ 7 + 8n8 + 9(7 − n8 − 1) =
+61 − (2s − 2n7 ) = 65 − 2s, which is a contradiction.
+Case 5: n7 > 2. The only remaining degree sequence not covered by previous cases is
+n7 = 3 and n8 = 2, for s = 4 and e = 185. There is a vertex v of degree 7 connected to at
+most one other of degree 7, and thus ZG (v) ≥ 7 + 2 · 8 + 4 · 9 > 60 − s, a contradiction. ✷
+
+
+
+6     R(3, 10) ≤ 42
+Theorem 4 implies that any (3, 10; 42)-graph G must be regular of degree 9 with 189
+edges. Removing any vertex v with its neighborhood from G yields a (3, 9; 32, 108)-graph
+Gv . Hence, our ﬁrst task is to obtain all (3, 9; 32, 108)-graphs.
+    We used the neighborhood extension method to generate (3, 9; 32, 108)-graphs H
+with a vertex v for which Hv is one of the following types: (3, 8; 27), (3, 8; 26, ≤ 77),
+(3, 8; 25, ≤ 68), (3, 8; 24, ≤ 59) or (3, 8; 23, 49). These extensions yielded the set of 2104151
+(3, 9; 32, 108)-graphs X . Using notation of the example in Section 3, now with 4 ≤ i ≤ 8,
+mi = 31−i, and ti = 10, 5, 4, 4, 1, respectively, the only remaining degree sequence passing
+(4) for a (3, 9; 32, 108)-graph is n6 = 8, n7 = 24.
+    Potentially, the complete set of (3, 9; 32, 108)-graphs could be obtained by perform-
+ing additional extensions of degree 6 to (3, 8; 25, 69)-graphs or extensions of degree 7
+to (3, 8; 24, 60)-graphs. However, there are already 12581543 (3, 8; 25, ≤ 68)-graphs and
+3421512 (3, 8; 24, ≤ 59)-graphs (see Table 13 in Appendix 1), and there are many more
+with one additional edge. Hence, further reﬁnement of the construction method of the
+(3, 9; 32, 108)-graphs not in X was needed. It is described in the following Lemma 5,
+which permitted a fast computation and the completion of the task.
+
+Lemma 5 Every (3, 9; 32, 108)-graph H 6∈ X has n6 = 8, n7 = 24, and furthermore in
+such H every vertex of degree 6 has exactly 3 neighbors of degree 7 and every vertex of
+degree 7 has exactly 1 neighbor of degree 6.
+
+                                               14
+Proof. As stated after the deﬁnition of X above, (4) implies the speciﬁed degree sequence
+of H 6∈ X . Suppose that H has a vertex v of degree 6 with at least 4 neighbors of degree 7.
+One can easily see that ZH (v) ≥ 40 and thus e(Hv ) ≤ 68. All such graphs, however, were
+included in the set of inputs producing X , so we have a contradiction. Similarly, suppose
+that H has a vertex v of degree 7 with no neighbors of degree 6. Then ZH (v) = 49 and
+e(Hv ) = 59, but all such graphs were used as inputs producing X , hence again we have
+a contradiction. Now, by the pigeonhole principle, there are exactly 24 edges connecting
+vertices of distinct degrees, and we can easily conclude that every vertex of degree 6 must
+have exactly 3 neighbors of degree 7 and every vertex of degree 7 exactly 1 neighbor of
+degree 6.                                                                                 ✷
+
+    We adapted the extension algorithm from Section 3 to generate this very restricted
+set of (3, 9; 32, 108)-graphs by performing extensions of all 64233886 (3, 8; 24, 60)-graphs
+(Table 13 in Appendix 1). The result is that there are no (3, 9; 32, 108)-graphs not in X .
+
+
+Theorem 6 R(3, 10) ≤ 42.
+
+Proof. For contradiction, suppose that G is a (3, 10; 42)-graph. By Theorem 4 it must
+be a 9-regular (3, 10; 42, 189)-graph whose all Gv ’s are (3, 9; 32, 108)-graphs. By Lemma
+5 and the computations described above there are exactly 2104151 such graphs. A spe-
+cialized extension algorithm (a modiﬁcation of the gluing extender) was run for all of
+them in an attempt to obtain a 9-regular (3, 10; 42, 189)-graph. The neighbors of v have
+to be connected to independent sets of order 8 in Gv . For every pair of (possibly equal)
+independent sets {Si , Sj } of order 8, we test if they can be assigned to two neighbors of v
+by checking if V (Gv ) \ (Si ∪ Sj ) induces an independent set of order 8 in Gv , and if so we
+can bound the recursion. We used for this task a precomputed table storing the results of
+such tests for all pairs of independent sets of order 8. The concept of eligible candidates
+(Section 3) was also used, and the condition ∆(G) = 9 turned out to be particularly
+strong in pruning the recursion. No 9-regular (3, 10; 42, 189)-graphs were produced, and
+thus R(3, 10) ≤ 42.                                                                          ✷
+
+    Theorem 6 improves over the bound R(3, 10) ≤ 43 obtained in 1988 [19]. The correct-
+ness tests of our implementations and the computational eﬀort required for various parts
+of the computations are described in Appendix 2.
+
+    Geoﬀrey Exoo [6] found almost 300000 (3, 10; 39)-graphs, we extended this set to more
+than 4 · 107 graphs, and very likely there are more of them. The known (3, 10; 39)-graphs
+have the number of edges ranging from 161 to 175, hence we have 151 ≤ e(3, 9, 39) ≤ 161.
+We expect that the actual value is much closer, if not equal, to 161. Despite many attempts
+by Exoo, us, and others, no (3, 10; 40)-graphs were constructed. The computations needed
+for the upper bound in Theorem 6 were barely feasible. Consequently, we anticipate that
+any further improvement to either of the bounds in 40 ≤ R(3, 10) ≤ 42 will be very
+diﬃcult.
+
+                                             15
+7    Lower Bounds for e(3, k, n) and
+     Upper Bounds for R(3, k), for k ≥ 11
+We establish ﬁve further new upper bounds on the Ramsey numbers R(3, k) as listed in
+Theorem 7. All of the new bounds improve the results listed in the 2011 revision of the
+survey [17] by 1. The bound R(3, 16) ≤ 98 was also obtained by Backelin, though it was
+not published [1, 2]. Note that we don’t improve the upper bound on R(3, 12).
+
+Theorem 7 The following upper bounds hold:
+R(3, 11) ≤ 50, R(3, 13) ≤ 68, R(3, 14) ≤ 77, R(3, 15) ≤ 87, and R(3, 16) ≤ 98.
+
+Proof. Each of the new upper bounds R(3, k) ≤ n can be obtained by showing that
+e(3, k, n) = ∞. The details of the intermediate stages of computations for all k are
+presented in the tables and comments of the remaining part of this section. For k = 16
+no data is shown except some comments in Table 11, in particular the data in this table
+implies e(3, 16, 98) = ∞ by (4).                                                     ✷
+
+    In the Tables 7, 8 and 9, for k = 11, 12 and 13, respectively, we list several cases
+in the comments column, where the lower bounds on e(3, k, n) listed in [13] (some of
+them credited to [1]) are better than our results. This is the case for n slightly larger
+than 13k/4 − 1, mostly due to the theorems claimed in the unpublished manuscript by
+Backelin [1, 2]. Our lower bounds on e(3, k, n), and implied upper bounds on R(3, k),
+do not rely on these results. We have checked that assuming the results from [1, 2, 13]
+would not imply, using the methods of this paper, any further improvements on the upper
+bounds on R(3, k) for k ≤ 16, but they may for k ≥ 17. Hence, if the results in [1, 13]
+are published, then using them jointly with our results may lead to better upper bounds
+on R(3, k), at least for some k ≥ 17.
+
+
+
+
+                                           16
+Lower bounds for e(3, 11, n)
+The exact values of e(3, 11, ≤ 31) are determined by Theorem 2. The bounds for n = 32, 33
+marked with a ’t’ are from Theorem 2. The lower bounds on e(3, 11, ≥ 32) are included
+in the second column of Table 7. They are based on solving integer constraints (4), using
+known values and lower bounds on e(3, 10, n) listed in Table 5 in Section 4. They are
+better than those in [13] for all 36 ≤ n ≤ 50.
+
+            n e(3, 11, n) ≥    comments
+            32      62t        63 [13], 63 is exact [1, 2]
+            33      68t        69 [13], 70 is exact [1, 2]
+            34      75         76 [13], 77 is exact [1, 2]
+            35      83         84 [13], credit to [1]
+            36      92         the same as in [1, 2]
+            37     100
+            38     109
+            39     117         unique degree sequence solution, 6-regular
+            40     128
+            41     138
+            42     149
+            43     159
+            44     170
+            45     182
+            46     195         199 required for R(3, 12) ≤ 58
+            47     209
+            48     222         unique solution: n9 = 36, n10 = 12,
+                               215 required for R(3, 12) ≤ 59, old bound
+            49       237       245 maximum
+            50       ∞         hence R(3, 11) ≤ 50, new bound, Theorem 7
+            51       ∞         hence R(3, 11) ≤ 51, old bound
+
+                    Table 7: Lower bounds on e(3, 11, n), for n ≥ 32.
+
+
+
+    The maximum number of edges in any (3, 11; 49)-graph is that of a 10-regular graph,
+so a proof of e(3, 11, 49) > 245 would imply R(3, 11) ≤ 49. Observe that any graph Gv of
+any 10-regular (3, 11; 50)-graph must be a (3, 10; 39, 150)-graph. Thus, our improvement
+of the upper bound on R(3, 11) from 51 to 50 is mainly due to the new lower bound
+e(3, 10, 39) ≥ 151 (together with not-too-much-oﬀ adjacent bounds).
+
+
+
+
+                                           17
+Lower bounds for e(3, 12, n)
+The exact values of e(3, 12, ≤ 34) are determined by Theorem 2. The bounds for 35 ≤
+n ≤ 37 marked with a ’t’ are from Theorem 2. The lower bounds on e(3, 12, ≥ 35) are
+included in the second column of Table 8. They are based on solving integer constraints
+(4), using known values and lower bounds on e(3, 11, n) given in Table 7. They are better
+than those in [13] for all 43 ≤ n ≤ 58.
+    An improvement of the upper bound on R(3, 12) obtained by Lesser [13] from 60 to 59
+is now immediate (it formed a signiﬁcant part of her thesis), but a further improvement
+from 59 to 58 would require an increase of the lower bound on e(3, 12, 58) by 4.
+
+             n e(3, 12, n) ≥     comments
+             35      67t         68 [13], 68 is exact [1, 2]
+             36      73t         74 [13], 75 is exact [1, 2]
+             37      79t         81 [13], 82 is exact [1, 2]
+             38      86          88 [13], 89 [1]
+             39      93          95 [13], 96 [1]
+             40     100          102 [13], 103 [1]
+             41     109          111 [13]
+             42     119          119 [13], 120 in [1]
+             43     128          the same as in [1]
+             44     138
+             45     148
+             46     158
+             47     167          168, proof based on Table 7 [2]
+             48     179          180, proof based on Table 7 [2]
+             49     191
+             50     203
+             51     216
+             52     229
+             53     241
+             54     255          259 required for R(3, 13) ≤ 67
+             55     269          265 required for R(3, 13) ≤ 68, Theorem 7
+             56     283
+             57     299
+             58     316          319 maximum
+             59      ∞           hence R(3, 12) ≤ 59, old bound
+
+                     Table 8: Lower bounds on e(3, 12, n), for n ≥ 35.
+
+
+
+
+                                            18
+Lower bounds for e(3, 13, n)
+The exact values of e(3, 13, ≤ 39) are determined by Theorem 2. The bound for n = 40 is
+from Theorem 2. The lower bounds on e(3, 13, ≥ 40) are included in the second column
+of Table 9. They are based on solving integer constraints (4), using lower bounds on
+e(3, 12, n) listed in Table 8. They are better than those in [13] for all 51 ≤ n ≤ 68.
+
+             n e(3, 13, n) ≥    comments
+             40      84t         86 [13], 87 is exact [2]
+             41      91          93 [13], 94 is exact [1]
+             42      97         100 [13], 101 [1]
+             43     104         107 [13], 108 [1]
+             44     112         114 [13], 115 [1]
+             45     120         122 [13], 123 [1]
+             46     128         130 [13], 132 [1]
+             47     136         139 [13], 140 [1]
+             48     146         148 [13]
+             49     157         158 [13]
+             50     167         167 [13], 168 [1]
+             51     177         178 [1]
+             52     189
+             53     200
+             54     212
+             55     223
+             56     234
+             57     247
+             58     260
+             59     275
+             60     289
+             61     303
+             62     319         326 required for R(3, 14) ≤ 76
+             63     334
+             64     350         345 required for R(3, 14) ≤ 77, Theorem 7
+             65     365
+             66     381
+             67     398         402 maximum
+             68      ∞          hence R(3, 13) ≤ 68, new bound
+             69      ∞          hence R(3, 13) ≤ 69, old bound
+
+                    Table 9: Lower bounds on e(3, 13, n), for n ≥ 40.
+
+
+
+
+                                           19
+Lower bounds for e(3, 14, n)
+The exact values of e(3, 14, ≤ 41) are determined by Theorem 2. Only lower bounds on
+e(3, 14, ≥ 66) are included in the second column of Table 10, since these are relevant for
+our further analysis of R(3, 15) and R(3, 16). They are based on solving integer constraints
+(4), using lower bounds on e(3, 13, n) listed in Table 9. They are better than those in [13]
+for all 66 ≤ n ≤ 77.
+
+              n e(3, 14, n) ≥     comments
+              66     321
+              67     334          335, proof based on Table 9 [2]
+              68     350
+              69     365
+              70     381
+              71     398          407 required for R(3, 15) ≤ 86
+              72     415          414 required for R(3, 15) ≤ 87, Theorem 7
+              73     432
+              74     449
+              75     468
+              76     486          494 maximum
+              77      ∞           hence R(3, 14) ≤ 77, new bound
+              78      ∞           hence R(3, 14) ≤ 78, old bound
+
+                     Table 10: Lower bounds on e(3, 14, n), for n ≥ 66.
+
+
+
+
+                                             20
+Lower bounds for e(3, 15, n)
+The exact values of e(3, 15, ≤ 44) are determined by Theorem 2. Only lower bounds on
+e(3, 15, ≥ 81) are included in the second column of Table 11, since these are relevant
+for further analysis of R(3, 16). They are based on solving integer constraints (4), using
+lower bounds on e(3, 14, n) listed in Table 10. They are better than those in [13] for all
+81 ≤ n ≤ 87.
+
+             n e(3, 15, n) ≥ comments
+             81     497      498, proof based on Table 10 [2]
+             82     515      518 required for R(3, 16) ≤ 97
+                             511 required for R(3, 16) ≤ 98, Theorem 7
+             83     533
+             84     552
+             85     572
+             86     592      602 maximum
+             87      ∞       hence R(3, 15) ≤ 87, new bound
+             88      ∞       hence R(3, 15) ≤ 88, old bound
+
+                    Table 11: Lower bounds on e(3, 15, n), for n ≥ 81.
+
+
+
+Acknowledgements
+We are very grateful to Jörgen Backelin for careful reading the draft, numerous comments
+improving the presentation, his patient guidance through the maze of lower bounds on
+e(3, k, n), and the last minute improvements to some of the bounds (see the comments
+column of Tables 5, 8, 10 and 11 with credit to [2]).
+    This work was carried out using the Stevin Supercomputer Infrastructure at Ghent
+University. Jan Goedgebeur is supported by a Ph.D. grant from the Research Foundation
+of Flanders (FWO).
+
+
+
+References
+ [1] J. Backelin, Contributions to a Ramsey Calculus, unpublished, 2000-2012.
+ [2] J. Backelin, personal communication, 2012.
+ [3] G. Brinkmann, K. Coolsaet, J. Goedgebeur and H. Mélot, House of Graphs: A
+     database of interesting graphs, Discrete Applied Mathematics, 161 (2013) 311–314.
+     Available at http://hog.grinvin.org
+ [4] G. Brinkmann, J. Goedgebeur and J.C. Schlage-Puchta, Ramsey Numbers R(K3 , G)
+     for Graphs of Order 10, Electronic Journal of Combinatorics, 19(4) (2012).
+
+
+                                           21
+ [5] G. Exoo, On Two Classical Ramsey Numbers of the Form R(3, n), SIAM Journal of
+     Discrete Mathematics, 2 (1989) 488–490.
+ [6] G. Exoo, personal communication, 2012.
+ [7] J. Goedgebeur, House of Graphs: Minimal Ramsey Graphs, http://hog.grinvin.
+     org/MinRamsey.
+ [8] J.E. Graver and J. Yackel, Some Graph Theoretic Results Associated with Ramsey’s
+     Theorem, Journal of Combinatorial Theory, 4 (1968) 125–175.
+ [9] R.E. Greenwood and A.M. Gleason, Combinatorial Relations and Chromatic Graphs,
+     Canadian Journal of Mathematics, 7 (1955) 1–7.
+[10] C. Grinstead and S. Roberts, On the Ramsey Numbers R(3, 8) and R(3, 9), Journal
+     of Combinatorial Theory, Series B, 33 (1982) 27–51.
+[11] J.G. Kalbﬂeisch, Chromatic Graphs and Ramsey’s Theorem, Ph.D. thesis, University
+     of Waterloo, January 1966.
+[12] J.H. Kim, The Ramsey Number R(3, k) Has Order of Magnitude t2 / log t, Random
+     Structures and Algorithms, 7 (1995) 173–207.
+[13] A. Lesser, Theoretical and Computational Aspects of Ramsey Theory, Examensar-
+     beten i Matematik, Matematiska Institutionen, Stockholms Universitet, 3 (2001).
+[14] B.D. McKay, Practical graph isomorphism, 10th Manitoba Conference on Numerical
+     Mathematics and Computing, Winnipeg 1980, Congressus Numerantium, 30 (1981)
+     45–87.
+[15] B.D. McKay, nauty User’s Guide (Version 2.4), Technical Report TR-CS-90-02, De-
+     partment of Computer Science, Australian National University, (1990). The latest
+     version of the software is available at http://cs.anu.edu.au/~bdm/nauty.
+[16] B.D. McKay and Zhang Ke Min, The Value of the Ramsey Number R(3, 8), Journal
+     of Graph Theory, 16 (1992) 99–105.
+[17] S.P. Radziszowski, Small Ramsey Numbers, Electronic Journal of Combinatorics,
+     Dynamic Survey DS1, revision #13 (2011), http://www.combinatorics.org.
+[18] S.P. Radziszowski and D.L. Kreher, On R(3, k) Ramsey Graphs: Theoretical and
+     Computational Results, Journal of Combinatorial Mathematics and Combinatorial
+     Computing, 4 (1988) 37–52.
+[19] S.P. Radziszowski and D.L. Kreher, Upper Bounds for Some Ramsey Numbers
+     R(3, k), Journal of Combinatorial Mathematics and Combinatorial Computing, 4
+     (1988) 207–212.
+[20] S.P. Radziszowski and D.L. Kreher, Minimum Triangle-Free Graphs, Ars Combina-
+     toria, 31 (1991) 65–92.
+[21] J. Spencer, Eighty Years of Ramsey R(3, k) ... and Counting!, in Ramsey Theory: Yes-
+     terday, Today and Tomorrow (ed. A. Soifer), Progress in Mathematics 285, Springer-
+     Birkhauser 2011, 27–39.
+
+
+                                           22
+Appendix 1: Graph Counts
+Tables 12–15 below contain all known exact counts of (3, k; n, e)-graphs for speciﬁed n,
+for k = 7, 8, 9 and 10, respectively. All graph counts were obtained by the algorithms
+described in Section 3. Empty entries indicate 0. In all cases, the maximum number
+of edges is bounded by ∆(G)n/2 ≤ (k − 1)n/2. All (3, ≤ 9; n, ≤ e(3, k, n) + 1)-graphs
+which were constructed by our programs can be obtained from the House of Graphs [3]
+by searching for the keywords “minimal ramsey graph” or from [7].
+
+
+                edges                        number of vertices n
+                  e        16       17        18         19           20        21     22
+                 20         2
+                 21        15
+                 22        201
+                 23       2965
+                 24      43331
+                 25      498927       2
+                 26     4054993      30
+                 27         ?       642
+                 28         ?      13334
+                 29         ?     234279
+                 30         ?     2883293       1
+                 31         ?         ?         15
+                 32         ?         ?        382
+                 33         ?         ?       8652
+                 34         ?         ?      160573
+                 35         ?         ?     2216896
+                 36         ?         ?          ?
+                 37         ?         ?          ?       11
+                 38         ?         ?          ?       417
+                 39         ?         ?          ?     10447
+                 40         ?         ?          ?     172534
+                 41         ?         ?          ?    1990118
+                42-43       ?         ?          ?        ?
+                 44         ?         ?          ?        ?            15
+                 45         ?         ?          ?        ?           479
+                 46         ?         ?          ?        ?          10119
+                 47         ?         ?          ?        ?         132965
+                 48         ?         ?          ?        ?         1090842
+                49-50                 ?          ?        ?             ?
+                 51                   ?          ?        ?             ?        4
+                 52                              ?        ?             ?        70
+                 53                              ?        ?             ?       717
+                 54                              ?        ?             ?      5167
+                 55                                       ?             ?      27289
+                 56                                       ?             ?      97249
+                 57                                       ?             ?     219623
+                 58                                                     ?     307464
+                 59                                                     ?     267374
+                 60                                                     ?     142741   1
+                 61                                                            43923   6
+                 62                                                            6484    30
+                 63                                                             331    60
+                 64                                                                    59
+                 65                                                                    25
+                 66                                                                    10
+
+                    Table 12: Number of (3, 7; n, e)-graphs, for n ≥ 16.
+
+
+
+                                                 23
+edges                                      number of vertices n
+  e       19      20        21        22         23           24        25        26       27
+ 25       2
+ 26       37
+ 27      763
+ 28     16939
+ 29        ?
+ 30        ?        3
+ 31        ?       60
+ 32        ?      1980
+ 33        ?     58649
+ 34        ?    1594047
+ 35        ?        ?         1
+ 36        ?        ?        20
+ 37        ?        ?       950
+ 38        ?        ?      35797
+ 39        ?        ?     1079565
+40-41      ?        ?         ?
+ 42        ?        ?         ?        21
+ 43        ?        ?         ?       1521
+ 44        ?        ?         ?      72353
+ 45        ?        ?         ?     2331462
+46-48      ?        ?         ?         ?
+ 49        ?        ?         ?         ?        102
+ 50        ?        ?         ?         ?       8241
+ 51        ?        ?         ?         ?      356041
+ 52        ?        ?         ?         ?     10326716
+53-55      ?        ?         ?         ?         ?
+ 56        ?        ?         ?         ?         ?           51
+ 57        ?        ?         ?         ?         ?          3419
+ 58        ?        ?         ?         ?         ?         129347
+ 59        ?        ?         ?         ?         ?        3288695
+ 60        ?        ?         ?         ?         ?       64233886
+61-64      ?        ?         ?         ?         ?            ?
+ 65        ?        ?         ?         ?         ?            ?        396
+ 66        ?        ?         ?         ?         ?            ?       21493
+ 67                 ?         ?         ?         ?            ?      613285
+ 68                 ?         ?         ?         ?            ?     11946369
+69-72               ?         ?         ?         ?            ?         ?
+ 73                           ?         ?         ?            ?         ?         62
+ 74                                     ?         ?            ?         ?        1625
+ 75                                     ?         ?            ?         ?        23409
+ 76                                     ?         ?            ?         ?       216151
+ 77                                     ?         ?            ?         ?      1526296
+78-84                                             ?            ?         ?          ?
+ 85                                                                      ?          ?        4
+ 86                                                                      ?          ?       92
+ 87                                                                      ?          ?      1374
+ 88                                                                                 ?     11915
+ 89                                                                                 ?     52807
+ 90                                                                                 ?     122419
+ 91                                                                                 ?     151308
+ 92                                                                                       99332
+ 93                                                                                       33145
+ 94                                                                                        4746
+
+                  Table 13: Number of (3, 8; n, e)-graphs, for n ≥ 19.
+
+
+
+
+                                               24
+ edges                                                number of vertices n
+   e        24       25        26      27        28        29         30      31       32         33        34    35
+  40         2
+  41        32
+  42       2089
+  43      115588
+ 44-45       ?
+  46         ?        1
+  47         ?       39
+  48         ?      4113
+  49         ?     306415
+ 50-51       ?        ?
+  52         ?        ?        1
+  53         ?        ?        1
+  54         ?        ?       444
+  55         ?        ?      58484
+ 56-60       ?        ?        ?
+  61         ?        ?        ?       700
+  62         ?        ?        ?      95164
+  63         ?        ?        ?     6498191
+ 64-67       ?        ?        ?        ?
+  68         ?        ?        ?        ?        126
+  69         ?        ?        ?        ?       17223
+  70         ?        ?        ?        ?      1202362
+ 71-76       ?        ?        ?        ?         ?
+  77         ?        ?        ?        ?         ?         1342
+  78         ?        ?        ?        ?         ?        156686
+ 79-85       ?        ?        ?        ?         ?           ?
+  86         ?        ?        ?        ?         ?           ?      1800
+  87         ?        ?        ?        ?         ?           ?     147335
+ 88-94       ?        ?        ?        ?         ?           ?        ?
+  95         ?        ?        ?        ?         ?           ?        ?      560
+  96         ?        ?        ?        ?         ?           ?        ?     35154
+97-103                ?        ?        ?         ?           ?        ?       ?
+  104                          ?        ?         ?           ?        ?       ?         39
+  105                                   ?         ?           ?        ?       ?        952
+  106                                   ?         ?           ?        ?       ?       18598
+  107                                   ?         ?           ?        ?       ?      234681
+  108                                   ?         ?           ?        ?       ?     2104151
+109-117                                           ?           ?        ?       ?          ?
+  118                                                                  ?       ?          ?        5
+  119                                                                  ?       ?          ?       69
+  120                                                                  ?       ?          ?     ≥ 1223
+  121                                                                          ?          ?     ≥ 13081
+  122                                                                          ?          ?     ≥ 90235
+  123                                                                          ?          ?    ≥ 401731
+  124                                                                          ?          ?    ≥ 1188400
+  125                                                                                     ?    ≥ 2366474
+  126                                                                                     ?    ≥ 3198596
+  127                                                                                     ?    ≥ 2915795
+  128                                                                                     ?    ≥ 1758241
+  129                                                                                          ≥ 673600     1
+  130                                                                                          ≥ 153676     4
+  131                                                                                           ≥ 18502    ≥ 15
+  132                                                                                            ≥ 922     ≥ 40
+  133                                                                                                      ≥ 54
+  134                                                                                                      ≥ 43
+  135                                                                                                      ≥ 20
+  136                                                                                                      ≥7
+137-139
+  140                                                                                                             1
+
+                          Table 14: Number of (3, 9; n, e)-graphs, for n ≥ 24.
+
+
+
+
+                                                      25
+                       edges                 number of vertices n
+                         e      29      30        31        32       33     34
+                        58      5
+                        59     1364
+                       60–65     ?
+                        66       ?      5084
+                        67       ?    1048442
+                       68–72     ?        ?
+                        73       ?        ?       2657
+                        74       ?        ?      580667
+                       75–80     ?        ?         ?
+                        81       ?        ?         ?      6592
+                       82–89     ?        ?         ?        ?
+                        90       ?        ?         ?        ?      57099
+                       91–98     ?        ?         ?        ?        ?
+                        99       ?        ?         ?        ?        ?     ≥1
+                       ≥ 100     ?        ?         ?        ?        ?      ?
+
+                 Table 15: Number of (3, 10; n, e)-graphs, for 29 ≤ n ≤ 34.
+
+
+
+   We showed that e(3, 10, 34) ≥ 99 (see Section 4), a (3, 10; 34, 99)-graph was constructed
+by Backelin [2], and thus e(3, 10, 34) = 99.
+
+
+
+
+                                                 26
+Appendix 2: Testing Implementations
+
+Correctness
+    Since most results obtained in this paper rely on computations, it is very important
+that the correctness of our programs has been thoroughly veriﬁed. Below we list the main
+tests and agreements with results produced by more than one computation.
+
+   • For every (3, k)-graph which was output by our programs, we veriﬁed that it does
+     not contain an independent set of order k by using an independent program.
+
+   • For every (3, k; n, e(3, k, n))-graph which was generated by our programs, we veriﬁed
+     that dropping any edge creates an independent set of order k.
+
+   • For various (3, k; n, ≤ e)-graphs we added up to f edges in all possible ways to
+     obtain (3, k; n, ≤ e + f )-graphs. For the cases where we already had the complete
+     set of (3, k; n, ≤ e + f )-graphs we veriﬁed that no new (3, k; n, ≤ e + f )-graphs were
+     obtained. We used this, amongst other cases, to verify that no new (3, 9; 24, ≤ 43),
+     (3, 9; 28, ≤ 70), (3, 9; 30, ≤ 87) or (3, 10; 30, ≤ 67)-graphs were obtained.
+
+   • For various (3, k; n, ≤ e + f )-graphs we dropped one edge in all possible ways and
+     veriﬁed that no new (3, k; n, ≤ e + f − 1)-graphs were obtained. We used this
+     technique, amongst other cases, to verify that no new (3, 9; 24, ≤ 42), (3, 9; 28, ≤
+     69), (3, 9; 33, ≤ 119), (3, 9; 34, ≤ 130), (3, 10; 30, 66) or (3, 10; 32, 81)-graphs were
+     obtained.
+
+   • For various sets of (3, k + 1; n, ≤ e)-graphs we took each member G and constructed
+     from it all Gv ’s. We then veriﬁed that this did not yield any new (3, k; n − deg(v) −
+     1, ≤ e−Z(v))-graphs for the cases where we have all such graphs. We performed this
+     test, amongst other cases, on the sets of (3, 9; 28, ≤ 70)- and (3, 10; 31, ≤ 74)-graphs.
+
+   • Various sets of graphs can be obtained by both the minimum degree extension
+     method and the neighborhood gluing extension method. We performed both ex-
+     tension methods for various cases (e.g. to obtain the sets of (3, 9; 24, ≤ 43) and
+     (3, 9; 25, ≤ 48)-graphs). In each of these cases the results obtained by both methods
+     were in complete agreement.
+
+   • The sets of (3, 7; 21, ≤ 55), (3, 7; 22), (3, 8; 26, ≤ 76) and (3, 8; 27, ≤ 88)-graphs were
+     obtained by both the maximal triangle-free method [4] and the neighborhood gluing
+     extension method. The results were in complete agreement. As these programs are
+     entirely independent and the output sets are large, we think that this provides strong
+     evidence of their correctness.
+
+   • The counts of (3, 7; 16, 20), (3, 7; 17, 25), (3, 7; 18, 30), (3, 7; 19, 37), (3, 7; 20, 44),
+     (3, 7; 21, 51), and (3, 7; 22, e) for all 60 ≤ e ≤ 66, are conﬁrmed by [18].
+
+
+                                               27
+   • The counts of (3, 7; 18, 31), (3, 7; 19, 38), (3, 7; 20, 45) and (3, 7; 21, ≤ 53)-graphs are
+     conﬁrmed by [19].
+
+   • The counts of (3, 8; 19, 25), (3, 8; 20, 30), (3, 8; 21, 35) and (3, 9; 24, 40)-graphs are
+     conﬁrmed by [20].
+
+   • The counts of (3, 7; 16, 21), (3, 7; 17, 26), (3, 8; 22, 42) and (3, 9; 25, 47)-graphs are
+     conﬁrmed by [2].
+
+    Additional implementation correctness tests of specialized algorithms described in Sec-
+tion 6 were as follows:
+
+   • The specialized program of Section 6 was used to extend (3, 8; 26, 76)- to (3, 9; 35, 140)-
+     graphs and it produced the unique (3, 9; 35, 140)-graph.
+
+   • We relaxed the conditions to generate all (3, 9; 32, 108)-graphs from Lemma 5 by
+     dropping the requirement that each vertex of degree 6 has 3 neighbors of degree
+     7, and enforcing just one vertex of degree 7 with exactly one neighbor of degree 6.
+     This yielded 21602 graphs. We veriﬁed that each of these graphs was indeed already
+     included in the set X , and that X does not contain any additional such graphs.
+
+   Since our results are in complete agreement with previous results and since all our
+consistency tests passed, we believe that this is strong evidence for the correctness of our
+implementations.
+
+Computation Time
+    The implementations of extension algorithms described in Sections 3 and 6 are written
+in C. Most computations were performed on a cluster with Intel Xeon L5520 CPU’s at
+2.27 GHz, on which a computational eﬀort of one CPU year can be usually completed in
+about 8 elapsed hours. The overall computational eﬀort of this project is estimated to be
+about 50 CPU years, which includes the time used by a variety of programs. The most
+cpu-intensive tasks are listed in the following.
+    The ﬁrst phase of obtaining (3, 9; 32, 108)-graphs required about 5.5 CPU years. The
+bottlenecks of this phase were the computations required for extending all (3, 8; 24, ≤ 59)-
+graphs (which required approximately 3.5 CPU years), and extending the (3, 8; 25, ≤
+68)-graphs (which took more than 2 CPU years). The second phase of obtaining the
+special (3, 9; 32, 108)-graphs with n6 = 8, n7 = 24 as in Lemma 5 took about 5.8 CPU
+years. The specialized program of Section 6 extended all (3, 9; 32, 108)-graphs to 9-regular
+(3, 10; 42, 189)-graphs quite fast, in about only 0.25 CPU years. Performing computations
+to generate all (3, 10; 39, ≤ 150)-graphs (there are none of these), which were needed for
+the bound R(3, 11) ≤ 50, took about 4.8 CPU years.
+    The CPU time needed to complete the computations of Section 7 was negligible,
+however their variety caused that they were performed during the span of several weeks.
+
+
+
+                                              28
+

@@ -1,0 +1,9 @@
+pseudo-Boolean proof version 3.0
+f 2;
+solx *x1 x2 *x3;
+solx;
+rup >= 1 ;
+output NONE;
+% The first solx excludes 4 solutions, so 5 solutions are enumerated.
+conclusion ENUMERATION_COMPLETE 2;
+end pseudo-Boolean proof;

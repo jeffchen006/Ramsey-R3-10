@@ -1,0 +1,169 @@
+\section{Symmetric graphs}\label{sec:sym}
+
+Here we ask whether a $(3,10,40)$-graph $G$ can have a large or a prime-order symmetry. Every claim has
+one of these status labels:
+\textbf{proof} (a short hand proof, reviewed by critic), \textbf{certified} (an independent checker rebuilds the CNF;
+CaDiCaL 3.0.1~\cite{CaDiCaL24} writes a DRAT proof; drat-trim~\cite{DRATtrim14} prints \texttt{s VERIFIED}), \textbf{enumeration} (a complete search
+run with no proof log), \textbf{open}.
+Code: \code{symsat/}. Logs: \code{runs/symsat/}. Full notes: \code{notes/symsat.md}.
+Published facts used: $R(3,k)$ for $k \le 9$ (\cite[rev.~18, Table I]{DS1}; \cite{McZ}; \cite{GrR}); the complete list of
+$(3,8,27)$-graphs (477 142 graphs, McKay's data page~\cite{McKayWeb}) \cite{McZ}; $\delta(G) \ge 5$ (Sec.~\ref{sec:structure}; critic Review 4,
+which relies on \cite{GR} Thm 3) is used ONLY in search runs labelled ``dmin 5'', never in certificates.
+
+\subsection{Elementary facts (proof)}\label{sec:sym-elem}
+\begin{itemize}
+\item (F3) $G$ is connected. If $G = G_1 + G_2$ with $\alpha(G_i) = a_i$, then $a_1 + a_2 \le 9$ and
+  $|G_i| \le R(3, a_i + 1) - 1$. So $40 \le \max_a [R(3,a+1) + R(3,10-a) - 2] = 36$; contradiction.
+\item (F4) No automorphism of prime order $p \ge 11$. Let $\sigma$ have order $p$, with fixed set $F$ and
+  non-fixed set $M$. A vertex in $F$ with a neighbour in $M$ has $\ge p > 9$ neighbours. So no edge joins $F$
+  and $M$, and by (F3) $F$ or $M$ is empty. $F$ empty means $p \mid 40$. Thus $p$ is in $\{2, 3, 5, 7\}$, and $f = |F| = 40 \bmod p$.
+\item (F6, twins) Let $O$ be a $\sigma$-orbit of size $p$, and let $A_O = N(O) \cap F$. Every $x$ in $O$ has $N(x) \cap F = A_O$.
+  If $G[O]$ has an edge, then $A_O$ is empty.
+\item (F7, fixed-point bounds) Let $f > 0$. Some orbit $O$ has $a = |A_O| \ge 1$, and $O$ is independent.
+  Lemma L ($\alpha(G - N[I]) \le 9 - |I|$ for $I$ independent) with $I = O$ gives
+  $40 - a - p(10 - a) \le R(3, 10-p) - 1$ and $f - a \le R(3, 10-p) - 1$. Hence:
+  $p = 7$: $f = 5$; $p = 5$: $f \in \{0,5,10,15\}$; $p = 3$: $f \in \{1,4,\dots,28\}$; $p = 2$: $f \in \{0,2,\dots,34\}$.
+  This leaves \textbf{33 cases $(p, f)$}: $1 + 4 + 10 + 18$.
+  (The same numbers appear as the unreviewed ``Theorem B'' of unsolvedlab.com; our proof is independent.)
+\end{itemize}
+
+\subsection{Cayley graphs (certified)}\label{sec:sym-cayley}
+Every group of order 40 is $Z_5 \rtimes P$ with $|P| = 8$ (Sylow + Schur--Zassenhaus). We build all 28
+semidirect products $Z_5 \rtimes_\varphi P$ (5 groups $P$, all $\varphi: P \to Z_4$) and sort them by an explicit isomorphism
+test into 14 classes $G_0..G_{13}$ (14 is the known number of groups of order 40). The searches run on these
+14 representatives. Completeness holds because each removed product is mapped to its representative
+by an explicit isomorphism, which \code{symsat/groups.py} checks to be a bijective homomorphism.
+
+\begin{namedthm}{Theorem 5.1}
+No $(3,10,40)$-graph is a Cayley graph.
+\end{namedthm}
+\begin{itemize}
+\item Method A (enumeration): all maximal product-free symmetric sets $S$, $|S| \le 9$; exact $\alpha$.
+  The minimum $\alpha$ is 10 for 12 groups and 11 for 2 groups ($G_1 = Z_5 \rtimes Z_8$ with $|\varphi(P)| = 4$, and
+  $G_{13} = Z_5 \rtimes Q_8$ with $|\varphi(P)| = 2$). $< 2$\,s in total.
+  For $Z_{40}$ (circulants) this agrees with Harborth--Krause~\cite{HaKr}.
+\item Method B (certified): orbit SAT (Sec.~\ref{sec:sym-method}) with the left-regular action, no symmetry breaking,
+  no degree clauses. \textbf{14/14 DRAT VERIFIED} (\code{symsat/verify_cert.py}, \code{runs/symsat/cayley_verify.log}).
+\end{itemize}
+
+\subsection{Prime-order automorphisms: method}\label{sec:sym-method}
+Fix $\sigma$ = $p$-cycles on $\{0..kp-1\}$ and $f$ fixed points. Then $G$ is $\sigma$-invariant. There is one Boolean
+per $\sigma$-orbit of vertex pairs. Clauses: triangles (projected); independent 10-sets added lazily
+(CEGAR or the satcore IPASIR-UP propagator; each clause is implied by $\alpha \le 9$); optional degree
+clauses (implied, for propagation only); lex-leader symmetry breaking for generators of a subgroup
+of the normalizer of $\langle\sigma\rangle$. This is sound because the constraint set is invariant under the normalizer.
+Certificates (\code{symsat/verify_sc.py}): the checker builds its own orbit variables and lex-leader CNF. It
+checks that each clause of the solver's CNF is a triangle clause, one of its own lex clauses, or a
+clause that it re-derives from an independent 10-set. Then drat-trim runs. The trust base is drat-trim,
+\code{verify_sc.py} (about 200 lines) and the soundness argument for the lex-leader clauses. The solver,
+its propagator and the degree clauses are NOT in the trust base.
+Calibration on complete published families $(3,6,17)$, $(3,7,22)$, $(3,8,27)$, $(3,9,35)$: 139 $(p,f)$
+cases. 133 cases were decided, with \textbf{0 mismatches} against nauty~\cite{nauty14} ground truth. Every $(p,f)$ type that
+occurs in these families was recovered as SAT (for example (35: 2,1) in 1236\,s). Every SAT model passes
+\code{tools/check_graph.py}. Positive control with the checker's own lex clauses at $n = 35$: $(7,0)$, $(3,5)$
+and $(5,0)$ are SAT.
+Negative control (honest limit): the known $(3,10,39)$-graphs with an involution of type $(2,1)$ or $(2,3)$
+were NOT found within 4\,h (6 runs, \code{runs/symsat/bench39*.jsonl}). So for $p = 2$ with few fixed points,
+a TIMEOUT tells us nothing.
+
+\subsection{Results for the 33 cases \texorpdfstring{$(p, f)$}{(p,f)}}\label{sec:sym-results}
+\begin{namedthm}{Theorem 5.2 (certified)}
+A $(3,10,40)$-graph has no automorphism of order 7. It has no automorphism of
+order 5 with $f \in \{10, 15\}$ fixed points. It has no automorphism of order 3 with $f \in \{13,16,19,22,25,28\}$.
+\end{namedthm}
+(9 cases. Each case was solved UNSAT by satcore in 5--110\,s, and each is DRAT VERIFIED.)
+
+\begin{center}\small
+\begin{tabular}{@{}l p{2.4cm} l p{6.6cm}@{}}
+\toprule
+$p$ & $f$ & status & evidence \\
+\midrule
+7 & 5 & certified & UNSAT 6.8\,s, VERIFIED \\
+5 & 15, 10 & certified & UNSAT 7.2\,s, 46\,s; VERIFIED \\
+5 & 5 & enumeration & UNSAT 1322\,s; DRAT check not finished (lost in a crash; to be redone) \\
+5 & 0 & open & TIMEOUT 3600\,s, and 24\,h (dmin 5, \code{p50_search}) \\
+3 & 28, 25, 22, 19, 16, 13 & certified & UNSAT 5--110\,s; VERIFIED \\
+3 & 10, 7, 4, 1 & open & see subcases below \\
+2 & 34 \dots\ 0 (18 cases) & open & see subcases and Sec.~\ref{sec:sym-a7} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Subcase split (proof of coverage; runs = enumeration).} Let $f > 0$, and let $a = \max$ over orbits of $|A_O|$.
+Relabel so that orbit 0 is independent with $N(\text{orbit } 0) \cap F = A$, $|A| = a$, and every other orbit
+has $\le a$ fixed neighbours. The subcases $a = \max(1, f - R(3,10-p) + 1) .. \min(f, a_{\max}(p))$ cover $(p, f)$.
+$a_{\max}(p)$ is 7 for $p = 2$ and 6 for $p = 3$. The extra lex-leader generators fix orbit 0, $A$ and $F - A$
+setwise; \code{verify_sc.py} checks this for each generator.
+Runs: satcore, dmin 5, full transposition lex-leader. First pass 1800\,s (115 subcases); rerun of
+the timeouts 21\,600\,s (\code{runs/symsat/sub_search.jsonl}, \code{rerun1.jsonl}; 73/73 done). A planned 24\,h rerun of the 62 subcases that timed out (rerun2) was stopped
+by a project decision (2026-10-26). Of these 62, 3 ($(2,f,7)$, $f = 28, 30, 32$) are empty by Lemma 5.3;
+the other 59 are \textbf{open}.
+Status on 2026-10-26 (U = UNSAT by enumeration, T = TIMEOUT = \textbf{open}, F10 = closed by Sec.~\ref{sec:sym-a7}, -- = not in range):
+
+\begin{center}\small
+\begin{tabular}{@{}llllllll@{}}
+\toprule
+$(p,f) \backslash a$ & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+\midrule
+(3,10) & U & T & T & U & U & U & -- \\
+(3,7) & U & T & U & U & U & U & -- \\
+(3,4) & T & T & U & U & -- & -- & -- \\
+(3,1) & T & -- & -- & -- & -- & -- & -- \\
+(2,34) & -- & -- & -- & -- & -- & -- & T (ext27 $f=34$ not run) \\
+(2,32) & -- & -- & -- & -- & T & T & F10 \\
+(2,30) & -- & -- & U & T & T & T & F10 \\
+(2,28) & U & U & U & T & T & T & F10 \\
+(2,26) & U & U & U & T & T & T & U, F10 \\
+(2,24) & U & U & T & T & T & T & U, F10 \\
+(2,22) & U & U & T & T & T & U & U, F10 \\
+(2,20) & U & U & T & T & U & U & U, F10 \\
+(2,18) & U & U & T & T & U & U & U, F10 \\
+(2,16) & U & U & T & T & T & U & U, F10 \\
+(2,14) & U & U & T & T & T & U & U, F10 \\
+(2,12) & U & T & T & T & T & U & U, F10 \\
+(2,10) & U & T & T & T & T & U & U, F10 \\
+(2,8) & U & T & T & T & T & T & U, F10 \\
+(2,6) & T & T & T & T & T & U & -- \\
+(2,4) & T & T & T & T & -- & -- & -- \\
+(2,2) & T & T & -- & -- & -- & -- & -- \\
+(2,0) & \multicolumn{7}{l}{no split ($f = 0$); open} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+53 of 115 subcases are UNSAT, 3 more ($(2,f,7)$, $f = 28, 30, 32$) are empty by Lemma 5.3, and the other 59 are open. Every $(p, f)$ case with an open subcase stays
+open: $(3, f)$ for $f \in \{1, 4, 7, 10\}$, and all 18 cases of order 2. No $(p, f)$ case is closed by subcases alone. Subcase UNSAT results have no proof logs.
+
+\subsection{Order 2, \texorpdfstring{$a = 7$}{a = 7}: reduction to McKay's \texorpdfstring{$(3,8,27)$}{(3,8,27)} list}\label{sec:sym-a7}
+\begin{namedthm}{Lemma 5.3 (proof; critic Review 25 CONFIRMED)}
+Let $p = 2$, $O = \{x, x'\}$, $|A_O| = 7$. Then
+$|N[O]| \le 2 + 7 + 2 \cdot 2 = 13$. Lemma L gives $|V - N[O]| \le R(3,8) - 1 = 27$, so equality holds everywhere.
+Then $\deg x = \deg x' = 9$, and $H = G - N[O]$ is a $(3,8,27)$-graph. $\sigma|_H$ is an automorphism of $H$ of order $\le 2$
+with exactly $f - 7$ fixed points.
+\end{namedthm}
+In the complete $(3,8,27)$ list, the involution types are only
+$(2,1)$, $(2,3)$, $(2,5)$, $(2,7)$, $(2,9)$, $(2,17)$ (nauty + full enumeration of group elements). Hence:
+\begin{itemize}
+\item the subcase $(2, f, 7)$ is \textbf{empty (proof)} for $f \in \{18, 20, 22, 26, 28, 30, 32\}$;
+\item for $f \in \{8, 10, 12, 14, 16, 24\}$, $(2, f, 7)$ reduces to extending each pair ($H$, conjugacy class of
+  involutions of type $(2, f-7)$) by 13 vertices. These are \textbf{2557 small SAT problems}
+  ($f = 8$: 2263, 10: 250, 12: 35, 14: 6, 16: 2, 24: 1). \textbf{All 2557 are UNSAT (enumeration).}
+  Certificates: \textbf{2557/2557 DRAT VERIFIED, 0 failed} (\code{symsat/ext27_verify.py}: own CNF rebuild,
+  CaDiCaL 3.0.1 + drat-trim; \code{runs/symsat/ext27_verify.log}, \code{ext27_verify2.log}). So these 6 subcases are \textbf{certified}.
+\item $f = 34$ ($\sigma|_H = \mathrm{id}$): this needs the extension of all 477 142 graphs. A sample of 11 graphs
+  (every 47 714th) is UNSAT, at about 380\,s per graph (\code{runs/symsat/ext27_f34test.log}), so the full run
+  would cost about 50 000 CPU-hours. Not run; $(2,34,7)$, and so $(2,34)$, stays open.
+\end{itemize}
+Trust base: $R(3,8) = 28$ and the completeness of McKay's $(3,8,27)$ list \cite{McZ} (published, trusted by rule);
+nauty 2.9.3 for $\mathrm{Aut}(H)$.
+
+\subsection{Summary}\label{sec:sym-summary}
+\begin{itemize}
+\item Certified: no Cayley graph (14 groups); no automorphism of order $\ge 11$ (proof) or 7; none of
+  order 5 with $f \in \{10,15\}$; none of order 3 with $f \ge 13$.
+\item Certified: the 2557 F10 extensions (subcases $(2, f, 7)$, $f \in \{8,10,12,14,16,24\}$).
+\item Enumeration only: order 5, $f = 5$; 53 of 115 subcases
+  $(p, f, a)$ UNSAT (dmin 5); 3 more are empty by Lemma 5.3 (proof); the other 59 subcases are open.
+\item Open: $(5,0)$; $(3, f)$ for $f \in \{1,4,7,10\}$; all 18 cases of order 2. Order 2 with few fixed points is
+  hard for our method: we cannot recover known $(3,10,39)$-graphs with an involution in 4\,h.
+\end{itemize}

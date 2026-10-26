@@ -1,0 +1,168 @@
+diff --git a/src/cubing.cpp b/src/cubing.cpp
+index d780e3f..4c21f90 100644
+--- a/src/cubing.cpp
++++ b/src/cubing.cpp
+@@ -549,6 +549,19 @@ void printGame(const vector<vector<int>> &cubeTrail)
+ int GraphSolver::countAssignedOrInactive(const vector<vector<int>> &cubeTrail)
+ {
+     int count = 0;
++    if (config.cutoffEdgeVarsOnly)
++    {
++        int ne = graphHandler->getNumVariables();
++        vector<bool> seen(ne + 1, false);
++        for (auto lits : cubeTrail)
++            for (auto lit : lits)
++                if (abs(lit) <= ne)
++                    seen[abs(lit)] = true;
++        for (int v = 1; v <= ne; v++)
++            if (seen[v] || (v < (int)isFixed.size() && isFixed[v]))
++                count++;
++        return count;
++    }
+     for (auto lits : cubeTrail)
+         for (auto lit : lits)
+         {
+diff --git a/src/options.cpp b/src/options.cpp
+index 2739d39..847d330 100644
+--- a/src/options.cpp
++++ b/src/options.cpp
+@@ -44,6 +44,11 @@ void initOptions(SolverConfig &config, struct minimality_config_t &minimalityCon
+       ("min-chromatic-number,chi", po::value<int>(&propagatorsConfig.minChromaticNumber)->implicit_value(0), "Search for graphs with chromatic number at least this")
+       ("coloring-algo", po::value<int>(&propagatorsConfig.coloringAlgo), "Specify the graph coloring algorithm (0 means simple recursive; 1 means simple DPLL-based; 2 means SAT-based)")
+       ("non-010-colorable,non010", po::bool_switch(&propagatorsConfig.non010colorable), "Search for non-010-colorable graphs (relates to Kochen-Specker graphs)")
++      ("forbid-independent-set", po::value<int>(&propagatorsConfig.forbidIndependentSet), "Lazily forbid independent sets of this size")
++      ("independent-set-frequency", po::value<int>(&propagatorsConfig.independentSetFrequency)->default_value(1), "The frequency with which to call the independent set check on partially defined graphs")
++      ("independent-set-propagate", po::bool_switch(&propagatorsConfig.independentSetPropagate), "Independent set check also forces the last unassigned pair of an almost independent k-set")
++      ("forbid-dominated", po::value<vector<int>>(&propagatorsConfig.forbidDominated)->multitoken(), "s m: forbid an independent s-set with at least m common non-neighbours (lazy)")
++      ("dominated-frequency", po::value<int>(&propagatorsConfig.dominatedFrequency)->default_value(1), "Frequency of the dominated-set check on partial graphs")
+       ("triangle-vars", po::value<int>(&propagatorsConfig.triangleVars)->implicit_value(0), "For problems which use triangle variables (variable to denote whether a given set of 3 vertices forms a triangle), specify where the triangle variables start")
+       ;
+     
+@@ -52,6 +57,7 @@ void initOptions(SolverConfig &config, struct minimality_config_t &minimalityCon
+       ("simplify", po::value<std::string>(&config.simplifiedFormulaFile), "Simplify the CNF formula and write it to the given file. (Directly after prerun)")
+       ("learned-clauses", po::value<std::string>(&config.learnedClausesFile),"Write the learned clauses to the given file after prerun")
+       ("max-learned-clause-size", po::value<int>(&config.maxPrintedLearnedClauseSize)->default_value(5), "The maximal size of the learned clauses that should be printed (also for `simplify`)")
++      ("proof-log", po::value<std::string>(&config.proofLogFile), "Write a proof log with antecedents that includes external clauses (see proofLogTracer.hpp)")
+       ("lrat-output", po::value<std::string>(&config.lratFile), "Write LRAT proof to the given file (for UNSAT results)")
+       ("prerun", po::value<int>(&config.prerunTime), "Run the solver for the given amount of seconds before creating cubes/ simplified formula/ output learned clauses/ activating lookahead.")
+       ("assignment-cutoff", po::value<int>(&config.assignmentCutoff), "Create cubes when the number of assigned variables exceeds this (using lookahead heuristic for branching)") // TODO distinguish between different cubing types
+@@ -66,6 +72,7 @@ void initOptions(SolverConfig &config, struct minimality_config_t &minimalityCon
+       ("cube-timeout", po::value<int>(&config.cubeTimeout), "Maximum time spend for trying to solve for each cube in seconds")
+       ("timeout", po::value<int>(&config.timeout), "Timeout in seconds of the main solving phase")
+       ("cube-only-decisions",po::bool_switch(&config.cubesOnlyDecisions), "The output of the cubes only contains the decision literals and not implied literals")
++      ("cutoff-edge-vars-only", po::bool_switch(&config.cutoffEdgeVarsOnly), "With --assignment-cutoff: count only assigned (or fixed) edge variables")
+       ("lookahead-only-edge-vars", po::bool_switch(&config.lookaheadOnlyEdgeVars), "Use lookahead only on edge variables (either for cubing of creating games)")
+       ("cadical-config", po::value<vector<std::string>>(&config.cadicalConfig)->multitoken(), "Space-separated list of command-line options for cadical (without the -- prefixes)")
+       ("qcir", po::value<string>(&propagatorsConfig.qcirFile) ,"File containing the encoding in QCIR format. (Currently only supports 2QBF starting with existential quantifier)")
+@@ -80,6 +87,8 @@ void initOptions(SolverConfig &config, struct minimality_config_t &minimalityCon
+ }
+ 
+ #include "graphPropagators/connectedChecker.hpp"
++#include "graphPropagators/independentSet.hpp"
++#include "graphPropagators/dominatedSet.hpp"
+ #include "graphPropagators/planarity.hpp"
+ #include "graphPropagators/coloringCheck.hpp"
+ #include "other/forbiddenSubgraph.hpp"
+@@ -92,6 +101,12 @@ void addPropagators(GraphSolver *solver, const propagators_config_t &propagators
+     if (propagatorsConfig.generate_connected)
+         solver->addPartiallyDefinedGraphChecker(new ConnectedChecker());
+ 
++    if (propagatorsConfig.forbidDominated.size() == 2)
++        solver->addPartiallyDefinedGraphChecker(new DominatedSetChecker(propagatorsConfig.forbidDominated[0], propagatorsConfig.forbidDominated[1], propagatorsConfig.dominatedFrequency));
++
++    if (propagatorsConfig.forbidIndependentSet > 0)
++        solver->addPartiallyDefinedGraphChecker(new IndependentSetChecker(propagatorsConfig.forbidIndependentSet, propagatorsConfig.independentSetFrequency, propagatorsConfig.independentSetPropagate));
++
+     if (propagatorsConfig.planar)
+     {
+         if (solver->config.directed)
+diff --git a/src/options.hpp b/src/options.hpp
+index 7ccb991..8bcfdf6 100644
+--- a/src/options.hpp
++++ b/src/options.hpp
+@@ -27,6 +27,13 @@ typedef struct
+     bool non010colorable = false;
+     int triangleVars = 0;
+ 
++    // no independent set of this size (0 = off), lazy propagator
++    int forbidIndependentSet = 0;
++    int independentSetFrequency = 1;
++    bool independentSetPropagate = false;
++    vector<int> forbidDominated; // (s, m)
++    int dominatedFrequency = 1;
++
+     string qcirFile;
+     bool polarityHashing = false;
+ } propagators_config_t;
+diff --git a/src/sms.cpp b/src/sms.cpp
+index efa7040..5c4b756 100644
+--- a/src/sms.cpp
++++ b/src/sms.cpp
+@@ -4,6 +4,7 @@
+ #include <cmath>
+ #include "sms.hpp"
+ #include "minimalityCheck.hpp"
++#include "proofLogTracer.hpp"
+ 
+ GraphSolver::GraphSolver(SolverConfig config, struct minimality_config_t minimality_config) : config(config)
+ {
+@@ -63,6 +64,13 @@ GraphSolver::GraphSolver(SolverConfig config, struct minimality_config_t minimal
+     }
+   }
+ 
++  if (!config.proofLogFile.empty())
++  {
++    std::cout << "Writing proof log to: " << config.proofLogFile << std::endl;
++    proofLogTracer = new ProofLogTracer(config.proofLogFile);
++    this->connect_proof_tracer((CaDiCaL::Tracer *)proofLogTracer, true);
++  }
++
+   if (!config.lratFile.empty())
+   {
+     std::cout << "Enabling LRAT proof output to: " << config.lratFile << std::endl;
+@@ -305,6 +313,8 @@ int GraphSolver::sms_solve()
+     LOG(LOG_LEVEL_INFO, "Instance is unknown");
+   }
+   printStats();
++  if (proofLogTracer)
++    proofLogTracer->flush();
+ 
+   LOG(LOG_LEVEL_INFO, "Result: " << res);
+   return res;
+diff --git a/src/sms.hpp b/src/sms.hpp
+index 3326101..64c687a 100644
+--- a/src/sms.hpp
++++ b/src/sms.hpp
+@@ -29,6 +29,7 @@ typedef struct
+   string learnedClausesFile;    // write all learned clauses up to the given size to the file TODO check whether this is also for irredundant clauses
+   int maxPrintedLearnedClauseSize = 5;
+   string lratFile; // write LRAT proof to the given file
++  string proofLogFile; // proof log incl. external clauses (ProofLogTracer)
+ 
+   // cubing related
+   int assignmentCutoff = 0;       // create a cube when the number of assigned variables exceeds this
+@@ -40,6 +41,7 @@ typedef struct
+   int cubeTimeout = 0;
+   bool cubesOnlyDecisions = false; // the output of the cubes only contains the decision literals and not implied literals
+   bool lookaheadOnlyEdgeVars = false;
++  bool cutoffEdgeVarsOnly = false; // assignment-cutoff counts only assigned edge variables (added by agent sms)
+ 
+   bool createGame = false;  // print the trail on a conflict or if all clauses are satisfied using lookeahead. Afterwards, the solving stops
+   float createGameProp = 0; // randomize the truth value of the branching variable. The value is the probability of flipping the truth value.
+@@ -61,6 +63,8 @@ typedef struct
+   long long depthCalls = 0;
+ } sms_statistics_t;
+ 
++class ProofLogTracer;
++
+ class GraphSolver : public CaDiCaL::ExternalPropagator, public CaDiCaL::FixedAssignmentListener, public CaDiCaL::Solver
+ {
+ public:
+@@ -77,6 +81,7 @@ public:
+ 
+   SolverConfig config;
+   int numVars = 0;
++  ProofLogTracer *proofLogTracer = nullptr;
+ 
+   int sms_solve();                                                                     // TODO Same return values as CaDiCaL::solve but also takes fully defined graphs into account
+   vector<vector<int>> getEdgeVariables() { return graphHandler->getEdgeVariables(); }; // returns the edge variables used for representing the graph

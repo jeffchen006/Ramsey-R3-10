@@ -1,0 +1,7 @@
+pseudo-Boolean proof version 3.0
+f 1;
+% All preserved variables are shrunk, so the excluding constraint is the contradiction `>= 1`.
+solx x2 *x1 *x3;
+output NONE;
+conclusion ENUMERATION_COMPLETE 4;
+end pseudo-Boolean proof;

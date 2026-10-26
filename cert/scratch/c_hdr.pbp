@@ -1,0 +1,27 @@
+pseudo-Boolean proof version 3.0
+f 126 ;
+def_order lexmax
+  vars
+    left u1 u2 u3 u4 u5 u6 u7 u8 u9 u10 u11 u12 u13 u14 u15 u16 u17 u18 u19 u20 u21 u22 u23 u24 u25 u26 u27 u28 ;
+    right v1 v2 v3 v4 v5 v6 v7 v8 v9 v10 v11 v12 v13 v14 v15 v16 v17 v18 v19 v20 v21 v22 v23 v24 v25 v26 v27 v28 ;
+    aux ;
+  end;
+  def
+    134217728 u1 67108864 u2 33554432 u3 16777216 u4 8388608 u5 4194304 u6 2097152 u7 1048576 u8 524288 u9 262144 u10 131072 u11 65536 u12 32768 u13 16384 u14 8192 u15 4096 u16 2048 u17 1024 u18 512 u19 256 u20 128 u21 64 u22 32 u23 16 u24 8 u25 4 u26 2 u27 1 u28 -134217728 v1 -67108864 v2 -33554432 v3 -16777216 v4 -8388608 v5 -4194304 v6 -2097152 v7 -1048576 v8 -524288 v9 -262144 v10 -131072 v11 -65536 v12 -32768 v13 -16384 v14 -8192 v15 -4096 v16 -2048 v17 -1024 v18 -512 v19 -256 v20 -128 v21 -64 v22 -32 v23 -16 v24 -8 v25 -4 v26 -2 v27 -1 v28 >= 0 ;
+  end;
+  transitivity
+    vars
+      fresh_right w1 w2 w3 w4 w5 w6 w7 w8 w9 w10 w11 w12 w13 w14 w15 w16 w17 w18 w19 w20 w21 w22 w23 w24 w25 w26 w27 w28 ;
+    end;
+    proof
+      proofgoal #1
+        pol -2 -3 + -1 + ;
+      qed : -1 ;
+    qed;
+  end;
+end;
+load_order lexmax x1 x2 x4 x7 x11 x16 x22 x3 x5 x8 x12 x17 x23 x6 x9 x13 x18 x24 x10 x14 x19 x25 x15 x20 x26 x21 x27 x28 ;
+load_order ;
+output EQUISATISFIABLE FILE ;
+conclusion NONE ;
+end pseudo-Boolean proof ;

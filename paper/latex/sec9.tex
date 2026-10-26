@@ -1,0 +1,17 @@
+\section{Data and code availability}\label{sec:data}
+Code, notes and small data files are at \url{https://github.com/jeffchen006/Ramsey-R3-10}
+(this paper: DOI \href{https://doi.org/10.5281/zenodo.23677795}{10.5281/zenodo.23677795}). The repository contains:
+\begin{itemize}
+\item Code: our patches to SMS (third-party code by Kirchweger and Szeider; patches released under its licence terms:
+  lazy independent-set propagator, cube and proof support), the gluers (glue, glue2, glue5), symsat's orbit-SAT
+  code, the satcore encodings, the certificate checking scripts, the kernel and case-split encoders, and the
+  Lean~4 development.
+\item Notes: the technical notes cited in this paper (\code{notes/}, including \code{notes/critic.md} and
+  \code{notes/DEPENDENCIES.md}).
+\item A manifest (\code{MANIFEST.tsv}) with the SHA-256 hash of every file, and a list of the files left out
+  because of size (\code{LARGE_FILES.tsv}).
+\end{itemize}
+The run logs cited as \code{runs/\ldots}, the large graph classes ($R(3,9;31,{\le}96)$, $R(3,9;30,{\le}87)$), the cube sets
+and the large DRAT/LRAT/VeriPB proofs are not in the public repository because of their size; they are available
+from the author on request. Third-party data (House of Graphs, McKay's lists, published counts) and third-party software
+are cited, not redistributed; versions and sources are listed in \code{tools/README.md}.

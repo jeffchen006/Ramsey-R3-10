@@ -1,0 +1,213 @@
+# This file is a template, and might need editing before it works on your project.
+# You can copy and paste this template into a new `.gitlab-ci.yml` file.
+# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
+#
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Rust.gitlab-ci.yml
+
+# Official language image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/rust/tags/
+
+.latex_compile:
+  tags:
+    - saas-linux-small-amd64
+  image: texlive/texlive:latest-medium
+
+.linux_runner:
+  tags:
+    - saas-linux-small-amd64
+  image: rust:slim
+
+.macos_runner:
+  tags:
+    - saas-macos-medium-m1
+  image: macos-14-xcode-15
+  before_script:
+    - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
+    - . "$HOME/.cargo/env"
+    # Install cargo binstall and then use it to install cargo nextest
+    - curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+    - cargo binstall cargo-nextest --secure
+
+.windows_runner:
+  tags:
+    - saas-windows-medium-amd64
+  before_script:
+    - Invoke-WebRequest -Uri https://win.rustup.rs -OutFile rustup-init.exe
+    - .\rustup-init.exe -y --profile minimal
+    - $env:Path = "$env:USERPROFILE\.cargo\bin"
+    # Install cargo nextest
+    - $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'zip' } -PassThru
+    - Invoke-WebRequest -OutFile $tmp https://get.nexte.st/latest/windows-x86
+    - $outputDir = if ($Env:CARGO_HOME) { Join-Path $Env:CARGO_HOME "bin" } else { "~/.cargo/bin" }
+    - $tmp | Expand-Archive -DestinationPath $outputDir -Force
+    - $tmp | Remove-Item
+
+# Optional: Pick zero or more services to be used on all builds.
+# Only needed when using a docker container to run your tests in.
+# Check out: https://docs.gitlab.com/ee/ci/services/
+# services:
+#   - mysql:latest
+#   - redis:latest
+#   - postgres:latest
+
+# Optional: Install a C compiler, cmake and git into the container.
+# You will often need this when you (or any of your dependencies) depends on C code.
+# before_script:
+#   - apt-get update -yqq
+#   - apt-get install -yqq --no-install-recommends build-essential
+
+workflow:
+  auto_cancel:
+    on_new_commit: conservative
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+stages:
+  - linting
+  - test
+  - docs
+  - benchmark
+
+# Check that formatting follows standard
+format:
+  interruptible: true
+  extends:
+    - .linux_runner
+  stage: linting
+  before_script:
+    - rustup component add rustfmt
+  script:
+    - cargo fmt --check --verbose
+
+# Check that there are no warnings from clippy or they are disabled accordingly.
+clippy:
+  interruptible: true
+  extends:
+    - .linux_runner
+  stage: linting
+  before_script:
+    - rustup component add clippy
+  script:
+    - cargo clippy --workspace -- -Dwarnings
+
+# Use cargo to test the project on Linux
+test-linux:
+  interruptible: true
+  extends:
+    - .linux_runner
+  stage: test
+  before_script:
+    # Install cargo binstall and then use it to install cargo nextest
+    - apt-get update && apt-get install --yes curl
+    - curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+    - cargo binstall cargo-nextest --secure
+  script:
+    - cargo nextest run --workspace --verbose
+
+# # Use cargo to test the project on MacOS
+# test-macos:
+#   extends:
+#     - .macos_runner
+#   stage: test
+#   script:
+#     - cargo nextest run --workspace --verbose
+#   rules:
+#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# # Use cargo to test the project on Windows
+# test-windows:
+#   extends:
+#     - .windows_runner
+#   stage: test
+#   script:
+#     - cargo nextest run --workspace --verbose
+#   rules:
+#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+benchmark:
+  interruptible: true
+  extends: .linux_runner
+  tags:
+    - saas-linux-large-amd64
+  stage: benchmark
+  timeout: 3h
+  rules:
+    # Don't run automatically if label "small" or "minor" is given
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /(small|minor)/i'
+      when: manual
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq curl jq git xz-utils
+    - git config --global --add safe.directory '*'
+  script:
+    # Build both veripb binaries in parallel using a git worktree for main
+    - git fetch origin "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+    - |
+      git worktree add /tmp/veripb-main "origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+      CARGO_TARGET_DIR=/tmp/target-main cargo build --release --bin veripb --manifest-path /tmp/veripb-main/Cargo.toml &
+      BUILD_MAIN_PID=$!
+      cargo build --release --bin veripb
+      wait $BUILD_MAIN_PID
+      cp target/release/veripb /tmp/veripb_branch
+      cp /tmp/target-main/release/veripb /tmp/veripb_main
+      git worktree remove /tmp/veripb-main
+
+    # Download benchmark dataset via job token
+    - >
+      curl --fail
+      --header "JOB-TOKEN: $CI_JOB_TOKEN"
+      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/veripb-ci-benchmarks/1.0.1/small_benchmark_set.tar.xz"
+      -o benchmark_data.tar.xz
+    - tar -xJf benchmark_data.tar.xz
+
+    # Run both benchmarks in parallel
+    - |
+      cargo bench --bench veripb-bench -- small_benchmark_set/ --binary /tmp/veripb_main --runs 3 > main.csv &
+      MAIN_BENCH_PID=$!
+      cargo bench --bench veripb-bench -- small_benchmark_set/ --binary /tmp/veripb_branch --runs 3 > branch.csv
+      wait $MAIN_BENCH_PID
+
+    # Compare; exits 1 if average regression >= 20%, also visible in job log via tee
+    - cargo build --release --bin compare_benchmarks
+    - set -o pipefail; ./target/release/compare_benchmarks main.csv branch.csv | tee comparison.md
+  after_script:
+    # Post comparison as MR comment
+    - |
+      if [ -n "$CI_MERGE_REQUEST_IID" ] && [ -f comparison.md ]; then
+        jq -Rs '{"body": .}' < comparison.md > comment.json \
+          && curl --silent --fail --request POST \
+               --header "PRIVATE-TOKEN: $BENCHMARK_COMMENT_TOKEN" \
+               --header "Content-Type: application/json" \
+               --data @comment.json \
+               "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}/notes" \
+          || echo "Note: MR comment posting failed (BENCHMARK_COMMENT_TOKEN may be missing or lack api scope)"
+      fi
+  artifacts:
+    when: always
+    paths:
+      - main.csv
+      - branch.csv
+      - comparison.md
+    expire_in: 2 weeks
+
+# Build grammar documentation using LaTeX:
+build-grammar-doc:
+  extends:
+    - .latex_compile
+  stage: docs
+  script:
+    - cd docs
+    - latexmk -pdf
+  artifacts:
+    when: on_success
+    expose_as: "Grammar PDF"
+    name: "docs"
+    paths:
+      - docs/grammar.pdf
+  only:
+    changes:
+      - docs/grammar.tex

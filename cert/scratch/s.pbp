@@ -1,0 +1,10 @@
+pseudo-Boolean proof version 3.0
+f 1 ;
+@S1 rup 1 ~x1 >= 1 : @bnd ;
+@S2 rup 1 ~x2 >= 1 : @bnd ;
+@S3 rup 1 ~x3 >= 1 : @bnd ;
+@S4 rup 1 x4 >= 1 : @bnd ;
+core id @S1 @S2 @S3 @S4 ;
+output EQUISATISFIABLE FILE ;
+conclusion NONE ;
+end pseudo-Boolean proof ;

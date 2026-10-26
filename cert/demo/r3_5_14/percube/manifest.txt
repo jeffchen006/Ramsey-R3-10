@@ -1,0 +1,15 @@
+cube -1 0 lazy/c0.cnf percube/c0.log
+cube 1 -2 0 lazy/c1.cnf percube/c1.log
+cube 2 -4 0 lazy/c2.cnf percube/c2.log
+cube 4 -7 0 lazy/c3.cnf percube/c3.log
+cube 7 -11 0 lazy/c4.cnf percube/c4.log
+cube 11 -16 0 lazy/c5.cnf percube/c5.log
+cube 16 -22 0 lazy/c6.cnf percube/c6.log
+cube 22 -29 0 lazy/c7.cnf percube/c7.log
+cube 29 -37 0 lazy/c8.cnf percube/c8.log
+cube 37 -46 0 lazy/c9.cnf percube/c9.log
+cube 46 -56 0 lazy/c10.cnf percube/c10.log
+cube 56 -67 0 lazy/c11.cnf percube/c11.log
+cube 67 -79 0 lazy/c12.cnf percube/c12.log
+cube 79 0 lazy/c13.cnf percube/c13.log
+cover percube/cover.cnf percube/cover.log

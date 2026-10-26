@@ -1,0 +1,20 @@
+Round 5 (duo). Same project, read-only. Context: notes/duo.md (rounds 1-4), notes/cases.md Sec 4 (case R), notes/core_plan.md Sec 2+4, notes/sms.md lines 100-150, notes/gluing.md Sec 8.
+
+Case R = 9-regular (3,10,40)-graph (triangle-free, alpha<=9, so MTF/diameter 2, codegree 1..7). Everything tried so far gives no
+order-of-magnitude cut (your rounds 1-4; plain SMS cube-and-conquer estimate >= 30 CPU-years; gluing class R(3,9;30,99) ~1e17-1e18).
+The shared-type uniform LP dual (round 3) is not finitely checkable with fine types and fails with coarse types; I will stop it.
+
+KEY CALIBRATION FACT: the exact analogue one level down is "8-regular (3,9,35)-graphs" (known answer: exactly one, C35(1,7,11,16),
+|Aut|=210, [GR2013 Thm 3]). SMS (lazy IS propagator, MTF, N(0) fixed) does not even FIND it in 59 min; (3,9,36) 8-regular UNSAT takes 724 s.
+So any method for case R must first classify 8-regular (3,9,35)-graphs cheaply (and (3,8,27) 7-regular, (3,7,22) 6-regular: 10 graphs in McKay r37_22).
+
+Question (plain Markdown, <= 1200 words, be concrete and blunt):
+1. Propose the best 2 methods that would classify all 8-regular (3,9,35)-graphs in <= 1 CPU-day WITHOUT using that the answer is C35,
+   and that scale to case R. For each: exact reduction (lemmas with proof sketch; mark unproven steps), the search object, the
+   predicted cost at k=9 and the scaling rule to k=10. Ideas worth judging (accept or reject each with a reason): (a) orderly generation
+   from a vertex-pair or edge "kernel" N[u] cup N[v] with codegree split, (b) generation by the 9 (resp. 8) independent sets N(x), x in N(v),
+   which partition the edges between N(v) and H_v (H_v degrees = 9 - codeg), (c) SAT with symmetry breaking on the codegree matrix
+   (canonical by codegree profile first), (d) a spectral/eigenvalue constraint on regular triangle-free graphs with alpha<=k-1 used as a cut,
+   (e) your own.
+2. One test I can run on 3 CPUs within 6 h that decides whether your top method is worth building. Give exact steps and the pass threshold.
+Files you may read for the analogues: duo/regstat.py, duo/reg6_22.g6, data/graphs (r39_35.g6 if present). No edits.

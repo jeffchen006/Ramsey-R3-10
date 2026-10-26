@@ -1,0 +1,2 @@
+# certified demo: no (3,7,23)-graph   (cert/demo.py, 2026-10-24 18:58)
+(a) F_full.cnf sha256 a602b9195117c01665ff52c07398c0c5adf9ebc74adf3e3967620f62ec5e6525 : check_cnf OK (only TRI/IS clauses)

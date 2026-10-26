@@ -1,0 +1,113 @@
+#!/usr/bin/python3
+"""mbox: file mailbox for agents; works without the desktop app (owner: agent tools).
+
+  mbox send TO "text" [--from NAME]   TO = agent name or "all"; NAME default $JOBCTL_AGENT or $MBOX_FROM
+  mbox read AGENT [--peek]            print unread messages oldest first, then mark them read
+  mbox list [AGENT]                   unread / total counts per mailbox
+  mbox tail AGENT [-n N]              last N messages (read or not)
+
+Storage: runs/mail/AGENT/new/<time>_<from>_<n>.txt; read messages move to runs/mail/AGENT/cur/.
+Each file: first line "From: X  Date: Y", then the text. Writes are atomic (tmp + rename).
+"""
+import os
+import sys
+import time
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "lib"))
+from r310common import ROOT, agent_table  # noqa: E402
+
+MAIL = os.path.join(ROOT, "runs", "mail")
+
+
+def die(msg):
+    sys.stderr.write("mbox: %s\n" % msg)
+    sys.exit(2)
+
+
+def known_agents():
+    return sorted(set(agent_table()) | {"lead", "watchd", "nightlead"} |
+                  (set(os.listdir(MAIL)) if os.path.isdir(MAIL) else set()))
+
+
+def box(agent, sub):
+    d = os.path.join(MAIL, agent, sub)
+    os.makedirs(d, exist_ok=True)
+    return d
+
+
+def send(to, text, sender):
+    targets = [a for a in agent_table()] + ["lead"] if to == "all" else [to]
+    for t in targets:
+        if not t.replace("-", "").replace("_", "").isalnum():
+            die("bad mailbox name %r" % t)
+        if t not in known_agents():
+            sys.stderr.write("mbox: note: new mailbox %r\n" % t)
+    stamp = time.strftime("%Y%m%d-%H%M%S")
+    for t in targets:
+        d = box(t, "new")
+        name = "%s.%09d_%s_%d.txt" % (stamp, time.time_ns() % 10 ** 9, sender, os.getpid())
+        tmp = os.path.join(box(t, "tmp"), name)
+        with open(tmp, "w") as f:
+            f.write("From: %s  Date: %s\n%s\n" % (sender, time.strftime("%Y-%m-%d %H:%M:%S"), text.rstrip("\n")))
+        os.replace(tmp, os.path.join(d, name))
+    print("sent to %s" % ", ".join(targets))
+
+
+def read(agent, peek=False):
+    d = os.path.join(MAIL, agent, "new")
+    files = sorted(os.listdir(d)) if os.path.isdir(d) else []
+    if not files:
+        print("no unread mail for %s" % agent)
+        return
+    for f in files:
+        p = os.path.join(d, f)
+        print("---- " + open(p).read().rstrip("\n"))
+        if not peek:
+            os.replace(p, os.path.join(box(agent, "cur"), f))
+    print("---- %d message(s)%s" % (len(files), "" if peek else ", marked read"))
+
+
+def count(agent, sub):
+    d = os.path.join(MAIL, agent, sub)
+    return len(os.listdir(d)) if os.path.isdir(d) else 0
+
+
+def main():
+    a = sys.argv[1:]
+    if not a or a[0] in ("-h", "--help"):
+        print(__doc__)
+        return 0
+    cmd = a[0]
+    if cmd == "send":
+        sender = os.environ.get("JOBCTL_AGENT") or os.environ.get("MBOX_FROM") or "unknown"
+        if "--from" in a:
+            k = a.index("--from")
+            sender = a[k + 1]
+            a = a[:k] + a[k + 2:]
+        if len(a) != 3:
+            die('usage: mbox send TO "text" [--from NAME]')
+        send(a[1], a[2], sender)
+    elif cmd == "read":
+        if len(a) < 2:
+            die("usage: mbox read AGENT [--peek]")
+        read(a[1], "--peek" in a)
+    elif cmd == "list":
+        names = [a[1]] if len(a) > 1 else (sorted(os.listdir(MAIL)) if os.path.isdir(MAIL) else [])
+        for n in names:
+            print("%-10s unread %3d  read %4d" % (n, count(n, "new"), count(n, "cur")))
+    elif cmd == "tail":
+        n = int(a[a.index("-n") + 1]) if "-n" in a else 5
+        files = []
+        for sub in ("cur", "new"):
+            d = os.path.join(MAIL, a[1], sub)
+            if os.path.isdir(d):
+                files += [os.path.join(d, f) for f in os.listdir(d)]
+        for p in sorted(files, key=os.path.basename)[-n:]:
+            print("---- " + open(p).read().rstrip("\n"))
+    else:
+        die("unknown command %s" % cmd)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

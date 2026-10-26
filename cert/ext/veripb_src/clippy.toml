@@ -1,0 +1,2 @@
+disallowed-types = ["std::collections::HashMap", "std::collections::HashSet"]
+ignore-interior-mutability = ["veripb_formula::prelude::DBConstraint"]

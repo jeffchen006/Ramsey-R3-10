@@ -1,0 +1,13 @@
+  conclusion               1
+  core                     1
+  def_order                1
+  dom                      133
+  end                      1
+  f                        1
+  load_order               2
+  output                   1
+  red                      3367
+  witness id               3276
+  witness id+to1           91
+  witness perm             133
+RESULT: OK (M-IS conditions W, D, I, R hold)

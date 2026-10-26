@@ -1,0 +1,268 @@
+\section{Structure of a \texorpdfstring{$(3,10,40)$}{(3,10,40)}-graph}\label{sec:structure}
+
+Throughout, $G$ is a $(3,10,40)$-graph. Lean names refer to Sec.~\ref{sec:lean} (namespace \code{R310}).
+
+\subsection{Degrees and edges}\label{sec:degrees}
+\begin{namedthm}{L1}
+$4 \le d(v) \le 9$.
+\end{namedthm}
+$N(v)$ is independent, so $d(v) \le 9$; $\Gv{v}$ has $\alpha \le 8$, so $39 - d(v) \le R(3,9) - 1 = 35$.
+\status{hand, Lean \code{degree_mem_Icc}; uses D-R3}
+
+\begin{namedthm}{L2--L4}
+$e(\Gv{v}) = e - Z(v)$; $e(\Gv{v}) \ge e(3,9,39-d(v))$; $\sum_v Z(v) = \sum_v d(v)^2$, hence
+$\sum_v e(\Gv{v}) = \sum_v d(v)(20 - d(v))$.
+\end{namedthm}
+\status{hand, Lean \code{card_edgeFinset_delNbhd_add_sum_degree},
+\code{e39_le_card_edgeFinset_delNbhd}, \code{sum_card_edgeFinset_delNbhd_add_sq}; uses D-E9}
+
+\begin{namedthm}{L5}
+$159 \le e \le 180$ \status{hand, Lean \code{le_card_edgeFinset}, \code{card_edgeFinset_le_180}; uses D-E9};
+$e \ge 161$ \status{pub D-E10b}. Hence $\Delta(G) = 9$: $2e \ge 322 > 320 = 40 \cdot 8$ \status{Lean \code{exists_degree_nine}, hyp.\ D-E10b}.
+\end{namedthm}
+
+\begin{namedthm}{L6 (pair lemma)}
+For non-adjacent $u \ne w$: $c(u,w) \le d(u) + d(w) - 11$; in particular $c(u,w) \le 7$, and
+$d(u) + d(w) \le 10$ forces $u \sim w$.
+\end{namedthm}
+\begin{proof}
+$X = V - \Nb{u} - \Nb{w}$ has $\alpha \le 7$, so $|X| = 38 - d(u) - d(w) + c \le 27$ (F2).
+\end{proof}
+Consequences: $n_4 + n_5 \le 2$, and further restrictions on degree-4 vertices. \status{hand, Lean \code{pair_lemma},
+\code{adj_of_degree_add_le}, \code{card_degree_le_five}; uses F2}
+
+\begin{namedthm}{L7 (degree 4)}
+If $d(u) = 4$ then $\Gv{u}$ is the unique $(3,9;35)$-graph, every vertex outside $\Nb{u}$ has degree 8 or 9,
+$e = 140 + Z(u)$, and any two neighbours of $u$ have degree sum $\ge 12$.
+\end{namedthm}
+\status{hand, Lean \code{deg4_*}; uses D-G1}
+A separate SAT run shows $\delta(G) \ge 5$ \status{cert: drat-trim + cake\_lpr, \code{notes/critic.md} Reviews 4--5; uses D-G1}; it is not
+needed below, because MTF graphs have $\delta \ge 6$ (M1).
+
+\subsection{Maximal triangle-free graphs}\label{sec:mtf}
+\begin{namedthm}{M0}
+If a $(3,10,40)$-graph exists, an MTF $(3,10,40)$-graph exists (add edges while no triangle appears;
+$\alpha$ does not increase).
+\end{namedthm}
+\status{hand, Lean \code{exists_isMTF_le}}
+
+\begin{namedthm}{M1}
+In an MTF $(3,10,40)$-graph, $\delta \ge 6$.
+\end{namedthm}
+\begin{proof}
+Let $d = d(v)$, $A = N(v)$, $H = \Gv{v}$. Every vertex of $H$ has a
+neighbour in $A$; those with exactly one neighbour $x$ in $A$, together with $A - x$, are independent, so there are at most
+$d(10 - d)$ of them. Hence $8d \ge e(A,H) \ge 2(39 - d) - d(10 - d)$, i.e.\ $d(20 - d) \ge 78$, false for $d \le 5$.
+\end{proof}
+\status{hand, Lean \code{IsMTF.six_le_degree}; uses no published fact}
+
+\begin{namedthm}{M2}
+In an MTF graph, $Z(v) \ge d^2 - 11d + 78$ ($= 48, 50, 54, 60$ for $d = 6..9$).
+\end{namedthm}
+\status{hand, Lean \code{IsMTF.sum_degree_neighbor_ge}}
+
+\begin{namedthm}{M3}
+A 9-regular $(3,10,40)$-graph is MTF (an added edge would give degree 10).
+\end{namedthm}
+\status{hand, Lean \code{isMTF_of_regular_nine}}
+
+\begin{nameddef}{Scope}
+M0 is valid only for plain existence. A search that also assumes an automorphism (Sec.~\ref{sec:sym}) or any
+other property that adding edges can destroy must use the lists for all $G$, not the MTF lists.
+\end{nameddef}
+
+\subsection{Averaging: Theorem A}\label{sec:thmA}
+\begin{namedthm}{Theorem A}
+$G$ has a vertex $v$ with ($d(v) = 9$ and $e(\Gv{v}) \le 99$) or ($d(v) = 8$ and $e(\Gv{v}) \le 96$). If $G$ is not
+9-regular, the same holds with 98 in place of 99.
+\end{namedthm}
+\begin{proof}
+Put $a_v = e(\Gv{v}) - d(v)(20 - d(v))$; $\sum_v a_v = 0$ (L4). For $d \le 7$, $e(3,9,39-d) > d(20-d)$, so $a_v \ge 13$.
+For the second claim: if no vertex is as stated, $a_v \ge 0$ at 9-vertices and $a_v \ge 1$ at 8-vertices, so
+$\sum_v a_v > 0$ unless $G$ is 9-regular. For the first claim: if no vertex is as stated, $a_v \ge 1$ at every 9-vertex
+($e(\Gv{v}) \ge 100$) and at every 8-vertex, so $\sum_v a_v > 0$ in all cases.
+\end{proof}
+\status{hand, CONFIRMED; Lean \code{theoremA}, \code{theoremA_of_not_regular}; uses D-E9}
+
+\begin{namedthm}{Theorem A$''$}
+For MTF $G$ the table input of Theorem A reduces to $e(3,9,32) > 91$ and $e(3,9,33) > 84$, and these
+follow from F1 and F2 (Jensen's inequality applied to $\sum_w q_M(d_H(w)) \ge 0$ for $H$ in $R(3,9;M)$, $M = 32, 33$, gives
+$e(H) \ge 95$ and $e(H) \ge 103$).
+\end{namedthm}
+\status{hand, CONFIRMED critic Review 16; Lean \code{thmA2_32}, \code{thmA2_33}, \code{theoremA_mtf}}
+Theorems B and C (Angeltveit-type averaging and a closed form for degrees $\{8,9\}$) are also proved
+\status{hand, Lean \code{theoremB}, \code{theoremC}}, but they give no smaller classes than the LP of Sec.~\ref{sec:dist}.
+
+\subsection{Degree distributions}\label{sec:dist}
+\code{cases/degseq.py} enumerates the 1,221,759 tuples $(n_4, \dots, n_9)$ with sum 40 and removes those that violate
+parity, L5, M1 (MTF only), the sum inequality $\sum_d n_d (d(20-d) - e(3,9,39-d)) \ge 0$ (from L4), L6, L7, M2, or the
+\emph{class LP}. The class LP has variables $m_{ij}$ = number of edges between degree classes $C_i$ and $C_j$, with rows for
+degree sums, $\sum_{v \in C_i} Z(v) \le n_i (e - L_i)$, weighted Mantel (for every class weight vector in $\{0..3\}^{\text{classes}}$),
+simple caps, L6, and M2 (MTF). A distribution is removed by the LP only with an exact Farkas certificate.
+
+\begin{center}\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+mode & survivors & removed by the LP \\
+\midrule
+all $G$, $e \ge 161$ (D-E10b) & 1897 & 47 \\
+all $G$, $e \ge 159$ (L5 only) & 1938 & 51 \\
+MTF $G$, $e \ge 161$ & \textbf{545} & 0 \\
+MTF $G$, $e \ge 159$ & 573 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+MTF ranges: $n_4 = n_5 = 0$, $n_6 \le 9$, $n_7 \le 19$, $n_9 \ge 2$, $161 \le e \le 180$. All 19,890 certificates were re-checked
+by an independent script, and the four lists are checked in Lean from pinned outputs (\code{caseTable_<tag>}, Sec.~\ref{sec:lean-formal}).
+\status{cert + Lean; CONFIRMED critic Reviews 6, 9}
+
+\paragraph{Per-distribution bound $t_9$.} For a set $U$ of excluded classes (``no vertex of degree $d$ has $e(\Gv{v}) \le U_d$''), $t_9(n)$ is
+the least $T$ such that ``every 9-vertex has $e(\Gv{v}) \ge T + 1$'' is LP-infeasible (with certificate) for the
+distribution $n$. So every graph with distribution $n$ has a 9-vertex $v$ with $e(\Gv{v}) \le t_9(n)$. Over the 545 MTF
+distributions with $U_8 = 96$, $t_9$ takes the values $85..99$ with multiplicities
+85: 6, 86: 8, 87: 6, 88: 15, 89: 24, 90: 43, 91: 59, 92: 80, 93: 91, 94: 85, 95: 74, 96: 37, 97: 14, 98: 2, 99: 1.
+\status{Lean \code{t9_gr_mtf_U8_main} and the other scenarios, hypothesis \texttt{Glue U G}}
+
+\subsection{What the done gluing runs close, and what stays open}\label{sec:open}
+Sec.~\ref{sec:glue} reports two exhaustive gluing runs \status{enum}: no degree-8 vertex has $e(\Gv{v}) \le 96$ (all 35,714 graphs of
+$R(3,9;31,{\le}96)$), and no degree-9 vertex has $e(\Gv{v}) \le 87$ (all 149,135 graphs of $R(3,9;30,{\le}87)$).
+With these, the 20 MTF distributions with $t_9 \le 87$ are impossible (all 20 with $e = 161$ among them). \textbf{525 MTF
+distributions stay open: the 9-regular one (case R) and 524 with $162 \le e \le 179$.} \status{cond: the two gluing runs,
+enum; runs CONFIRMED critic Review 31}
+If the running $t_9 \le 88$ gluing ends with no output, 15 more close (510 open).
+These two runs also make $e \ge 161$ unnecessary for the MTF table: the 28 extra distributions with $e \in \{159, 160\}$
+are closed by them (critic Review 21).
+
+Per edge count (MTF, open after the two runs; $t_9^{\max}$ = largest $t_9$ among them):
+
+\begin{center}\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}l*{19}{r}@{}}
+\toprule
+$e$ & 162 & 163 & 164 & 165 & 166 & 167 & 168 & 169 & 170 & 171 & 172 & 173 & 174 & 175 & 176 & 177 & 178 & 179 & 180 \\
+\midrule
+open & 19 & 18 & 17 & 16 & 80 & 70 & 61 & 52 & 44 & 37 & 30 & 24 & 19 & 14 & 10 & 7 & 4 & 2 & 1 \\
+$t_9^{\max}$ & 90 & 92 & 93 & 94 & 94 & 95 & 96 & 97 & 97 & 96 & 96 & 96 & 96 & 96 & 97 & 97 & 97 & 98 & 99 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{A larger hypothetical gluing (``sel'').} If, in addition, no vertex had $e(\Gv{v}) \le U_d$ for
+$(U_6, U_7, U_8, T^*) = (121, 112, 99, 90)$, only 208 MTF distributions would remain (case R and 207 with $e \ge 167$);
+a profile ILP removes 7 more, with exact Farkas certificates (7/7 checked), leaving 200 + R
+\status{cond: sel; cert for the 7; CONFIRMED critic Review 27}. The sel gluing has NOT been run: its input classes have
+${\sim}5\cdot 10^{9}$ graphs (MCMC estimates, Sec.~\ref{sec:glue}) and our gluer is about 100 times too slow. So the 200/208 lists are not
+results.
+
+\subsection{Cover Lemma (the coarse split used for certified SAT)}\label{sec:cover}
+Let $\Phi$ = ``triangle-free and $\alpha \le 9$'' on $V = \{0..39\}$, and MTFc = ``every non-adjacent pair has a common neighbour''.
+
+\begin{center}\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+cube & constraints added to $\Phi$ \\
+\midrule
+R & every degree is 9; $N(0) = \{1..9\}$ \\
+S8 & MTFc; $d(0) = 8$; $N(0) = \{1..8\}$; $e(\Gv{0}) \le 96$ \\
+N & MTFc; $d(0) = 9$; $N(0) = \{1..9\}$; $e(\Gv{0}) \le 98$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{namedthm}{Cover Lemma}
+Assume F1, F2. If a $(3,10,40)$-graph exists, some graph on $V$ satisfies $\Phi$, one of R, S8, N,
+and $c(u,w) + 11 \le d(u) + d(w)$ for all non-adjacent $u, w$.
+\end{namedthm}
+\begin{proof}
+M0, M1, then Theorem A (via A$''$) and a relabelling; L6 for the codegree rows.
+\end{proof}
+\status{hand, CONFIRMED; Lean \code{cover_lemma}, clause form \code{Enc.cover_assign}, file form
+\code{Files.cover_files}; hypotheses only F1, F2}
+Symmetry breaking is valid in each cube if its permutations fix 0 and the blocks $N(0)$ and $V - \Nb{0}$ as sets
+(Lean \code{Files.cover_files_sb}, Sec.~\ref{sec:lean-formal}). Cube S8 is closed by the S8 gluing run \status{enum}; a certified SAT proof is
+open.
+
+\subsection{The 9-regular case R}\label{sec:caseR}
+\begin{namedthm}{L9}
+If $G$ is 9-regular: $e = 180$, every $\Gv{v}$ is in $R(3,9;30,99)$, and for non-adjacent $u, w$: $1 \le c(u,w) \le 7$.
+Every vertex $y$ of $\Gv{v}$ has $9 - c(v,y) \in [2,8]$ neighbours in $\Gv{v}$, $\sum_{y \in \Gv{v}} c(v,y) = 72$, and at most 9 vertices
+$y$ have $c(v,y) = 1$.
+\end{namedthm}
+\status{hand; Lean \code{regular_card_common}, \code{regular_nbrIn}, \code{regular_sum_nbrIn}, \code{regular_card_private}}
+MCMC estimates put $|R(3,9;30,99)|$ near $10^{18}$ (Sec.~\ref{sec:glue}), so case R is not a gluing case.
+
+\begin{namedthm}{Lemma P (pair, exact edge count)}
+For non-adjacent $u, w$ with $C = N(u) \cap N(w)$, $c = |C|$, $A = N(u) - C$,
+$B = N(w) - C$, $f = e(A,B)$, $X = V - \Nb{u} - \Nb{w}$:
+$|X| = 38 - d(u) - d(w) + c \le 27$ and $e(X) = e - Z(u) - Z(w) + \sum_{x \in C} d(x) + f \ge e(3,8,|X|)$.
+In case R: $|X| = 20 + c$ and $e(X) = 18 + 9c + f$.
+\end{namedthm}
+\status{hand, CONFIRMED critic Review 13; uses D-E8, F2}
+
+\begin{namedthm}{Lemma F}
+In case R, for a non-adjacent pair with codegree $c$:
+(F2) $9 - c \le f \le (9 - c)^2$ ($C + A' + B'$ is independent for any edgeless $A' \subseteq A$, $B' \subseteq B$, so $A$--$B$ has a
+perfect matching); (F3) for every $v$, $\sum_{y \in \Gv{v}} f(v,y) = 648 - \sum_{y \in \Gv{v}} c(v,y)^2$, and summed over all
+non-adjacent pairs, $\sum f = 12960 - \sum c^2$.
+\end{namedthm}
+\status{hand, CONFIRMED critic Review 24}
+
+\begin{namedthm}{Lemma Mc (max-codegree split)}
+Let $\cstar$ be the largest codegree of a non-adjacent pair. Then $3 \le \cstar \le 7$, and
+after relabelling: $N(0) = \{1..9\}$, $0 \nadj 10$, $N(10) \cap N(0) = \{1..\cstar\}$, and $c(u,w) \le \cstar$ for all non-adjacent $u, w$.
+\end{namedthm}
+\begin{proof}
+The 600 non-adjacent pairs have codegree sum $40 \cdot \binom{9}{2} = 1440 > 2 \cdot 600$; $\cstar \le 7$ by L6.
+\end{proof}
+In $R(3)$ all codegrees are 1, 2 or 3 and $n_3 = n_1 + 240$. \status{hand, CONFIRMED; Lean \code{Mc.lemma_Mc}}
+Symmetry breaking must then fix the blocks $\{0\}$, $\{1..\cstar\}$, $\{\cstar+1..9\}$, $\{10\}$, $\{11..39\}$.
+
+\begin{namedthm}{Lemma R7}
+If $\cstar = 7$ for the pair $(u, w)$, then $f = 4$ (Lemma P gives $f \ge 4$, and $f \le 2 \cdot 2$), $|A| = |B| = 2$ with
+$A$--$B$ complete, $e(X) = 85$, and $X$ is one of the 4 graphs of $R(3,8;27,85)$ (D-C8e).
+\end{namedthm}
+\status{hand, CONFIRMED; Lean \code{R7.r7_count}, \code{R7.r7_cover}; hypotheses F2 and $e(3,8,27) \ge 85$}
+So ``every 9-regular $(3,10,40)$-graph has $\cstar \le 6$'' follows from UNSAT of one cube PRc7 with valid block symmetry
+breaking (Lean \code{R7.no_codeg7}, \code{Rc7.prc7_inv}, \code{Rc7.lexleader_rc7}). Status of that SAT run: Sec.~\ref{sec:sat}
+(464 cubes, 365 UNSAT with verified proofs, 99 open). $R(7)$ is not closed.
+
+\paragraph{Branch $R(6)$, $f^* \le 5$.} For $\cstar = 6$, choose the codegree-6 pair with the least $f = f^*$. If $f^* \le 5$, $X$ is in
+$R(3,8;26,75..77)$, a published class of 1,765,856 graphs (D-C8d; $e = 73, 74$ are impossible since $f \ge 3$).
+Extending each $X$ to $G$ costs $\ge 1$\,h per $X$ by SAT (all 9 sampled $X$ timed out: $e = 75$: 2 $X$ $> 1$\,h, $e = 76$: 1 $X$ $> 2$\,h,
+$e = 77$: 6 $X$ $> 1$\,h; logs \code{runs/cases/r6f/x75s}, \code{x76s}, \code{x77s/results.txt}) and ${\sim}40$\,min per $X$ by two-step gluing,
+i.e.\ $\ge 10^{2}$ CPU-years; the branch is parked (Sec.~\ref{sec:hard}). \status{measurement, not a proof}
+
+\subsection{Local rules for SAT (all \texorpdfstring{$G$}{G})}\label{sec:local}
+\begin{namedthm}{Lemma H}
+For an independent $s$-set $I$, $X_I = V - I - N(I)$ has $\alpha \le 9 - s$, so $|X_I| \le R(3,10-s) - 1$ and
+$e(X_I) \ge e(3,10-s,|X_I|)$ ($s = 1$: L1/L3; $s = 2$: L6).
+\end{namedthm}
+\status{hand, CONFIRMED critic Review 13; uses D-R1 and the $e(3,k,n)$ tables of \cite{GR}}
+
+\begin{namedthm}{Lemma N}
+If $d(v) = 9$, every vertex of $\Gv{v}$ has a neighbour in $N(v)$, and each $x$ in $N(v)$ has at most one vertex of
+$\Gv{v}$ whose only neighbour in $N(v)$ is $x$ (no MTF needed).
+\end{namedthm}
+\status{hand, CONFIRMED critic Review 13}
+
+\begin{namedthm}{Lemma W}
+In cube N we may also assume that vertex 0 has the least $e(\Gv{v})$ among 9-vertices, and
+$e(\Gv{x}) \ge e(3,9,39-d(x))$ for all $x$; valid only with symmetry breaking that fixes 0 and the blocks.
+\end{namedthm}
+\status{hand, CONFIRMED critic Review 21}
+
+\begin{namedthm}{Excess lemma ($m \ge 13$)}
+Under sel, MTF, $e \ge 167$ and non-regularity, at least 13 degree-9 vertices have
+$e(\Gv{v}) \le 98$, so two of them are adjacent.
+\end{namedthm}
+\status{cond: sel; hand (duo), CONFIRMED critic Review 28}
+
+\subsection{Structural attempts that failed}\label{sec:failed}
+These are reported so that others need not repeat them; details in Sec.~\ref{sec:hard}.
+\begin{itemize}
+\item Counting LP over independent-set profiles for case R ($I_s$, $|X_S|$ distributions): feasible (CONFIRMED Review 22).
+\item Excess forcing over the 200 sel distributions: at $T \le 90$ no vertex is forced in any of them (\code{notes/cases.md} Sec.~7).
+\item Pair and profile LPs with (F1)--(F3): feasible; (F3) is no contradiction.
+\item Edge kernels (Codex review, CONFIRMED Review 30) for R and for the near-regular distributions: the near-regular
+  catalogue alone has $4.4\cdot 10^{7}$ unique kernels for codegree $\le 6$ (case R: duo, Sec.~\ref{sec:hard}), and 14 of 16 sampled near-regular kernels exceeded 1\,h of SAT (Sec.~\ref{sec:hard}).
+\end{itemize}

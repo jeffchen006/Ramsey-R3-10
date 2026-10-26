@@ -1,0 +1,6 @@
+file ./sms/proofs/r3_5_14_lazy.cnf sha256 1d21c4e63bb159e06c76faa747e2cdfd3586ec6e8c10a0941bd322dbceaec4a1
+n=14 s=5 order=rowmajor clauses=625
+  EXTRA:sb.cnf                   46
+  IS                             215
+  TRI                            364
+RESULT: OK (every clause is valid or listed as extra)

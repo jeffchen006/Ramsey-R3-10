@@ -1,0 +1,7 @@
+pseudo-Boolean proof version 3.0
+f 1;
+% Only preserved variables can be shrunk, but x2 is not preserved.
+solx x1 *x2;
+output NONE;
+conclusion NONE;
+end pseudo-Boolean proof;

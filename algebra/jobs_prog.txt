@@ -1,0 +1,44 @@
+python3 progsearch.py ab:5x8 1 900 ../runs/algebra/P_ab_5x8_s1
+python3 progsearch.py ab:5x8 2 900 ../runs/algebra/P_ab_5x8_s2
+python3 progsearch.py ab:2x20 1 900 ../runs/algebra/P_ab_2x20_s1
+python3 progsearch.py ab:2x20 2 900 ../runs/algebra/P_ab_2x20_s2
+python3 progsearch.py ab:4x10 1 900 ../runs/algebra/P_ab_4x10_s1
+python3 progsearch.py ab:4x10 2 900 ../runs/algebra/P_ab_4x10_s2
+python3 progsearch.py ab:2x2x10 1 900 ../runs/algebra/P_ab_2x2x10_s1
+python3 progsearch.py ab:2x2x10 2 900 ../runs/algebra/P_ab_2x2x10_s2
+python3 progsearch.py ab:40 1 900 ../runs/algebra/P_ab_40_s1
+python3 progsearch.py ab:40 2 900 ../runs/algebra/P_ab_40_s2
+python3 progsearch.py lift:Z2:0 1 900 ../runs/algebra/P_lift_Z2_0_s1
+python3 progsearch.py lift:Z2:0 2 900 ../runs/algebra/P_lift_Z2_0_s2
+python3 progsearch.py lift:Z4:0 1 900 ../runs/algebra/P_lift_Z4_0_s1
+python3 progsearch.py lift:Z4:0 2 900 ../runs/algebra/P_lift_Z4_0_s2
+python3 progsearch.py lift:Z5:0 1 900 ../runs/algebra/P_lift_Z5_0_s1
+python3 progsearch.py lift:Z5:0 2 900 ../runs/algebra/P_lift_Z5_0_s2
+python3 progsearch.py lift:Z3:1 1 900 ../runs/algebra/P_lift_Z3_1_s1
+python3 progsearch.py lift:Z3:1 2 900 ../runs/algebra/P_lift_Z3_1_s2
+python3 progsearch.py lift:Z2^2:0 1 900 ../runs/algebra/P_lift_Z22_0_s1
+python3 progsearch.py lift:Z2^2:0 2 900 ../runs/algebra/P_lift_Z22_0_s2
+python3 progsearch.py lift:Z8:0 1 900 ../runs/algebra/P_lift_Z8_0_s1
+python3 progsearch.py lift:Z8:0 2 900 ../runs/algebra/P_lift_Z8_0_s2
+python3 progsearch.py pg33:O- 1 900 ../runs/algebra/P_pg33_O-_s1
+python3 progsearch.py pg33:O- 2 900 ../runs/algebra/P_pg33_O-_s2
+python3 progsearch.py pg33:O+ 1 900 ../runs/algebra/P_pg33_O+_s1
+python3 progsearch.py pg33:O+ 2 900 ../runs/algebra/P_pg33_O+_s2
+python3 progsearch.py vertexw 1 900 ../runs/algebra/P_vertexw_s1
+python3 progsearch.py vertexw 2 900 ../runs/algebra/P_vertexw_s2
+timeout 3600 ./orbexc orb/ls_f41_cub.txt 2000000000 > ../runs/algebra/X_ls_f41_cub.out 2>&1
+timeout 3600 ./orbexc orb/ls_f41_diff_and_sumQR.txt 2000000000 > ../runs/algebra/X_ls_f41_diff_and_sumQR.out 2>&1
+timeout 3600 ./orbexc orb/ls_f41_sq.txt 2000000000 > ../runs/algebra/X_ls_f41_sq.out 2>&1
+timeout 3600 ./orbexc orb/ls_f41_sq_plus_prod.txt 2000000000 > ../runs/algebra/X_ls_f41_sq_plus_prod.out 2>&1
+timeout 3600 ./orbexc orb/ls_f41_sum.txt 2000000000 > ../runs/algebra/X_ls_f41_sum.out 2>&1
+timeout 3600 ./orbexc orb/ls_f41_sum_and_prodQR.txt 2000000000 > ../runs/algebra/X_ls_f41_sum_and_prodQR.out 2>&1
+timeout 3600 ./orbexc orb/ls_f41_sumprod1.txt 2000000000 > ../runs/algebra/X_ls_f41_sumprod1.out 2>&1
+timeout 3600 ./orbexc orb/ls_f41_sumprod3.txt 2000000000 > ../runs/algebra/X_ls_f41_sumprod3.out 2>&1
+timeout 3600 ./orbexc orb/ls_f41_x2y.txt 2000000000 > ../runs/algebra/X_ls_f41_x2y.out 2>&1
+timeout 3600 ./orbexc orb/ls_f5f8_sumsq.txt 2000000000 > ../runs/algebra/X_ls_f5f8_sumsq.out 2>&1
+timeout 3600 ./orbexc orb/ls_z2z20_mix.txt 2000000000 > ../runs/algebra/X_ls_z2z20_mix.out 2>&1
+timeout 3600 ./orbexc orb/ls_z40_sq.txt 2000000000 > ../runs/algebra/X_ls_z40_sq.out 2>&1
+timeout 3600 ./orbexc orb/ls_z40_sum.txt 2000000000 > ../runs/algebra/X_ls_z40_sum.out 2>&1
+timeout 3600 ./orbexc orb/ls_z5z8_mix.txt 2000000000 > ../runs/algebra/X_ls_z5z8_mix.out 2>&1
+timeout 3600 ./orbexc orb/ls_z5z8_mix2.txt 2000000000 > ../runs/algebra/X_ls_z5z8_mix2.out 2>&1
+timeout 3600 ./orbexc orb/ls_z5z8_sum.txt 2000000000 > ../runs/algebra/X_ls_z5z8_sum.out 2>&1

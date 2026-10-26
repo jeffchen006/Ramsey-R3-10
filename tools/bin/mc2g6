@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+"""Convert multicode (triangleramsey/MTF output, n <= 255) on stdin to graph6 on stdout.
+Multicode: byte n, then for each vertex x=1..n-1 its higher neighbours, then 0."""
+import sys
+
+def g6(n, edges):
+    if n >= 63:
+        if n > 258047:
+            raise SystemExit("n too large")
+        head = chr(126) + "".join(chr(63 + ((n >> s) & 63)) for s in (12, 6, 0))
+    else:
+        head = chr(63 + n)
+    adj = set(edges)
+    bits = [1 if (u, v) in adj else 0 for v in range(1, n) for u in range(v)]
+    bits += [0] * (-len(bits) % 6)
+    out = [head]
+    for i in range(0, len(bits), 6):
+        x = 0
+        for b in bits[i:i + 6]:
+            x = (x << 1) | b
+        out.append(chr(63 + x))
+    return "".join(out)
+
+data = sys.stdin.buffer.read()
+if data == b"\x01\x00\x00\x00":
+    # triangleramsey "ramsey" mode writes the int 1 when no Ramsey graph exists
+    sys.stderr.write("mc2g6: input is triangleramsey's 'no Ramsey graph found' marker\n")
+    sys.exit(3)
+i, cnt = 0, 0
+while i < len(data):
+    n = data[i]; i += 1
+    if n == 0:
+        raise SystemExit("mc2g6: graph with n=0 (not multicode?)")
+    edges = []
+    for x in range(1, n):
+        while True:
+            if i >= len(data):
+                raise SystemExit("mc2g6: truncated input")
+            y = data[i]; i += 1
+            if y == 0:
+                break
+            if not x < y <= n:
+                raise SystemExit("mc2g6: bad neighbour %d of %d" % (y, x))
+            edges.append((x - 1, y - 1))
+    sys.stdout.write(g6(n, edges) + "\n")
+    cnt += 1
+sys.stderr.write("mc2g6: %d graphs\n" % cnt)

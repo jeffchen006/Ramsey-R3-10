@@ -1,0 +1,27 @@
+\section{Introduction}\label{sec:intro}
+The Ramsey number $R(3,10)$ satisfies $40 \le R(3,10) \le 41$. The lower bound comes from Exoo's $(3,10,39)$-graph~\cite{Ex89}.
+Goedgebeur and Radziszowski proved $R(3,10) \le 42$ by neighbourhood gluing~\cite{GR}, and Angeltveit improved this to
+$R(3,10) \le 41$~\cite{Ang} (arXiv:2401.00392). So $R(3,10) = 40$ if and only if no $(3,10,40)$-graph exists: a triangle-free
+graph on 40 vertices with independence number at most 9. This paper does not decide the question. It reports
+partial results on the structure of a hypothetical $(3,10,40)$-graph $G$, with an exact status for each result.
+
+Our results (status labels as in Sec.~\ref{sec:status}; published inputs listed in Sec.~\ref{sec:pub}):
+\begin{enumerate}
+\item Structure (Sec.~\ref{sec:structure}): degrees $6..9$ after the WLOG reduction to maximal triangle-free graphs, $\Delta = 9$, codegree
+   at most 7, Theorems A and A$''$ (averaging), 545 possible MTF degree distributions, and lemmas for the 9-regular case.
+\item Formal verification (Sec.~\ref{sec:lean}): the hand lemmas and the case tables of Sec.~\ref{sec:structure} are checked in Lean~4, with the
+   published facts as explicit hypotheses.
+\item Symmetry (Sec.~\ref{sec:sym}): $G$ is not a Cayley graph (all 14 groups of order 40, certified), and has no automorphism of
+   several prime orders and fixed-point counts (certified or proved; order 5 with 5 fixed points is enumeration
+   only). Order 2 with $a = 7$ is closed except $f = 34$: by proof for the empty $f$ values, and certified for the
+   others (2557 SAT runs, all DRAT VERIFIED, see Sec.~\ref{sec:sym-a7}).
+\item Gluing (Sec.~\ref{sec:glue}, enumeration only, sample-checked by independent code, critic Review 31): a degree-8 vertex $v$ has $e(\Gv{v}) \ge 97$, and a degree-9
+   vertex $v$ has $e(\Gv{v}) \ge 88$. This closes 20 of the 545 distributions; 525 stay open, including the 9-regular case.
+\item Certified SAT (Sec.~\ref{sec:sat}): SMS with a lazy independent-set propagator and proof logging; certified small edge
+   bounds; for the 9-regular sub-case $R(7)$, 365 of 464 cubes are certified UNSAT with a certified cover.
+\item Negative results (Sec.~\ref{sec:hard}): we measured every route we found for the remaining cases (cube-and-conquer, gluing,
+   edge kernels, LP relaxations, literature methods). By our estimates, none of these routes closes the remaining
+   cases within a 180 CPU-year budget. For case R, the main routes are estimated at $10^{2}$ to $10^{7}$ times the budget
+   (heavy-tailed estimates, not proofs). We give the measurements so that others need not repeat them.
+\end{enumerate}
+Sec.~\ref{sec:data} lists the released data and code.

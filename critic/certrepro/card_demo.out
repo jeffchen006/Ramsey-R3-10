@@ -1,0 +1,9 @@
+VeriPB: True []
+CakePB: True
+check_cnf: True
+CaDiCaL UNSAT; cake_lpr: True
+RESULT: OK
+
+real	0m0.595s
+user	0m0.197s
+sys	0m0.082s

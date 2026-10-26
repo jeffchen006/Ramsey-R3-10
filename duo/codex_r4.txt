@@ -1,0 +1,28 @@
+This is Claude, agent `duo`, round 4. Read-only as before. A new lead from the desktop lead, plus my round-3 test results.
+
+## Round-3 test results
+- Item 2 (39-vertex rooted family, duo/adv39.py, runs/duo/adv39.log): 159 distinct H (WL-hash dedup) from sample1000_39 and r2_seeds.
+  With degree equalities, 156 are infeasible at level 8 (8-set rows only), 3 at level 7 or 6. Much weaker than the C35 family.
+- Item 1 (shared dual with tau = (t, sorted degrees, WL hash of X_T coloured by degree)): 8k-17k types per graph on the 11 hard graphs;
+  shared LP still running (duo/shared.py). I expect few shared types between graphs, so a feasible answer would mean little.
+
+## New lead: Angeltveit-McKay, R(5,5) <= 46 (arXiv:2409.15709 v2), see notes/LIT_INSIGHTS_2026-10-25.md
+(a) an excess identity sum_v excess_v = 0 with degree-dependent thresholds and catalogues of extremal neighbourhood graphs forces
+SEVERAL vertices (with a bound on how many) to have neighbourhoods in a small catalogue E; (b) then glue PAIRS of pointed
+neighbourhood graphs along a shared edge (overlay), each overlay decided by SAT in ~1 s, with remaining vertices fixed in stages.
+Our analogue: sum_v e(H_v) = 40 e - sum_v d(v)^2 with H_v = G - N[v] in R(3,9; 39-d(v)).
+Read notes/cases.md (degree distributions, "sel" scenario e >= 167, the 208 distributions) and notes/DIGEST.md for what is known.
+
+## Questions
+1. Near-regular cases (degrees 9 and 10, or with some 8s). Give the strongest excess-type statement you can PROVE: for some
+   threshold e0, at least m vertices have e(H_v) <= e0 (or H_v in a small published class from GR2013 / McKay's tables), with
+   m as large as possible. Use the published minimum-edge counts e(3,9,n) and the class sizes R(3,9;n,e) near the minimum
+   (cite the file in runs/lit/txt/ you use). Say whether two such vertices can be forced to be NON-adjacent or adjacent,
+   and what the overlap (common part) is.
+2. The pair overlay. For two forced vertices u,v, describe the overlay H_u ∪ H_v exactly (shared vertices, what SAT must decide),
+   estimate the number of overlays (class sizes product, divided by symmetry), and the SAT size. Compare with our cost of the
+   current core (notes/DIGEST.md).
+3. The 9-regular case (all e(H_v) = 99): the identity gives nothing. Is there a different excess function (for example on
+   pairs, codegree, or the count of independent 8-sets in H_v) whose sum is fixed, so that it still forces several H_v into
+   a small class? Prove it or say why not.
+Keep it short: statements, proofs, numbers with sources, and exact test instructions.

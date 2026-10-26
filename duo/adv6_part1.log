@@ -1,0 +1,9 @@
+[jobctl 2026-10-25 11:36:23] start adv6: taskset -c 68-71 nice -n 5 tools/venv/bin/python adv6.py
+nice: ‘tools/venv/bin/python’: No such file or directory
+[jobctl 2026-10-25 11:36:23] end adv6: rc=127 runtime=0m00s
+[jobctl 2026-10-25 11:37:26] start adv6: taskset -c 68-71 nice -n 5 ./tools/venv/bin/python adv6.py
+survivors 110
+(0, 2, 4, 6, 8) (19, 20) v78eq 9.0 v678 9.0 v678eq 9.0 None
+(0, 2, 4, 6, 8) (21, 22) v78eq 9.0 v678 9.0 v678eq 9.0 None
+(0, 2, 4, 6, 10) (17, 18) v78eq 9.0 v678 8.98684 v678eq None None
+[jobctl 2026-10-25 12:38:13] end adv6: rc=-15 runtime=1h00m

@@ -1,0 +1,657 @@
+#!/usr/bin/python3
+"""jobctl: start, list, stop and watch long jobs of one agent (owner: agent tools).
+
+  jobctl start AGENT NAME [options] -- CMD [ARG...]
+      Runs CMD detached as: taskset -c <AGENT's CPUs> nice -n 5 CMD  (CPU list from notes/TEAM_RULES.md).
+      Registry: runs/jobs/AGENT/NAME.json. Log: runs/AGENT/NAME.log (stdout+stderr), unless --log.
+      options: --expect DUR   expected run time (30m, 6h, 2d); passing it is a DEADLINE event
+               --fail REGEX   log line pattern that is a FAIL event (repeatable; default list below)
+               --no-default-fail
+               --found GLOB   extra file glob (relative to ROOT) whose new files are FOUND events
+               --cwd DIR      working directory (default: current)
+               --log FILE     log file
+               --cpus LIST    a SUBSET of the agent's CPUs (e.g. 60-63)
+               --threads N    sets OMP_NUM_THREADS (default: number of CPUs used)
+               --ok-rc LIST   exit codes that are EXIT, not CRASH (default 0; e.g. 0,10,20)
+               --mem GB       memory cap of this job (default and maximum: the agent's cap in TEAM_RULES).
+                              Enforced on the whole process tree (cgroup scope via systemd-run; fallback
+                              prlimit --as). Over the cap the kernel kills the job (CRASH rc=-9).
+  jobctl status [AGENT]          one line per job: state, CPU%, RSS, runtime, last log line
+  jobctl stop AGENT NAME         SIGTERM to the job's process group, SIGKILL after 10 s
+  jobctl log AGENT NAME [-n N]   last N log lines
+  jobctl forget AGENT NAME       remove a finished job from the registry
+  jobctl queue AGENT NAME [--after AGENT/JOB]... [--when-free] [start options] -- CMD [ARG...]
+      Register a follow-up job. watchd (or `jobctl queue-run`) starts it when every --after job has
+      EXITED with an ok rc (and, with --when-free, the agent has no running job and its CPUs are
+      < 25% busy). A failed dependency makes it BLOCKED (an event). Without --after: starts at once
+      (or when free). Job names of --after without "AGENT/" refer to the same agent.
+  jobctl queue-list [AGENT] | queue-cancel AGENT NAME | queue-run [AGENT]
+  jobctl wait-event AGENT [--poll SEC] [--timeout DUR]
+      Blocks until at least one EVENT, prints one line per event, exits 0 (exit 3 on --timeout).
+      Events: EXIT (rc=0), CRASH (rc!=0 or signal), LOST (job gone without exit record),
+      FAIL (log line matches a fail pattern), DEADLINE (expected end passed, job alive),
+      FOUND/ALERT (new file named FOUND* or ALERT* under runs/AGENT/ or in graphs/found/,
+      or matching a job's --found glob). Each event is reported once. One wait-event per agent.
+"""
+import fcntl
+import glob
+import json
+import os
+import re
+import signal
+import subprocess
+import sys
+import time
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "lib"))
+from r310common import mem_wrap, agent_mem_gb, systemd_scope_ok  # noqa: E402
+from r310common import (ROOT, JOBS, agent_cpus, cpulist_str, parse_cpulist, parse_duration,  # noqa: E402
+                        fmt_dur, now_iso, read_json, write_json, proc_stat, pid_alive, tail_line,
+                        my_procs, descendants, CLK, PAGE)
+
+DEFAULT_FAIL = [
+    r"Traceback \(most recent call last\)",
+    r"Segmentation fault|core dumped",
+    r"std::bad_alloc|MemoryError|Cannot allocate memory|out of memory",
+    r"NOT VERIFIED|verification FAILED|s VERIFIED.*FAIL",
+    r"^\s*(FATAL|PANIC)\b",
+]
+
+
+def die(msg, code=2):
+    sys.stderr.write("jobctl: %s\n" % msg)
+    sys.exit(code)
+
+
+def jobdir(agent):
+    d = os.path.join(JOBS, agent)
+    os.makedirs(d, exist_ok=True)
+    return d
+
+
+def jobfile(agent, name):
+    return os.path.join(jobdir(agent), name + ".json")
+
+
+def exitfile(agent, name):
+    return os.path.join(jobdir(agent), name + ".exit.json")
+
+
+def check_name(name):
+    if not re.fullmatch(r"[A-Za-z0-9_.\-]+", name):
+        die("job name must match [A-Za-z0-9_.-]+")
+
+
+def job_state(job):
+    """'running' | 'exited' | 'crashed' | 'lost', plus the exit record (or None)."""
+    ex = read_json(exitfile(job["agent"], job["name"]))
+    if ex is not None:
+        return ("exited" if ex.get("rc") in job.get("ok_rc", [0]) else "crashed"), ex
+    for p, st in ((job.get("pid"), job.get("pid_start")), (job.get("supervisor_pid"), job.get("sup_start"))):
+        if p and pid_alive(p, st):
+            return "running", None
+    return "lost", None
+
+
+def load_jobs(agent=None):
+    agents = [agent] if agent else sorted(os.listdir(JOBS)) if os.path.isdir(JOBS) else []
+    jobs = []
+    for a in agents:
+        d = os.path.join(JOBS, a)
+        if not os.path.isdir(d):
+            continue
+        for f in sorted(os.listdir(d)):
+            if f.endswith(".json") and not f.endswith(".exit.json") and not f.startswith("."):
+                j = read_json(os.path.join(d, f))
+                if j:
+                    jobs.append(j)
+    return jobs
+
+
+# ---- start / supervise -----------------------------------------------------
+
+def cmd_start(args):
+    if "--" not in args:
+        die("usage: jobctl start AGENT NAME [options] -- CMD [ARG...]")
+    k = args.index("--")
+    opts, cmd = args[:k], args[k + 1:]
+    if len(opts) < 2 or not cmd:
+        die("usage: jobctl start AGENT NAME [options] -- CMD [ARG...]")
+    agent, name = opts[0], opts[1]
+    check_name(name)
+    allowed = agent_cpus(agent)
+    if not allowed:
+        die("agent %s has no own CPUs in TEAM_RULES; use --cpus with a CPU list it may use" % agent)
+    expect = None
+    fails, use_default_fail, found = [], True, []
+    cwd, log, cpus, threads, ok_rc = os.getcwd(), None, allowed, None, [0]
+    cap = agent_mem_gb(agent)
+    mem = cap
+    i = 2
+    while i < len(opts):
+        o = opts[i]
+        if o == "--no-default-fail":
+            use_default_fail = False
+            i += 1
+            continue
+        v = opts[i + 1] if i + 1 < len(opts) else die("option %s needs a value" % o)
+        if o == "--expect":
+            expect = parse_duration(v)
+        elif o == "--fail":
+            re.compile(v)
+            fails.append(v)
+        elif o == "--found":
+            found.append(v)
+        elif o == "--cwd":
+            cwd = os.path.abspath(v)
+        elif o == "--log":
+            log = os.path.abspath(v)
+        elif o == "--cpus":
+            cpus = parse_cpulist(v)
+            if not set(cpus) <= set(allowed):
+                die("--cpus %s is not a subset of %s's CPUs %s" % (v, agent, cpulist_str(allowed)))
+        elif o == "--threads":
+            threads = int(v)
+        elif o == "--ok-rc":
+            ok_rc = [int(x) for x in v.split(",")]
+        elif o == "--mem":
+            mem = float(v)
+            if not 0 < mem <= cap:
+                die("--mem %s: must be > 0 and <= %s's cap of %d GB (TEAM_RULES)" % (v, agent, cap))
+        else:
+            die("unknown option %s" % o)
+        i += 2
+    jf = jobfile(agent, name)
+    old = read_json(jf)
+    if old and job_state(old)[0] == "running":
+        die("job %s/%s is still running (pid %d)" % (agent, name, old["pid"]))
+    for f in (exitfile(agent, name),):
+        if os.path.exists(f):
+            os.remove(f)
+    if log is None:
+        os.makedirs(os.path.join(ROOT, "runs", agent), exist_ok=True)
+        log = os.path.join(ROOT, "runs", agent, name + ".log")
+    start = time.time()
+    job = {
+        "agent": agent, "name": name, "cmd": cmd, "cwd": cwd, "cpus": cpulist_str(cpus),
+        "threads": threads or len(cpus), "log": log, "start": now_iso(start), "start_ts": start,
+        "expected_end": now_iso(start + expect) if expect else None,
+        "expected_end_ts": start + expect if expect else None,
+        "fail_patterns": (DEFAULT_FAIL if use_default_fail else []) + fails,
+        "found_globs": found, "ok_rc": ok_rc, "mem_gb": mem,
+        "mem_method": "cgroup" if systemd_scope_ok() else "prlimit-as", "pid": None, "supervisor_pid": None,
+    }
+    write_json(jf, job)
+    # detached supervisor: own session, survives the calling shell / agent
+    sup = subprocess.Popen([sys.executable, os.path.realpath(__file__), "_supervise", agent, name],
+                           stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                           stderr=open(log + ".jobctl", "a"), start_new_session=True, close_fds=True)
+    for _ in range(100):  # wait until the supervisor has recorded the child pid
+        j = read_json(jf)
+        if j and j.get("pid"):
+            break
+        if sup.poll() is not None:
+            die("supervisor failed; see %s.jobctl" % log)
+        time.sleep(0.05)
+    j = read_json(jf)
+    print("started %s/%s pid=%s cpus=%s mem<=%gG(%s) log=%s%s" % (agent, name, j["pid"], j["cpus"], j["mem_gb"],
+                                                             j["mem_method"], log,
+          (" expected_end=" + j["expected_end"]) if j["expected_end"] else ""))
+
+
+def supervise(agent, name):
+    jf = jobfile(agent, name)
+    job = read_json(jf)
+    env = dict(os.environ)
+    env["OMP_NUM_THREADS"] = str(job["threads"])
+    env["JOBCTL_AGENT"], env["JOBCTL_JOB"] = agent, name
+    full = ["taskset", "-c", job["cpus"], "nice", "-n", "5"] + job["cmd"]
+    if job.get("mem_gb"):
+        full = mem_wrap(job["mem_gb"], "r310-%s-%s" % (agent, name)) + full
+    with open(job["log"], "ab") as logf:
+        logf.write(("[jobctl %s] start %s: %s\n" % (now_iso(), name, " ".join(full))).encode())
+        logf.flush()
+        try:
+            child = subprocess.Popen(full, cwd=job["cwd"], env=env, stdin=subprocess.DEVNULL,
+                                     stdout=logf, stderr=subprocess.STDOUT)
+        except OSError as e:
+            write_json(exitfile(agent, name), {"rc": 127, "signal": None, "end": now_iso(),
+                                               "end_ts": time.time(), "error": str(e)})
+            return
+        job["pid"], job["supervisor_pid"] = child.pid, os.getpid()
+        st, sst = proc_stat(child.pid), proc_stat(os.getpid())
+        job["pid_start"] = st[2] if st else None
+        job["sup_start"] = sst[2] if sst else None
+        job["pgid"] = os.getpgid(os.getpid())
+        write_json(jf, job)
+        signal.signal(signal.SIGTERM, lambda *a: None)  # stop sends TERM to the group; keep waiting
+        _, status, ru = os.wait4(child.pid, 0)
+        end = time.time()
+        rc = os.waitstatus_to_exitcode(status)
+        rec = {"rc": rc, "signal": -rc if rc < 0 else None, "end": now_iso(end), "end_ts": end,
+               "mem_gb": job.get("mem_gb"),
+               "maybe_oom": rc in (-9, 137) and not job.get("stop_requested"),
+               "runtime_s": round(end - job["start_ts"], 1),
+               "cpu_s": round(ru.ru_utime + ru.ru_stime, 1), "maxrss_mb": round(ru.ru_maxrss / 1024)}
+        logf.write(("[jobctl %s] end %s: rc=%d runtime=%s\n" % (now_iso(end), name, rc,
+                                                              fmt_dur(end - job["start_ts"]))).encode())
+    write_json(exitfile(agent, name), rec)
+    side = job["log"] + ".jobctl"  # supervisor stderr; removed when empty
+    if os.path.exists(side) and os.path.getsize(side) == 0:
+        os.remove(side)
+
+
+# ---- status / stop / log ----------------------------------------------------
+
+def tree_usage(root, procs_a, procs_b, dt):
+    """CPU% and RSS of the supervisor and all its descendants (also those in other sessions)."""
+    cpu, rss, n = 0.0, 0, 0
+    for pid in descendants(root, procs_b):
+        pg, ticks, start, rp = procs_b[pid][:4]
+        prev = procs_a.get(pid)
+        if prev and prev[2] == start:
+            cpu += 100.0 * (ticks - prev[1]) / CLK / dt
+        rss += rp * PAGE
+        n += 1
+    return cpu, rss, n
+
+
+def cmd_status(args):
+    agent = args[0] if args else None
+    jobs = load_jobs(agent)
+    if not jobs:
+        print("no jobs registered%s" % (" for " + agent if agent else ""))
+        return
+    a = my_procs()
+    t0 = time.time()
+    time.sleep(1.0)
+    b = my_procs()
+    dt = time.time() - t0
+    now = time.time()
+    for j in jobs:
+        state, ex = job_state(j)
+        if state == "running":
+            cpu, rss, n = tree_usage(j.get("supervisor_pid"), a, b, dt)
+            n -= 1  # do not count the supervisor
+            run = fmt_dur(now - j["start_ts"])
+            extra = "cpu=%4.0f%% rss=%5.1fG procs=%d run=%s" % (cpu, rss / 2 ** 30, n, run)
+            if j.get("expected_end_ts") and now > j["expected_end_ts"]:
+                extra += " OVERDUE"
+        elif ex:
+            extra = "rc=%s run=%s cpu_s=%s end=%s" % (ex.get("rc"), fmt_dur(ex.get("runtime_s", 0)),
+                                                      ex.get("cpu_s"), ex.get("end"))
+        else:
+            extra = "no exit record"
+        if state == "crashed" and j.get("stop_requested"):
+            state = "stopped"
+        print("%-8s %-20s %-8s %s | %s" % (j["agent"], j["name"], state.upper(), extra,
+                                           tail_line(j["log"], 80)))
+
+
+def cmd_stop(args):
+    if len(args) != 2:
+        die("usage: jobctl stop AGENT NAME")
+    j = read_json(jobfile(*args))
+    if not j:
+        die("no job %s/%s" % tuple(args))
+    caller = os.environ.get("JOBCTL_AGENT")
+    if caller and caller != args[0]:
+        die("job belongs to %s, caller is %s" % (args[0], caller))
+    state, _ = job_state(j)
+    if state != "running":
+        print("%s/%s is not running (%s)" % (args[0], args[1], state))
+        return
+    j["stop_requested"] = now_iso()
+    write_json(jobfile(*args), j)
+    sup = j["supervisor_pid"]
+
+    def signal_tree(sig):
+        for pid in descendants(sup, my_procs()):
+            if pid != sup:
+                try:
+                    os.kill(pid, sig)
+                except OSError:
+                    pass
+    signal_tree(signal.SIGTERM)  # the supervisor itself keeps running and records the exit
+    for _ in range(100):
+        time.sleep(0.1)
+        if len(descendants(sup, my_procs())) <= 1:
+            break
+    else:
+        signal_tree(signal.SIGKILL)
+    print("stopped %s/%s" % tuple(args))
+
+
+def cmd_log(args):
+    n = 20
+    if "-n" in args:
+        k = args.index("-n")
+        n = int(args[k + 1])
+        args = args[:k] + args[k + 2:]
+    j = read_json(jobfile(*args)) if len(args) == 2 else die("usage: jobctl log AGENT NAME [-n N]")
+    if not j:
+        die("no job %s/%s" % tuple(args))
+    subprocess.call(["tail", "-n", str(n), j["log"]])
+
+
+def cmd_forget(args):
+    j = read_json(jobfile(*args)) if len(args) == 2 else die("usage: jobctl forget AGENT NAME")
+    if not j:
+        die("no job %s/%s" % tuple(args))
+    if job_state(j)[0] == "running":
+        die("job is running; stop it first")
+    for f in (jobfile(*args), exitfile(*args)):
+        if os.path.exists(f):
+            os.remove(f)
+    print("forgot %s/%s" % tuple(args))
+
+
+# ---- wait-event ---------------------------------------------------------------
+
+def scan_files(agent, jobs):
+    """Set of paths that count as FOUND/ALERT files for this agent."""
+    hits = set()
+    base = os.path.join(ROOT, "runs", agent)
+    if os.path.isdir(base):
+        for dp, dns, fns in os.walk(base):
+            for f in fns:
+                if f.startswith("FOUND") or f.startswith("ALERT"):
+                    hits.add(os.path.join(dp, f))
+    gf = os.path.join(ROOT, "graphs", "found")
+    if os.path.isdir(gf):
+        for f in os.listdir(gf):
+            hits.add(os.path.join(gf, f))
+    for j in jobs:
+        for g in j.get("found_globs", []):
+            hits.update(glob.glob(os.path.join(ROOT, g), recursive=True))
+    return hits
+
+
+def new_log_lines(path, offset):
+    try:
+        with open(path, "rb") as f:
+            f.seek(0, 2)
+            size = f.tell()
+            if size < offset:
+                offset = 0
+            f.seek(offset)
+            data = f.read(8 << 20)
+            end = offset + len(data)
+    except OSError:
+        return [], offset
+    cut = data.rfind(b"\n")
+    if cut < 0:
+        return [], offset
+    return data[:cut + 1].decode("utf-8", "replace").splitlines(), offset + cut + 1
+
+
+def collect_events(agent, seen):
+    """New events for AGENT since the state SEEN (updated in place): list of (kind, message, job)."""
+    seen.setdefault("events", [])
+    seen.setdefault("offsets", {})
+    seen.setdefault("files", None)
+    seen_ev = set(seen["events"])
+    jobs = load_jobs(agent)
+    events = []
+    now = time.time()
+    files = scan_files(agent, jobs)
+    if seen["files"] is None:  # first use: existing files are not news
+        seen["files"] = sorted(files)
+    for f in sorted(files - set(seen["files"])):
+        kind = "ALERT" if os.path.basename(f).startswith("ALERT") else "FOUND"
+        events.append((kind + " " + f, kind, "%s %s %s" % (kind, agent, os.path.relpath(f, ROOT)), None))
+    for j in jobs:
+        key = "%s@%s" % (j["name"], j.get("start"))
+        state, ex = job_state(j)
+        if state in ("exited", "crashed"):
+            kind = "EXIT" if state == "exited" else "STOPPED" if j.get("stop_requested") else "CRASH"
+            why = ""
+            if j.get("memkill"):
+                kind, why = "MEMKILL", " (" + j["memkill"] + ")"
+            elif kind == "CRASH" and ex.get("maybe_oom"):
+                why = " (killed: probably over its memory cap of %sG)" % ex.get("mem_gb")
+            events.append(("end " + key, kind, "%s %s/%s rc=%s runtime=%s cpu_s=%s log=%s%s" % (
+                kind, agent, j["name"], ex.get("rc"), fmt_dur(ex.get("runtime_s", 0)),
+                ex.get("cpu_s"), os.path.relpath(j["log"], ROOT), why), j))
+        elif state == "lost":
+            events.append(("end " + key, "LOST", "LOST %s/%s (no process, no exit record)" % (agent, j["name"]), j))
+        if state == "running" and j.get("expected_end_ts") and now > j["expected_end_ts"]:
+            events.append(("deadline " + key, "DEADLINE", "DEADLINE %s/%s expected end %s passed, still running" % (
+                agent, j["name"], j["expected_end"]), j))
+        pats = [re.compile(p) for p in j.get("fail_patterns", [])]
+        if pats:
+            off = seen["offsets"].get(key, 0)
+            lines, off2 = new_log_lines(j["log"], off)
+            seen["offsets"][key] = off2
+            for ln in lines:
+                if ln.startswith("[jobctl "):
+                    continue
+                if any(p.search(ln) for p in pats):
+                    events.append(("fail %s %d" % (key, off2), "FAIL", "FAIL %s/%s: %s" % (
+                        agent, j["name"], ln.strip()[:160]), j))
+                    break
+    for q in load_queue(agent):  # queued jobs that can never start
+        if q.get("state") == "blocked":
+            events.append(("blocked %s@%s" % (q["name"], q["created"]), "BLOCKED",
+                           "BLOCKED %s/%s queued job: %s" % (agent, q["name"], q.get("why", "")), None))
+    seen["files"] = sorted(set(seen["files"]) | files)
+    fresh = []
+    for k, kind, msg, j in events:
+        if k not in seen_ev:
+            seen_ev.add(k)
+            fresh.append((kind, msg, j))
+    seen["events"] = sorted(seen_ev)
+    return fresh
+
+
+def cmd_wait_event(args):
+    if not args:
+        die("usage: jobctl wait-event AGENT [--poll SEC] [--timeout DUR]")
+    agent, poll, timeout = args[0], 30.0, None
+    i = 1
+    while i < len(args):
+        if args[i] == "--poll":
+            poll = float(args[i + 1])
+        elif args[i] == "--timeout":
+            timeout = parse_duration(args[i + 1])
+        else:
+            die("unknown option %s" % args[i])
+        i += 2
+    d = jobdir(agent)
+    lockf = open(os.path.join(d, ".wait-event.lock"), "w")
+    try:
+        fcntl.flock(lockf, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        die("another 'jobctl wait-event %s' is already running (one per agent)" % agent)
+    sf = os.path.join(d, ".events_seen.json")
+    seen = read_json(sf, {})
+    t_end = time.time() + timeout if timeout else None
+    while True:
+        fresh = collect_events(agent, seen)
+        write_json(sf, seen)
+        if fresh:
+            for kind, msg, j in fresh:
+                print(msg)
+            return 0
+        if t_end and time.time() > t_end:
+            print("TIMEOUT no event for %s" % fmt_dur(timeout))
+            return 3
+        time.sleep(poll)
+
+
+# ---- queue: follow-up jobs that start by themselves (run by watchd) -------------
+
+def queuedir(agent):
+    d = os.path.join(jobdir(agent), "queue")
+    os.makedirs(d, exist_ok=True)
+    return d
+
+
+def load_queue(agent=None):
+    agents = [agent] if agent else sorted(os.listdir(JOBS)) if os.path.isdir(JOBS) else []
+    out = []
+    for a in agents:
+        d = os.path.join(JOBS, a, "queue")
+        if os.path.isdir(d):
+            for f in sorted(os.listdir(d)):
+                if f.endswith(".json"):
+                    q = read_json(os.path.join(d, f))
+                    if q:
+                        out.append(q)
+    return out
+
+
+def cmd_queue(args):
+    """jobctl queue AGENT NAME [--after AGENT/JOB ...] [--when-free] [start options] -- CMD"""
+    if "--" not in args or len(args[:args.index("--")]) < 2 or not args[args.index("--") + 1:]:
+        die("usage: jobctl queue AGENT NAME [--after AGENT/JOB]... [--when-free] [start options] -- CMD ARGS")
+    k = args.index("--")
+    opts, cmd = args[:k], args[k + 1:]
+    agent, name = opts[0], opts[1]
+    check_name(name)
+    agent_cpus(agent)
+    after, when_free, start_opts = [], False, []
+    i = 2
+    while i < len(opts):
+        if opts[i] == "--after":
+            dep = opts[i + 1]
+            if "/" not in dep:
+                dep = agent + "/" + dep
+            after.append(dep)
+            i += 2
+        elif opts[i] == "--when-free":
+            when_free = True
+            i += 1
+        elif opts[i] == "--no-default-fail":
+            start_opts.append(opts[i])
+            i += 1
+        else:
+            if i + 1 >= len(opts):
+                die("option %s needs a value" % opts[i])
+            start_opts += opts[i:i + 2]
+            i += 2
+    if "--cwd" not in start_opts:
+        start_opts += ["--cwd", os.getcwd()]
+    qf = os.path.join(queuedir(agent), name + ".json")
+    if os.path.exists(qf):
+        die("queued job %s/%s exists; queue-cancel it first" % (agent, name))
+    j = read_json(jobfile(agent, name))
+    if j and job_state(j)[0] == "running":
+        die("job %s/%s is running" % (agent, name))
+    q = {"agent": agent, "name": name, "cmd": cmd, "after": after, "when_free": when_free,
+         "start_opts": start_opts, "created": now_iso(), "created_ts": time.time(), "state": "waiting"}
+    write_json(qf, q)
+    print("queued %s/%s after=[%s]%s" % (agent, name, ", ".join(after), " when-free" if when_free else ""))
+
+
+def dep_state(dep, created_ts):
+    """'ok' | 'wait' | 'failed: ...' for a dependency AGENT/JOB of a queued job."""
+    a, n = dep.split("/", 1)
+    q = read_json(os.path.join(JOBS, a, "queue", n + ".json"))
+    if q is not None:  # still queued (an older finished job of the same name does not count)
+        return "failed: dependency blocked" if q.get("state") == "blocked" else "wait"
+    j = read_json(os.path.join(JOBS, a, n + ".json"))
+    if j is None:
+        return "failed: no such job or queued job"
+    state, ex = job_state(j)
+    if state == "running":
+        return "wait"
+    if state == "exited":
+        return "ok"
+    if state == "lost":
+        return "failed: dependency lost"
+    return "failed: dependency rc=%s" % ex.get("rc")
+
+
+def agent_cpus_free(agent):
+    """No running jobctl job of the agent, and its CPUs less than 25% busy (all users) over 1 s."""
+    for j in load_jobs(agent):
+        if job_state(j)[0] == "running":
+            return False
+    cpus = set(agent_cpus(agent))
+
+    def snap():
+        out = {}
+        for line in open("/proc/stat"):
+            if line.startswith("cpu") and line[3].isdigit():
+                p = line.split()
+                if int(p[0][3:]) in cpus:
+                    v = list(map(int, p[1:]))
+                    out[p[0]] = (sum(v) - v[3] - v[4], sum(v))
+        return out
+    a = snap()
+    time.sleep(1.0)
+    b = snap()
+    busy = sum((b[c][0] - a[c][0]) / max(1, b[c][1] - a[c][1]) for c in b)
+    return busy < 0.25 * len(cpus)
+
+
+def cmd_queue_run(args):
+    """Start every queued job whose dependencies exited OK (watchd calls this each minute)."""
+    started = []
+    for q in load_queue(args[0] if args else None):
+        if q.get("state") != "waiting":
+            continue
+        qf = os.path.join(JOBS, q["agent"], "queue", q["name"] + ".json")
+        states = [dep_state(d, q["created_ts"]) for d in q["after"]]
+        bad = [s for s in states if s.startswith("failed")]
+        if bad:
+            q.update(state="blocked", why="; ".join("%s %s" % (d, s) for d, s in zip(q["after"], states)
+                                                    if s.startswith("failed")))
+            write_json(qf, q)
+            continue
+        if any(s == "wait" for s in states):
+            continue
+        if q["when_free"] and not agent_cpus_free(q["agent"]):
+            continue
+        r = subprocess.run([sys.executable, os.path.realpath(__file__), "start", q["agent"], q["name"]] +
+                           q["start_opts"] + ["--"] + q["cmd"], capture_output=True, text=True)
+        if r.returncode == 0:
+            os.remove(qf)
+            started.append(q)
+            print("STARTED %s/%s from queue: %s" % (q["agent"], q["name"], r.stdout.strip()))
+        else:
+            q.update(state="blocked", why="start failed: " + (r.stderr or r.stdout).strip()[:200])
+            write_json(qf, q)
+            print("BLOCKED %s/%s: %s" % (q["agent"], q["name"], q["why"]))
+    return 0
+
+
+def cmd_queue_list(args):
+    qs = load_queue(args[0] if args else None)
+    if not qs:
+        print("queue empty")
+    for q in qs:
+        deps = ", ".join("%s(%s)" % (d, dep_state(d, q["created_ts"])) for d in q["after"]) or "-"
+        print("%-8s %-20s %-8s after: %s%s | %s%s" % (q["agent"], q["name"], q["state"].upper(), deps,
+              " when-free" if q["when_free"] else "", " ".join(q["cmd"])[:60],
+              (" | " + q["why"]) if q.get("why") else ""))
+
+
+def cmd_queue_cancel(args):
+    if len(args) != 2:
+        die("usage: jobctl queue-cancel AGENT NAME")
+    qf = os.path.join(JOBS, args[0], "queue", args[1] + ".json")
+    if not os.path.exists(qf):
+        die("no queued job %s/%s" % tuple(args))
+    os.remove(qf)
+    print("cancelled %s/%s" % tuple(args))
+
+
+def main():
+    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help", "help"):
+        print(__doc__)
+        return 0
+    cmd, args = sys.argv[1], sys.argv[2:]
+    if cmd == "_supervise":
+        return supervise(*args)
+    table = {"start": cmd_start, "status": cmd_status, "stop": cmd_stop, "log": cmd_log,
+             "forget": cmd_forget, "wait-event": cmd_wait_event, "queue": cmd_queue,
+             "queue-run": cmd_queue_run, "queue-list": cmd_queue_list, "queue-cancel": cmd_queue_cancel}
+    if cmd not in table:
+        die("unknown command %s (try --help)" % cmd)
+    return table[cmd](args) or 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

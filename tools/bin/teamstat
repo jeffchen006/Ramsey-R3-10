@@ -1,0 +1,166 @@
+#!/usr/bin/python3
+"""teamstat: one-screen team dashboard (owner: agent tools).
+
+  teamstat [--sample SEC] [--files N]
+
+Per agent (CPU table in notes/TEAM_RULES.md): CPU busy on its CPU list (all users), CPU and RSS
+of this user's processes pinned inside that list, jobctl jobs (running/ended/crashed), age of
+notes/status/<agent>.md. Then the newest files in graphs/found/, and ALERT*/FAIL*/FOUND* files
+under runs/ (newest first). Read-only; takes about --sample seconds (default 2).
+"""
+import os
+import sys
+import time
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "lib"))
+from r310common import (ROOT, JOBS, agent_table, parse_cpulist, fmt_dur, read_json, my_procs,  # noqa
+                        pid_alive, CLK, PAGE)
+
+
+def cpu_times():
+    """{cpu: (busy_ticks, total_ticks)} from /proc/stat."""
+    out = {}
+    for line in open("/proc/stat"):
+        if line.startswith("cpu") and line[3].isdigit():
+            p = line.split()
+            v = list(map(int, p[1:]))
+            idle = v[3] + v[4]
+            out[int(p[0][3:])] = (sum(v) - idle, sum(v))
+    return out
+
+
+def job_counts(agent):
+    d = os.path.join(JOBS, agent)
+    run = ended = bad = 0
+    if os.path.isdir(d):
+        for f in os.listdir(d):
+            if not f.endswith(".json") or f.endswith(".exit.json") or f.startswith("."):
+                continue
+            j = read_json(os.path.join(d, f)) or {}
+            ex = read_json(os.path.join(d, f[:-5] + ".exit.json"))
+            if ex is not None:
+                if ex.get("rc") in j.get("ok_rc", [0]) or j.get("stop_requested"):
+                    ended += 1
+                else:
+                    bad += 1
+            elif any(p and pid_alive(p, s) for p, s in ((j.get("pid"), j.get("pid_start")),
+                                                         (j.get("supervisor_pid"), j.get("sup_start")))):
+                run += 1
+            else:
+                bad += 1
+    return run, ended, bad
+
+
+def newest(paths, n):
+    st = []
+    for p in paths:
+        try:
+            st.append((os.path.getmtime(p), p))
+        except OSError:
+            pass
+    return sorted(st, reverse=True)[:n]
+
+
+def age(t):
+    return fmt_dur(time.time() - t) + " ago"
+
+
+def main():
+    sample, nfiles = 2.0, 8
+    a = sys.argv[1:]
+    if "-h" in a or "--help" in a:
+        print(__doc__)
+        return 0
+    if "--sample" in a:
+        sample = float(a[a.index("--sample") + 1])
+    if "--files" in a:
+        nfiles = int(a[a.index("--files") + 1])
+    table = agent_table()
+    c0, p0, t0 = cpu_times(), my_procs(), time.time()
+    time.sleep(sample)
+    c1, p1, dt = cpu_times(), my_procs(), time.time() - t0
+    # this user's processes: CPU% and RSS, assigned to the agent whose CPU list holds their affinity
+    owned = {}
+    team_cpus = set()
+    for ag, info in table.items():
+        if not info["shared"]:
+            team_cpus |= set(info["cpus"])
+    unpinned_cpu, unpinned_n = 0.0, 0
+    for pid, (pg, ticks, start, rss, allowed, _) in p1.items():
+        prev = p0.get(pid)
+        cpu = 100.0 * (ticks - prev[1]) / CLK / dt if prev and prev[2] == start else 0.0
+        if allowed is None:
+            continue
+        aset = set(parse_cpulist(allowed))
+        hit = None
+        for ag, info in table.items():
+            if not info["shared"] and aset and aset <= set(info["cpus"]):
+                hit = ag
+                break
+        if hit:
+            o = owned.setdefault(hit, [0.0, 0, 0])
+            o[0] += cpu
+            o[1] += rss * PAGE
+            o[2] += 1 if cpu > 5 else 0
+        elif cpu > 5:
+            unpinned_cpu += cpu
+            unpinned_n += 1
+    print("R(3,10) team  %s   (sample %.0fs)" % (time.strftime("%Y-%m-%d %H:%M"), dt))
+    print("%-8s %-15s %9s %10s %10s %12s %s" % ("agent", "cpus", "busy/own", "my_cpu%", "rss/cap", "jobs r/e/bad",
+                                                "status file"))
+    tot_busy = tot_own = 0.0
+    for ag, info in table.items():
+        cpus = info["cpus"]
+        busy = 0.0
+        if not info["shared"]:
+            for c in cpus:
+                if c in c0 and c in c1:
+                    db, dtot = c1[c][0] - c0[c][0], c1[c][1] - c0[c][1]
+                    busy += db / dtot if dtot else 0
+            tot_busy += busy
+            tot_own += len(cpus)
+        o = owned.get(ag, [0.0, 0, 0])
+        run, ended, bad = job_counts(ag)
+        sf = os.path.join(ROOT, "notes", "status", ag + ".md")
+        sfa = age(os.path.getmtime(sf)) if os.path.exists(sf) else "missing"
+        cpu_txt = "shared" if info["shared"] else "%5.1f/%-3d" % (busy, len(cpus))
+        print("%-8s %-15s %9s %9.0f%% %5.1f/%-3dG %4d/%d/%-4s %s%s" % (
+            ag, ",".join(x for x in [_range(cpus)]), cpu_txt, o[0], o[1] / 2 ** 30, info["mem_gb"],
+            run, ended, bad, sfa, "  MEM>CAP" if o[1] > info["mem_gb"] * 2 ** 30 else ""))
+    print("team CPUs busy (all users): %.1f of %d.  My busy processes outside the team lists: %d (%.0f%% CPU)"
+          % (tot_busy, tot_own, unpinned_n, unpinned_cpu))
+    hb = os.path.join(ROOT, "runs", "watchd", "heartbeat")
+    print("watchd: %s" % (("heartbeat " + age(os.path.getmtime(hb))) if os.path.exists(hb) else "never ran"))
+    mail = os.path.join(ROOT, "runs", "mail")
+    if os.path.isdir(mail):
+        unread = ["%s %d" % (a, len(os.listdir(os.path.join(mail, a, "new")))) for a in sorted(os.listdir(mail))
+                  if os.path.isdir(os.path.join(mail, a, "new")) and os.listdir(os.path.join(mail, a, "new"))]
+        print("unread mail (tools/bin/mbox read AGENT): %s" % (", ".join(unread) or "none"))
+    ev = os.path.join(ROOT, "runs", "events.log")
+    if os.path.exists(ev):
+        print("last events (runs/events.log):")
+        for line in open(ev).read().splitlines()[-5:]:
+            print("  " + line[:150])
+    gf = os.path.join(ROOT, "graphs", "found")
+    found = [os.path.join(gf, f) for f in os.listdir(gf)] if os.path.isdir(gf) else []
+    print("\ngraphs/found/: %d files" % len(found))
+    for t, p in newest(found, 5):
+        print("  %s  %s" % (age(t), os.path.relpath(p, ROOT)))
+    flags = []
+    for dp, dns, fns in os.walk(os.path.join(ROOT, "runs")):
+        for f in fns:
+            if f.startswith(("ALERT", "FAIL", "FOUND")):
+                flags.append(os.path.join(dp, f))
+    print("\nALERT*/FAIL*/FOUND* under runs/: %d files (newest %d)" % (len(flags), nfiles))
+    for t, p in newest(flags, nfiles):
+        print("  %s  %s" % (age(t), os.path.relpath(p, ROOT)))
+    return 0
+
+
+def _range(cpus):
+    from r310common import cpulist_str
+    return cpulist_str(cpus) if cpus else "-"
+
+
+if __name__ == "__main__":
+    sys.exit(main())

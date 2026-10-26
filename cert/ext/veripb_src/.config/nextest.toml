@@ -1,0 +1,3 @@
+[[profile.default.overrides]]
+filter = "package(veripb) and binary(integration)"
+slow-timeout = { period = "500ms", terminate-after = 2 }

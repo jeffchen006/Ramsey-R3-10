@@ -1,0 +1,10 @@
+  conclusion               1
+  core                     1
+  def_order                1
+  dom                      454
+  end                      1
+  f                        1
+  load_order               2
+  output                   1
+  witness perm             454
+RESULT: OK (M-IS conditions W, D, I, R hold)

@@ -1,0 +1,348 @@
+                                                                              R(3, 10) ≤ 41
+arXiv:2401.00392v2 [math.CO] 8 Apr 2024
+
+
+
+
+                                                                          VIGLEIK ANGELTVEIT
+
+
+                                                  Abstract. We improve the upper bound on the Ramsey number R(3, 10)
+                                                  from 42 to 41. Hence R(3, 10) is equal to 40 or 41.
+
+
+
+
+                                                                            1. Introduction
+                                             The Ramsey number R(s, t) is defined to be the smallest n such that every graph
+                                          of order n contains either a clique of s vertices or an independent set of t vertices.
+                                          See [4] for a survey on the currently known bounds for small Ramsey numbers. The
+                                          smallest Ramsey numbers that are currently unknown are R(4, 6) and R(3, 10).
+                                          Theorem 1.1. The Ramsey number R(3, 10) is less than or equal to 41.
+                                             In [1, Theorem 1], Exoo proved that R(3, 10) ≥ 40 by explicitly constructing
+                                          an R(3, 10, 39)-graph. This means that R(3, 10) is either 40 or 41. The proof
+                                          of Theorem 1.1 uses extensive computer calculations, and can be thought of as a
+                                          follow-up to [2] where Goedgebeur and Radziszowski proved that R(3, 10) ≤ 42.
+                                             The project described in [2] took a total of about 50 CPU years, and lowering
+                                          the upper bound on R(3, 10) from 42 to 41 requires several orders of magnitude
+                                          more calculations. For example, Goedgebeur and Radziszowski had to consider
+                                          about 80 million R(3, 8)-graphs and we had to consider approximately 150 billion
+                                          such graphs. Despite this, we were able to complete the proof of Theorem 1.1 in
+                                          about 3 CPU years, and all of the calculations were done on two standard desktop
+                                          computers over a period of a few months.
+                                             To complete this project, the main challenge was to come up with algorithms
+                                          that are several orders of magnitude faster than those used in [2] to go with the 4
+                                          orders of magnitude more graphs.
+                                          1.1. Acknowledgements. The author would like to thank Brendan McKay for
+                                          doing some sanity checks on some of the sets of graphs generated in this project
+                                          and for commenting on an early draft. In particular, he spent some CPU time
+                                          verifying that the census of R(3, 9, 32, e ≤ 112) graphs is complete. I would also
+                                          like to thank Jan Goedgebeur for some useful comments and for sharing a file with
+                                          43 117 868 R(3, 10, 39)-graphs he and Radziszowski found in [2].
+                                             This project also used the software package nauty extensively. See [3].
+
+                                                                         2. Outline of proof
+                                              Let R(s, t, n) denote the set of isomorphism classes of Ramsey graphs of type
+                                          (s, t) with n vertices. Similarly, let R(s, t, n, e ≤ e0 ) denote the set of such graphs
+                                          with at most e0 edges. Given a hypothetical graph Γ in R(3, 10, 41), the basic idea
+                                          is to consider a vertex v of degree d. Then the neighbourhood of v is an independent
+                                          set of size d, while the dual neighbourhood is a graph G ∈ R(3, 9, 41 − d − 1). We
+                                                                                     1
+can then use a version of the Neighbourhood Gluing Extension Method from [2] to
+reconstruct Γ, and it suffices to show that this kind of gluing does not produce any
+output.
+Proposition 2.1. Any graph Γ in R(3, 10, 41) must have a vertex v with dual
+neighbourhood in one of the following sets:
+    (1) R(3, 9, 32, e ≤ 112)
+    (2) R(3, 9, 33, e ≤ 121)
+    (3) R(3, 9, 34, e ≤ 130)
+Proof. First, R(3, 9, 35, e ≤ 139) should be on that list but by [2, Table 14] the set
+of such graphs is empty. Since R(3, 9) = 36, every vertex of Γ must have degree in
+{5, 6, 7, 8, 9}. Because 41 is odd, Γ cannot be regular of degree 9 and must have at
+least one vertex of degree in {5, 6, 7, 8}.
+   This result makes intuitive sense, since if Γ has 40 vertices of degree 9 and a single
+vertex v of degree 8 then the dual neighbourhood of v is in R(3, 9, 32, e ≤ 112). If
+we start removing edges from Γ, the dual neighbourhood of v will still be in one of
+these sets.
+   Let ni denote the number of vertices of degree i in Γ.
+   First suppose n5 = n6 = n7 = 0, so every vertex of Γ has degree 8 or 9.
+Then Γ has 369−n  2
+                      8
+                        edges, and the dual neighbourhood of a degree 8 vertex v has
+369−n8       P8
+   2     −      d(wi ) edges, where the sum is over the 8 vertices in Γ adjacent to v.
+          i=1
+Because the induced subgraph of Γ on the degree 8 vertices is triangle-free and
+n8 is odd, one of the degree 8 vertices is adjacent to at most n82−1 other degree 8
+vertices. Hence the sum of the degree of the neighbours of v is at least 72 − n82−1 .
+   It follows that the number of edges in the dual neighbourhood Γ−v of that degree
+8 vertex v is
+                   369 − n8 X
+                               8
+                                           369 − n8         n8 − 1
+          e(Γ−
+             v ) =         −      d(wi ) ≤          − (72 −        ) = 112.
+                       2      i=1
+                                               2               2
+Hence we have established that if every vertex of Γ has degree 8 or 9 then the dual
+neighbourhood of some vertex of Γ is in R(3, 9, 32, e ≤ 112).
+   For the general case, first note that Γ has 369−N
+                                                  2   edges, where N = n8 + 2n7 +
+3n6 + 4n5 . For a vertex v of degree at most 8, let
+  ǫ(v) = |degree 8 neighbours of v| + 2|degree 7 neighbours of v|
+                      + 3|degree 6 neighbours of v| + 4|degree 5 neighbours of v|.
+Then the dual neighbourhood of v is in one of the sets in the lemma if and only if
+ǫ(v) ≤ N2−1 .
+    Again we use that the induced subgraph of Γ on the degree at most 8 vertices
+is triangle-free: Consider the graph Γ′ with 9 − i vertices {v j }9−i
+                                                                  j=1 for each vertex v
+of Γ of degree i for i ∈ {5, 6, 7, 8}, with v j and wk adjacent whenever v and w are
+adjacent in Γ (and no edges between v j and v k for fixed v). Then Γ′ has N vertices
+and is also triangle-free. It follows that some vertex in Γ′ has degree at most N2−1 .
+The degree of v j in Γ′ is equal to ǫ(v), and the result follows.                    
+Corollary 2.2. To prove Theorem 1.1, it suffices to glue the graphs in Proposition
+2.1 using the Neighbourhood Gluing Extension Method.
+                                           2
+  This leaves us with two things to do:
+    (1) Generate all the graphs in Proposition 2.1.
+    (2) Show that none of them extend to an R(3, 10, 41)-graph.
+
+                             3. A census of graphs
+  To generate the graphs in Proposition 2.1, we start with a partial census of
+R(3, 7) and work our way up.
+
+3.1. A partial census of R(3, 7). We used the following sets of graphs:
+    (1) R(3, 7, 16, e ≤ 24) (46 514 graphs)
+    (2) R(3, 7, 17, e ≤ 30) (3 131 580 graphs)
+    (3) R(3, 7, 18, e ≤ 36) (23 149 358 graphs)
+    (4) R(3, 7, 19, e ≤ 41) (2 173 527 graphs)
+    (5) R(3, 7, 20, e ≤ 46) (10 613 graphs)
+   These are not that difficult to compute, and we computed them using a one-
+point extender that takes as input an R(3, 7, n)-graph and outputs all ways to add
+a single vertex to produce an R(3, 7, n + 1)-graph. It is possible to get away with
+only using R(3, 7, 16, e ≤ 21) rather than R(3, 7, 16, e ≤ 24), but see Section 5 for
+a place where we found it convenient to use the larger set of graphs.
+
+3.2. A partial census of R(3, 8). We need the following sets of graphs:
+    (1) R(3, 8, 23, e ≤ 53) (238 854 716 graphs)
+    (2) R(3, 8, 24, e ≤ 63) (approximately 150 billion graphs)
+    (3) R(3, 8, 25, e ≤ 70) (2 120 846 970 graphs)
+    (4) R(3, 8, 26, e ≤ 77) (1 767 543 graphs)
+    (5) R(3, 8, 27)         (477 142 graphs)
+   The graphs in R(3, 8, 27) are not logically necessary, but we found it convenient
+to glue them as well in order to make an additional assumption about the minimum
+degree of any vertex for the remaining gluing operations.
+   In each case it is a small linear programming exercise to show that gluing the
+above R(3, 7)-graphs suffices to generate these R(3, 8)-graphs.
+   We remark that we do not have an accurate count of the graphs in R(3, 8, 24, e =
+63) as we did not store them, but we have |R(3, 8, 24, e ≤ 62)| = 14 645 288 701.
+See Section 5 below for details on how to deal with R(3, 8, 24, e = 63).
+
+3.3. A partial census of R(3, 9). As explained in Proposition 2.1 above, we need
+the following sets of graphs
+    (1) R(3, 9, 32, e ≤ 112) (1 554 928 360 graphs)
+    (2) R(3, 9, 33, e ≤ 121) (14 395 graphs)
+    (3) R(3, 9, 34, e ≤ 130) (5 graphs)
+   In addition we considered the single graph in R(3, 9, 35). This is not logically
+necessary, but we found it convenient to glue it in order to make an additional
+assumption about the minimum degree of any vertex for the remaining gluing op-
+erations.
+   Again, in each case it is a small linear programming exercise to show that gluing
+the above R(3, 8)-graphs suffices to generate these R(3, 9)-graphs.
+                                          3
+   We remark that R(3, 8, 24, e = 63) is only needed to generate the regular degree
+7 graphs in R(3, 9, 32, e = 112). For all the remaining graphs it suffices to consider
+R(3, 8, 24, e ≤ 62).
+
+                                 4. Gluing algorithms
+  The main algorithm used by Goedgebeur and Radziszowski is the Neighbourhood
+Gluing Extension Method. Similar algorithms are pervasive in the subject. We
+made a few modifications to increase the performance.
+
+4.1. The Neighbourhood Gluing Extension Method. The basic algorithm is
+as follows. Given G′ ∈ R(3, t, n) and some natural number d, one can compute
+all graphs G ∈ R(3, t + 1, n + 1 + d, e ≤ e0 ) with a vertex v of degree d with
+neighbours v1 , . . . , vd and dual neighbourhood G′ as follows. First, make a list of
+all independent sets in G′ . If S is an independent set in G′ then assigning S ∪{v} as
+the set of neighbours of some vi does not create any triangles, and the only thing to
+check is if assigning S1 , . . . , Sd (and v) as the set of neighbours to v1 , . . . , vd creates
+any independent (t+1)-sets. This is a valid assignment      S if and only if for each subset
+K ⊆ {1, . . . , n} the independence number of V G′ \            Sk is at most t − |K|. (This
+                                                           k∈K
+is authomatic for |K| = 1.) If so, we call S1 , . . . , Sd compatible. Based on this one
+can implement an inductive search algorithm. By ordering the independent sets by
+size one can also prune when it is clear that adding independent sets from later in
+the list will produce a graph with too many edges.
+   We used their algorithm without change to compute the parts of R(3, 8, n) we
+needed, but we made some changes when computing R(3, 9, n) and when showing
+that R(3, 10, 41) is empty.
+
+4.2. Our first modification: Using only maximal independent sets. This
+modification is responsible for the largest performance increase. To describe it, we
+use the following result:
+Lemma 4.1. If the independent sets S1 , . . . , Sd are compatible and Si ⊆ Si′ for
+each i then the independent sets S1′ , . . . , Sd′ are also compatible.
+   In other words, if we can add an edge from vi to G′ without introducing any
+triangles then we can add that same edge to G without introducing any triangles.
+Adding an edge does not introduce any additional independent sets, so the lemma
+follows. Hence it suffices to consider independent sets that are maximal in the sense
+that they are not contained in any larger independent sets. This has a massive
+advantage. In a typical case this reduces the number of independent sets by an
+order of magnitude, and the number of tuples by several orders of magnitude.
+   This modification also has some disadvantages. The first is that we can no longer
+prune by number of edges, at least not at this stage of the algorithm.
+   The second downside is that such a maximal solution might represent a large
+number of non-maximal solutions. So we need another algorithm to extract those
+non-maximal solutions.
+   We do this as follows: Before searching for compatible d-tuples of maximal in-
+dependent sets, assign each independent set S to a maximal independent set S ′
+with S ⊂ S ′ . This way each maximal independent set comes with an allowed list
+of subsets.
+                                               4
+   Given compatible maximal independent sets S1′ , . . . , Sd′ , we inductively try re-
+placing Si′ by each allowed subset Si while pruning on the total number of edges.
+4.3. Our second modification: Not using a precomputed table of inde-
+pendence numbers. Goedgebeur and Radziszowski used a precomputed table of
+the independence number of any subset of V G′ . Precomputing this simply takes
+too long. If the number of vertices is small (at most 27) we initialise a table of
+independence numbers to 0 and compute independence numbers as needed. If the
+number of vertices is large, we use a HashMap instead.
+   Note that there is a fast way to check if a pair of independent sets are compatible
+without using a precomputed table of independence numbers: For each independent
+set S we precompute which independent (t − 1)-sets are contained in V G′ \ S and
+store the result in a bitvector. Then we can use a bitwise and operation to check
+if Si and Sj are compatible. We then store this result for each pair in another
+bitvector, so we can check with another bitwise and which independent sets are
+pairwise compatible with S1 , . . . , Sk .
+4.4. Our third modification: Computing independence numbers as late
+as possible. Suppose, for example, that we start with G′ ∈ R(3, 8, 24) and d = 7,
+and that we are looking for graphs in R(3, 9, 32, e ≤ 112). Then we are looking for
+compatible independent 7-tuples S1 , . . . , S7 of maximal independent sets. Because
+bitwise operations are fast and computing the independence number of some subset
+of V G′ is slow, we check for pairwise compatibility only (which we compute once
+and then store in a bitvector) until we find a potential solution S1 , . . . , S7 . Only
+at this point do we start computing independence numbers, starting with that of
+V G′ \ (S1 ∪ S2 ∪ S3 ). If we do find that {S1 , S2 , S3 } are incompatible, we can jump
+straight to the next assignment of S3 .
+4.5. Our fourth modification: Ordering the independent sets. We order the
+maximal independent sets S1 , . . . , SN as follows: First, we find the independent (t−
+1)-set which is contained in V G′ \Si for the largest number of maximal independent
+sets, and consider those maximal independent sets last. The reason for doing so is
+that none of them are compatible with each other, so we can choose at most one
+of them and they only need to be considered in the inner-most loop when choosing
+Sd . Hence we can work with a smaller collection of independent sets until the
+inner-most loop. This can be repeated.
+   When aiming for R(3, 10, 41) this gives us an especially large saving, as we almost
+never have to consider the last 3 or 4 subsets of maximal independent sets.
+4.6. Performance. For example, these modifications allow us to glue approxi-
+mately 250 graphs in R(3, 8, 24) per second (per CPU core) on a modern com-
+puter to produce graphs in R(3, 9, 32, e ≤ 112), and a similar number of graphs in
+R(3, 9, 32) per second to produce (hypothetical) graphs in R(3, 10, 41).
+
+5. The special case of extending R(3, 8, 24, e = 63) to R(3, 9, 32, e = 112)
+  There are approximately 150 billion graphs in R(3, 8, 24, e = 63), and these are
+needed to find the regular degree 7 graphs in R(3, 9, 32, e = 112) only. With the
+obvious algorithm this would take much longer than any of the other calculations,
+but we can take advantage of the fact that we only need them to find the regular
+degree 7 graphs to produce a much more efficient algorithm.
+                                           5
+    If Γ ∈ R(3, 9, 32, e = 112) is regular of degree 7 then every vertex of Γ has dual
+neighbourhood in R(3, 8, 24, e = 63).
+    Suppose in addition that the dual neighbourhood of some vertex v of Γ in
+R(3, 8, 24, e = 63) has a degree 7 vertex w. That means the neighbourhoods of
+v and w in Γ are disjoint, and the intersection of the dual neighbourhoods of
+v and w is a graph G′ ∈ R(3, 7, 16). Hence Γ is given by gluing two graphs
+G1 , G2 ∈ R(3, 8, 63, e = 112) along G′ ∈ R(3, 7, 16).
+    For a fixed G′ ∈ R(3, 7, 16) we first find all G ∈ R(3, 8, 24, e = 63) with G′ as a
+dual neighbourhood using the usual Neighbourhood Gluing Extension Method. For
+each pair G1 , G2 ∈ R(3, 8, 24, e = 63) intersecting in G′ we can then compute the
+degree of each vertex x ∈ V G′ considered in Γ, and each must have degree exactly
+7. That is a very strong condition, so very few pairs are compatible. For a fixed
+G′ there might be several hundred million extensions to R(3, 8, 24, e = 63), so that
+leaves approximately 1017 pairs in that case. To avoid having to check every pair,
+we put the graphs in a HashMap based on the degree sequence of the vertices in
+V G′ considered in G. Then, for each G1 ∈ R(3, 8, 24, e = 63) extending G′ we can
+simply look up the compatible G2 in the HashMap.
+    After finding a pair that is compatible, we do the following: For each neighbour
+vi of v and neighbour wj of w, we add an edge between vi and wj if this does not
+introduce a triangle. This can be checked with a single bitwise and for each pair
+(vi , wj ). If every vertex now has degree at least 7, we check if this is an R(3, 9, 32)-
+graph. If it is, we then remove edges in all possible ways between degree ≥ 8 vertices
+and record the R(3, 9, 32)-graphs we get.
+    A similar algorithm works for G′ ∈ R(3, 7, 17) or G′ ∈ R(3, 7, 18). The restriction
+on the degree of the vertices in G′ considered in Γ is weaker, but we also have fewer
+pairs.
+    Because this has to work for every neighbourhood, we can exclude any graph
+G ∈ R(3, 8, 24, e = 63) that has already been considered. It is possible to do this
+without storing R(3, 8, 24, e = 63), for example as follows:
+    We first ran this program for G′ ∈ R(3, 7, 16, e = 24). Next, we ran it for G′ ∈
+R(3, 7, 17, e = 30) while excluding any output in R(3, 8, 24, e = 63) with some dual
+neighbourhood in R(3, 7, 16, e = 24). Next we considered R(3, 7, 18, e = 36) while
+excluding any output in R(3, 7, 16, e = 24) or R(3, 7, 17, e = 30). After that we
+considered R(3, 7, 16, e = 23) while excluding the graphs with a dual neighbourhood
+in one of the previous cases, and so on until covering all of R(3, 7, 16, e ≤ 24),
+R(3, 7, 17, e ≤ 30) and R(3, 7, 18, e ≤ 36). Finally we also considered R(3, 7, 19, e ≤
+40) (which is small and only required a simple one-point extender.)
+    This produced a total of 506 regular degree 7 graphs in R(3, 9, 32, e = 112), in
+about 6 months of CPU time.
+
+                  6. Extending the necessary R(3, 9)-graphs
+   In the end we had about 1.6 billion graphs in R(3, 9, 32, e ≤ 112), 14395 graphs
+in R(3, 9, 33, e ≤ 121) and 5 graphs in R(3, 9, 34, e ≤ 130). The latter two cases
+were very fast. The first case took about 3 months of CPU time to extend to
+R(3, 10, 41). Since this produced no outputs, this finishes the proof of Theorem
+1.1.
+   Since running a program that produces no output is not very satisfying we had
+our program produce a large number of graphs is R(3, 10, 38) instead, and used a
+                                            6
+one-point extender to verify that none of them extended to R(3, 10, 41) (or even to
+R(3, 10, 40)).
+
+                         7. A partial census of R(3, 10, 39)
+   This project produced a large number of graphs in R(3, 10, 39), and we were
+able to produce many more by forgetting a single vertex and then using a one-point
+extender in all possible ways. We have produced 39 745 077 such graphs, and
+we can still produce more pretty easily. Most of these had already been found by
+Goedgebeur and Radziszowski [2] who found 43 117 868 such graphs. By taking the
+union (and forgetting a single vertex and using a one-point extender) we extended
+this to 43 146 537 graphs. In contrast, the number of maximal Ramsey graphs in
+other known cases is much smaller:
+
+         Table 1. The number of maximal Ramsey graphs in some cases
+
+                              |R(3, 5, 13)|       1
+                              |R(3, 6, 17)|       7
+                              |R(3, 7, 22)|      191
+                              |R(3, 8, 27)|    477 142
+                              |R(3, 9, 35)|       1
+                              |R(4, 4, 17)|       1
+                              |R(4, 5, 24)|    352 366
+                              |R(4, 6, 35)|     ≥ 37
+                              |R(5, 5, 42)|     ≥ 656
+                              |R(3, 10, 39)| ≥ 43 146 537
+
+   The obvious conjecture is that R(3, 10) = 40. But because R(3, 10, 39) is so
+large, we are not confident in this prediction. If, indeed, R(3, 10) = 40 then this is
+going to be quite difficult to prove with current techniques. For example, a potential
+R(3, 10, 40)-graph might be regular of degree 9 and then the dual neighbourhood of
+any vertex will be in R(3, 9, 30, e = 99). This contains many orders of magnitude
+more graphs than R(3, 9, 32, e ≤ 112).
+
+                                       References
+[1] Geoﬀrey Exoo. On two classical Ramsey numbers of the form R(3, n). SIAM J. Discrete Math.,
+    2(4):488–490, 1989.
+[2] Jan Goedgebeur and Stanislaw P. Radziszowski. New computational upper bounds for Ramsey
+    numbers R(3, k). Electron. J. Combin., 20(1):Paper 30, 22, 2013.
+[3] Brendan D. McKay and Adolfo Piperno. Practical graph isomorphism, II. J. Symbolic Com-
+    put., 60:94–112, 2014.
+[4] Stanislaw P. Radziszowski. Small Ramsey numbers. Electron. J. Combin., 1:Dynamic Survey
+    1, 30, 1994.
+
+   Mathematical Sciences Institute, Australian National University, Canberra, ACT
+0200, Australia
+
+
+
+
+                                              7
+

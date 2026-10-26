@@ -1,0 +1,19 @@
+# cert/implied_bounds.txt - implied constraints D allowed as INPUT of the second VeriPB proof
+# (notes/cert_design.md sec. 1.1, 3.7; critic Review 14 P2). A bound in a solver's CNF tag
+# is accepted only if this table implies it: tag lo <= table lo, tag hi >= table hi.
+# mode "all": every (3,s,n)-graph; "mtf": every maximal triangle-free one (MTF used in the run).
+# Built-in rule (satcore_cert.implied, no row needed): degree lo <= 0, hi >= s-1 for every n
+# (deg <= s-1: N(v) is independent, hand lemma L1).
+# n  s  mode kind   lo   hi   justification
+8    4  all  degree 2    3    deg<=s-1 (N(v) independent, hand); deg>=n-R(3,s-1)=8-6 (R(3,3)=6)
+9    4  all  degree 3    3    deg<=3 hand; deg>=9-R(3,3)=3
+13   5  all  degree 4    4    deg<=4 hand; deg>=13-R(3,4)=4 (R(3,4)=9)
+18   6  all  degree 4    5    deg<=5 hand; deg>=18-R(3,5)=4 (R(3,5)=14, Greenwood-Gleason 1955)
+18   6  mtf  degree 4    5    as "all"
+40   10 mtf  degree 6    9    notes/cases.md M1 (hand, MTF; table-free), L1 (hand)
+# Removed 2026-10-24 (plan sec. 5.1, Theorem A''): rows that rest on uncertified tables,
+#   40 10 all degree 5 9 (L7' uses [GR] Thm 3) and 40 10 all|mtf edges 159 180 (L5 uses e(3,9,m)).
+# Planned (not yet supported by the regeneration; satcore --codeg-max, 2026-10-24): n=40, s=10,
+#   codegree(i,j) <= 7 for EVERY pair: L6 (needs F2) gives <= d(u)+d(v)-11 <= 7 for non-adjacent
+#   pairs, and adjacent pairs have codegree 0 (triangle-free). Unconditional encoding (satcore
+#   Encoding::codegree_max): y_m <-> x(i,m) & x(j,m), totalizer, unit -O[C].

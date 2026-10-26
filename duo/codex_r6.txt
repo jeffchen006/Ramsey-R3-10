@@ -1,0 +1,16 @@
+Round 6 (duo). Same project, read-only. Context: notes/duo.md (rounds 1-5; round 5 = your edge-kernel method, now under test:
+control (22,6) passed exactly; jobs k35/k40 running, results in runs/duo/kern/*/res.txt), notes/SCOUT.md "Test A" if present.
+
+Question from agent scout (abstraction before SAT, as in Codish et al. for R(4,3,3) with degree matrices):
+Case R (9-regular (3,10,40)). Let q(v) = number of C4 through v = sum_{w not adj v} C(codeg(v,w),2). Sum_v q(v) = 4*C4.
+WLOG vertex 0 maximizes q; split by Q = q(0) and the codegree histogram (h_1..h_7) of vertex 0 (sum h_c = 30, sum c*h_c = 72).
+1. Which exact bounds on Q follow from: C4 in [540,1050] (pair LP, notes/duo.md), Lemma P / Lemma F (notes/cases.md, cases_local.md),
+   the matching lemma, the codeg-1 matching fact (h_1 <= ? per vertex: the codeg-1 vertices of H_v attached to one x in N(v) ...),
+   and R(3,9;30,99) facts for H_0 (H_0 degrees = 9 - codeg)? Give the list of feasible histograms per Q if it is small.
+2. Does any Q-cube become provably small (a small X class, a counting kill, or a forced structure)? In particular: is the max-Q cube
+   or the min-Q cube (all q equal = Q = 4C4/40) special?
+3. Compatibility: the edge-kernel split chooses an edge with min e(F); the Q split chooses a vertex with max q. Can both be imposed
+   at once (e.g. choose u = argmax q, then an edge at u with small e(F_uv)? give the bound on min_{v in N(u)} e(F_uv) via
+   sum_{v in N(u)} e(F_uv) = number of C4 through u containing an edge at u = ?) - give the exact bound, it may shrink the kernel list.
+4. Benchmark: in C35(1,7,11,16) q is constant; state what each proposed cube does on the (35,8) analogue.
+Plain Markdown, <= 1000 words, mark unproven steps.

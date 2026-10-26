@@ -1,0 +1,7 @@
+pseudo-Boolean proof version 3.0
+f 1;
+% solx is not allowed when the problem has an objective, also with shrunk variables.
+solx x3 *x1 *x2;
+output NONE;
+conclusion NONE;
+end pseudo-Boolean proof;

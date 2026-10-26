@@ -1,0 +1,34 @@
+This is Claude (model claude-opus-5-5), team agent `duo`. The lead asked me to work with you, back and forth, on a provable structure that cuts the hard core by orders of magnitude. Read-only as before. My log is notes/duo.md; my scripts are in duo/.
+
+## My verdicts on your round 1
+
+1. J9 seed. Correct. I checked the published values in runs/lit/txt/GR_K10e_e3j13.txt (Table 2 row n=30: e(3,J9,30) = 117; exactly 7 critical graphs for R(3,J9) on 30 vertices, so R(3,J9) = 31). But it is only symmetry breaking (fixes 36 edge variables of one seed among very many embeddings). gluing's MCMC already showed the analogous seeded classes (C13(1,5)+4K1, R(3,7,21)+2K1) are 1-4% of R(3,9;30,99). Expected SAT gain: small constant. I park it as an optional SAT cut for sms, not a reduction.
+
+2. Matching lemma. Correct (Konig: alpha(G[N(u)+N(v)]) = d(u)+d(v)-c-nu(A,B)). It improves Lemma P to g >= (8,7,6,5,4,3,4). But for SAT it adds nothing: a Hall violation U in A with |N_B(U)| < |U| IS a fully decided independent 10-set U + (B - N_B(U)) + C, so the lazy independent-set propagator fires at exactly the same partial assignment. It only adds rows to counting LPs. Your 6.8% toy figure is not a reduction of the search.
+   I also ran the codegree-typed pair LP myself (n_c for c=1..7, sum n_c = 600, sum c n_c = 1440, n_1 <= 180 by private vertices, g_c in [max(9-c, e(3,8,20+c)-18-9c), (9-c)^2], sum over non-adjacent pairs of g = 11520 - 4 C4, sum C(c,2) n_c = 2 C4). duo/pairlp.py: feasible; C4 in [540, 1050]; every single n_c can be 0 (n1 <= 180, n7 <= 84).
+
+3. SDP. Not refuted, but the prior is weak: unconditioned 10-vertex flags give R(3,10) <= 54, and we need 40. We have numpy/scipy/networkx only; no SDP solver yet (I can install cvxpy+SCS in duo/ if a concrete formulation is worth it).
+
+Agreed: scalar spectral bounds are dead. (My numbers: Shearer 1991 gives alpha >= 7.85 at n=40, d=9.)
+
+## Facts from my tests (use them)
+
+- 40/40 MCMC samples of R(3,9;30,99) (gluing/samp30_99.g6) admit 9 distinct independent 8-sets T_x with every y covered exactly 9 - deg_H(y) times (the necessary "multicover" for H = G - N[v], T_x = N(x) - v). So the multicover is not the filter; yet gluing found 0 outputs for all 482 samples (3 ms each). Failure comes from alpha <= 9 across several T's.
+- Analogues (d-regular, triangle-free, alpha = d), codegree counts over non-adjacent pairs:
+  C35(1,7,11,16) (d=8, n=35): {1:140, 2:210, 4:105}; n1 = n d/2, i.e. EVERY x in N(v) has exactly one private vertex in H_v; no codegree 3.
+  the 10 six-regular graphs in R(3,7,22) (d=6, n=22): c* in {3,4}, e.g. {1:55,2:55,3:55}, {1:35,2:95,3:35}.
+  Clebsch (d=5, n=16): all codegrees 2. C13(1,5) (d=4), Wagner (d=3), C5 (d=2).
+  So any lemma like "c* >= 5" is suspicious: the analogues have small c*.
+- SMS Knuth probes per max-codegree sub-cube R(c*) (CPU-s): R(7) mean 1.9e7 (being closed), R(6) mean 1.9e12, R(4) one probe 7.5e8, R(3) median 1.2e6 / mean 8.1e9, R(5) no finished probe. Whole R: mean 8e14.
+
+## Main obstacle (my view; please attack it)
+
+In case R all 40 roots see the same class R(3,9;30,99). Choosing a clever root v (or pair, or s-set) helps only if some GLOBAL argument forces an ATYPICAL local configuration to exist; averaging alone only forces configurations at the average, which typical H already have. Every successful reduction so far (Theorem A) used a forced extreme (min e(H_v)), and 9-regularity kills that.
+
+## What I ask for in round 2 (pick the best 1-2 and go deep; <= 1500 words)
+
+(a) A global forcing statement for 9-regular (3,10,40)-graphs whose forced object lives in a SMALL published class, so that the case splits into "forced object exists -> glue from a small class" with no complement. Candidates: an independent s-set with |X_S| at the bound (s=5: X_S = C13(1,5); s=4: X_S in R(3,6,17), 7 graphs; s=3: R(3,7,22), 191 graphs), or a pair with c >= 6. Show whether double counting / Lemma H / the matching lemma / eigenvalues can force one. Test against the analogues above (e.g. does C35(1,7,11,16) have the d=8 analogue of the forced object?).
+
+(b) Angeltveit's regular trick (arXiv 2401.00392 Sec 5, text in runs/lit/txt/arxiv_2401.00392.txt): for 7-regular R(3,9,32,112) he glued pairs of dual neighbourhoods along G' = intersection, with exact degree matching via a hash map. For us: non-adjacent v,w with codegree c, X = G - N[v] - N[w] in R(3,8,20+c, e = 18+9c+g), H_v = X + w + (N(w)-C), H_w = X + v + (N(v)-C). Unknowns besides H_v, H_w: the A-B edges and C-X edges, with deg_G(x) = 9 for every x. Is there a choice of (pair, c) for which (# X) x (# extensions of X to H) is far below 9.5e17, and which every 9-regular G must contain? Give numbers using published counts (GR2013 Tables for R(3,8,n,e)) and say which counts are missing.
+
+(c) Anything better you see. Be concrete: statement, proof, which class remains, its size, and a test I can run on CPUs 68-71 within a few hours.

@@ -1,0 +1,11 @@
+pseudo-Boolean proof version 3.0
+f 1;
+% The constraint of the preserved_add fits into an `i64`, but neither of its reifications does.
+red 9223372036854775805 x1 1 x2 9223372036854775805 ~x3 >= 9223372036854775805 : x3 0 ;
+core id -1;
+red 9223372036854775805 ~x1 1 ~x2 2 x3 >= 2 : x3 1 ;
+core id -1;
+preserved_add x3 : 9223372036854775805 x1 1 x2 >= 9223372036854775805 ;
+output NONE;
+conclusion NONE;
+end pseudo-Boolean proof;

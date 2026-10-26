@@ -1,0 +1,12 @@
+pseudo-Boolean proof version 3.0
+f 3;
+% The quick check fails as x4 is unassigned, but x4 is propagated to true.
+solx *x1 x2 *x3;
+% The first solx excluded the 4 solutions with x2 = 1 (and hence x4 = 1).
+rup 1 ~x2 >= 1 ;
+% The quick check fails as ~x1 x2 is not satisfied, but x1 is propagated to false.
+solx ~x2 x3 *x4;
+rup >= 1 ;
+output NONE;
+conclusion ENUMERATION_COMPLETE 6;
+end pseudo-Boolean proof;

@@ -1,0 +1,8 @@
+pseudo-Boolean proof version 3.0
+f 1;
+% Marking a variable as shrunk more than once has no additional effect.
+solx x1 *x2 *x2;
+rup >= 1 ;
+output NONE;
+conclusion ENUMERATION_COMPLETE 2;
+end pseudo-Boolean proof;

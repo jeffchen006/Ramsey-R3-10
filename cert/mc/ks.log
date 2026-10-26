@@ -1,0 +1,241 @@
+c order = 23
+c --- [ banner ] -------------------------------------------------------------
+c 
+c CaDiCaL SAT Solver
+c Copyright (c) 2016-2023 A. Biere, M. Fleury, N. Froleyks, K. Fazekas, F. Pollitt
+c 
+c Version 1.9.4 84b2aefccb61d2eeea3fd9607a3de82a438a69d1
+c g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0 -Wall -Wextra -O3 -DNDEBUG
+c Sat Oct 24 19:06:33 CEST 2026 Linux <server> 5.15.0-190-generic x86_64
+c 
+c --- [ proof tracing ] ------------------------------------------------------
+c 
+c opening file to write 'f.drat'
+c writing non-binary proof trace to 'f.drat'
+c 
+c --- [ parsing input ] ------------------------------------------------------
+c 
+c reading DIMACS file from 'constraints_23_3_7_5_6_0_0_MPCF_degsinz'
+c opening file to read 'constraints_23_3_7_5_6_0_0_MPCF_degsinz'
+c found 'p cnf 8809 275632' header
+c parsed 275632 clauses in 0.30 seconds process time
+c 
+c --- [ options ] ------------------------------------------------------------
+c 
+c   --binary=false                 (different from default 'true')
+c 
+c --- [ solving ] ------------------------------------------------------------
+c 
+c Not checking for unembeddable subgraphs
+c Running orderly generation on order 23 (253 edge variables)
+c time measured in process time since initialization
+c 
+c  seconds  reductions  redundant  irredundant
+c         MB    restarts       trail      variables
+c          level   conflicts       glue        remaining
+c 
+c *  0.30 48  0 0   0    0    0  0% 0 274275 7659 87%
+c {  0.30 48  0 0   0    0    0  0% 0 274275 7659 87%
+c -  0.52 65 39 1   2  300  218 41% 10 271710 7659 87%
+c }  0.79 67 22 1   6 1001  753 43% 9 271776 7659 87%
+c [  0.79 67  0 1   6 1001  753  0% 0 271776 7659 87%
+c O  0.79 67  0 1   6 1002  753 14% 0 271776 7659 87%
+c i  0.79 67  0 1   6 1002  753 14% 0 271776 7646 87%
+c i  0.79 67  0 1   6 1003  753 19% 0 271776 7632 87%
+c i  0.79 67  0 1   6 1005  753 18% 0 271776 7602 86%
+c i  0.79 67  0 1   6 1006  753 18% 0 271776 7589 86%
+c i  0.79 67  1 1   6 1007  753 19% 0 271776 7575 86%
+c i  0.79 67  0 1   6 1007  753 18% 0 271777 7553 86%
+c i  0.80 67  1 1   6 1009  753 18% 0 271777 7537 86%
+c i  0.80 67  1 1   6 1009  754 18% 0 271779 7518 85%
+c i  0.80 67  1 1   6 1010  754 18% 0 271779 7499 85%
+c -  1.35 87 21 2   6 1160  815 44% 12 270329 7499 85%
+c -  4.43 88 19 3   7 2448 1579 54% 13 270493 7499 85%
+c ]  4.79 88 19 3   8 3001 2016 55% 13 270501 7499 85%
+c {  4.79 88 22 3   8 3001 2016 43% 9 270501 7499 85%
+c F  4.88 87 22 3   8 3004 2019  9% 9 270501 7499 85%
+c 
+c  seconds  reductions  redundant  irredundant
+c         MB    restarts       trail      variables
+c          level   conflicts       glue        remaining
+c 
+c i  4.88 87 22 3   8 3005 2019  9% 9 270501 7498 85%
+c i  4.89 87 22 3   8 3023 2036 14% 9 270507 7125 81%
+c i  4.89 87 22 3   8 3067 2071 15% 9 270508 7070 80%
+c i  5.01 87 19 3   8 3262 2198 31% 9 270536 7052 80%
+c i  5.30 87 19 3  64 3738 2611 34% 9 270566 7008 80%
+c -  5.82 80 19 4 142 4166 1918 37% 9 212910 6985 79%
+c d  6.51 80 17 4 191 5000 2625 39% 9 212886 6937 79%
+c 2  6.58 80 17 4 191 5000 8222 39% 9 212883 6732 76%
+c p  8.94 80 17 4 191 5000 23175 39% 9 212883 6165 70%
+c d  9.10 80 17 4 191 5000 15491 39% 9 128646 6147 70%
+c d  9.12 80 17 4 191 5000 15481 39% 9 128551 6095 69%
+c # 10.07 80 16 4 268 6005 16350 39% 9 128625 6095 69%
+c - 10.26 91 17 5 303 6158 3488 39% 9 128625 6095 69%
+c } 11.09 91 16 5 361 7002 4159 41% 9 128678 6095 69%
+c [ 11.09 91 19 5 361 7002 4159 65% 13 128678 6095 69%
+c - 11.93 92 18 6 361 8155 3832 59% 13 128700 6095 69%
+c i 12.38 92 18 6 361 8518 4118 58% 13 128707 6084 69%
+c i 12.95 92 17 6 361 8919 4411 56% 12 128782 6063 69%
+c I 13.61 92 17 6 362 10008 2468 37% 12 118251 6063 69%
+c s 13.81 92 17 6 363 10326 2561 37% 12 112441 6063 69%
+c 
+c  seconds  reductions   redundant   irredundant
+c         MB    restarts        trail       variables
+c          level    conflicts       glue         remaining
+c 
+c v 14.23 92 17 6 363 10326 2561 37% 12 112421 6063 69%
+c w 14.25 92 17 6 363 10326 2555 37% 12 112421 6063 69%
+c t 14.27 92 17 6 363 10326 2354 37% 12 112321 6062 69%
+c e 14.30 93 17 6 363 10326 1733 37% 12 104602 2082 24%
+c s 14.34 93 17 6 363 10326 1732 37% 12 103253 2082 24%
+c ^ 14.35 93 17 6 363 10326 1732 37% 12 103253 2082 24%
+c - 14.43 93 17 7 363 10486 1677 35% 12 103253 2082 24%
+c - 16.44 93 16 8 364 12919 2768 21% 12 103490 2082 24%
+c 2 17.45 93 15 8 365 15000 6030 19% 11 103509 2082 24%
+c p 17.67 93 15 8 365 15000 7211 19% 11 103509 2062 23%
+c d 17.73 93 15 8 365 15000 6328 19% 11 87736 2061 23%
+c d 17.74 93 15 8 365 15000 6326 19% 11 87703 2044 23%
+c ] 17.77 93 15 8 365 15004 6328 43% 11 87703 2044 23%
+c { 17.77 93 16 8 365 15004 6328 149% 9 87703 2044 23%
+c B 17.78 93 16 8 365 15010 6333 148% 9 87703 2044 23%
+c i 17.88 93 16 8 365 15238 6460 142% 9 87704 1998 23%
+c - 18.94 93 15 9 365 15660 2378 132% 9 68269 1998 23%
+c i 20.09 93 14 9 405 17738 3805 104% 9 68323 1997 23%
+c i 20.10 93 14 9 405 17751 3812 103% 9 68323 1995 23%
+c i 20.21 93 13 9 405 18103 3981 100% 8 68325 1985 23%
+c 
+c  seconds  reductions   redundant   irredundant
+c         MB    restarts        trail      variables
+c          level    conflicts        glue       remaining
+c 
+c i 20.23 93 13 9 405 18150 4006 100% 8 68325 1983 23%
+c i 20.32 93 13 9 405 18383 4110 98% 8 68325 1942 22%
+c i 20.38 93 13 9 406 18579 4249 96% 8 68328 1936 22%
+c - 20.53 93 13 10 406 18663 1667 96% 8 56195 1936 22%
+c i 20.53 93 13 10 406 18669 1671 96% 8 56195 1667 19%
+c i 20.53 93 13 10 406 18670 1671 96% 8 56195 1658 19%
+c i 20.63 93 13 10 406 18689 1683 96% 8 56203 1612 18%
+c } 20.63 93 13 10 406 18691 1683 95% 8 56203 1442 16%
+c 0 20.63 93 13 10 406 18691 1683 95% 8 56203 1442 16%
+Number of solutions   : 0
+Canonical subgraphs   : 1407           (212 /sec)
+          order  3    : 2              (500000 /sec)
+          order  4    : 3              (500000 /sec)
+          order  5    : 4              (181818 /sec)
+          order  6    : 4              (95238 /sec)
+          order  7    : 6              (26667 /sec)
+          order  8    : 8              (9292 /sec)
+          order  9    : 18             (4348 /sec)
+          order 10    : 38             (2003 /sec)
+          order 11    : 63             (1072 /sec)
+          order 12    : 179            (540785 /sec)
+          order 13    : 177            (351 /sec)
+          order 14    : 322            (230 /sec)
+          order 15    : 280            (168 /sec)
+          order 16    : 206            (120 /sec)
+          order 17    : 93             (77 /sec)
+          order 18    : 4              (59 /sec)
+          order 19    : 0              (-nan /sec)
+          order 20    : 0              (-nan /sec)
+          order 21    : 0              (-nan /sec)
+          order 22    : 0              (-nan /sec)
+          order 23    : 0              (-nan /sec)
+Noncanonical subgraphs: 1064           (671 /sec)
+          order  3    : 0              (-nan /sec)
+          order  4    : 0              (-nan /sec)
+          order  5    : 0              (-nan /sec)
+          order  6    : 2              (333333 /sec)
+          order  7    : 1              (333333 /sec)
+          order  8    : 4              (148148 /sec)
+          order  9    : 13             (171053 /sec)
+          order 10    : 32             (90652 /sec)
+          order 11    : 64             (43272 /sec)
+          order 12    : 0              (-nan /sec)
+          order 13    : 222            (4842 /sec)
+          order 14    : 209            (1349 /sec)
+          order 15    : 256            (939 /sec)
+          order 16    : 135            (601 /sec)
+          order 17    : 113            (152 /sec)
+          order 18    : 13             (93 /sec)
+          order 19    : 0              (-nan /sec)
+          order 20    : 0              (-nan /sec)
+          order 21    : 0              (-nan /sec)
+          order 22    : 0              (-nan /sec)
+          order 23    : 0              (-nan /sec)
+Canonicity checking   : 6.63658 s
+Noncanonicity checking: 1.58528 s
+Total canonicity time : 8.22185 s
+c 
+c --- [ closing proof ] ------------------------------------------------------
+c 
+c DRAT proof file 'f.drat' closed
+c DRAT 529273 added clauses 41.58%
+c DRAT 743767 deleted clauses 58.42%
+c DRAT 84621436 bytes (80.70 MB)
+c 
+c --- [ result ] -------------------------------------------------------------
+c 
+s UNSATISFIABLE
+c 
+c --- [ run-time profiling ] -------------------------------------------------
+c 
+c process time taken by individual solving procedures
+c (percentage relative to process time for solving)
+c 
+c        16.79   82.59% search
+c         9.78   48.13% stable
+c         7.00   34.46% unstable
+c         3.54   17.40% simplify
+c         2.58   12.70% probe
+c         0.44    2.17% vivify
+c         0.30    1.47% parse
+c         0.10    0.50% subsume
+c         0.07    0.34% ternary
+c         0.03    0.15% elim
+c   =================================
+c        20.33   98.54% solve
+c 
+c last line shows process time for solving
+c (percentage relative to total process time)
+c 
+c --- [ statistics ] ---------------------------------------------------------
+c 
+c chronological:              3935        21.05 %  of conflicts
+c conflicts:                 18691       919.43    per second
+c decisions:                 29686      1460.28    per second
+c eliminated:                 3980        45.18 %  of all variables
+c ext.prop. calls:           31177        33.87 %  of queries
+c ext.clause calls:          31177        33.87 %  of queries
+c ext.final check:               0         0.00 %  of queries
+c fixed:                      3251        36.91 %  of all variables
+c learned:                   18874       100.98 %  per conflict
+c learned_lits:             824398       100.00 %  learned literals
+c minimized:                     0         0.00 %  learned literals
+c shrunken:                 385163        46.72 %  learned literals
+c minishrunken:              76575         9.29 %  learned literals
+c otfs:                         83         0.44 %  of conflict
+c propagations:            7094752         0.35 M  per second
+c reduced:                    5212        27.89 %  per conflict
+c rephased:                      5      3738.20    interval
+c restarts:                    406        46.04    interval
+c stabilizing:                   2        53.51 %  of conflicts
+c substituted:                 136         1.54 %  of all variables
+c subsumed:                  11967         3.70 %  of all clauses
+c strengthened:               6396         1.98 %  of all clauses
+c ternary:                    7450         0.50 %  of resolved
+c trail reuses:                  0         0.00 %  of incremental calls
+c vivified:                     53         0.02 %  of all clauses
+c weakened:                  10308         2.90    average size
+c 
+c seconds are measured in process time for solving
+c 
+c --- [ resources ] ----------------------------------------------------------
+c 
+c total process time since initialization:        20.63    seconds
+c total real time since initialization:           41.27    seconds
+c maximum resident set size of process:          113.98    MB
+c 
+c --- [ shutting down ] ------------------------------------------------------
+c 
+c exit 20

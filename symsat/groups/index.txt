@@ -1,0 +1,15 @@
+# id  P  phi(image orders)  |Z|  |G'|  abelian  order-profile
+G0  P=Z8  |phi(P)|=1  |Z|=40  |G'|=1  abelian=True  orders={1: 1, 2: 1, 4: 2, 5: 4, 8: 4, 10: 4, 20: 8, 40: 16}
+G1  P=Z8  |phi(P)|=4  |Z|=2  |G'|=5  abelian=False  orders={1: 1, 2: 1, 4: 10, 5: 4, 8: 20, 10: 4}
+G2  P=Z8  |phi(P)|=2  |Z|=4  |G'|=5  abelian=False  orders={1: 1, 2: 1, 4: 2, 5: 4, 8: 20, 10: 4, 20: 8}
+G3  P=Z4xZ2  |phi(P)|=1  |Z|=40  |G'|=1  abelian=True  orders={1: 1, 2: 3, 4: 4, 5: 4, 10: 12, 20: 16}
+G4  P=Z4xZ2  |phi(P)|=4  |Z|=2  |G'|=5  abelian=False  orders={1: 1, 2: 11, 4: 20, 5: 4, 10: 4}
+G5  P=Z4xZ2  |phi(P)|=2  |Z|=4  |G'|=5  abelian=False  orders={1: 1, 2: 3, 4: 20, 5: 4, 10: 12}
+G6  P=Z4xZ2  |phi(P)|=2  |Z|=4  |G'|=5  abelian=False  orders={1: 1, 2: 11, 4: 12, 5: 4, 10: 4, 20: 8}
+G7  P=Z2^3  |phi(P)|=1  |Z|=40  |G'|=1  abelian=True  orders={1: 1, 2: 7, 5: 4, 10: 28}
+G8  P=Z2^3  |phi(P)|=2  |Z|=4  |G'|=5  abelian=False  orders={1: 1, 2: 23, 5: 4, 10: 12}
+G9  P=D4  |phi(P)|=1  |Z|=10  |G'|=2  abelian=False  orders={1: 1, 2: 5, 4: 2, 5: 4, 10: 20, 20: 8}
+G10  P=D4  |phi(P)|=2  |Z|=2  |G'|=10  abelian=False  orders={1: 1, 2: 13, 4: 10, 5: 4, 10: 12}
+G11  P=D4  |phi(P)|=2  |Z|=2  |G'|=10  abelian=False  orders={1: 1, 2: 21, 4: 2, 5: 4, 10: 4, 20: 8}
+G12  P=Q8  |phi(P)|=1  |Z|=10  |G'|=2  abelian=False  orders={1: 1, 2: 1, 4: 6, 5: 4, 10: 4, 20: 24}
+G13  P=Q8  |phi(P)|=2  |Z|=2  |G'|=10  abelian=False  orders={1: 1, 2: 1, 4: 22, 5: 4, 10: 4, 20: 8}

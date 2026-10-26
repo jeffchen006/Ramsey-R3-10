@@ -1,0 +1,2 @@
+cake_lpr -check: s VERIFIED INTERVALS COVER 0-15
+GLUE OK: F_cert.cnf UNSAT (summary of 15 lines with the empty clause, all ranges verified)

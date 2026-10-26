@@ -1,0 +1,7 @@
+pseudo-Boolean proof version 3.0
+f 1;
+% solx is only allowed if the OPB file specifies a preserved set.
+solx x1 x2;
+output NONE;
+conclusion NONE;
+end pseudo-Boolean proof;
