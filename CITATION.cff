@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this code or data, please cite the paper below."
-title: "Ramsey-R3-10: code, notes and data for a computational study of (3,10,40)-graphs"
+title: "Ramsey-R3-10: progress report on R(3,10): code, notes and data"
 authors:
   - family-names: Chen
     given-names: Zhiyang
@@ -8,11 +8,11 @@ date-released: 2026-10-26
 license: MIT
 repository-code: "https://github.com/jeffchen006/Ramsey-R3-10"
 preferred-citation:
-  type: article
-  title: "On (3,10,40)-graphs: structure, symmetry, and certified computations"
+  type: report
+  title: "On (3,10,40)-graphs: structure, symmetry, and certified computations (progress report, version 2)"
   authors:
     - family-names: Chen
       given-names: Zhiyang
   year: 2026
-  doi: 10.5281/zenodo.23677795
-  url: "https://doi.org/10.5281/zenodo.23677795"
+  doi: 10.5281/zenodo.23678020
+  url: "https://doi.org/10.5281/zenodo.23678020"
