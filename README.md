@@ -2,10 +2,15 @@
 
 Author: **Zhiyang Chen**
 
-The Ramsey number R(3,10) is known to be 40 or 41 (Exoo 1989; Angeltveit 2024/2025). It equals 41 exactly when
-a (3,10,40)-graph exists: a triangle-free graph on 40 vertices with independence number at most 9.
-This repository contains the code, notes and paper of a computational study of such graphs.
-It does **not** settle R(3,10). It proves partial results and measures what remains.
+This repository marks the progress of an ongoing project on the Ramsey number R(3,10).
+
+> **Warning: work in progress, not a definite answer.** R(3,10) is still open. The results here are partial,
+> and some computations are still running (see Sec. 10 of the paper). Each result has a status (certified,
+> CONFIRMED, enumeration-only, estimate); check the status before you rely on a result.
+
+R(3,10) is known to be 40 or 41 (Exoo 1989; Angeltveit 2024/2025). It equals 41 exactly when a (3,10,40)-graph
+exists: a triangle-free graph on 40 vertices with independence number at most 9. This repository contains the code,
+notes and paper of a computational study of such graphs. It proves partial results and measures what remains.
 
 ## Paper
 
