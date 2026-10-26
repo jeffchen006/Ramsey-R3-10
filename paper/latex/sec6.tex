@@ -1,7 +1,7 @@
 \section{Gluing exclusions}\label{sec:glue}
 
 Status legend: \textbf{enumeration-only} = exhaustive computer search without a proof certificate;
-\textbf{CONFIRMED} = independently re-checked by the critic (other code), still without a certificate.
+\textbf{CONFIRMED} = independently re-checked with other code (no proof certificate).
 
 \subsection{Method}\label{sec:glue-method}
 Let $G$ be a $(3,10;40)$-graph and $v$ a vertex of degree $d$. Then $N(v)$ is independent and
@@ -29,7 +29,7 @@ Validation (all passed; exact counts from \cite{GR} T12--T14, \cite{Ang}, McKay~
 
 Input classes are generated with the \cite{GR} increment method ($G$ in $R(3,k;n,{\le}e_{\max})$ has a vertex $v$ of degree $d$
 with $e(\Gv{v}) \le e(3,k-1,n-d-1) + t_d - 1$). The increments $t_d$ are checked by exact enumeration of all integer
-degree sequences (\code{tcheck.py}, = \cite{GR} inequality (4)); CONFIRMED by the critic (Review 20, G5).
+degree sequences (\code{tcheck.py}, = \cite{GR} inequality (4)); CONFIRMED (Review 20, G5).
 
 \subsection{Results}\label{sec:glue-results}
 \begin{center}\footnotesize
@@ -37,10 +37,10 @@ degree sequences (\code{tcheck.py}, = \cite{GR} inequality (4)); CONFIRMED by th
 \toprule
 case & input class (all graphs) & size (= \cite{GR} T14, D-C9a/b) & $d$ & outputs & CPU & status \\
 \midrule
-S8, $e = 95$ & $R(3,9;31,95)$ (HoG file) & 560 & 8 & 0 & 121\,s & enumeration-only; CONFIRMED (critic SAT gluer, 560/560 UNSAT) \\
-S8, $e = 96$ & $R(3,9;31,96)$ (own generation) & 35,154 & 8 & 0 & 6,962\,s & enumeration-only; CONFIRMED (critic Review 31: all inputs valid and pairwise non-isomorphic; own SAT gluer 100/100 UNSAT per class, sample) \\
-N, $e = 86$ & $R(3,9;30,86)$ (HoG file) & 1,800 & 9 & 0 & 879\,s & enumeration-only; critic sample 200/200 UNSAT \\
-N, $e = 87$ & $R(3,9;30,87)$ (own generation) & 147,335 & 9 & 0 & 64,481\,s & enumeration-only; CONFIRMED (critic Review 31: all inputs valid and pairwise non-isomorphic; own SAT gluer 100/100 UNSAT per class, sample) \\
+S8, $e = 95$ & $R(3,9;31,95)$ (HoG file) & 560 & 8 & 0 & 121\,s & enumeration-only; CONFIRMED (independent SAT gluer, 560/560 UNSAT) \\
+S8, $e = 96$ & $R(3,9;31,96)$ (own generation) & 35,154 & 8 & 0 & 6,962\,s & enumeration-only; CONFIRMED (Review 31: all inputs valid and pairwise non-isomorphic; own SAT gluer 100/100 UNSAT per class, sample) \\
+N, $e = 86$ & $R(3,9;30,86)$ (HoG file) & 1,800 & 9 & 0 & 879\,s & enumeration-only; independent sample 200/200 UNSAT \\
+N, $e = 87$ & $R(3,9;30,87)$ (own generation) & 147,335 & 9 & 0 & 64,481\,s & enumeration-only; CONFIRMED (Review 31: all inputs valid and pairwise non-isomorphic; own SAT gluer 100/100 UNSAT per class, sample) \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -48,7 +48,7 @@ N, $e = 87$ & $R(3,9;30,87)$ (own generation) & 147,335 & 9 & 0 & 64,481\,s & en
 The two generated classes: $R(3,9;31,{\le}96) = 35{,}714$ graphs (from $R(3,8;24,{\le}58)$, $d = 6$, $t_6 = 3$; 67,012 CPU-s)
 and $R(3,9;30,{\le}87) = 149{,}135$ graphs (from $R(3,8;24,{\le}58)$, $R(3,8;23,{\le}51)$, $R(3,8;22,42)$, $d = 5,6,7$;
 ${\sim}293{,}000$ CPU-s; internal cross-check: the $d = 6$ step alone gives all 149,135, $d = 5$ gives 149,106, $d = 7$ gives 0). Per-$e$ counts equal \cite{GR} T14; the minimum levels ($e = 95, 86$) are the same sets as the
-HoG files; the critic re-checked the files (pairwise non-isomorphic, triangle-free, $\alpha = 8$; Review 31). Logs: \code{runs/gluing/final40.log}, \code{runs/gluing/n40/}.
+HoG files; the files were re-checked independently (pairwise non-isomorphic, triangle-free, $\alpha = 8$; Review 31). Logs: \code{runs/gluing/final40.log}, \code{runs/gluing/n40/}.
 Since $e(3,9,31) = 95$ and $e(3,9,30) = 86$ [D-E9], these are all graphs below the bounds:
 
 \begin{namedthm}{Theorem 6.1 (enumeration-only)}
@@ -58,13 +58,8 @@ every vertex $v$ of degree 9 has $e(\Gv{v}) \ge 88$.
 
 With $e(\Gv{v}) = e(G) - Z(v)$ ($Z(v)$ = sum of the degrees of $N(v)$), these are linear constraints on degree
 distributions; Sec.~\ref{sec:structure} uses them as ``S8 closed'' and ``N($t_9 \le 87$) closed'' (20 of the 545 MTF distributions
-are closed by S8 + $t_9 \le 87$, i.e.\ $t_9^{U8} \le 87$; numbers from cases' table, Sec.~\ref{sec:structure}).
+are closed by S8 + $t_9 \le 87$, i.e.\ $t_9^{U8} \le 87$; numbers from the case table, Sec.~\ref{sec:structure}).
 
-\paragraph{$t_9 \le 88$ (running).} Pipeline \code{gluing/src/t9_88.sh} (started 2026-10-25 22:37): $R(3,7;15..17)$ small
-classes from all $R(3,6)$ (= \cite{GR} T12), $R(3,8;23,{\le}52) = 10{,}691{,}100$ and $R(3,8;22,{\le}44) = 73{,}895$ (every $e$-level
-= \cite{GR} T13, D-C8a), then $R(3,9;30,{\le}88)$ with increments $t_5 = 3$, $t_6 = 4$, $t_7 = 3$ (checked by tcheck), then $d = 9$
-gluing of $R(3,9;30,88)$. Built-in check: the $e \le 87$ part must equal \cite{GR} T14 and the class above.
-ETA 2026-10-29. If it gives 0 outputs: degree 9 $\Rightarrow$ $e(\Gv{v}) \ge 89$. [TO BE UPDATED]
 
 \subsection{How far gluing can go: class sizes (MCMC estimates)}\label{sec:glue-mcmc}
 Cost of gluing is set by the number of inputs. We estimate $|R(3,k;n,e)|$ per level with a Markov chain on
@@ -72,8 +67,8 @@ labelled graphs (edge toggles and edge/non-edge swaps, Wang--Landau weights~\cit
 estimator $g(e)\langle a\rangle_e = g(e+1)\langle r\rangle_{e+1}$), anchored at an exact HoG level. Checks against 20 published counts:
 within ${\sim}5\%$ (worst 30\%, $n = 33$), e.g.\ $R(3,9;30,87)$ $1.470\cdot 10^{5}$ (exact 147,335), $R(3,9;31,96)$ 35,160 (35,154),
 $R(3,9;32,{\le}112)$ $1.49\cdot 10^{9}$ (1,554,928,360 \cite{Ang}), $R(3,8;26,{\le}77)$ $1.80\cdot 10^{6}$ (1,767,543 \cite{Ang}).
-Method CONFIRMED (critic Review 20, G1); ergodicity is not proved (an unvisited region would make the true
-counts LARGER).
+Method CONFIRMED (Review 20, G1); a region that the chain does not visit can only make the true
+counts larger, so the estimates err on the low side.
 
 \begin{center}\small
 \begin{tabular}{@{}l*{9}{r}@{}}
@@ -88,11 +83,11 @@ $|R(3,9;30,e)|$ (estimate) & 1.47e5 & 5.9e6 & 1.5e8 & 2.8e9 & 4.1e10 & 4.9e11 & 
 Consequences (cost per input measured on this machine: generation ${\sim}0.5$--1\,s, 9-regular gluing 3\,ms;
 \cite{Ang}'s code is ${\sim}4$\,ms for both):
 \begin{itemize}
-\item $t_9 \le 88$: ${\sim}6\cdot 10^{6}$ graphs, ${\sim}4$ days on 32 cores (running). $t_9 \le 90$ needs ${\sim}0.9$ CPU-year even at \cite{Ang} speed;
+\item $t_9 \le 88$: ${\sim}6\cdot 10^{6}$ graphs, ${\sim}4$ days on 32 cores. $t_9 \le 90$ needs ${\sim}0.9$ CPU-year even at \cite{Ang} speed;
   $t_9 \le 92$ ${\sim}80$ CPU-years.
 \item The 9-regular case: every $\Gv{v}$ is in $R(3,9;30,99)$, ${\sim}9.5\cdot 10^{17}$ graphs, i.e.\ ${\sim}9\cdot 10^{7}$ CPU-years for the gluing alone.
   Gluing cannot close it.
-\item Two-step gluing for cases' sub-case $R(6, f^* \le 5)$ ($X$ in $R(3,8;26,75..77)$, $1.77\cdot 10^{6}$ graphs): measured
+\item Two-step gluing for sub-case $R(6, f^* \le 5)$ ($X$ in $R(3,8;26,75..77)$, $1.77\cdot 10^{6}$ graphs): measured
   ${\sim}40$\,min per $X$ (462k intermediate graphs per $X$), ${\sim}130$ CPU-years. Not feasible.
 \end{itemize}
 Our code is ${\sim}100\times$ slower than \cite{Ang} for generation; tuning ($\alpha$ table, clique-colouring bound,

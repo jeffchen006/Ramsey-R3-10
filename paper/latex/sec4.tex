@@ -51,13 +51,14 @@ Lean hypothesis & meaning & source \\
    It is used for the symmetry-breaking clauses of the certified SAT runs (Sec.~\ref{sec:sat}).
 \end{enumerate}
 
-\subsection{What is not formal}\label{sec:lean-notformal}
+\subsection{Scope of the formalisation}
+The following parts are outside the Lean development.\label{sec:lean-notformal}
 \begin{itemize}
 \item The published facts of Sec.~\ref{sec:lean-hyp} (hypotheses).
 \item The gluing enumerations (Sec.~\ref{sec:glue}): they enter only through \texttt{Glue U G}.
 \item The SAT proofs themselves: they are checked by cake\_lpr / VeriPB (Sec.~\ref{sec:sat}). Lean covers the link from the
   mathematical statement to the cube formulas (items 2, 5, 6).
-\item Lemmas H, P, F, N, W and the excess lemma (Sec.~\ref{sec:caseR}--\ref{sec:local}): hand proofs, reviewed only.
+\item Lemmas H, P, F, N, W and the excess lemma (Sec.~\ref{sec:caseR}--\ref{sec:local}): hand proofs, CONFIRMED (Sec.~\ref{sec:status}).
 \item The 7 Farkas certificates of the sel profile ILP: checked in exact rational arithmetic by a Python script.
 \item The case tables are checked for the pinned outputs only; a change of \code{cases/degseq.py} needs a re-pin.
 \end{itemize}

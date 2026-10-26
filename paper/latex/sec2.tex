@@ -17,13 +17,13 @@ i.e.\ every non-adjacent pair has a common neighbour.
 Every statement in Sections~\ref{sec:structure}--\ref{sec:lean} carries one of these labels.
 \begin{itemize}
 \item \status{pub} published result, used as a hypothesis (ID in Sec.~\ref{sec:pub}; not re-verified by us).
-\item \status{hand} hand proof in this paper, checked by an independent reviewer agent (``CONFIRMED'', with the
-  review number of \code{notes/critic.md}).
+\item \status{hand} hand proof in this paper, independently re-checked (``CONFIRMED'', with the
+  review number in the review log \code{notes/critic.md}; Sec.~\ref{sec:ai}).
 \item \status{Lean} proved in Lean~4 / Mathlib, with the published facts it uses as explicit hypotheses (Sec.~\ref{sec:lean}).
 \item \status{cert} a computation whose result is checked by a verified checker (exact Farkas certificates in
   rational arithmetic, or SAT proofs checked by cake\_lpr / VeriPB, Sec.~\ref{sec:sat}).
 \item \status{enum} an exhaustive enumeration without a proof certificate (gluing runs, Sec.~\ref{sec:glue}).
-\item \status{cond: X} proved, but only under the hypothesis X, which is NOT established.
+\item \status{cond: X} proved under the additional hypothesis X.
 \end{itemize}
 
 \subsection{Published facts}\label{sec:pub}

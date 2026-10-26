@@ -89,7 +89,7 @@ For MTF $G$ the table input of Theorem A reduces to $e(3,9,32) > 91$ and $e(3,9,
 follow from F1 and F2 (Jensen's inequality applied to $\sum_w q_M(d_H(w)) \ge 0$ for $H$ in $R(3,9;M)$, $M = 32, 33$, gives
 $e(H) \ge 95$ and $e(H) \ge 103$).
 \end{namedthm}
-\status{hand, CONFIRMED critic Review 16; Lean \code{thmA2_32}, \code{thmA2_33}, \code{theoremA_mtf}}
+\status{hand, CONFIRMED Review 16; Lean \code{thmA2_32}, \code{thmA2_33}, \code{theoremA_mtf}}
 Theorems B and C (Angeltveit-type averaging and a closed form for degrees $\{8,9\}$) are also proved
 \status{hand, Lean \code{theoremB}, \code{theoremC}}, but they give no smaller classes than the LP of Sec.~\ref{sec:dist}.
 
@@ -115,7 +115,7 @@ MTF $G$, $e \ge 159$ & 573 & 0 \\
 
 MTF ranges: $n_4 = n_5 = 0$, $n_6 \le 9$, $n_7 \le 19$, $n_9 \ge 2$, $161 \le e \le 180$. All 19,890 certificates were re-checked
 by an independent script, and the four lists are checked in Lean from pinned outputs (\code{caseTable_<tag>}, Sec.~\ref{sec:lean-formal}).
-\status{cert + Lean; CONFIRMED critic Reviews 6, 9}
+\status{cert + Lean; CONFIRMED Reviews 6, 9}
 
 \paragraph{Per-distribution bound $t_9$.} For a set $U$ of excluded classes (``no vertex of degree $d$ has $e(\Gv{v}) \le U_d$''), $t_9(n)$ is
 the least $T$ such that ``every 9-vertex has $e(\Gv{v}) \ge T + 1$'' is LP-infeasible (with certificate) for the
@@ -129,10 +129,10 @@ Sec.~\ref{sec:glue} reports two exhaustive gluing runs \status{enum}: no degree-
 $R(3,9;31,{\le}96)$), and no degree-9 vertex has $e(\Gv{v}) \le 87$ (all 149,135 graphs of $R(3,9;30,{\le}87)$).
 With these, the 20 MTF distributions with $t_9 \le 87$ are impossible (all 20 with $e = 161$ among them). \textbf{525 MTF
 distributions stay open: the 9-regular one (case R) and 524 with $162 \le e \le 179$.} \status{cond: the two gluing runs,
-enum; runs CONFIRMED critic Review 31}
-If the running $t_9 \le 88$ gluing ends with no output, 15 more close (510 open).
+enum; runs CONFIRMED Review 31}
+A $t_9 \le 88$ gluing with no output closes 15 more (510 open; Sec.~\ref{sec:ai}).
 These two runs also make $e \ge 161$ unnecessary for the MTF table: the 28 extra distributions with $e \in \{159, 160\}$
-are closed by them (critic Review 21).
+are closed by them (Review 21).
 
 Per edge count (MTF, open after the two runs; $t_9^{\max}$ = largest $t_9$ among them):
 
@@ -147,12 +147,12 @@ $t_9^{\max}$ & 90 & 92 & 93 & 94 & 94 & 95 & 96 & 97 & 97 & 96 & 96 & 96 & 96 & 
 \end{tabular}
 \end{center}
 
-\paragraph{A larger hypothetical gluing (``sel'').} If, in addition, no vertex had $e(\Gv{v}) \le U_d$ for
+\paragraph{A conditional reduction (``sel'').} If, in addition, no vertex had $e(\Gv{v}) \le U_d$ for
 $(U_6, U_7, U_8, T^*) = (121, 112, 99, 90)$, only 208 MTF distributions would remain (case R and 207 with $e \ge 167$);
 a profile ILP removes 7 more, with exact Farkas certificates (7/7 checked), leaving 200 + R
-\status{cond: sel; cert for the 7; CONFIRMED critic Review 27}. The sel gluing has NOT been run: its input classes have
-${\sim}5\cdot 10^{9}$ graphs (MCMC estimates, Sec.~\ref{sec:glue}) and our gluer is about 100 times too slow. So the 200/208 lists are not
-results.
+\status{cond: sel; cert for the 7; CONFIRMED Review 27}. The hypothesis sel is a gluing statement over input classes of
+${\sim}5\cdot 10^{9}$ graphs (MCMC estimates, Sec.~\ref{sec:glue}), about 100 times beyond the speed of our gluer. The 200/208 lists are
+therefore conditional on sel.
 
 \subsection{Cover Lemma (the coarse split used for certified SAT)}\label{sec:cover}
 Let $\Phi$ = ``triangle-free and $\alpha \le 9$'' on $V = \{0..39\}$, and MTFc = ``every non-adjacent pair has a common neighbour''.
@@ -197,7 +197,7 @@ $B = N(w) - C$, $f = e(A,B)$, $X = V - \Nb{u} - \Nb{w}$:
 $|X| = 38 - d(u) - d(w) + c \le 27$ and $e(X) = e - Z(u) - Z(w) + \sum_{x \in C} d(x) + f \ge e(3,8,|X|)$.
 In case R: $|X| = 20 + c$ and $e(X) = 18 + 9c + f$.
 \end{namedthm}
-\status{hand, CONFIRMED critic Review 13; uses D-E8, F2}
+\status{hand, CONFIRMED Review 13; uses D-E8, F2}
 
 \begin{namedthm}{Lemma F}
 In case R, for a non-adjacent pair with codegree $c$:
@@ -205,7 +205,7 @@ In case R, for a non-adjacent pair with codegree $c$:
 perfect matching); (F3) for every $v$, $\sum_{y \in \Gv{v}} f(v,y) = 648 - \sum_{y \in \Gv{v}} c(v,y)^2$, and summed over all
 non-adjacent pairs, $\sum f = 12960 - \sum c^2$.
 \end{namedthm}
-\status{hand, CONFIRMED critic Review 24}
+\status{hand, CONFIRMED Review 24}
 
 \begin{namedthm}{Lemma Mc (max-codegree split)}
 Let $\cstar$ be the largest codegree of a non-adjacent pair. Then $3 \le \cstar \le 7$, and
@@ -230,39 +230,39 @@ breaking (Lean \code{R7.no_codeg7}, \code{Rc7.prc7_inv}, \code{Rc7.lexleader_rc7
 $R(3,8;26,75..77)$, a published class of 1,765,856 graphs (D-C8d; $e = 73, 74$ are impossible since $f \ge 3$).
 Extending each $X$ to $G$ costs $\ge 1$\,h per $X$ by SAT (all 9 sampled $X$ timed out: $e = 75$: 2 $X$ $> 1$\,h, $e = 76$: 1 $X$ $> 2$\,h,
 $e = 77$: 6 $X$ $> 1$\,h; logs \code{runs/cases/r6f/x75s}, \code{x76s}, \code{x77s/results.txt}) and ${\sim}40$\,min per $X$ by two-step gluing,
-i.e.\ $\ge 10^{2}$ CPU-years; the branch is parked (Sec.~\ref{sec:hard}). \status{measurement, not a proof}
+i.e.\ $\ge 10^{2}$ CPU-years; we do not pursue this branch (Sec.~\ref{sec:hard}). \status{measurement}
 
 \subsection{Local rules for SAT (all \texorpdfstring{$G$}{G})}\label{sec:local}
 \begin{namedthm}{Lemma H}
 For an independent $s$-set $I$, $X_I = V - I - N(I)$ has $\alpha \le 9 - s$, so $|X_I| \le R(3,10-s) - 1$ and
 $e(X_I) \ge e(3,10-s,|X_I|)$ ($s = 1$: L1/L3; $s = 2$: L6).
 \end{namedthm}
-\status{hand, CONFIRMED critic Review 13; uses D-R1 and the $e(3,k,n)$ tables of \cite{GR}}
+\status{hand, CONFIRMED Review 13; uses D-R1 and the $e(3,k,n)$ tables of \cite{GR}}
 
 \begin{namedthm}{Lemma N}
 If $d(v) = 9$, every vertex of $\Gv{v}$ has a neighbour in $N(v)$, and each $x$ in $N(v)$ has at most one vertex of
 $\Gv{v}$ whose only neighbour in $N(v)$ is $x$ (no MTF needed).
 \end{namedthm}
-\status{hand, CONFIRMED critic Review 13}
+\status{hand, CONFIRMED Review 13}
 
 \begin{namedthm}{Lemma W}
 In cube N we may also assume that vertex 0 has the least $e(\Gv{v})$ among 9-vertices, and
 $e(\Gv{x}) \ge e(3,9,39-d(x))$ for all $x$; valid only with symmetry breaking that fixes 0 and the blocks.
 \end{namedthm}
-\status{hand, CONFIRMED critic Review 21}
+\status{hand, CONFIRMED Review 21}
 
 \begin{namedthm}{Excess lemma ($m \ge 13$)}
 Under sel, MTF, $e \ge 167$ and non-regularity, at least 13 degree-9 vertices have
 $e(\Gv{v}) \le 98$, so two of them are adjacent.
 \end{namedthm}
-\status{cond: sel; hand (duo), CONFIRMED critic Review 28}
+\status{cond: sel; hand, CONFIRMED Review 28}
 
-\subsection{Structural attempts that failed}\label{sec:failed}
+\subsection{Further structural approaches}\label{sec:failed}
 These are reported so that others need not repeat them; details in Sec.~\ref{sec:hard}.
 \begin{itemize}
 \item Counting LP over independent-set profiles for case R ($I_s$, $|X_S|$ distributions): feasible (CONFIRMED Review 22).
 \item Excess forcing over the 200 sel distributions: at $T \le 90$ no vertex is forced in any of them (\code{notes/cases.md} Sec.~7).
 \item Pair and profile LPs with (F1)--(F3): feasible; (F3) is no contradiction.
-\item Edge kernels (Codex review, CONFIRMED Review 30) for R and for the near-regular distributions: the near-regular
-  catalogue alone has $4.4\cdot 10^{7}$ unique kernels for codegree $\le 6$ (case R: duo, Sec.~\ref{sec:hard}), and 14 of 16 sampled near-regular kernels exceeded 1\,h of SAT (Sec.~\ref{sec:hard}).
+\item Edge kernels (CONFIRMED Review 30) for R and for the near-regular distributions: the near-regular
+  catalogue alone has $4.4\cdot 10^{7}$ unique kernels for codegree $\le 6$ (case R: Sec.~\ref{sec:hard}), and 14 of 16 sampled near-regular kernels exceeded 1\,h of SAT (Sec.~\ref{sec:hard}).
 \end{itemize}

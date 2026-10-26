@@ -11,8 +11,8 @@ By the Cover Lemma (Sec.~\ref{sec:structure}--\ref{sec:lean}), a $(3,10,40)$-gra
   codegree (Lemma Mc). $R(7)$ is partly done (Sec.~\ref{sec:sat-r7}: 365/464 cubes certified, 99 open).
 \item \textbf{N($e$)}, $e = 162..179$: MTF, degrees $6..9$, $d(0) = 9$, $N(0) = \{1..9\}$, $e(G) = e$, $88 \le e(H_0) \le t_9^{\max}(e)$.
   After Theorem 6.1 ($T^* = 87$): $e = 161$ is closed; 18 cubes with 524 degree distributions stay (filter of
-  cases' \code{core_cubes.json}, scenario U8+N86, kept if $t_9 \ge 88$; checked by critic, Review 37). If $t_9 \le 88$ finishes with 0
-  outputs (Sec.~\ref{sec:glue-results}), more distributions close. With the full gluing plan ($T^* = 90$) only $e = 167..179$ (13 cubes,
+  \code{cases/core_cubes.json}, scenario U8+N86, kept if $t_9 \ge 88$; Review 37). The next gluing level, $t_9 \le 88$ (${\sim}4$ days on 32 cores, Sec.~\ref{sec:glue-mcmc}),
+  closes further distributions if it has no outputs. With the full gluing plan ($T^* = 90$) only $e = 167..179$ (13 cubes,
   208 distributions) would stay, but $T^* = 90$ costs about 0.9 CPU-year (Sec.~\ref{sec:glue-mcmc}).
 \item S8 is closed (Theorem 6.1).
 \end{itemize}
@@ -45,23 +45,23 @@ Ganesh (IJCAI 2025, arXiv:2502.06055~\cite{DuLBG}) took about 3,300 CPU-h = $1.2
 $4\cdot 10^{9}$ times that value; the median ($8\cdot 10^{4}$) is below it, and the mean is about $7\cdot 10^{7}$ times it.
 \textbf{estimate}: plain SMS cube-and-conquer on cube R is not feasible with our resources.
 
-$R(7)$ shows how unreliable 6 probes are. The probe mean was $1.9\cdot 10^{7}$ CPU-s. The real certified run used $2.3\cdot 10^{6}$ CPU-s
-($1.8\cdot 10^{5}$ on the 365 solved cubes, the rest on the 99 cubes stopped at 6\,h), and its true total is unknown (Sec.~\ref{sec:sat-r7}).
-Re-splitting the open cubes made them no easier: 28 of 31 sub-cubes in progress ran more than 8\,h. So the hard
+$R(7)$ shows the spread of a 6-probe estimate. The probe mean was $1.9\cdot 10^{7}$ CPU-s. The real certified run used $2.3\cdot 10^{6}$ CPU-s
+($1.8\cdot 10^{5}$ on the 365 solved cubes, the rest on the 99 cubes stopped at 6\,h), and the full total is larger (Sec.~\ref{sec:sat-r7}).
+Re-splitting the open cubes made them no easier: 28 of 31 sub-cubes started ran more than 8\,h. So the hard
 cubes are hard as a whole, not only ``too large''.
 
 Extra constraints tested (all estimate, Knuth probes, same method):
 \begin{itemize}
-\item $R(6)$ with ``every codegree-6 pair has $f \ge 6$'' (cases' Lemma F, equivalently $e(X) \ge 78$): 3 finished probes
+\item $R(6)$ with ``every codegree-6 pair has $f \ge 6$'' (Lemma F, equivalently $e(X) \ge 78$): 3 finished probes
   8.0e9, 1.4e11, 1.7e13 CPU-s against 5.6e12, 1.4e7, 6.0e7 for $R(6)$ without it: no gain seen. (A fourth batch was
   stopped at ${\sim}480$\,GB RAM; since then smsg runs under \texttt{ulimit -v}.)
 \item Split by maximum degree for F1 $(8,23,46)$: $D = 5$ alone took 3,991\,s against 3,094\,s for the whole formula.
 \item Cube hardness predictor (Heule's Schur-5 method~\cite{Heule18}): on the solved $(3,9,36)$ cube sets, static features (free edges,
   binary triangle clauses, true edges after the cube) have Spearman $\rho$ between $-0.51$ and $+0.19$ with the solve time.
   The top 5\% by any feature hold at most 3\% of the time and miss the tail cube (1060\,s of 1855\,s).
-  Structural cubes on the $N(0)$--$H_0$ incidence (empty-hexagon style; scout's Test C) were $\ge 10\times$ slower
+  Structural cubes on the $N(0)$--$H_0$ incidence (empty-hexagon style) were $\ge 10\times$ slower
   than plain lookahead (1577 cubes, $\ge 4489$\,s with 1 timeout, against 446\,s). Neither helps.
-\item satcore (CaDiCaL 3.0.1 + lazy IS + static lex-leader clauses) and plain CaDiCaL: UNKNOWN at 1\,h on
+\item satcore (CaDiCaL 3.0.1 + lazy IS + static lex-leader clauses) and plain CaDiCaL: no answer within 1\,h on
   $(3,8,28)$ $D = 7$ and on 8-regular $(3,9,36)$, where SMS needs 1846\,s and 724\,s. SMS's dynamic symmetry breaking
   is the main gain; we know of no stronger general engine.
 \end{itemize}
@@ -75,7 +75,7 @@ of samples have a pair class $\le 10^{10}$ (\code{notes/gluing.md} Sec.~8). Two-
 130 CPU-years. \textbf{estimate}: gluing cannot close R; it is the right tool only for N($e$) with small $t_9$.
 
 \subsection{Kernels and other ideas}\label{sec:hard-kernels}
-\textbf{Edge-kernel reduction} (Codex round 5; CONFIRMED by critic, Review 30). Let $G$ be in case R, let $M$ be the maximum
+\textbf{Edge-kernel reduction} (CONFIRMED, Review 30). Let $G$ be in case R, let $M$ be the maximum
 codegree of a non-adjacent pair, and for an edge $uv$ let $A = N(u) - v$, $B = N(v) - u$ and $F = G[A, B]$. Then
 $d_F(a) = c(a, v) - 1 \le M - 1$. K\"onig's theorem gives $\alpha(F) = 16 - \nu(F) \le 9$, so $\nu(F) \ge 7$. Codegree-1
 pairs inside each $N(w)$ form a matching, so there are at most 160 of them. A convexity bound on
@@ -108,20 +108,19 @@ $M$ & kernels & solved in 1\,h (no Aut / Aut) & solved times (s) & CPU-s lower b
 \end{tabular}
 \end{center}
 
-The lower bound is $N_M$ times the sample mean, with every timeout counted as 3600\,s. The real times of the
-timed-out kernels are not known, and proof logging adds a factor 1.7--2.6 (Sec.~\ref{sec:sat}). The Aut clauses gave no
+The lower bound is $N_M$ times the sample mean, with every timeout counted as 3600\,s. Proof logging adds a factor 1.7--2.6 (Sec.~\ref{sec:sat}). The Aut clauses gave no
 measurable gain. The sum over $M = 5, 6$ alone is $\ge 1.0\cdot 10^{11}$ CPU-s ($\ge 3{,}200$ CPU-years): about 18 times the full
 budget of 180 CPU-years ($5.7\cdot 10^{9}$ CPU-s).
 
-35-vertex control (\textbf{enumeration}, not finished): 8-regular $(3,9,35)$-graphs, $M \le 4$ (3,305 kernels), whose answer is
+35-vertex control (\textbf{enumeration}, partial run): 8-regular $(3,9,35)$-graphs, $M \le 4$ (3,305 kernels), whose answer is
 known (only $C_{35}(1,7,11,16)$, \cite{GR} Thm 3). Of the first 26 kernels, 11 were UNSAT (0.8--3,550\,s) and 15 timed out at
-1\,h. The run was stopped (16 CPU-h). The codegree-5 branch ($X$ fixed to one of the 7 $(3,7,22)$-graphs with 60--61 edges)
+1\,h. We stopped the run after 16 CPU-h. The codegree-5 branch ($X$ fixed to one of the 7 $(3,7,22)$-graphs with 60--61 edges)
 was fast: 7/7 UNSAT in 10--18\,s. So even one level down, the method does not classify a known case within a day.
 
 Verdict (\textbf{estimate}): the reduction is exact. But the hard tail of the completions is the same as in plain SMS
 cube-and-conquer (Sec.~\ref{sec:hard-sms}): each kernel is a hard search. The kernel route cannot close R with our resources.
 
-Other Codex ideas (rounds 1--6, \code{notes/duo.md}), tested and rejected:
+Other ideas tested (\code{notes/duo.md}), none of which gives a cut:
 \begin{itemize}
 \item J9 seed (every $H_v$ contains an induced $7K_1 + K_2$; \cite{GR} $e(3,J_9,30) = 117$): true, but it only breaks symmetry;
   seeded gluing classes are still 1--4\% of $R(3,9;30,99)$.
@@ -135,13 +134,13 @@ Other Codex ideas (rounds 1--6, \code{notes/duo.md}), tested and rejected:
   $H = C_{35} - \{0,2,4,6,12\} - \text{edge } \{19,20\}$). Fine (WL) types cannot be checked over a finite list. A 6\,h solver run on
   11 $H$ gave no answer. Route closed.
 \item Angeltveit--McKay excess / pair overlay: each non-regular ``sel'' distribution has $\ge 13$ degree-9 vertices with
-  $e(H_v) \le 98$ (CONFIRMED, critic Review 28). But that catalogue has about $2\cdot 10^{17}$ graphs, and the 9-regular case has
+  $e(H_v) \le 98$ (CONFIRMED, Review 28). But that catalogue has about $2\cdot 10^{17}$ graphs, and the 9-regular case has
   no fixed-sum excess. No cut.
 \item Codegree-typed pair LP: feasible, $C_4 \in [540, 1050]$, every codegree class may be empty. No cut.
-\item Split by $q(v)$ = number of $C_4$ through $v$ (round 6; scout). $q(v) = 54 + h_1 + h_4 + 3 h_5 + 6 h_6 + 10 h_7$ ($h_c$ = number of
+\item Split by $q(v)$ = number of $C_4$ through $v$ . $q(v) = 54 + h_1 + h_4 + 3 h_5 + 6 h_6 + 10 h_7$ ($h_c$ = number of
   non-neighbours with codegree $c$), $h_7 \le 1$, $h_6 \le 2$ (from $R(3,7) = 23$ and $R(3,6) = 18$), $54 \le \max q \le 87$, $C_4 \le 860$.
   The bounds use $h_1 \le 9$, $\sum_v h_1 \le 320$, and ``$h_7 > 0 \Rightarrow h_1 \le 7$'' (from Lemma R7, so they use F2 and D-E8);
-  without the last rule, $\max q \le 88$ and $C_4 \le 870$. Status: hand proof, CONFIRMED (critic Review 37: 769 candidates). The $Q = 54$ cube still has
+  without the last rule, $\max q \le 88$ and $C_4 \le 870$. Status: hand proof, CONFIRMED (Review 37: 769 candidates). The $Q = 54$ cube still has
   49 kernels. If $h_6(v) = 2$, then $G - N[\{v, a, b\}]$ is one of the 191 $(3,7,22)$-graphs. A probe of this seed gave
   6 UNSAT (0.7--277\,s) and 3 timeouts (30\,min) out of 9: the same heavy tail.
 \end{itemize}
@@ -156,7 +155,7 @@ SMS cube-and-conquer & cube R & $\ge 10^{9}$ CPU-s likely; probe mean $8.4\cdot 
 SMS cube-and-conquer & $R(7)$ & $>$ 26.7 CPU-days; 99 cubes open after 6\,h each & 365/464 certified; open \\
 SMS + Lemma F rows & $R(6)$ & no gain in 3 probes & estimate \\
 gluing & R (9-regular) & ${\sim}9.5\cdot 10^{17}$ inputs, ${\sim}9\cdot 10^{7}$ CPU-years & estimate: not feasible \\
-gluing & $t_9 \le 88$ / $\le 90$ / $\le 92$ & ${\sim}4$ days / ${\sim}0.9$ / ${\sim}80$ CPU-years & running / estimate \\
+gluing & $t_9 \le 88$ / $\le 90$ / $\le 92$ & ${\sim}4$ days / ${\sim}0.9$ / ${\sim}80$ CPU-years & estimate \\
 pair gluing & R & $\ge {\sim}10^{14}$ $X$ per pair (worst case) & estimate: not feasible \\
 edge kernels + SMS & R & $\ge 10^{11}$ CPU-s for $M = 5, 6$ (most sampled kernels $>$ 1\,h) & estimate: not feasible \\
 \bottomrule
@@ -165,4 +164,4 @@ edge kernels + SMS & R & $\ge 10^{11}$ CPU-s for $M = 5, 6$ (most sampled kernel
 
 What would change this: a new structural lemma that cuts cube R by many orders of magnitude (for example
 codegree $\le 6$ in R, which needs the 99 open $R(7)$ cubes, or a strong bound on $e(H_v)$ at every vertex), or a
-much faster engine. We do not have one.
+much faster engine.

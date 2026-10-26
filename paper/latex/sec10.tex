@@ -1,0 +1,27 @@
+\section{Use of AI, and work in progress}\label{sec:ai}
+
+\paragraph{How this paper was produced.} Most of this work was produced by AI. A team of AI agents (Claude Code, by
+Anthropic) wrote the code, ran the computations, wrote the technical notes and wrote most of this text, under the
+direction of the author. OpenAI Codex was used as a research assistant for ideas; the edge-kernel reduction
+(Sec.~\ref{sec:hard-kernels}), the split by $q(v)$ and the other ideas listed in Sec.~\ref{sec:hard-kernels} came from it
+(\code{notes/duo.md}). The author set the goals and chose the directions.
+
+\paragraph{What ``CONFIRMED'' means.} The label CONFIRMED and the review numbers (``Review $n$'') refer to a separate AI
+agent that re-derived each claim, where possible with its own code; its log is \code{notes/critic.md}. No human referee
+has checked the hand proofs or the enumerations. The \textbf{certified} results do not depend on this review: they rest on
+verified checkers (cake\_lpr, CakePB, the Lean kernel) and on the published facts of Sec.~\ref{sec:pub}. The author
+does not guarantee results that are not marked as certified.
+
+\paragraph{Work in progress at the time of writing.}
+\begin{itemize}
+\item Gluing $t_9 \le 88$ (\code{gluing/src/t9_88.sh}, started 2026-10-25): it regenerates $R(3,7;15..17)$ from all of $R(3,6)$
+  (= \cite{GR} T12), $R(3,8;23,{\le}52) = 10{,}691{,}100$ and $R(3,8;22,{\le}44) = 73{,}895$ (every $e$-level = \cite{GR} T13), then
+  $R(3,9;30,{\le}88)$ with increments $t_5 = 3$, $t_6 = 4$, $t_7 = 3$, then the degree-9 gluing of $R(3,9;30,88)$. Built-in check:
+  the $e \le 87$ part must equal \cite{GR} T14. Expected end: 2026-10-29. If it has no outputs, every degree-9 vertex has
+  $e(\Gv{v}) \ge 89$.
+\item Symmetry case $(p, f) = (5, 5)$: the solver run is UNSAT, but its DRAT log was lost in a crash; the certified re-run
+  is pending.
+\item The 99 open cubes of $R(7)$ (Sec.~\ref{sec:sat-r7}) and the case $(2,34)$ (Sec.~\ref{sec:sym-a7}) were not continued
+  because of their cost.
+\item F1 for $m = 25, 26$ was not run to the end; these two values rest on the published tables (D-E8).
+\end{itemize}

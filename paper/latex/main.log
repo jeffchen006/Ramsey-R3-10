@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.10.1)  26 OCT 2026 23:41
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.10.1)  26 OCT 2026 23:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -499,7 +499,12 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10> not available
 [3] [4]
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <9> on input line 140.
- [5] [6]) (./sec4.tex [7]
+
+Underfull \hbox (badness 2142) in paragraph at lines 150--156
+ []\T1/lmr/bx/n/10.95 A con-di-tional re-duc-tion (``sel'').[] \T1/lmr/m/n/10.95 If, in ad-di-tion, no ver-tex had $\OML/lmm/m/it/10.95 e\OT1/lmr/m/n/10.95 (\OML/lmm/m/it/10.95 G[]\OT1/lmr/m/n/10.95 ) \OMS/lmsy/m/n/10.95 ^^T \OML/lmm/m/it/10.95 U[]$ \T1/lmr/m/n/10.95 for
+ []
+
+[5] [6]) (./sec4.tex [7]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 48.
  [8]) (./sec5.tex [9]
@@ -528,8 +533,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 40--41
  []
 
 
-Underfull \hbox (badness 1097) in paragraph at lines 40--41
-\T1/lmr/m/n/9 FIRMED (critic SAT gluer,
+Underfull \hbox (badness 1292) in paragraph at lines 40--41
+\T1/lmr/m/n/9 FIRMED (in-de-pen-dent SAT
  []
 
 
@@ -548,6 +553,16 @@ Underfull \hbox (badness 10000) in paragraph at lines 41--42
  []
 
 
+Underfull \hbox (badness 3250) in paragraph at lines 41--42
+\T1/lmr/m/n/9 FIRMED (Re-view 31: all
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 41--42
+\T1/lmr/m/n/9 in-puts valid and pair-wise
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 41--42
 \T1/lmr/m/n/9 non-isomorphic; own SAT
  []
@@ -563,6 +578,11 @@ Underfull \hbox (badness 10000) in paragraph at lines 42--42
  []
 
 
+Underfull \hbox (badness 10000) in paragraph at lines 42--43
+[]|\T1/lmr/m/n/9 enumeration-only; in-de-pen-
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 43--43
 []|$\OML/lmm/m/it/9 R\OT1/lmr/m/n/9 (3\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 9; 30\OML/lmm/m/it/9 ; \OT1/lmr/m/n/9 87)$
  []
@@ -575,6 +595,16 @@ Underfull \hbox (badness 10000) in paragraph at lines 43--43
 
 Underfull \hbox (badness 10000) in paragraph at lines 43--44
 []|\T1/lmr/m/n/9 enumeration-only; CON-
+ []
+
+
+Underfull \hbox (badness 3250) in paragraph at lines 43--44
+\T1/lmr/m/n/9 FIRMED (Re-view 31: all
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 43--44
+\T1/lmr/m/n/9 in-puts valid and pair-wise
  []
 
 
@@ -618,18 +648,13 @@ Underfull \hbox (badness 10000) in paragraph at lines 48--49
  []
 
 [15]
-Underfull \hbox (badness 5970) in paragraph at lines 73--73
+Underfull \hbox (badness 5970) in paragraph at lines 74--74
 []|\T1/lmr/m/n/9 lazy IS / SB clauses
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 76--76
+Underfull \hbox (badness 10000) in paragraph at lines 77--77
 []|\T1/lmr/m/n/9 1,975 IS; 1,588 SB
- []
-
-
-Underfull \hbox (badness 2359) in paragraph at lines 77--77
-\T1/lmr/m/n/9 VeriPB + CakePB (no
  []
 
 
@@ -638,27 +663,27 @@ Underfull \hbox (badness 2359) in paragraph at lines 78--78
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 79--79
+Underfull \hbox (badness 2359) in paragraph at lines 79--79
+\T1/lmr/m/n/9 VeriPB + CakePB (no
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
 []|\T1/lmr/m/n/9 27,522 IS; 71,031 SB
  []
 
 
-Underfull \hbox (badness 5203) in paragraph at lines 80--80
+Underfull \hbox (badness 5203) in paragraph at lines 81--81
 []|\T1/lmr/m/n/9 45,786 IS; 112,512 SB
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 81--81
+Underfull \hbox (badness 10000) in paragraph at lines 82--82
 []|\T1/lmr/m/n/9 52,044 IS; 65,321 SB
  []
 
 
-Underfull \hbox (badness 7631) in paragraph at lines 82--83
-[]|\T1/lmr/m/n/9 published only
- []
-
-
-Underfull \hbox (badness 1490) in paragraph at lines 87--91
+Underfull \hbox (badness 1490) in paragraph at lines 88--92
 []\T1/lmr/m/n/10.95 Logs: $\T1/lmtt/m/n/10.95 runs / cert / f1 / cert _ * . log$ \T1/lmr/m/n/10.95 (``\T1/lmtt/m/n/10.95 RESULT: OK ... certified\T1/lmr/m/n/10.95 ''), $\T1/lmtt/m/n/10.95 runs / sms / f1 _ * . log$\T1/lmr/m/n/10.95 ,
  []
 
@@ -668,21 +693,21 @@ Underfull \hbox (badness 1226) in paragraph at lines 104--104
  []
 
 [19]
+Underfull \hbox (badness 10000) in paragraph at lines 154--154
+[]|\T1/lmr/m/n/9 SMS cube-and-
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 155--155
 []|\T1/lmr/m/n/9 SMS cube-and-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 156--156
-[]|\T1/lmr/m/n/9 SMS cube-and-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 161--161
+Underfull \hbox (badness 10000) in paragraph at lines 160--160
 []|\T1/lmr/m/n/9 edge ker-nels +
  []
 
-) (./sec9.tex [20]) (./main.bbl
+) (./sec9.tex) (./sec10.tex [20]) (./main.bbl
 Underfull \hbox (badness 1158) in paragraph at lines 4--8
 []\T1/lmr/m/n/10.95 Vigleik An-geltveit.  $\OML/lmm/m/it/10.95 R\OT1/lmr/m/n/10.95 (3\OML/lmm/m/it/10.95 ; \OT1/lmr/m/n/10.95 10) \OMS/lmsy/m/n/10.95 ^^T \OT1/lmr/m/n/10.95 41$\T1/lmr/m/n/10.95 .  \T1/lmr/m/it/10.95 Elec-tronic Jour-nal of Com-bi-na-torics\T1/lmr/m/n/10.95 ,
  []
@@ -693,21 +718,21 @@ LaTeX2e <2026-06-01>
 L3 programming layer <2026-09-09>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 4255362A4240920C1E8DD78ED834C7E4;8254.
+(rerunfilecheck)             Checksum: 93D1F42B07CD776CEEB7895F10670B47;8499.
  ) 
 Here is how much of TeX's memory you used:
- 11367 strings out of 469040
- 175839 string characters out of 5457102
- 639019 words of memory out of 5000000
- 40179 multiletter control sequences out of 15000+600000
+ 11380 strings out of 469040
+ 176001 string characters out of 5457102
+ 640121 words of memory out of 5000000
+ 40186 multiletter control sequences out of 15000+600000
  729011 words of font info for 118 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  74i,12n,79p,541b,629s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi12.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi6.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi8.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi9.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmss10.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsso10.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy8.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy9.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt9.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb><./tools/opt/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (22 pages, 603680 bytes).
+Output written on main.pdf (22 pages, 604980 bytes).
 PDF statistics:
- 671 PDF objects out of 1000 (max. 8388607)
- 580 compressed objects within 6 object streams
- 110 named destinations out of 1000 (max. 500000)
- 353 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 685 PDF objects out of 1000 (max. 8388607)
+ 594 compressed objects within 6 object streams
+ 113 named destinations out of 1000 (max. 500000)
+ 361 words of extra memory for PDF output out of 10000 (max. 10000000)
 
