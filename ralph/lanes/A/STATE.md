@@ -1,15 +1,48 @@
 # Lane A state
 
-Round 2 (2026-11-21), core share 10. Critic directives: preserve R(7), replay
-Lane C's path-window cover independently, help bind the retained PB chain.
-R(3,10) remains unresolved. Do not regenerate R(7) SAT cubes.
+Round 3 (2026-11-21), core share 6. R(3,10) remains unresolved. No candidate
+graph and no new SAT run. Do not regenerate the historical R(7) cubes.
 
-## Round 2 jobs
+## Round 3 jobs
+
+No live or detached jobs. P5 comparison, proof packing/replay and hash checks
+ran in the foreground (one core each) and finished normally.
+
+## Round 3 results and claims
+
+| Label | Result | Evidence | Core-h |
+|---|---|---|---:|
+| enum (coverage only, supports C-009) | Independent full-row overlay matches the exact labelled P5 set modulo path reversal: 2,454 P4 rows, 177 windows, 47,031 pairs, 1,156 P5 rows. C21 42 spans/672 exact marked alignments; reverse P4/P5 accepted, deleted/mismarked P5 rejected. Not a separate extension search or claim of closure. | `P5_REPLAY.md`, `P5_REPLAY.sha256`, `scratch/A/p5/{control,reversed,reversed-p4,missing,wrong-mark,full}.log` | 0.0033 |
+| cert (existing fixed-residue proofs; supports G-004/G-007) | Preserved and replayed five e118 and 63 e119 graphs with independently reconstructed DIMACS and both LRAT checkers. Catalogue is 68 distinct classes but six e119 classes are still missing. 220 planted roots satisfy all clauses; crossed proof and forged matching digest both fail. | `RESIDUE_BUNDLE.md`, `RESIDUE_BUNDLE.sha256`, `scratch/A/root-residue/{retained-pack,retained-replay,crossed,forged,positive,uniqueness}.log` | 0.0024 |
+| cert provenance / no new coverage | C and A R(7) pair lists and traces byte-identical; input/code hashes match. Retained PB artifacts and H's full export match the named inputs. No SAT or PB reruns. | `R7_REPLAY.md`, `PB_BINDING.md`, `scratch/A/round3-preserve.log`, `scratch/H/pb-bind.log` | <0.003 |
+
+P5 estimate from 430 smaller pairs: 18.6 CPU-s plus larger-row overhead;
+actual full 10.87 CPU-s, 10.88 wall, 33 MiB peak RSS, cap 240 CPU/300 wall.
+Six-residue pilot pack + replay 0.68 CPU-s, extrapolated ~8 CPU-s; actual
+7.03 CPU-s for 68, cap 60 CPU/90 wall. Both used 16 GiB virtual limits.
+
+## Next
+
+- H/critic: use the exact P5 join comparison with C's trace and the hand
+  reduction; keep the overall C-009 result at enum until critic action.
+- G will announce any new e119 residue. Independently replay its proof with
+  `RESIDUE_BUNDLE.md` and keep a separate versioned bundle; G owns the census.
+  Preserve `scratch/A/root-residue/retained-v1` (3.5 MiB), no bulk copies.
+- Preserve `scratch/A/r7-proof-v1` and the PB links; rerun neither absent an
+  input/checker change. `PB_BINDING.md` documents H's byte binding (not
+  cube coverage or the hand/Lean encoding provenance itself).
+
+## Round 2 archive
+
+Core share 10. Critic directives: preserve R(7), replay
+Lane C's path-window cover independently, help bind the retained PB chain.
+
+### Jobs
 
 None running or detached. The R(7) replay, P4 controls/full replay and PB
 binding each used a single foreground worker and finished. No SAT was launched.
 
-## Round 2 results and claims
+### Results and claims
 
 | Label | Result | Evidence | Core-h |
 |---|---|---|---:|
@@ -22,7 +55,7 @@ CPU-s including global setup, and C's production scan 72.85 CPU-s. Expected
 few CPU-minutes, bounded to 600 CPU/900 wall seconds and 16 GiB virtual memory;
 actual 49.82 CPU-s, 58.26 wall, 247 MiB peak RSS.
 
-## Next
+### Round 2 handoff (superseded)
 
 - H: when actual `R310.Files` export is available, follow `PB_BINDING.md`.
   Byte equality and exact composition reuse the old PB chain without solving

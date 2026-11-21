@@ -2,11 +2,11 @@
 
 | lane | cores | reason |
 |---|---|---|
-| A | 6 | R(7) packaging and PB binding are done; reserve a bounded independent P5 replay, not more cubes. |
-| B | 18 | Unchanged: protect the live 16-worker prefix plus the staged partial scans; no full e88 launch. |
-| C | 6 | Unchanged: P5 is excluded; use bounded structural P4 pilots rather than scaling capped SAT. |
-| D | 6 | The biclique cut is sound but closes no new kernel; preserve only a matched pilot budget. |
-| E | 18 | Reward the checked (2,32) t=1 closure and give exact small-core triangle tests room to run. |
-| F | 6 | Rewire and repair audits are finite negative results; retain a bounded budget for a new escape move. |
-| G | 18 | Reward 64 checked cuts; budget bounded calibrated experiments for the six missing e119 residues. |
-| H | 2 | Full Lean/PB provenance is bound; ledger and scoped follow-up checks fit two cores. |
+| A | 4 | P5 coverage and root proof preservation are done; spend only on independent bindings or new coverage. |
+| B | 18 | Unchanged: protect the live 16-worker prefix and staged partial scans, not either full anchor branch. |
+| C | 8 | Reward checked P4 and P3/e64 exclusions; use the increment only for bounded e63/boundary pilots. |
+| D | 4 | Shared pins cut only one of 501 sampled profiles and close no kernel; retain a matched pilot budget. |
+| E | 20 | Reward the all-graphs crown closure; prioritize similarly small, exact involution strata. |
+| F | 2 | Bounded repairs are exhausted or relabel the same seed; require a nonisomorphic baseline before scaling. |
+| G | 22 | Reward 78 checked degree cuts; prioritize a calibrated complete e120 cover or direct obstruction. |
+| H | 2 | Unchanged: ledger and tightly scoped Lean bridges fit two cores. |

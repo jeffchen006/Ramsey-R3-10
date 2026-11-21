@@ -51,6 +51,7 @@ test ! -e "$tag.stdout"
 start=$(date -Is)
 end=$(date -Is -d "+$wall seconds")
 setsid nohup nice -n 5 timeout -k 10s "${wall}s" bash -c '
+    ulimit -c 0
     ulimit -v 16777216
     tag=$1 cpu=$2; shift 2
     exec /usr/bin/time -f "cpu_user=%U cpu_sys=%S elapsed=%e maxrss_kb=%M exit=%x" -o "$tag.time" prlimit --cpu="$cpu:$((cpu+2))" -- "$@"

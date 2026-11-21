@@ -62,3 +62,23 @@ is **stopped**, not a timeout or an UNSAT answer.
   then measure a small sample before seeking cores. `t=2,3,4` open.
 - `(2,28,4)` and `(2,30,{4,5})` have the same crown layout but remain
   open. Cases with few fixed points and `(5,0)` still open.
+# Round 3 handoff (2026-11-21)
+
+- Completed `(2,28,a=4)` with 42 checked DRAT/LRAT proofs; see
+  `crown28_exact.md`, `crown_cert/SHA256SUMS`, and round-3 `STATE.md`.
+  Independently covered 6/9/15/9/3 core classes at W=4/5/6/7/8.
+  Confirmed all 42 byte-identical CNF regenerations and LRAT checks;
+  the trace validator rejects a forged `CUT 1` without writing a CNF.
+- Main cost: 241.49 CPU s cold generation/solve/check, 114.66 CPU s
+  witness search, 24.49 CPU s regeneration/LRAT, plus census/hashes.
+  Unsorted W6 trial at 10 CPU s was capped and proof incomplete;
+  no use in evidence. W4 unstrengthened pilot had 4 CPU kills.
+- Order-three pair-footprint CSP added two independence tests per
+  join, including independent sets using the origin O. Evidence
+  `order3_a4_pairs.md`. All sixteen templates survive somewhere.
+- Round 2 archival exact results retain their labels: no-isolate
+  `(2,32,t=1)` 1,470 anchors/13,279 eligible windows and zero partitions
+  (`enum`, complete with E-006); `(2,30)` W caps 10 at a=5 and 11
+  at a=4 (`enum`); `(2,28,a=4)` prior W≤6 bound superseded;
+  order-three a=4 fixes |H|=12 with eight pinned templates (`hand`),
+  all 16 pass the one-orbit relaxation. See the lane evidence docs.

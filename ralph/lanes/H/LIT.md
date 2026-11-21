@@ -70,3 +70,29 @@ Search scope: arXiv and exact DOI/title lookups; EJC/DS1, ACM, IJCAI, Springer a
   neither version concerns the two-colour R(3,10), and the two-solver step
   is not an end-to-end Lean proof. This is an architecture precedent for
   A/C/D/G, not a new count, closure, or gluing floor.
+
+## Round 3: targeted catalogue check
+
+- Jan Goedgebeur and Stanisław P. Radziszowski, *New Computational Upper
+  Bounds for Ramsey Numbers R(3,k)*, EJC **20**(1), P30 (2013),
+  DOI `10.37236/2568`, [arXiv:1210.5826v2](https://arxiv.org/abs/1210.5826v2),
+  Tables 4 and 14: the two lowest `(3,9;33)` levels have 5 classes at
+  118 edges and 69 classes at 119. These are published counts, not a
+  graph6 appendix. The paper marks the history of its edge-table
+  calculation: the old lower bound 117 was superseded by the exact 118.
+- The [House of Graphs minimum-edge index](https://houseofgraphs.org/meta-directory/minimal-ramsey)
+  lists the 33/118 level; its file `Ramseygraphs_3_9_33_e118_some.g6`
+  is already pinned by G, whose validation against GR confirms all five
+  despite `_some`. The [McKay Ramsey data index](https://users.cecs.anu.edu.au/~bdm/data/ramsey.html)
+  provides neither 33/119 nor the 39-vertex partial census. I found no
+  public 33/119 file via the authors' paper, indexes, or exact-name
+  searches. G's new local hits are not evidence of a public census.
+- Jonas Backelin's *The (3,t) Ramsey graph enumeration project* (undated
+  public report, Stockholm University author site, `enumrep_1.pdf`)
+  is a further catalogue lead, but I located no indexed post-2024 count
+  for the 33/119 or dense order-30 levels from it. No change to lanes
+  A–G's data inputs or claimed coverage.
+- Rechecked the publisher's current DS1 revision date and the recent
+  construction reports; no classical 40/41 resolution, 39-vertex bulk
+  file, or exact 30/88-and-up order-30 count located. The three negative
+  search results are not completeness claims.

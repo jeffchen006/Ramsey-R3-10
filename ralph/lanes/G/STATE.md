@@ -1,6 +1,37 @@
-# Lane G state — round 2, 2026-11-21
+# Lane G state — round 3, 2026-11-21
 
-## Round 2 results and live jobs
+## Round 3 result and jobs
+
+No detached jobs; all bounded runs finished. Peak nine enumerator/checker
+workers (six backward e120 shards and three e106 exception shards), under the
+allocation of 18; no job to pick up or kill.
+
+| Label | Result | Evidence | CPU-h (approx.) |
+|---|---|---|---:|
+| enum | Tagged two-/three-vertex replacement found the missing six e119 residues; exact small controls 84/168 marked cores, plus all e118 marked originals. Complete by published counts, not by closure of the move. | `joint_replace.cc`, `check_joint_replace.py`, `root_certs/{new119,complete33_le119}.g6`, `LOG.md` | 0.05 |
+| cert | All 74 e118/119 residues are valid and canonically distinct, both LRATs pass. MTF degree-six floor 120 at every total e, independent of gluing. Exact Farkas clears all 56 original e167 n6>0 distributions, 55 incremental. | `rows/floor120.md`, `root_certs/closed167.csv`, `replay_floor120.sh`, `scratch/G/round3/full_verify_floor120.log` | 0.006 |
+| cert | New MTF degree-seven floor 107 at every total e, independent of gluing or the degree-six floor. GR counts 39/952/18598 at 104/105/106; 19521 independently checked demand cliques, 68 remaining both LRAT checkers. | `rows/floor7.md`, `verify_uncovered.py`, `root_certs/floor7_inputs.sha256`, `replay_floor7.sh`, `scratch/G/round3/floor7_replay.log` | 0.04 |
+| cert (conditional) | Floor 120 improves 35/213 t9 bounds with 36 rational certificates; no incremental closure beyond e167. Degree-seven floors 105/106/107 improve 39/45/44 more t9 bounds (40/48/45 rational certificates); close 8/6/9 more distributions, respectively, conditional on e(H8)>=97 and e(H9)>=88. | `root_floor120_certs.jsonl`, `root_floor7{,_106,_107}_certs.jsonl`, `round3_cases.csv`, `scratch/G/round3/floor7.*.verify.log` | 0.07 |
+| cert (individual) / open (cover) | 1178 valid nonisomorphic e120 order-33 residues; all individually ruled out (1125 cliques, 53 checked LRATs). True count lies 1223..1240 (GR lower bounds + Ang exact <=121 total); at least 45 still missing. No next degree-six floor or e168 closure. | `scratch/G/round3/{back120.union.g6,e120.catalogue.log,e120.cliq.log,e120_exception_core.log}` | 0.46 |
+| enum / open | Order-32 e107: all immediate additions give 234341/234681; tagged 60-source pair pilot adds 11 unique classes; 329 missing. 2925/2967 sampled clique witnesses verified. No floor 108. | `scratch/G/round3/{e107.partial.g6,e107.survey.*,e107.pilot.cliq.tsv}` | 0.005 |
+
+**78 incremental exclusions in round 3; 376 near-regular distributions + R
+remain**, conditional on the prior gluing floors and subject to critic review.
+The 55 e167 additions do not rely on gluing. Complete e88 MTF gluing would
+now cut **13 more** (363+R remain); no such gluing conclusion is claimed.
+`summarize_round3.py` reproduces `round3_cases.csv`, including all overlaps.
+
+Next: independent review of `replay_floor120.sh` and `replay_floor7.sh` (no
+solve). Use demand cliques for fixed-root prefilters. Close the e120 or e107
+catalogue gap only with a new exact source/critical-edge decomposition; do
+not relaunch the same measured seeded sweeps blindly. A full e120 exclusion
+would directly settle 47 e168 n6>0 distributions on the floor-120 baseline
+before overlaps with the new d7 LP cuts. Full e107 pair expansion alone has
+an estimated ~0.9 CPU-h and ~6 GB raw stream; no commitment to coverage.
+
+## Round 2 handoff (historical)
+
+### Round 2 results
 
 No detached jobs. All bounded runs used one core each; none remain at handoff.
 

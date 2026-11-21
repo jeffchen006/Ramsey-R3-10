@@ -3,7 +3,7 @@ import argparse
 import sys
 
 
-def keep(line, low, exclusions):
+def keep(line, low, exclusions, star_minimum=0):
     order = line[0] - 63
     if order not in (22, 30) or len(line) != 2 + (order * (order - 1) // 2 + 5) // 6 or line[-1] != 10:
         raise ValueError('invalid graph6 record')
@@ -17,6 +17,8 @@ def keep(line, low, exclusions):
     degrees = list(map(len, adjacent))
     if sum(degrees) != 2 * low:
         return False
+    if any(degrees[neighbor] < star_minimum for neighbor in adjacent[-1]):
+        return False
     return all(low - sum(degrees[neighbor] for neighbor in adjacent[vertex]) > exclusions.get(degree, -1)
                for vertex, degree in enumerate(degrees))
 
@@ -25,12 +27,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('edge', type=int)
     parser.add_argument('threshold', nargs='*', type=int)
+    parser.add_argument('--star-minimum', type=int, default=0)
     args = parser.parse_args()
     exclusions = dict(zip((5, 6, 7), args.threshold, strict=bool(args.threshold)))
     seen = selected = 0
     for line in sys.stdin.buffer:
         seen += 1
-        if keep(line, args.edge, exclusions):
+        if keep(line, args.edge, exclusions, args.star_minimum):
             sys.stdout.buffer.write(line)
             selected += 1
     print(f'profile_filter in={seen} out={selected}', file=sys.stderr)

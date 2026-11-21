@@ -1,0 +1,21 @@
+family	r3_cumulative_raw_I10	r3_cumulative_degree_valid_I10	degree_valid_edges	r3_result
+Z10_4_blocks	30	-	-	carried; nested in Z5 and free involution; raw violates degree cap
+Z8_5_blocks	40	-	-	carried; nested in free order 4; raw violates degree cap
+Z5_free_8_blocks	30	67	180	carried; no r3 exposure
+order2_f0	56	108	180	carried; best is order4 square, direct weighted best 134
+order2_f16	85	-	-	carried; raw only
+order2_f18	66	-	-	carried; raw only
+order2_f20	58	-	-	carried; raw only
+order2_f22	101	-	-	carried; raw only
+order2_f24	97	-	-	carried; raw only
+order2_f26	108	-	-	carried; raw only
+order2_f28	33	-	-	carried; raw only
+order2_f30	42	-	-	carried; raw only
+order2_f32	87	-	-	carried; raw only
+order3_f1	58	195	180	carried; no r3 exposure
+order3_f4	101	293	180	carried; no r3 exposure
+order3_f7	76	-	-	carried; raw only
+order3_f10	30	44	180	no gain; 20 bounded escape models all anchor-isomorphic; scratch/F/r3/r3_nearness.audit.jsonl
+order4_free	40	108	180	carried; same order-40 graph as score-108 free involution
+order4_mixed	49	-	-	carried; raw only
+attached_39_component	-	142	178	carried exact optimum over specified component only

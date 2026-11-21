@@ -1,5 +1,91 @@
 # Lane B reproducibility and round notes
 
+## Round 3: anchors and star-lift slices
+
+`ANCHOR88.md` is a hand proof that an e88 dual not covered by the prefix and
+the d7,e43 branch has at least four threshold roots (d6/e52 or d7/e44) with
+every neighbor of degree >=5. `glueanchor` is `src/gluecheap.c` with `-S 5`
+and optional `-P` for pairwise overlap propagation; build with
+`cc -O3 -march=native .../gluecheap.c -o build/glueanchor` from `scratch/B`.
+`src/bench_anchor.sh 52 44` reuses fixed dispersed blocks and checks exact
+labelled outputs against independent filtering; the e63 control contains 430
+labelled outputs. Preserve the joint cover: neither restricted branch by
+itself covers the remainder. The e43 running wrapper uses the older binary
+and must finish before using its absence of completions in the deduction.
+
+Measured exact paired results (four dispersed blocks of eight inputs at each
+edge level): e52 anchored 0.373 CPU s/input (range 0.319-0.468), versus 0.468
+with the original outside-prefix filter; e44 anchored 3.450 CPU s/input (range
+2.461-4.155), versus 4.085. The overlap prefilter did not improve aggregate
+throughput (0.374 and 3.557). Baseline plus independent postfilter and both
+variants gave identical labelled outputs in all blocks. The 64 tests gave
+zero outside-prefix anchored outputs, so there is no sound full-catalogue
+output volume estimate from the pilot. Even **before** sort/I/O/final scan,
+the gluing-alone estimate is about 1,071 + 69 CPU-h (63 h at all 18 cores);
+do not launch either full branch now. On e52 this is only a 1.26x speedup
+over the prior outside-prefix code, not the 10x target.
+
+For star lifts, let U=H−v, and suppose the given H has alpha <= a. Replacing the
+star of v by S preserves triangle-freeness iff S is independent in U, and
+preserves the alpha bound iff S hits each independent a-set in U. Select an
+unhit a-set and partition by the first allowed vertex of this set used by S;
+after the obligatory hits are made, adding independent extras gives all exact
+target-size sets once. The `-c` option emits only inclusion-minimal hitting
+sets: every vertex in the new neighborhood has a private witness independent
+a-set meeting S only there. Global edge-criticality implies this local test,
+but not conversely, hence the subsequent `irreducible` check. Varying every
+root and using target size old+1 enumerates the relevant slice; reversibility
+covers exactly those graphs of the next edge level with a down-star to one of
+the supplied parents. It does not establish coverage by itself.
+
+Small calibration (`logs/starlift_control.log`): direct fixed-size independent
+subset enumerator matched exact labelled multisets both ways, 378 lifts of
+30 e62 parents and 336 downward moves from 60 e63 graphs; the lifts recover 58
+of the known 60 canonical e63 graphs. Independent brute force on the retained
+e88 edge-critical example finds no one-star reduction either (6.94 CPU s,
+`logs/starlift_critical88_ref.log`). This example is from the d5 prefix, so it
+does not refute a cover formed by the prefix plus the lifts; no proof that
+such a union is complete is known.
+
+**Star slice estimate, before launch.** On 128 dispersed e87 parents from the
+two-edge slice, unfiltered star-lift emitted 22,081 raw / 12,293 canonical,
+of which 37 were outside up86. With `-c`, 42 raw/unique and 34 outside up86,
+with exactly the same 21 globally critical new graphs. Star generation took
+0.21 CPU s and canonicalization <0.01 CPU s for `-c`; `labelg` plus sort
+matches `shortg` exactly on the sample. Scale ×1042: ~219 CPU s generation,
+~22k critical outputs before global deduplication, ~30 CPU s MTF scan at
+~1 ms/input, and <60 CPU s checking, sorting and I/O. Expected ~5–12 min
+wall on one worker, hard cap 45 min, <100 MB incremental scratch. This adds
+a partial critical slice, not a substitute for e52/e44. It can run as the
+one spare worker while 16 prefix workers and either the up86 scan or e43
+use the other 17; label and sort are sequential. See `logs/starlift_pilot.log`.
+
+**Observed:** exact 133,434 parents, 37,640 raw locally critical outputs,
+32,484 canonical, 21,932 outside up86, 14,454 globally critical. Star search
+217.83+0.20 CPU s; MTF 14.27+0.92 CPU s, zero outputs, exact chunk audit;
+24/24 independent SAT UNSAT (no proof files). Independent graph6 profile
+filtering found **0/14,454 outside prefix** at thresholds 58/51/42. Thus this
+is a partial enumeration/recheck of a prefix slice, not progress on the
+outside-prefix branch coverage itself. Do not spend more cores on this star
+route without showing it reaches that complement.
+
+Largest-first `-R`: complement each attachment size by `DMAX-1` and reflect
+the edge window accordingly; this permits the same monotone cost search to
+choose largest actual attachments first. `src/bench_order.sh` matches all
+e63 canonical multisets exactly, but the first 8-input e52 block TIMEOUT
+at 120 wall s (112.75 CPU s versus 3.74 CPU s for the ascending baseline).
+Do not scale; no output equivalence claim for the capped block.
+
+Use `src/audit_e88_scans.sh up86|e43` only on terminal output. Both audits
+refuse the currently unfinished logs. `src/audit_chunks.py` checked the
+98,408-input MTF pilot exactly, and rejected a forged expected input count
+off by one. The staged `src/edgeup_tail87.sh` also requires the completed
+prefix calibration (both lower-level counts and exact e86 equality) before
+computing the remaining 13,901 e87 parents. Based on 76 additions per parent,
+expect roughly 1.06M raw e88 children before canonicalization and slice
+subtraction; at the up86 scan rate, conservatively ~0.33 CPU-h plus sorting,
+~25-55 min wall on one worker. Not yet launched.
+
 ## Round 2: two-edge slice launch estimate (written before launch)
 
 From every known e86 graph, add one nonedge with no common neighbour, canonicalize,

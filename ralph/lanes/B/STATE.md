@@ -1,6 +1,6 @@
-# Lane B — round 2, November 21, 2026
+# Lane B — round 3, November 21, 2026
 
-**Open:** no new degree distribution closed and no candidate graph. Full t9<=88 census not launched; the lower-count calibration and two different partial e88 searches are running. Current share is 18 cores. Work from `scratch/B` with `ulimit -v 16777216` and `PYTHONDONTWRITEBYTECODE=1`.
+**Open:** no new degree distribution closed and no candidate graph. Full t9<=88 census not launched. Current share is 18 cores. Work from `scratch/B` with `ulimit -v 16777216` and `PYTHONDONTWRITEBYTECODE=1`.
 
 ## Jobs
 
@@ -10,9 +10,26 @@
 | 3047886 | `timeout --kill-after=1m 5h bash ../../ralph/lanes/B/src/edgeup_pipeline.sh 86 work/hog_30_86.canon up86` | `scratch/B/logs/edgeup2_full86.log` | 1 solver (up to 2 during shortg/sort) | Nov 21 18:04:04 | estimate Nov 21 19:34–20:34; cap 23:04 |
 | 3921182 | `timeout --kill-after=1m 6h bash ../../ralph/lanes/B/src/wait_tail7.sh 3047886 140845100 43` | `scratch/B/logs/tail7_e43.log` | 0 while up86 runs, then 1 worker (up to 2 during shortg/sort) | queued Nov 21 18:28:27 CET | estimate Nov 21 22:00–22:40 CET; cap Nov 22 00:28 |
 
+Round 3 completed: PID 1367119 (`starlift_stage.sh`, one worker, queued
+Nov 21 18:57:38, ran ~18:59–19:03 CET), with terminal count audit and SAT
+sample recheck. Foreground `bench_anchor` passed; `bench_order` ended on an
+e52 TIMEOUT after the exact e63 control passed. Neither benchmark is live.
+
 Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitted minimum degree 3 for order 21; corrected by generating this branch and merging, no missing counts thereafter. Seed 418169 failed on `shortg`'s in-place default; 453949 passed after explicitly writing stdout. Do not interpret either failed run as empty. Upper seed PID 540708 completed successfully at ~17:23 with all GR T13 counts.
 
 ## Results and claims for review
+
+### Round 3
+
+| Label | Result | Evidence | CPU-hours |
+|---|---|---|---:|
+| hand | An e88 dual outside prefix and d7/e43 has at least four d6/e52 or d7/e44 roots whose neighbors all have degree ≥5. This is a joint cover, not either branch separately; no global minimum-degree-5 assertion. H/critic review requested. | `ralph/lanes/B/ANCHOR88.md` | — |
+| enum / estimate | `glueanchor -S 5` and optional `-P` match all 430 rooted labelled e63 controls and exact postfiltered outputs in four dispersed eight-parent blocks each at e52 and e44. 0.373 and 3.450 CPU s/input; optional overlap prefilter did not help. Estimated ~1,140 CPU-h before sort/I/O, 63 h on 18 continuously busy cores, so no full launch and 10x target unmet. | `scratch/B/logs/anchor_bench.log`, `ralph/lanes/B/LOG.md` | ~0.07 sample |
+| enum | Star lift matches independent exact labelled oracle in both directions on order-22 controls; recovers 58/60 canonical e63 graphs. Independent exhaustive verifier also finds no one-star reduction of the retained edge-critical e88 dual (which is in the d5 prefix). | `scratch/B/logs/starlift_control.log`, `scratch/B/logs/starlift_critical88_ref.log` | <0.01 |
+| enum | Exact star-lift slice from 133,434 up86 e87 parents: 14,454 globally edge-critical e88 duals, all MTF-negative; audited all 15 chunks and independent SAT agreed on 24/24. All 14,454 satisfy the prefix root condition, so they do not shrink the anchor complement and are not a complete e88 result. | `scratch/B/logs/starlift_stage{,_sat,_profile}.log`, `ralph/lanes/B/LOG.md` | 0.068 including SAT |
+| estimate | Largest-first cost reflection (`-R`) matches canonical e63 outputs with multiplicities, but the first eight e52 inputs capped at 120 s wall (112.75 CPU s), versus 3.74 CPU s smallest-first. Do not scale. | `scratch/B/logs/order_bench.log`, `scratch/B/logs/anchor_bench.log` | 0.032 |
+
+### Earlier rounds
 
 | Label | Result | Evidence under `scratch/B` unless noted | CPU-hours |
 |---|---|---|---:|
@@ -32,7 +49,7 @@ Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitt
 
 ## Next
 
-1. Prefix PID 1180084 uses (5:3,6:3,7:1), sufficient for <=87 by exact `tcheck.py`; runs those seeds with output cap 88, so its e88 result is **partial only**. Require e86/e87 counts 1800/147335 and exact HoG canon equality at e86. At 18:14, d5 complete (132,817, 28,497.87 CPU s), d6 86/2847 chunks; live throughput 7 d6 chunks/min and ~5.5 GB lane scratch. Recompute from later batches. Confirm by SAT on a dispersed e88 sample once the census file appears.
-2. Monitor `up86`; require terminal `MTF up86 e=88 checked all input chunks` line, not merely raw count. At 18:23 this was ~600/4641 chunks, zero so far, ~0.17 CPU-h. `src/edgeup_tail87.sh` is staged, **not launched**: after completeness checks and the up86 scan, add from the 13,901 e87 parents outside the existing slice and scan only the new e88 graphs. Complete only for duals admitting at least one Ramsey-preserving edge deletion. Cannot cover `critical88.json`.
-3. Monitor queued e43 PID 3921182. Require all 1,521 inputs and a terminal MTF scan line; a completed scan applies only to the d7,e43 branch outside the prefix. Paired e43 gluing sample: 32 distinct parents, exact raw sets (66 outputs) and no outside-prefix outputs, 5.158 CPU s/input (block range 4.599–5.653), yielding 2.18 CPU-h for gluing plus final sorting/scan. Seek a bigger generation prune for e52/e44; do not scale triple filters, edge-addition-only, or the earlier `gluegroup` batch. Do not launch complete `n30.py 88` without a revised fit estimate. t9<=89 and t8 larger levels remain unbudgeted.
-4. Use G's checked revised threshold table: an MTF e88 exclusion would close **24 additional** distributions (494 nonregular + R left), not 30 after the six already conditional closures. No new distribution closure this turn. MTF-only exclusion is not an all-graphs t9 statement.
+1. Prefix PID 1180084 uses (5:3,6:3,7:1), sufficient for <=87 by exact `tcheck.py`; runs those seeds with output cap 88, so its e88 result is **partial only**. Require e86/e87 counts 1800/147335 and exact HoG canon equality at e86. At 19:05 CET, d5 complete (132,817, 28,497.87 CPU s) and d6 483/2847 chunks, recent ~7–8 chunks/min. Confirm by SAT on a dispersed e88 sample once the census file appears.
+2. Require `src/audit_e88_scans.sh up86` after terminal (at 19:05 CET, 2861/4641 chunks, zero so far). `src/edgeup_tail87.sh` is staged, **not launched**: after exact completeness checks and the up86 scan, add from the 13,901 e87 parents outside the existing slice and scan only the new e88 graphs. Complete only for duals admitting at least one Ramsey-preserving edge deletion. Cannot cover `critical88.json`.
+3. Monitor queued e43 PID 3921182. Run `src/audit_e88_scans.sh e43` at terminal. The result applies only to the d7,e43 branch outside the prefix. Paired e43 sample projected 2.18 CPU-h for gluing plus final sorting/scan. Read `ANCHOR88.md` when developing a larger generation prune; do not scale either e52/e44 at the current estimated cost. t9<=89 and t8 larger levels remain unbudgeted.
+4. Use G's checked round-2 threshold table: an MTF e88 exclusion would close **20 additional** distributions on that baseline (434 nonregular + R left). Reconcile overlaps if G's separate round-3 floor-120 result is accepted. No new distribution closure this turn. MTF-only exclusion is not an all-graphs t9 statement.

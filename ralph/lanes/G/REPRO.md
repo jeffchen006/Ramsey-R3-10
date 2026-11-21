@@ -92,3 +92,55 @@ These LP certificates use the new trusted-with-LRAT floor `e(H6)>=119`
 and the original `e(H8)>=97` gluing floor. The one new `t9<=87` closure
 also needs the original `e(H9)>=88` gluing floor; the five new `t9<=88`
 bounds are not closures unless the stronger MTF gluing exclusion arrives.
+
+# Round 3: two complete low-level residue floors
+
+From the workspace root (use a fresh reviewer-owned work directory):
+
+```sh
+G=ralph/lanes/G
+W="$PWD/scratch/G/round3"
+nice -n 5 timeout 160s bash "$G/replay_floor120.sh" "$W/review_floor120" "$W/full_core119"
+nice -n 5 timeout 200s bash "$G/replay_floor7.sh" "$W/review_floor7" "$W"
+for name in root_floor7_certs root_floor7_106_certs root_floor7_107_certs; do
+  nice -n 5 timeout 90s python3 -S -B "$G/scan_root_floor.py" --verify --output "$G/$name.jsonl"
+done
+python3 -S -B "$G/summarize_round3.py" | diff - "$G/round3_cases.csv"
+```
+
+Floor 120 script independently verifies the 5+69 cover, binds checked CNFs
+and existing proofs by SHA-256, checks both LRATs, and verifies e167 cut
+bookkeeping and the 36 higher-e LP certificates. If the proof stream in
+scratch is lost, regenerate with `replay_root_core.sh WORK CATALOGUE`, or
+recover the old 68 through lane A and the six extra compressed proofs in
+`root_certs/e119_new/`. `replay_floor7.sh` checks canonical edge-addition
+equalities, all 19521 short clique witnesses, exact complement partition,
+CNFs and 68 LRATs. It does not rerun the clique search or any SAT solver.
+The 39 e104 inputs originate from the House of Graphs minimal Ramsey graph
+file `Ramseygraphs_3_9_32_e104.g6`; the canonical list is stored locally.
+The exact individual level counts are GR Table 14; the e120 upper bound
+instead uses Angeltveit's combined <=121 census, not an exact e120 count.
+
+Root-7 LP runs use `--floor7 105`, `106`, `107` in order, each with
+`--edges $(seq 162 179)`. The latter levels incorporate the certified
+results for previous levels from the named JSONL files. The verification
+mode uses pure Python rational arithmetic. LP cuts using t9 require the
+two prior gluing floors; neither residual bound itself needs them.
+
+Rebuilding the two-/three-vertex replacement tool and its control:
+
+```sh
+c++ -O3 -Wall -Wextra -Werror -std=c++17 -Igluing/src "$G/joint_replace.cc" -o "$W/joint_replace"
+c++ -O3 -Wall -Wextra -Werror -Wno-unused-function -std=c++17 -Igluing/src "$G/expand_residue_edges.cc" -o "$W/expand_residue_edges"
+(
+  cd "$W"; ulimit -v 16777216; ulimit -t 90
+  nice -n 5 timeout 90s ./joint_replace 3 10 12 2 < control8.g6 > replay2.tsv
+  nice -n 5 timeout 90s python3 -S -B ../../../ralph/lanes/G/check_joint_replace.py control8.g6 replay2.tsv 3 10 12 2 --brute
+  nice -n 5 timeout 90s ./joint_replace 3 10 12 2 triple < control8.g6 > replay3.tsv
+  nice -n 5 timeout 90s python3 -S -B ../../../ralph/lanes/G/check_joint_replace.py control8.g6 replay3.tsv 3 10 12 2 --brute --triple
+)
+```
+
+The source of truth for the 74 usable roots is exact checked count plus
+independent witnesses, not traversal connectivity. For reconstructing the
+search sequence, see the measured stages in `LOG.md`.

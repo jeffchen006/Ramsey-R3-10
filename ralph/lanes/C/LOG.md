@@ -69,3 +69,58 @@ and isolated codegree-six pairs separately. Never assume C8 is the only R(6)
 case. `RESULTS.md` gives regeneration and evidence details.
 
 Round 2 detached scan: timeout PID 2770701, 1 core, start 17:56:02, expected end by 18:26:02, C-host local time. From `scratch/C`, `python3 -B ../../ralph/lanes/C/path_windows.py ../../gluing/val/r3_7_22.g6 ../../opt/bin/labelg --output p4_full.g6`; `p4_full.log`.
+
+## Rounds 2–3: path window evidence and completed jobs
+
+- P4 cover: 31,994 marks / 13,613 X20 families → 2,454 labelled A26
+  rows in 72.47 CPU-s (PID 2770701). A matched in 49.82 CPU-s. The
+  MTF criterion leaves 1,356 rows. Explicit branching over 36,039
+  D0--D3 patterns with degree/TF/MTF/codegree propagation yields the
+  same 1,356 rows; this was not an extension test.
+- P5 cover: 177 window families / 47,031 port pairs → 1,156 labelled
+  H30 rows, 10.55 CPU-s; A's independent full-set comparison modulo
+  reversal in 10.87 CPU-s. Extension: 940 unsupported MTF pairs,
+  216 trees (289,649 nodes; max 10,760), 42.34 CPU-s; separate trace
+  replay 71.25 CPU-s. C21 controls, removal/corruption tests and all
+  regeneration details in PATH_REPLAY.md / PATH_INPUTS.sha256. Critic
+  confirmed C-009 at `enum`, not `cert`, in round 002.
+- Round-2 P4 control 8 SAT + 5 UNSAT, 8 independent witness checks;
+  matched larger pilot 15/15 cap (6.79 user-s). Do not rescale the old
+  lazy-cut approach. Round 3 exact eager side test matched all 13
+  control keys and reached 14/15 checked proofs on the spread pilot.
+- The P4 cert route is now fully exhausted in both e strata, not just
+  a filter. See P4_REPLAY.md and P4_INPUTS.sha256, with all 2,222
+  retained LRATs and exact replay. C-013 scope: P4 spans only, not R(6).
+
+| Finished Round-3 job | Timeout PIDs, one core each | Actual host period | Command shorthand from `scratch/C` | Logs |
+|---|---|---|---|---|
+| High P4 | 1236776, 1236779, 1236793, 1236803 | 18:55:52–18:59:55 | `timeout 1200 python3 -B ../../ralph/lanes/C/p4_factor_proofs.py p4_forced_full.g6 ../../opt/bin p4proof-high --min-e 79 --seconds 8 --join --shards 4 --shard S` | `p4proof-high-S.log` |
+| Low P4 | 1505265, 1505267, 1505271, 1505275 | 19:00:16–19:05:06 | same driver, `p4proof-low --max-e 78 --seconds 10 --pins --shards 4 --shard S` | `p4proof-low-S.log` |
+| Replay P4 | 1859760, 1859814, 1859819, 1859866 | 19:06:06–19:15:06 | `timeout 1200` wrapper, `bash ../../ralph/lanes/C/replay_p4.sh high S` and then `low S` | `p4replay-S.log` |
+
+Each used `setsid nohup nice -n 5` and a 16 GiB virtual limit.
+High estimate 650 CPU-s from spread sample; actual 795.49 CPU-s.
+Low estimate 800 CPU-s from pinned LRAT pilot; actual 839.28 CPU-s.
+Replay estimate ~435 CPU-s high and 400–700 CPU-s low; actual
+about 441 and 508 CPU-s, all CNF and proof hashes identical.
+
+P3 diagonal-five/e64 producer: timeout PIDs 2344024, 2344030, 2344035,
+2344039 (workers 2344028, 2344037, 2344046, 2344050), four one-core
+shards, 19:16:03–19:26:51. Under 16 GiB virtual cap and `setsid nohup
+nice -n 5 timeout 1800`, ran `python3 -B ../../ralph/lanes/C/p3_e64_proofs.py
+../../gluing/val/r3_7_22.g6 ../../opt/bin p3e64-full --seconds 100
+--shards 4 --shard S --skip-row 0 --skip-row 95 --skip-row 139` from
+`scratch/C`. Logs `p3e64-full-S.log`. All terminal, 56/56 checked,
+1995.85 CPU-s actual versus 2240 CPU-s estimate, no caps. Pilot three
+already checked (107.37 CPU-s), with byte-identical pilot replay
+(50.97 CPU-s). `p3e64-index.log` independently confirms all 59 keys.
+
+P3 e64 replay: timeout PIDs 3160833, 3160842, 3160849, 3160857,
+four slots 19:27:29–19:32:11, hard cap 19:42:29. From `scratch/C`
+with 16 GiB cap and `setsid nohup nice -n 5 timeout 900` wrapper:
+`python3 -B ../../ralph/lanes/C/p3_e64_proofs.py ../../gluing/val/r3_7_22.g6
+../../opt/bin p3e64-full --verify --shards 4 --shard S --skip-row 0
+--skip-row 95 --skip-row 139` then diff exact hash columns against
+producer logs. `p3e64-replay-S.log`: all `IDENTICAL`, 917.02 CPU-s
+checking 56 proofs versus 950 CPU-s estimate; 50.97 CPU-s for the
+three pilot replays separately.

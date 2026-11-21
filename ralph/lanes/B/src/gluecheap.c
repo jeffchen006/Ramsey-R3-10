@@ -31,6 +31,8 @@
 
 static int K, D, EMAX = 1 << 30, EMIN = 0, DMIN = -1, DMAX = -1, quiet = 0;
 static int skip5, skip6, skip7, use_profile, irreducible_only;
+static int star_minimum, prefilter_overlap;
+static int reverse_sizes, search_min, search_max;
 static int minimum_degree, profile_order, maximum_sum[9], slack[16];
 static int *base_slack;
 static long long profile_rejected, ntested;
@@ -167,22 +169,22 @@ static void search(int depth, int start, const uint64_t *elig, int hi, int edges
     nnodes++;
     DEPTH_COUNT(node_depth);
     if (depth == D) {
-        if (edges < EMIN) return;
+        if (edges < search_min) return;
         for (int x = 0; x < m; x++) if (degH[x] + cnt[x] < DMIN) return;
         output();
         return;
     }
-    int rem = D - depth, B = EMAX - edges;
+    int rem = D - depth, B = search_max - edges;
     if (B < 0) return;
     int lim = hix[B / rem > 64 ? 64 : B / rem]; if (lim > hi) lim = hi;
-    if (rem == 1 && EMIN > edges) {
-        int minimum = EMIN - edges;
+    if (rem == 1 && search_min > edges) {
+        int minimum = search_min - edges;
         if (minimum > 64) return;
         if (start <= hix[minimum - 1]) start = hix[minimum - 1]+1;
     }
     int f = first_bit_range(elig, start, lim);
     if (f < 0) return;
-    if (edges + rem * (DMAX - 1) < EMIN) return;
+    if (edges + rem * (DMAX - 1) < search_min) return;
     for (set_t remaining = low_vertices; remaining; remaining &= remaining-1) {
         int x = CTZ(remaining);
         int need = minimum_degree - degH[x] - cnt[x];
@@ -224,7 +226,7 @@ static void search(int depth, int start, const uint64_t *elig, int hi, int edges
                     v = first_bit_range(Qbuf, v + 1, hi);
                 }
             }
-            if (k < rem || e2 > EMAX) { CUT; return; }
+            if (k < rem || e2 > search_max) { CUT; return; }
         }
     }
     uint64_t *ne = nebuf[depth];
@@ -311,7 +313,7 @@ static void enum_indep(set_t cur, int sz, set_t allowed, int lo, int hi)
 static int cmp_size(const void *a, const void *b)
 {
     int pa = POP(*(const set_t *)a), pb = POP(*(const set_t *)b);
-    if (pa != pb) return pa - pb;
+    if (pa != pb) return reverse_sizes ? pb - pa : pa - pb;
     set_t x = *(const set_t *)a, y = *(const set_t *)b;
     return x < y ? -1 : x > y;
 }
@@ -344,6 +346,7 @@ static void process(void)
     nl = 0;
     int lo = DMIN - 1 < 0 ? 0 : DMIN - 1;
     if (lo < minimum_degree-1) lo = minimum_degree-1;
+    if (lo < star_minimum - 1) lo = star_minimum - 1;
     enum_indep(0, 0, allowed, lo, DMAX - 1);
     if (use_profile) {
         int kept = 0;
@@ -402,6 +405,20 @@ static void process(void)
             const uint64_t *restrict col = hit + (size_t)j*W;
             for (int word = 0; word < W; ++word) row[word] &= col[word];
         }
+        if (prefilter_overlap) {
+            for (int word = 0; word < W; ++word) {
+                uint64_t candidates = row[word];
+                while (candidates) {
+                    int index = 64*word + CTZ(candidates);
+                    candidates &= candidates - 1;
+                    if (index < N) {
+                        int overlap = POP(cand[i] & cand[index]);
+                        if (overlap <= base_slack[i] && overlap <= base_slack[index]) continue;
+                    }
+                    row[word] &= ~BIT(index & 63);
+                }
+            }
+        }
     }
     free(hit);
     pair_time += clock() - started;
@@ -410,6 +427,14 @@ static void process(void)
     for (int i = 0; i < N; i++) if (comp[(size_t)i * W + (i >> 6)] >> (i & 63) & 1) selfc[i >> 6] |= 1ULL << (i & 63);
     uint64_t *elig = calloc(W, sizeof(uint64_t));
     for (int i = 0; i < N; i++) elig[i >> 6] |= 1ULL << (i & 63);
+    search_min = EMIN;
+    search_max = EMAX;
+    if (reverse_sizes) {
+        int base = 2*(eH+D) + D*(DMAX-1);
+        search_min = base - EMAX;
+        search_max = base - EMIN;
+        for (int i = 0; i < N; ++i) csz[i] = DMAX-1-csz[i];
+    }
     for (int sz = 0, i = -1; sz <= 64; sz++) { while (i + 1 < N && csz[i + 1] <= sz) i++; hix[sz] = i; }
     for (int dd = 0; dd <= D; dd++) nebuf[dd] = realloc(nebuf[dd], sizeof(uint64_t) * W);
     started = clock();
@@ -423,7 +448,7 @@ static void process(void)
 int main(int argc, char **argv)
 {
     int c;
-    while ((c = getopt(argc, argv, "k:d:e:E:m:M:qIA:B:C:")) != -1) {
+    while ((c = getopt(argc, argv, "k:d:e:E:m:M:qIPRA:B:C:S:")) != -1) {
         switch (c) {
         case 'k': K = atoi(optarg); break;
         case 'd': D = atoi(optarg); break;
@@ -433,15 +458,19 @@ int main(int argc, char **argv)
         case 'M': DMAX = atoi(optarg); break;
         case 'q': quiet = 1; break;
         case 'I': irreducible_only = 1; break;
+        case 'P': prefilter_overlap = 1; break;
+        case 'R': reverse_sizes = 1; break;
         case 'A': use_profile = 1; skip5 = atoi(optarg); break;
         case 'B': use_profile = 1; skip6 = atoi(optarg); break;
         case 'C': use_profile = 1; skip7 = atoi(optarg); break;
+        case 'S': star_minimum = atoi(optarg); break;
         default: fprintf(stderr, "usage: glue -k K -d D [-e EMAX] [-E EMIN] [-m DMIN] [-M DMAX]\n"); return 1;
         }
     }
     if (K <= 1 || D <= 0) { fprintf(stderr, "need -k and -d\n"); return 1; }
     if (DMIN < 0) DMIN = D;
     if (DMAX < 0) DMAX = K;
+    if (star_minimum < 0 || star_minimum > DMAX || (prefilter_overlap && !use_profile)) return 2;
     minimum_degree = DMIN;
     if (use_profile) {
         if (EMIN != EMAX || DMAX > K || DMIN < 0 || EMAX < 0 || EMAX > 99 ||

@@ -95,6 +95,55 @@ class Formula:
             self.products[key] = prod
         return self.products[key]
 
+    def lex_leq(self, pairs):
+        equal = self.true
+        rows = [(left, right) for left, right in pairs if left != right]
+        for index, (left, right) in enumerate(rows):
+            self.add(-equal, -left, right)
+            if index + 1 == len(rows):
+                break
+            same = self.var()
+            self.add(-same, -left, right)
+            self.add(-same, left, -right)
+            self.add(same, -left, -right)
+            self.add(same, left, right)
+            equal = self.both(equal, same)
+
+
+def profile_generators(kernel, degree, side):
+    import pynauty
+
+    width = degree - 1
+    own = tuple(range(side * width, (side + 1) * width))
+    graph = pynauty.Graph(2 * width, adjacency_dict={vertex: list(bits(row)) for vertex, row in enumerate(kernel)},
+                          vertex_coloring=[set(range(width)), set(range(width, 2 * width))])
+    generators = sorted({tuple(perm[vertex] - side * width for vertex in own)
+                        for perm in pynauty.autgrp(graph)[0]})
+    identity = tuple(range(width))
+    group = {identity}
+    agenda = [identity]
+    transpositions = set()
+    for perm in agenda:
+        if sum(first != second for first, second in zip(perm, identity)) == 2:
+            transpositions.add(perm)
+        for generator in generators:
+            product = tuple(generator[position] for position in perm)
+            if product not in group:
+                group.add(product)
+                agenda.append(product)
+    return sorted((transpositions | set(generators)) - {identity})
+
+
+def order_profile(formula, kernel, degree, side, occupants):
+    masks = sorted(occupants, key=lambda mask: (mask.bit_count(), mask))
+    perms = profile_generators(kernel, degree, side)
+    for perm in perms:
+        image = {mask: sum(1 << perm[coord] for coord in bits(mask)) for mask in masks}
+        assert all(len(occupants[mask]) == len(occupants[image[mask]]) for mask in masks)
+        formula.lex_leq((left, right) for mask in masks
+                        for left, right in zip(occupants[mask], occupants[image[mask]]))
+    return len(perms)
+
 
 def add_obstructions(formula, degree, occupants, fixed, library):
     clauses = set()
@@ -123,7 +172,63 @@ def add_obstructions(formula, degree, occupants, fixed, library):
     return len(minimal)
 
 
-def build_side(formula, kernel, order, degree, minimum, shadow, side, library, no_k33):
+def add_shared(formula, degree, occupants, fixed, width):
+    """One relaxation witness on labelled support occurrences, not one per window."""
+    available = [(mask, present) for mask in sorted(occupants.keys() | fixed.keys())
+                 for present in [formula.true] * fixed[mask] + occupants.get(mask, [])]
+    masks, present = map(list, zip(*available))
+    singles = {mask: index for index, mask in enumerate(masks) if mask.bit_count() == 1}
+    if len(singles) != sum(mask.bit_count() == 1 for mask in masks):
+        formula.add()
+        return
+    graph = [dict() for _ in masks]
+    for first, second in combinations(range(len(masks)), 2):
+        union = masks[first] | masks[second]
+        if (masks[first] & masks[second] or union.bit_count() > width
+                or present[first] == present[second] == formula.true):
+            continue
+        edge = graph[first][second] = graph[second][first] = formula.var()
+        formula.add(-edge, present[first])
+        formula.add(-edge, present[second])
+
+    for index, neighbors in enumerate(graph):
+        for first, second in combinations(neighbors, 2):
+            if second in graph[first] and index < min(first, second):
+                formula.add(-neighbors[first], -neighbors[second], -graph[first][second])
+        formula.atmost(list(neighbors.values()), degree - masks[index].bit_count())
+        for coord in range(degree):
+            if not (masks[index] >> coord & 1):
+                formula.atmost([edge for other, edge in neighbors.items() if masks[other] >> coord & 1], 3)
+
+    for first, second in combinations(singles.values(), 2):
+        common = [formula.both(graph[first][other], graph[second][other])
+                  for other in sorted(graph[first].keys() & graph[second].keys())]
+        formula.atmost(common, 3)
+
+    if width == 2:
+        for mask, have in zip(masks, present):
+            if mask.bit_count() in (2, 3):
+                members = [1 << coord for coord in bits(mask)]
+                if all(member in singles for member in members):
+                    indices = [singles[member] for member in members]
+                    formula.add(-have, *(-present[index] for index in indices),
+                                *(graph[first][second] for first, second in combinations(indices, 2)
+                                  if second in graph[first]))
+        return
+
+    for window in subsets(degree, width):
+        inside = [index for index, mask in enumerate(masks) if mask & ~window == 0]
+        for group in combinations(inside, window.bit_count() + 1):
+            union = 0
+            for index in group:
+                union |= masks[index]
+            if union == window:
+                formula.add(*(-present[index] for index in group),
+                            *(graph[first][second] for first, second in combinations(group, 2)
+                              if second in graph[first]))
+
+
+def build_side(formula, kernel, order, degree, minimum, shadow, side, library, no_k33, shared=0):
     width = degree - 1
     own = list(range(side * width, (side + 1) * width))
     opposite = range((1 - side) * width, (2 - side) * width)
@@ -174,6 +279,8 @@ def build_side(formula, kernel, order, degree, minimum, shadow, side, library, n
     for lits, bound in sorted(rows):
         formula.atmost(list(lits), bound)
     forbidden = add_obstructions(formula, degree, occupants, fixed, library)
+    if shared:
+        add_shared(formula, degree, occupants, fixed, shared)
     return occupants, len(rows), forbidden
 
 
@@ -273,12 +380,14 @@ def run(args, kernel, output):
     with Cadical195() as solver:
         formula = Formula(solver)
         sides = (0, 1) if args.side is None else (args.side,)
-        builds = [build_side(formula, kernel, args.order, args.degree, minimum, args.shadow, side, library, args.no_k33)
+        builds = [build_side(formula, kernel, args.order, args.degree, minimum, args.shadow, side, library,
+                             args.no_k33, args.shared)
                   for side in sides]
         profiles = [occupants for occupants, _, _ in builds]
+        lex = order_profile(formula, kernel, args.degree, args.side, profiles[0]) if args.profile_lex else 0
         matrix = join(formula, kernel, args.order, args.degree, profiles, args.shadow_edges) if args.side is None else None
         print(f'ENCODE types={list(map(len, profiles))} shadow={tuple(rows for _, rows, _ in builds)} '
-              f'obstructions={tuple(forbidden for _, _, forbidden in builds)} '
+              f'obstructions={tuple(forbidden for _, _, forbidden in builds)} lex={lex} '
               f'variables={formula.variables} clauses={formula.clauses} cpu={time.process_time()-start:.4f}', flush=True)
         outputs = 0
         iterations = 0
@@ -326,11 +435,14 @@ def main():
     parser.add_argument('--shadow-edges', action='store_true')
     parser.add_argument('--obstructions', type=Path)
     parser.add_argument('--no-k33', action='store_true')
+    parser.add_argument('--shared', choices=(2, 3), type=int, default=0)
+    parser.add_argument('--profile-lex', action='store_true')
     parser.add_argument('--limit', default=0, type=int)
     args = parser.parse_args()
     kernel = decode(args.catalogue.read_text().splitlines()[args.index])
     assert len(kernel) == 2 * (args.degree - 1) and args.order > 2 * args.degree
     assert all(row.bit_count() <= 2 for row in kernel), 'This implementation only handles cap 3 kernels.'
+    assert not args.profile_lex or args.side is not None, 'Do not independently lex-order both sides.'
     assert not args.no_k33 or args.order < 6 * args.degree - 12
     width = args.degree - 1
     assert all(not (row >> width) if index >= width else not (row & ((1 << width) - 1))

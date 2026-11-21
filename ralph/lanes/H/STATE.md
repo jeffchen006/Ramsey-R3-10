@@ -1,57 +1,57 @@
-# Lane H — round 2 handoff, November 21, 2026
+# Lane H — round 3 handoff, November 21, 2026
 
-Core share 4. No flow-verified `(3,10,40)` graph. Read the new critic
-directives, allocation and BOARD. Round 1 details are in thread artifacts
-and the reviews; never treat R(7) as closing all regular graphs.
+Critic's round-3 share: two cores; used one for bounded foreground work.
+No flow-verified order-40 graph. Prior handoff and old PID records are
+in `LOG.md`; the accepted full Lean/PB exports remain untouched.
 
 ## Jobs
 
-| PID(s) | Command | Log | Cores | Start / finish |
+| PID | Command | Log | Cores | Start / finish |
 |---|---|---|---:|---|
-| — | No running H jobs | — | 0 | — |
-| 2792146 / 2792150 / cache 2795221 / leantar 2803817 | `timeout 3120 taskset -c 148-149 bash ralph/lanes/H/lean_round1.sh` | `scratch/H/{cache-download,mathlib-cache-check,lake-build,axioms}.log` | 2 | 17:56:31 / 18:16 (legacy axiom read retry required) |
+| — | No live or detached H jobs. | — | 0 | — |
+| foreground | Targeted `lake build --old R310.PathWindow`, `lean -j1 -s8192` axiom reports; see `LEAN_REPRO.md`. | `scratch/H/p4-lean-{side-build,axioms-final,axioms-final-audit}.log` | 1 | 19:03–19:05 |
 
-Old cache job 1253143/1253159/1253379 hit its fetch cap (exit 124).
-Probe 2729770/2729780 downloaded all 9,031 files and hit its 100-s cap
-while unpacking; the ordinary Lake job resumed successfully. Integrated
-build and both single-threaded axiom checks ran in the foreground and
-finished. No solver jobs were started. Do not restart old job IDs.
+Previously listed PIDs from round 2 are gone. All round-3 shell/control
+tasks have ended; no solver used. Targeted Lean runs used timeout, nice,
+CPU pinning and 16 GiB virtual-memory limit.
 
 ## Results and claims
 
 | Label | Result | Evidence | Core-h |
 |---|---|---|---:|
-| Lean | Built pinned Lean v4.35.0 project with `lake exe cache get`, then checked all 9,045 Mathlib targets without building Mathlib from source. Integrated build succeeded. The legacy 263 reports and 15 new reports contain only standard axioms. | `LEAN_REPRO.md`, `scratch/H/{cache-download,mathlib-cache-check,lake-build,lake-integrated,axioms-one-legacy,axioms-one-new}.log` | about 0.30 for cache/verified builds/audits, excluding failed pilots |
-| Lean (H-002) | C's mask/residue and biclique rows, four-root endpoint step (diagonal nonedges supplied), local overlap identities, G's typed wedge identities. Ramsey bounds are hypotheses where needed; no full path census or LP run is formalized by these lemmas. | `lean/R310/{Residue,PathWindow,Wedge}.lean`, `AxiomsRound1.lean`, `scratch/H/axioms-one-new-audit.log` | included above |
-| cert (H-001, A-001 scope) | Full `R310.Files` emits 99,701 / 99,700 / 99,700 constraints, byte-identical to provisional R/S8/N. A's binder checks all 189,418 retained PB rows and proof artifact hashes. No SAT cube cover or new UNSAT claim. | `scratch/H/{project-export-direct,pb-bind}.log`, `LEAN_REPRO.md` | 0.007 |
-| hand | Audited C P4/P5 overlap and port coverage, E t=1 crown no-isolate bound, D's saturated biclique bound. P5 trace checks supplied residues only, and remains `enum` pending critic acceptance of the chain. | `PATH_WINDOW_REVIEW.md`, `CROWN_REVIEW.md`, `BICLIQUE_REVIEW.md` | — |
-| enum control | Independent C21 local overlap check passed all 42 P4 and 42 P5 oriented controls; corrupted nonpath rejected. No C8 replay this round. | `check_path_control.py`, `scratch/H/path-control.log` | <0.001 |
-| pub / open | Literature updated; published bounds remain 40–41 in sources found through Nov 21. No public GR–Angeltveit bulk census or exact new order-30 dense level located. | `LIT.md` | — |
+| Lean (H-003, H-004) | P4 maximality cross-edge criterion, both projected side-counting rows (including the outer-block row with an extra middle root). Three named axiom reports accepted by checker. No census, CNF, or proof-coverage formalization. | `lean/R310/PathWindow.lean`, `LEAN_REPRO.md`, `AxiomsRound3.lean`, `scratch/H/p4-lean-axioms-final-audit.log` | 0.040 incl. early iterations |
+| enum (controls, H-005 pin split) | 42 C21 span controls, C10 cross edge, both premise counterexamples, 164 side-subset checks including 26 tight nonempty outer rows. Independently matched exact 7/6 target pin keys by adjacent-swap orbit closure and exact three 2×2 control keys. | `check_p4_cross_control.py`, `check_p4_pin_cover.py`, `scratch/H/{p4-cross-control,p4-pin-cover}.log` | <0.001 |
+| hand | Audited the one-side bridge, unknown-side constraints, and row/column relabelling. Opposite middle root is safe with the nonadjacent outer block only. No independent proof replay. | `P4_SIDE_REVIEW.md` | — |
+| pub/open | Targeted latest literature and data refresh. No later exact solution, public GR–Angeltveit order-39 bulk file, public 33/119 file, or exact dense order-30 count found. Zero implications from that absence. | `LIT.md` | — |
 
-Ledger mirrors critic round 001: C-004 is `cert` (custom trace + hand
-reduction with published seeds, not Lean); C-007 is `enum`; G-001 retains
-both gluing floors. G-002's 30 thresholds include six already conditionally
-excluded, so a complete MTF e88 result removes at most the additional 24
-as counted at the start of round 2. G-004 is recorded only at e(H6)=118
-for e(G)=166 until the residual edge level and exact affected keys are
-linked to the new certificate. See BOARD request at 18:13.
+Ledger mirrors round 002: G-004 floor 119 is gluing-independent; G-005
+63 incremental e166 cuts; G-006 one conditional e167 cut, giving 454
+near-regular plus R and 20 genuinely incremental e88-dependent cuts;
+G-007 partial e119 proofs; E-008 strengthens the `(2,30)` W bounds.
+A-003's independent P5 coverage manifest and C's PATH_INPUTS both
+passed SHA-256 checks. C-009 remains `enum`; local H lemmas do not
+upgrade its label. R(7) stays the accepted custom certificate only.
 
 ## Team status and next steps
 
-R(7)'s accepted trace remains strongest overall. C/A's overlapping window
-method gives the most convincing new regular-case evidence: P4 cover
-matched independently (2,454 rows), P5 supplied-residue replay checked
-all 1,156 residues, and P4 remains open after the local reduction to
-1,356 rows. D still has 110 rooted R(3) orbits. E's f=32 t=1 and f=30
-window exclusions retain enum, G's exact five-residue branch has a narrow
-ledger row, B has not covered e88, and F has no witness.
+Best near-regular evidence: G reports recovering all six missing classes
+and 74 checked LRATs for the 5+69 catalogue. G-009 awaits the exact cover,
+binding and distribution audit. If accepted it removes 55 additional
+e167 distributions with n6>0 (399 near-regular plus R, before any later
+cuts). Do not count it yet or add e88-dependent cuts without updating
+overlaps. B still has no full e88 gluing cover. Regular: A independently
+matched all P5 layouts; C now reports full P4 producer coverage (1,187
+unpinned plus 1,035 pinned proofs). C-013 awaits independent proof
+provenance/coverage review. Even if accepted, R(6) is still open.
+E's new W≥5 exclusion is pending and W4 remains open; F's best remains
+I10=44, no verified witness.
 
-1. Mirror new reviewer verdicts. Get G's dependency and affected-key list
-   before combining e166 exclusions with gluing-dependent results. Get
-   independent P5 cover verification/critic acceptance before promoting it.
-2. Ask C for the next short local statement, especially the MTF forced
-   cross-edge criterion. Do not rerun C8 or regenerate historic R(7) cubes.
-3. Keep `scratch/H/lean-artifacts` and pinned `packages-local.json`; builds
-   use `--old` and `-j1 -s8192` for direct axiom reads. No heavy
-   `R310Cases` table rebuild this round. Full-cube provenance is now bound;
-   no reason to revisit unless inputs change.
+1. Mirror the critic's new verdicts, especially G-009; keep original
+   63/69 status as a historical partial result and distinguish the new
+   count from the accepted total. Use A's bundle rather than resuming
+   any proof-preservation jobs. No second e119 census or P5 join.
+2. For any P4 result keep the hand/Lean bridge separate from coverage
+   of the LRATs and from unsolved P2/P3 branches. Get C's final
+   per-row/pin manifest before any broader lemma claim.
+3. Read E's completed bridge if requested. Keep targeted Lean builds
+   and standard-axiom reviews; no full rebuild without changed inputs.

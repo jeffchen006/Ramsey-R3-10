@@ -2,8 +2,8 @@
 set -euo pipefail
 root=$(cd -- "$(dirname -- "$0")/../../.." && pwd)
 certs="$root/ralph/lanes/G/root_certs"
-if (( $# < 1 || $# > 2 )); then
-    echo "usage: $0 scratch-directory [catalogue-to-test]" >&2
+if (( $# < 1 || $# > 3 )); then
+    echo "usage: $0 scratch-directory [catalogue-to-test [root-degree]]" >&2
     exit 2
 fi
 work=$1
@@ -15,7 +15,7 @@ hard_cpu=$(ulimit -Ht)
 if [[ $hard_cpu == unlimited || $hard_cpu -gt 90 ]]; then
     ulimit -t 90
 fi
-nice -n 5 timeout 100s python3 -S -B "$root/ralph/lanes/G/root_core.py" "$catalogue" .
+nice -n 5 timeout 100s python3 -S -B "$root/ralph/lanes/G/root_core.py" "$catalogue" . --root "${3:-6}"
 count=$(wc -l < "$catalogue")
 if (( count == 0 )); then
     echo 'empty catalogue' >&2

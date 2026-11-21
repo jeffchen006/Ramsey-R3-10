@@ -1,4 +1,49 @@
-# Lane D — round 2, 2026-11-21
+# Lane D — round 3, 2026-11-21
+
+**Open:** R(3) still has 110 surviving root-swap kernel representatives
+(cover only); the R(4) K3,4 stratum remains open. No graph candidate.
+Lane share 6; peak four concurrent workers, no jobs remain.
+
+## Round 3 results and claims
+
+| Label | Result | Evidence | CPU-h |
+|---|---|---|---:|
+| hand | One triangle-free graph for shared singleton/support edges per side gives necessary local restrictions. One-sided count-multiset pins are an exact split for a fixed labelled kernel up to outside relabelling. | `ralph/lanes/D/PINNED_SIDE.md` | — |
+| enum | Both shared widths preserve all labelled C16 outputs. Of 800 matched R(3) profiles, 501 pass the old baseline with the unique-triple rule; shared singles reject none of these, width 3 rejects one. Do not scale shared joined encoding. | `scratch/D/factor_cal16_shared/check.log`, `scratch/D/shared_sample.tsv` | 0.0082 |
+| enum | Pinned C16 exact control: 241 side profiles (100 with symmetry lex); both recover the same graph sets independently canonicalized per kernel across all 13 kernels (5 classes). All 5 independently checked. | `scratch/D/{pinned_cal16,lex_cal16}/check.log`, `scratch/D/lex_cal16/graph_check.log` | 0.0018 |
+| enum | All 48 sampled R(3) pins exhausted with zero independent cuts, total 23.73 CPU-s, max 0.92 incl. startup, 0 cap hits. First profile from each of eight buckets also refutes bare triangle/degree/codegree cap without min-edge, diameter, private, or IS rows. | `scratch/D/pinned_r3/{manifest.tsv,k*.log,ablation/}` | 0.0117 incl. first ablation |
+| open | Second pin ablation: bare degree+triangle or degree+coordinate caps separately feasible in all eight; combined coordinate caps/triangle hit 8/8 CPU caps; full caps minus outer triangles had 1 feasible and 7 capped. | `scratch/D/pinned_r3/ablation2/` | 0.0142 |
+| enum | Bare fixed-profile DIMACS for kernel 149, side 0, line 1 checked with DRAT trim and CakeLPR. **Not** a section 7 encoding/cover chain, and not closure of kernel 149. | `scratch/D/pinned_r3/proof/k149-0-1.{lrat-check,sha256}` | ~0.001 |
+| enum | Assumption-core calibration agrees on all 241 C16 outcomes with bare substituted model. On kernel 149 side 0, 3/4 requested cores finish; each uses 21–22 of 22 slots and generalizes to no other sampled projection. Symmetry lex on the same bucket yields 160 vs 159 orbits per 160 outputs, but 11.04 vs 7.22 CPU-s. Do not scale either unmodified. | `scratch/D/{core_cal16,core_r3,lex_r3}/`, `ralph/lanes/D/PINNED_SIDE.md` | 0.011 plus C16 core calibration |
+| hand | In the R(4) K3,4 equality branch, the U attachments span either C15 or C6+C9 via the three selected perfect matchings. Each three-vertex singleton group at the other side must hit at least seven U vertices; `e(V)=e(U)+9`. These are conditional necessary structure only. | `ralph/lanes/D/BICLIQUE_R4.md` | — |
+| enum | Full B order-15 (3,6) input (64,732 distinct, pinned): 48,322 balanced, 36,039 viable under U-only anchor codegrees (67,730 partitions). Calibrated by exact 30-partition replay on the 12-vertex class. No K3,4 exclusion. | `scratch/D/balanced{12.replay,15.log,15.canon.log}`, `ralph/lanes/D/BICLIQUE_R4.md` | <0.001 |
+
+## Round 3 job ledger (all ended)
+
+Smoke 0.73 CPU-s gave a linear estimate of 35 CPU-s for the 48 requested
+pins (not a catalogue forecast); bounded at 384 CPU-s overall. Four
+timeout supervisors reconciled, each with 12 clean child exits; none
+stopped. Foreground comparison/smoke/replay runs finished as well.
+
+| Timeout PID | Command | Log in scratch/D | Cores | Start | Hard end | Status |
+|---:|---|---|---:|---|---|---|
+| 1557463 | `pinned_probe.sh 149 pinned_r3 8` | `pinned_r3/worker-149.log` | 1 | 19:01:14 | 19:07:14 | done |
+| 1557464 | `pinned_probe.sh 151 pinned_r3 8` | `pinned_r3/worker-151.log` | 1 | 19:01:14 | 19:07:14 | done |
+| 1557465 | `pinned_probe.sh 88 pinned_r3 8` | `pinned_r3/worker-88.log` | 1 | 19:01:14 | 19:07:14 | done |
+| 1557466 | `pinned_probe.sh 227 pinned_r3 8` | `pinned_r3/worker-227.log` | 1 | 19:01:14 | 19:07:14 | done |
+
+## Next round
+
+- Prefer cutting the one-side marginal universe before enumerating more
+  profiles. Test a necessary obstruction on substantially fewer than 21
+  pinned slots, or look for an exact small orbit-count estimate on one
+  kernel. Cheap per-pin refutation alone is not an economic sweep.
+- H/critic: review the matching-witness and seven-neighbor K3,4 lemma in
+  `BICLIQUE_R4.md`; R(4) residual cross attachment is not yet encoded.
+- A: the pinned CNF proof is evidence for one conditional pilot only;
+  no request to certify all pins until there is a tractable cover.
+
+## Prior handoff (round 2)
 
 **Open:** No R(3) kernel closure or 40-vertex candidate. Lane share 8;
 at most four simultaneous children used this round.
