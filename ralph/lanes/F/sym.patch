@@ -1,0 +1,234 @@
+--- ls.cpp
++++ ls.cpp
+@@ -87,6 +87,10 @@
+     int stopOnFound = 1;
+     double perturb = 0.05;          // fraction of pairs flipped on restart from best
+     int symm = 0, symf = 0;         // symmetric mode: Z_m acting on blocks of size m, symf fixed points
++    vector<int> symCycles;
++    bool symFast = false;
++    bool symBatch = false, symVerify = false;
++    i64 moveLimit = 0;
+     int restartRandom = 0;
+     int bench = 0;
+     int dlo = 0, dhi = 9;           // degree window (B3); dlo = 0 -> off
+@@ -122,10 +126,12 @@
+ struct D { i64 dK, dK1, dT, dE, dX;
+     i64 s() const { return P.wK * dK + P.w9 * dK1 + P.wT * dT + P.wD * dE
+                     + P.wX * (max<i64>(0, nEdges + dX - P.emax) - max<i64>(0, nEdges - P.emax)); } };
+-static inline D pairDelta(int u, int v) {
+-    u64 C = ALLV & ~(adj[u] | adj[v] | (1ULL << u) | (1ULL << v));
++static inline D pairDelta(int u, int v, bool countIndependent = true) {
+     i64 a = 0, b = 0;
+-    if (P.w9) rec(C, K - 2, a, b); else a = recA(C, K - 2);
++    if (countIndependent) {
++        u64 C = ALLV & ~(adj[u] | adj[v] | (1ULL << u) | (1ULL << v));
++        if (P.w9) rec(C, K - 2, a, b); else a = recA(C, K - 2);
++    }
+     int com = pc(adj[u] & adj[v]);
+     int du = pc(adj[u]), dv = pc(adj[v]);
+     if (adj[u] >> v & 1) return D{a, b, -com, -(i64)(du > P.softcap) - (dv > P.softcap), -1};
+@@ -407,12 +413,25 @@
+ 
+ // ---------------- symmetric mode ----------------
+ static vector<vector<pair<int,int>>> orbits;
++static vector<array<u64,64>> orbitNeighbors;
+ static int orbitOf[64][64];
+-static inline int sigma(int v) {
+-    int q = N - P.symf;
+-    if (v >= q) return v;
+-    int b = v / P.symm, r = v % P.symm;
+-    return b * P.symm + (r + 1) % P.symm;
++static i64 checkedOrbits;
++static int perm[64];
++static void buildPermutation() {
++    if (P.symCycles.empty()) {
++        P.symCycles.assign((N - P.symf) / P.symm, P.symm);
++        P.symCycles.insert(P.symCycles.end(), P.symf, 1);
++    }
++    int base = 0;
++    for (int length : P.symCycles) {
++        for (int offset = 0; offset < length; offset++) perm[base + offset] = base + (offset + 1) % length;
++        base += length;
++    }
++}
++static bool isSymmetric() {
++    for (int u = 0; u < N; u++) for (int v = u + 1; v < N; v++)
++        if (((adj[u] >> v) ^ (adj[perm[u]] >> perm[v])) & 1) return false;
++    return true;
+ }
+ static void buildOrbits() {
+     for (int u = 0; u < N; u++) for (int v = 0; v < N; v++) orbitOf[u][v] = -1;
+@@ -423,14 +442,97 @@
+         while (orbitOf[a][b] < 0) {
+             orbitOf[a][b] = orbitOf[b][a] = id;
+             orbits[id].push_back({min(a, b), max(a, b)});
+-            a = sigma(a); b = sigma(b);
++            a = perm[a]; b = perm[b];
+         }
+     }
++    if (P.symBatch) {
++        orbitNeighbors.resize(orbits.size());
++        for (size_t id = 0; id < orbits.size(); id++) for (auto [u, v] : orbits[id]) {
++            orbitNeighbors[id][u] |= 1ULL << v;
++            orbitNeighbors[id][v] |= 1ULL << u;
++        }
++    }
++}
++static void orbitHistogram(u64 candidates, u64 chosen, int need, int contained,
++                           const u64 *base, const u64 *orbit, i64 *histogram) {
++    if (need == 1) {
++        while (candidates) {
++            int vertex = ctz(candidates); candidates &= candidates - 1;
++            histogram[contained + pc(orbit[vertex] & chosen)]++;
++        }
++        return;
++    }
++    while (pc(candidates) >= need) {
++        int vertex = ctz(candidates); candidates &= candidates - 1;
++        orbitHistogram(candidates & ~base[vertex], chosen | (1ULL << vertex), need - 1,
++                       contained + pc(orbit[vertex] & chosen), base, orbit, histogram);
++    }
++}
++static i64 orbitCountDelta(int id) {
++    auto [u, v] = orbits[id][0];
++    const u64 *orbit = orbitNeighbors[id].data();
++    bool deleting = (adj[u] >> v & 1);
++    u64 masked[64];
++    const u64 *base = adj;
++    if (deleting) {
++        for (int vertex = 0; vertex < N; vertex++) masked[vertex] = adj[vertex] & ~orbit[vertex];
++        base = masked;
++    }
++    u64 chosen = (1ULL << u) | (1ULL << v);
++    u64 candidates = ALLV & ~(chosen | base[u] | base[v]);
++    int orbitSize = orbits[id].size();
++    int maxContained = min(orbitSize, K * (K - 1) / 2);
++    i64 histogram[2016];
++    fill_n(histogram, maxContained + 1, 0);
++    orbitHistogram(candidates, chosen, K - 2, 1, base, orbit, histogram);
++    i64 destroyed = 0;
++    for (int count = 1; count <= maxContained; count++) {
++        __int128 product = (__int128)histogram[count] * orbitSize;
++        if (product % count) throw logic_error("nonintegral orbit histogram");
++        destroyed += (i64)(product / count);
++    }
++    return deleting ? destroyed : -destroyed;
+ }
+ static void toggleOrbit(int id) {
+-    for (auto [u, v] : orbits[id]) { D d = pairDelta(u, v); toggle(u, v, d); mv.push_back({u, v, d}); }
++    bool batch = P.symBatch && orbits[id].size() > 1;
++    i64 orbitDelta = batch ? orbitCountDelta(id) : 0;
++    i64 initialK = cntK;
++    for (auto [u, v] : orbits[id]) {
++        D d = pairDelta(u, v, !batch || P.symVerify);
++        if (batch && !P.symVerify) { d.dK = orbitDelta; orbitDelta = 0; }
++        toggle(u, v, d); mv.push_back({u, v, d});
++    }
++    if (batch && P.symVerify) {
++        if (cntK - initialK != orbitDelta) throw logic_error("orbit counter disagrees with edge counter");
++        checkedOrbits++;
++    }
++}
++static i64 symMoveFast(int id) {
++    mv.clear();
++    i64 initialScore = score();
++    auto [u, v] = orbits[id][0];
++    if (adj[u] >> v & 1) {
++        toggleOrbit(id);
++        return score() - initialScore;
++    }
++    u64 trial[64]; memcpy(trial, adj, sizeof trial);
++    for (auto [a, b] : orbits[id]) { trial[a] |= 1ULL << b; trial[b] |= 1ULL << a; }
++    int removed[64], count = 0;
++    while (u64 common = trial[u] & trial[v]) {
++        int w = ctz(common);
++        int left = orbitOf[u][w], right = orbitOf[v][w];
++        if (left == id && right == id) return LLONG_MAX / 4;
++        int conflict = left == id ? right : right == id ? left : (rnd64() & 1) ? left : right;
++        removed[count++] = conflict;
++        for (auto [a, b] : orbits[conflict]) { trial[a] &= ~(1ULL << b); trial[b] &= ~(1ULL << a); }
++    }
++    toggleOrbit(id);
++    for (int index = 0; index < count; index++) toggleOrbit(removed[index]);
++    if (cntT != 0) throw logic_error("symmetric repair did not remove all triangles");
++    return score() - initialScore;
+ }
+ static i64 symMove(int id) {
++    if (P.symFast) return symMoveFast(id);
+     mv.clear();
+     i64 s0 = score();
+     auto [u0, v0] = orbits[id][0];
+@@ -628,6 +730,7 @@
+         if (cntK < 200000) refreshBad(4096);
+         i64 cyc0Best = LLONG_MAX;
+         for (i64 s = 0; s < P.sweep; s++, it++) {
++            if (P.moveLimit > 0 && movesDone >= P.moveLimit) return false;
+             double fr = (double)s / P.sweep;
+             double T = P.T0 * pow(P.T1 / P.T0, fr) * P.wK;
+             sawSet(it);
+@@ -813,8 +916,31 @@
+         else if (a == "-vrslack") P.vrSlack = stoi(val());
+         else if (a == "-vrnodes") vrNodeLimit = stol(val());
+         else if (a == "-symf") P.symf = stoi(val());
++        else if (a == "-symcycles") {
++            string cycleList = val();
++            replace(cycleList.begin(), cycleList.end(), ',', ' ');
++            istringstream cycleStream(cycleList);
++            int length;
++            while (cycleStream >> length) P.symCycles.push_back(length);
++            if (!cycleStream.eof() || P.symCycles.empty()) { fprintf(stderr, "invalid cycle list\n"); return 2; }
++        }
++        else if (a == "-symfast") P.symFast = true;
++        else if (a == "-symbatch") P.symBatch = true;
++        else if (a == "-symverify") P.symBatch = P.symVerify = true;
++        else if (a == "-moves") P.moveLimit = stoll(val());
+         else { fprintf(stderr, "unknown arg %s\n", a.c_str()); return 2; }
+     }
++    if (!P.symCycles.empty()) {
++        bool bad = P.symm || P.symf || accumulate(P.symCycles.begin(), P.symCycles.end(), 0LL) != P.n;
++        for (int length : P.symCycles) bad |= length < 1 || length > P.n;
++        if (bad) { fprintf(stderr, "-symcycles must partition n and cannot be combined with -sym/-symf\n"); return 2; }
++        P.symm = *max_element(P.symCycles.begin(), P.symCycles.end());
++    }
++    if (P.n < 2 || P.n > 62 || P.k < 3 || P.k > P.n || P.symm < 0 || P.symf < 0 || P.symf > P.n ||
++        (P.symm && (P.grow0 || P.method != "sa")) || (P.symFast && (!P.symm || P.wT || P.sawPeriod)) ||
++        (P.symBatch && (!P.symm || P.w9))) {
++        fprintf(stderr, "invalid size or unsupported symmetry settings\n"); return 2;
++    }
+     N = P.n; K = P.k; targetN = P.n;
+     if (P.grow0) N = P.grow0;
+     if (P.degcap < 0) P.degcap = K - 1;
+@@ -839,18 +965,30 @@
+             P.degcap, P.maxdeg, P.T0, P.T1, (long long)P.sweep, P.focus, P.init.c_str(), P.perturb, P.restartRandom);
+     t0 = now();
+     if (P.symm) {
+-        if ((N - P.symf) % P.symm) { fprintf(stderr, "n - symf not divisible by sym\n"); return 2; }
++        if (P.symCycles.empty() && (N - P.symf) % P.symm) { fprintf(stderr, "n - symf not divisible by sym\n"); return 2; }
+         P.degcap = 0;
++        buildPermutation();
+         buildOrbits();
+-        fprintf(LOG, "sym m=%d f=%d orbits=%zu\n", P.symm, P.symf, orbits.size());
+-        if (P.init == "random") symRandomStart(); else loadStart((int)P.seed);
++        fprintf(LOG, "sym orbits=%zu fast=%d cycles=", orbits.size(), P.symFast);
++        for (size_t i = 0; i < P.symCycles.size(); i++) fprintf(LOG, "%s%d", i ? "," : "", P.symCycles[i]);
++        fputc('\n', LOG);
++        if (P.init == "random") symRandomStart();
++        else {
++            if (!initGraphs.empty() && (int)initGraphs[0][0] - 63 != N) {
++                fprintf(stderr, "symmetric seed must already have target size\n"); return 2;
++            }
++            loadStart((int)P.seed);
++        }
++        if (!isSymmetric()) { fprintf(stderr, "seed violates symmetry\n"); return 2; }
+     } else loadStart((int)P.seed);
+     fullCount();
++    if (P.symFast && cntT) { fprintf(stderr, "-symfast seed must be triangle-free\n"); return 2; }
+     noteBest();
+     fprintf(LOG, "start K=%lld K1=%lld T=%lld e=%d (count %.3fs)\n", (long long)cntK, (long long)cntK1, (long long)cntT, edgesNow(), now() - t0);
+     fflush(LOG);
+     bool f = (P.method == "tabu") ? runTabu() : runSA();
+     saveBest("best");
++    if (P.symVerify) fprintf(LOG, "ORBIT_VERIFY checked=%lld\n", (long long)checkedOrbits);
+     fprintf(LOG, "END found=%d t=%.2f moves=%lld best K=%lld K1=%lld score=%lld\n", (int)f, now() - t0,
+             (long long)movesDone, (long long)bestK, (long long)bestK1, (long long)bestScore);
+     fclose(LOG);

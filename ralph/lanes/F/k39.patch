@@ -1,0 +1,49 @@
+--- k39.c
++++ k39.c
+@@ -233,7 +233,7 @@
+ }
+ 
+ /* ---------- 128-bit hash set ---------- */
+-typedef struct { u64 h1, h2; } hkey_t;
++typedef struct { u64 h1, h2; char graph6[328]; } hkey_t;
+ typedef struct { hkey_t *t; size_t cap, n; } hset_t;
+ static hkey_t hash_graph(const graph_t *g) {
+     u64 h1 = 0x9E3779B97F4A7C15ULL ^ (u64)g->n, h2 = 0xC2B2AE3D27D4EB4FULL;
+@@ -243,7 +243,9 @@
+         h2 += x * 0xC4CEB9FE1A85EC53ULL; h2 = (h2 << 29) | (h2 >> 35); h2 *= 0x9E3779B97F4A7C15ULL;
+     }
+     if (h1 == 0 && h2 == 0) h1 = 1;
+-    hkey_t k = {h1, h2}; return k;
++    hkey_t k = {h1, h2, {0}};
++    to_g6(g, k.graph6);
++    return k;
+ }
+ static int hset_insert(hset_t *H, hkey_t k);
+ static void hset_grow(hset_t *H) {
+@@ -258,7 +260,7 @@
+     for (;;) {
+         hkey_t *e = &H->t[i];
+         if (!(e->h1 | e->h2)) { *e = k; H->n++; return 1; }
+-        if (e->h1 == k.h1 && e->h2 == k.h2) return 0;
++        if (e->h1 == k.h1 && e->h2 == k.h2 && strcmp(e->graph6, k.graph6) == 0) return 0;
+         i = (i + 1) & (H->cap - 1);
+     }
+ }
+@@ -412,7 +414,7 @@
+     }
+     time_t t0 = time(NULL);
+     const size_t CH = 64;
+-    while (done < Q.n) {
++    while (done < Q.n && Q.n < maxg) {
+         size_t lo = done, hi = Q.n < done + CH ? Q.n : done + CH;
+         size_t m = hi - lo;
+         rw_ctx *ctxs = calloc(m * 64, sizeof(rw_ctx));
+@@ -470,7 +472,7 @@
+             fprintf(stderr, "[%lds] expanded %zu / known %zu\n", (long)(time(NULL) - t0), done, Q.n);
+     }
+     fclose(fall); fclose(fres);
+-    fprintf(stderr, "closure complete: %zu graphs\n", Q.n);
++    fprintf(stderr, "%s: %zu expanded / %zu graphs\n", done == Q.n ? "closure complete" : "stopped at cap", done, Q.n);
+     return 0;
+ }
+ 

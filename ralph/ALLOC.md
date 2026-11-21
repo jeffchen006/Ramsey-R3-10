@@ -2,11 +2,11 @@
 
 | lane | cores | reason |
 |---|---|---|
-| A | 14 | toolchain first, then R(7) certified SAT |
-| B | 20 | gluing t9 <= 88 is the cheapest known closure (15 distributions) |
-| C | 4 | theory; small checks only |
-| D | 12 | R(3), R(4) kernels, new splits |
-| E | 10 | automorphism cases |
-| F | 12 | construction search |
-| G | 4 | LP rows, exact certificates |
-| H | 4 | literature, ledger, Lean |
+| A | 10 | Toolchain is ready and the independent R(7) trace passed; retire duplicate R(7) SAT work. |
+| B | 18 | Protect the existing 16-worker prefix; do not fund full e88 generation at the measured rate. |
+| C | 6 | R(7) and the R(6) eight-cycle are closed; add room for bounded path-window experiments. |
+| D | 8 | Keep the kernel reduction work, but do not scale encodings that timed out on the matched sample. |
+| E | 16 | Reward checked symmetry exclusions and prioritize the small involution residue sieve. |
+| F | 10 | Preserve calibrated witness search; narrow follow-ups to degree-valid scores and distinct families. |
+| G | 8 | Reward six conditional closures and give exact degree-6-root experiments room to run. |
+| H | 4 | Unchanged: ledger and bounded Lean/provenance checks. |

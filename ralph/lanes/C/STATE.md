@@ -1,3 +1,54 @@
-# Lane C state
+# Lane C — round 1, 2026-11-21
 
-BOOTSTRAP: nothing done yet in this run. Read your TASK.md and do its BOOTSTRAP step.
+**Open:** Case R and R(3) remain open. Complete R(7) nonextension was
+independently replayed by A; formal acceptance of the non-SAT certificate
+by the critic is pending. No candidate graphs.
+
+Read required report and notes; no round-1 critic directives. Share 4 cores.
+New approach: project an edge kernel's outside vertices to multiplicities of
+their kernel-neighbourhood masks. A type must hit every independent d-set of
+the kernel. Regular degree and codegree constraints, independent-set residue
+order bounds, and degree caps in the residues give a mask-count LP. HiGHS
+searches only for integer-weight Farkas proofs, checked independently of the
+solver with integral arithmetic.
+
+## Results
+
+| Label | Result | Evidence | CPU-h |
+|---|---|---|---:|
+| hand | Mask-count constraints are necessary for any regular edge extension | `ralph/lanes/C/proofs/edge_kernel_projection.md` | — |
+| enum | Replayed actual masks at all 140 edges of C35 and 660 edges of the ten known 6-regular order-22 graphs, plus C5; small n=6 negative control | `scratch/C/calibrate.txt` | 0.010 |
+| cert | 78 of the 238 R(3) kernels have no regular extension of codegree cap 3. Exact integer Farkas recheck of every refutation. 160 feasible projections (not graph completions) remain for lane D. | `scratch/C/R3_part{0,1}.jsonl`, logs, `scratch/C/R3_survivors.g6`, `kernel_projection.py verify` | 0.116 scan+verify |
+| enum | Stronger rows (expanded star, shared masks, globally minimum rooted edge) pass C35/22 replays but all eight sampled baseline survivors still have feasible LPs. | `scratch/C/calibrate_strong.txt`, `scratch/C/R3_strong_sample.log` | 0.020 |
+| enum | R7 boundary-pair projection passes all seven known K2,2 pair controls on 22 vertices. First R7 seed still allows 261,824 unordered package-pairs; 90 s wall cap reached before all four seeds reported. Not an exclusion. | `pair_packages.py`, `scratch/C/pair_calibration.log`, `scratch/C/pair_r7.log` | <0.025 |
+| enum | R7 set-variable SAT model recovers valid regular extensions from all seven order-22 controls. Large pilot bounded to 360 s wall per seed; no reliable extrapolation of solve time. | `pair_set_sat.py`, `scratch/C/set_sat_calibration.log` | <0.001 calibration |
+| enum | R7 C-colour packing DFS recovers completions on all seven planted order-22 side-pair controls. On 64 evenly spaced pairs at seed 0: 64 no-extension, 3,641 total nodes (0.01 CPU-s, generation 55.77 CPU-s). | `colour_packing.cpp`, `scratch/C/colour_calibration.log`, `scratch/C/R7_sample{_gen,_packing}.log` | 0.016 |
+| estimate | Full R7 scan per seed: about 56 CPU-s pair generation + ~40 CPU-s packing at pilot mean; could be much more if tail dominates. Four independent seeds; allow 1200 s wall per seed under high shared load. | `scratch/C/R7_sample{_gen,_packing}.log` | ~0.11 estimated |
+| enum, independently replayed | R(7): all four fixed e85 seeds from Lemma R7 have no extension. 977,008 total pairs, zero SAT or limits, max 198 nodes/pair. Produced 49,569,079-node trace; A verified exact independent package cover and every node. Retain enum until critic accepts non-SAT cert. Full order-22 shape calibration recovered exactly seven known classes: 973 packages, 80 labelled outputs. | `proofs/pair_packing.md`, `TRACE.md`, `scratch/C/R7_full.*.log`, `scratch/C/full_control.log`, `ralph/lanes/A/R7_REPLAY.md`, `scratch/A/rc7/replay-X*.log` | 0.087 enumeration + 0.029 trace + 0.015 A replay |
+| hand | Every (3,10,40)-graph is K3,6-free and K4,5-free, without regularity. | `proofs/bicliques.md`, `scratch/C/bicliques_fast.log` | <0.001 |
+| hand | In Case R the graph of codegree-six pairs has path components on at most ten vertices or eight-cycles; four consecutive vertices have adjacent endpoints in G and both diagonal codegrees three. Sharp C21 path control. | `proofs/codegree_six_paths.md`, `scratch/C/codegree_paths.log` | <0.001 |
+| enum, exact profile replay | In R(6) there is no eight-cycle component. 191 order-22 census graphs → 270 placements → 32 X families; no complementary pair of loads from 95,984 words. Compact obstructions on at most eight of 16 coordinates per X replayed exactly; corrupted proof rejected. The codegree-six graph in R(6) therefore must be a union of short paths if this exclusion is accepted. | `proofs/cycle8_join.md`, `scratch/C/cycle8_profiles.log`, `scratch/C/cycle8_obstructions.json`, `scratch/C/cycle8_{verify,bad_verify}.log` | 0.002 scan + <0.001 check |
+
+## Jobs
+
+| Timeout PID / initial worker PID | Command from `scratch/C` (each via `setsid nohup nice -n 5 timeout 1500 bash`) | Log | Cores | Start CET | Expected end CET |
+|---|---|---|---:|---|---|
+| — | No running detached jobs | — | 0 | — | — |
+
+Detached R3 scan PIDs 267941 and 267942 completed both scan and recheck.
+Set SAT pilot PIDs 594938/594939 elapsed to 360 s without verdict; no survivors
+or refutations from those probes. The new DFS is entirely separate.
+The four complete packing runs (PIDs 759502/759503/759504/759506, start
+16:56:06) all recorded `complete`, with zero `node-limit` and zero `SAT`.
+Trace runs (timeout PIDs 897148/897149/897150/897151; 17:01:09 start)
+completed with identical text outcomes and expected byte counts. No remaining jobs.
+
+## Next
+
+R3 list given to D; clustering equivalent oriented kernels reduces those
+survivors to 110 representatives in D's work. H asked to formalize short
+lemmas. Critic should review independent R7 trace and C8 census projection.
+Next round: try overlap joins on long codegree-six paths using their 22-vertex
+triple residues; handle short P3 components (three possible diagonal values)
+and isolated codegree-six pairs separately. Never assume C8 is the only R(6)
+case. `RESULTS.md` gives regeneration and evidence details.
