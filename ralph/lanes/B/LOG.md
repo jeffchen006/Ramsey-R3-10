@@ -1,5 +1,130 @@
 # Lane B reproducibility and round notes
 
+## Round 4: checked slices, two degree-distribution reductions, and gluer pilots
+
+### Exact completed slice and queued disjoint tails
+
+The up86 job exited before 19:42 CET with exact terminal counts (4,751,963
+distinct e88 graphs, 4,641 checked chunks, zero MTF completions). Source is
+the 1,800 canonically distinct HoG order-30/e86 inputs. Every triangle-free
+edge addition preserves the independence bound. Intermediate e87 count and
+edge check: 133,434. Audits: `logs/up86_audit_r4.log`, `logs/edgeup2_full86.log`
+(all scratch paths here under `scratch/B`); canonical e88 strict ordering
+checked with `LC_ALL=C sort -cu`. The initial e86 validity checks and source
+count passed earlier; the fully regenerated prefix e86 exact equality and
+147,335 e87 census checks are **still pending**. Independent graph validation
+and independent SAT gluing agreed on all 32 freshly sampled e88 inputs (seed
+410674, `logs/up86_r4_{valid_sample,sat_sample}.log`). The SAT recheck is a
+sample, not a per-input certificate. Full up86 production ~1.45 CPU-h.
+
+`profile_census 30` is calibrated against the exact e63 sixty-graph census
+and independent exclusion filter (24 survivors). Scanned the entire up86
+e88 slice in 6.23 CPU-s; profile masks 0 and 4 both empty, meaning every
+graph has a d5/e<=58 or d6/e<=51 root. Thus this slice is contained in the
+*intended* prefix scope, not evidence about the unscanned anchor complement.
+`logs/profile_census_r4.log` lists all eight exact mask counts. Scope does
+not extend to the other 13,901 e87 parents or to edge-critical e88 duals.
+
+`checkpoint_prefix_lower.sh` collected the lower levels from a snapshot
+of atomically finished prefix chunks: all 1,800 e86 canonically match HoG,
+and the 147,334 B-generated e87 graphs plus one from up86 give the exact
+147,335 benchmark count. 67.26 CPU-s (`logs/prefix_checkpoint_r4.log`).
+Both files are fixed by `logs/prefix_checkpoint_r4.sha256`. A direct
+branch-and-bound pass using `audit_duals.c` validated all e87 inputs in
+3.69 CPU-s (60 e63 controls pass and wrong independence threshold fails).
+The independent Python checker also passed 64/64 dispersed e87 inputs.
+The original
+sleeping watcher 392466 was retired without running any solver; replacement
+2576750 starts from this exact checkpoint once e43 releases its slot, rather
+than waiting until the entire prefix job ends.
+
+The tail checks `133434 + 13901 = 147335` by canonical ordered merge, partitions
+the tail descendants into overlapping and novel e88 lists, and binds the
+per-chunk e88 scan source by SHA-256. The bound chunk control covers 7 exact
+inputs over 3 chunks, and rejects a reordered source (same input count).
+The disjoint edge-addition control `replay_tail_accounting.sh` partitions
+all 15 e21 order-16 parents into 11 prior and 4 tail; 130 old plus 29 novel
+e22 graphs match the exact complement of the 42 edge-critical graphs in
+the full 201-graph e22 census (`logs/tail_accounting_control.log`).
+With prior measured up86 addition/MTF rates, estimate ~1.06 M raw tail e88
+children and conservatively ~0.33 CPU-h plus sorting, 25–55 min wall at one
+worker. The e43 job is separate; its exact 1,521 input order-22 census check
+passed, but its terminal gluing/MTF counts are still pending. Neither scan
+substitutes for the proof of complete e88 input coverage.
+
+`CYCLE162.md` gives hand reductions for the two e=162 U88 distributions under
+the inherited t8/t9 floors (also checked t7 floor for the second). The small
+labelled replay confirms the four- and six-vertex shapes. These do not exclude
+either case. Complete U88 would remove 13 conditional cases on G's
+checked round-3 `round3_cases.csv` baseline. G's round-4 eight-cut proposal
+overlaps precisely the e168 `(7,1,1,31)` row (`round4_cases.csv`), so the
+conditional count falls to 12 if the new cuts are accepted. The old 20 and
+intermediate 17 are superseded.
+The two-degree incidence LP `root_projection.py` passes substitution of
+the actual C35 rooted histogram into each exact row. For the e88 complement,
+it counts both global and internal degrees at each vertex and incorporates the
+degree-specific neighbor-sum caps and MTF private-cell cap. The floating
+relaxation leaves 29 of 31 degree-nine root profiles feasible, including at
+least one in every one of the 13 U88 distributions; the other two are the
+already excluded nonzero degree-seven attachments at e162, n7=2. No new cut.
+
+### Accuracy and performance probes
+
+On the exact 430 rooted e63 positive controls, static degree lookahead,
+exact attachment-size group plans, summed convex attachment cost, and the
+bitset/cost variants all reproduced the independently filtered labelled
+multisets. On four dispersed eight-parent blocks these probes preserved the
+exact target outputs. The rows probe also uses relaxed, nonempty e88 controls.
+These are isolated compile-time experiments in lane B's copy of `gluecheap.c`;
+the running prefix and e43 binaries were not replaced.
+
+| Variant | e52 CPU s/input | e44 CPU s/input | log under `scratch/B/logs` |
+|---|---:|---:|---|
+| Static degree lookahead depth 4 vs reference | 0.377 vs 0.398 | not timed | `lookahead52.log` |
+| Exact size plans, ascending / rare / descending | 0.482 / 3.040 / 9.190 | not timed | `plans_r4.log` |
+| Convex weighted incidence floor depth 2 vs reference | 0.408 vs 0.380 | 3.521 vs 3.366 | `convex_r4.log` |
+
+Static lookahead uses
+`Z(x) >= sum_{y adjacent in base} lower_deg(y) + s*(deg(x)-base_deg(x)) + bonus(x)`,
+where `s` is the guaranteed lower degree of a new neighbor and `bonus` is
+the selected neighbors' actual excess. The convex prune uses
+`sum_{u in new neighbors} Z(u) = D^2 + sum_x c_x*(base_deg(x)+c_x)`;
+it lower-bounds the latter by the separable Lagrangian with one integer price,
+and obtains an upper sum from exact remaining size budgets. Both were safe on
+the controls, but the depth-4 lookahead rejects just twelve late e52 nodes
+and the convex variant rejects only one e52 attempt. Neither merits scale-up.
+
+For equal pair-compatibility signatures (same missed maximum independent base
+sets), `signature_probe.py` calibrates on C4 and counts 208,624 critical
+size/signature keys among 208,741 eligible nonempty signatures on e52 (e44:
+199,694 of 199,806). This would not compress the search materially. The local
+neighbor-degree incidence LP (`anchor_profiles.py`, exact e63 census control)
+does not remove either existing anchor branch at the relaxation level or
+justify the tested stronger one-side restrictions. No exact exclusion from LP.
+
+Skipping the greedy coloring bound (`-DCOLMIN=99`) was the only material
+speedup. The 32-parent e52 sweep took 0.304 vs 0.374 CPU-s/parent;
+the 128-parent untuned e52 holdout took 0.298 vs 0.379 including input/output
+(support-only addition: 0.307). `bench_holdout.sh` also checks all 191
+canonical order-22 control graphs, with exact equality. The e44 sample
+took 1.852 vs 3.628 CPU-s/parent with no coloring and bit-plane attachment
+counts (`-DBITPLANE_ATTACHMENTS`); e52 did not benefit from bit planes.
+Sort/shortg on those pilots finished in <0.1 s per sampled block; their
+small output volume does not bound full-scale canonicalization overhead.
+
+Optimistically extrapolating generation alone gives 856 CPU-h for 10,326,716
+e52 parents plus 37 CPU-h for 72,353 e44 parents, or 49.6 h at 18 fully busy
+cores. This exceeds the remaining flow window even with free final sorting,
+the MTF scan, and no current workers. Do not scale. The required generation
+speedup of 10x was not met. Evidence: `logs/{rows_r4,coloring52_r4,coloring44_r4,holdout_r4}.log`.
+
+The bench executables were built with `cc -O3 -march=native` from the lane
+copy of `gluecheap.c`, and `-DCOUNT_DEPTH` for lookahead, size plans and convex
+cost (`-DSTATIC_PROFILE_LOOKAHEAD`, `-DEXACT_SIZE_PLAN`, `-DCONVEX_STAR_BUDGET`).
+For bitset support and the cursor, see `-DCHECK_SIZE_SUPPORT` and
+`-DFAST_BOOLEAN_ROWS`; the coloring sweep uses `-DCOLMIN=N` and for two
+variants adds `-DBITPLANE_ATTACHMENTS` or `-DEXACT_LAST_SIZE`.
+
 ## Round 3: anchors and star-lift slices
 
 `ANCHOR88.md` is a hand proof that an e88 dual not covered by the prefix and

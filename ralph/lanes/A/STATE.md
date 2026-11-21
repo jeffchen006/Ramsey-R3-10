@@ -1,7 +1,44 @@
 # Lane A state
 
-Round 3 (2026-11-21), core share 6. R(3,10) remains unresolved. No candidate
-graph and no new SAT run. Do not regenerate the historical R(7) cubes.
+Round 4 (2026-11-21), core share 4. R(3,10) remains unresolved. No candidate
+graph and no fresh solving. The old R(7) SAT cubes are not needed; the
+critic accepted the independent finite proof in round 1.
+
+## Round 4 jobs
+
+No live or detached solver jobs. The foreground floor audits, packing,
+and rational arithmetic replay used at most two cores in total and ended.
+
+## Round 4 results and claims
+
+| Label | Result | Evidence | Core-h |
+|---|---|---|---:|
+| cert (audit of accepted G-008/G-009; MTF only) | Degree-six residue floor 120: all 74 validated, canonically distinct `5+69` rows; exact old 68 overlap, six disjoint new e119 rows at full positions 3, 6, 14, 15, 16, 29. Old and new graph6/CNF/LRAT bindings agree with the original hashes. Both checkers passed every independent CNF. Portable `complete-v2` is 3.8 MiB. | `FLOOR_AUDIT.md`, `FLOOR_AUDIT.sha256`, `scratch/A/root-residue/complete-v2`, `scratch/A/floor-audit4/{root6.tsv,pack6.log,replay6.log}` | 0.003 |
+| cert (audit of accepted degree-seven floor 107; MTF only) | Verified all 19,589 graph6 seeds directly for alpha <=8, triangle-freeness and exact canonical classes, 19,521 explicitly bound incompatibility traces, and both checkers on all 68 independently regenerated exceptional CNFs. Negative masks and wrong exception rejected. | `FLOOR_AUDIT.md`, `scratch/A/floor-audit4/{e104,e105,e106,controls,negative_demand,negative_exception}.log` | 0.019 |
+| cert / conditional cert (audit only) | Independent reconstruction of baseline (545 → 524 → 454) and delta byte-matches G's CSV. All 463 supplied rational certificates passed G's read-only checks. 55 incremental e167 cuts; 8+6+9 conditional on previous gluing floors; 376 near-regular + R remain; 13 more if e88 MTF gluing is excluded. No new closures from this audit. | `audit_floor_delta.py`, `scratch/A/floor-audit4/{delta.csv,farkas.log}` | 0.004 |
+| cert provenance (no fresh solving) | Read-only R(7) and retained PB hash checks match. No P4/P5 reprise; no new PB or R(7) proofs. | `scratch/A/floor-audit4/preserved-*.log`, `R7_REPLAY.md`, `PB_BINDING.md` | <0.001 |
+
+Estimate and runtime evidence: `scratch/A/floor-audit4/estimate.txt`.
+Whole e106 pilot 1.95 CPU-s, even naively scaled ~283 CPU-s; full
+three levels 65.2 CPU-s, 266 MiB RSS. Farkas pilot 1.98 CPU-s/36;
+463 rows actually took ~12 CPU-s. The combined script passed in 89.6
+CPU-s (0.025 core-h additional; `end-to-end.log`). G's frozen index
+matches all 91 keys and 78 witness locators (`frozen-compare.log`).
+
+## Next
+
+- Preserve `scratch/A/root-residue/{retained-v1,complete-v2}` and
+  `scratch/A/floor-audit4`; use `FLOOR_AUDIT.md` and its replay script.
+  Complete-v2 supersedes v1 as the degree-six coverage bundle.
+- If G announces an exact e120 or e107 cover (or a proof for the omitted
+  part), audit that new coverage and its CNF/proof order before claiming
+  the next floor. Partial supplied residues do not suffice.
+- Keep R(7)/PB proof snapshots available. No SAT or P4/P5 reiteration
+  absent a specific binding defect; no extra request to another lane.
+
+## Round 3 archive
+
+Round 3 core share 6. No candidate graph and no new SAT run.
 
 ## Round 3 jobs
 
@@ -21,7 +58,7 @@ actual full 10.87 CPU-s, 10.88 wall, 33 MiB peak RSS, cap 240 CPU/300 wall.
 Six-residue pilot pack + replay 0.68 CPU-s, extrapolated ~8 CPU-s; actual
 7.03 CPU-s for 68, cap 60 CPU/90 wall. Both used 16 GiB virtual limits.
 
-## Next
+## Round 3 handoff (superseded)
 
 - H/critic: use the exact P5 join comparison with C's trace and the hand
   reduction; keep the overall C-009 result at enum until critic action.

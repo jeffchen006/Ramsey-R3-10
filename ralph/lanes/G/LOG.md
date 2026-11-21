@@ -1,5 +1,66 @@
 # Lane G experiment log
 
+## Round 4: equality rigidity and a six-key census gap
+
+- Before new work, froze the accepted round-3 cuts and U88 intersection with
+  per-row witness locators. The degree-six equality case gives six allowable
+  signatures from 3,700 labelled simple signature graphs (C13 positive at
+  all 13 equality roots; C35 and MTF Exoo also pass). Exact rational Farkas
+  replays: 6 independent exclusions with floors 120/107/95/86 and 13
+  certificates under the threshold setting with floor 97. Integer pair
+  packing excludes eight in 0.28 CPU-s, exactly matched on 2,450 small
+  controls; the two additional exclusions have hand proofs and unit Farkas
+  sums, using no floor but 120. All eight at e168. 368+R remain; U88=12.
+- Witness edits: cache all independent (alpha+1)-sets created by one
+  deleted edge. With two removals, any remaining violating set contains
+  both removed edges; enumerate it by forcing their endpoints. With three,
+  defer checking sets with >=2 punctures to the leaves, using the three
+  forced endpoint pairs. For each uncovered set, branch on any legal
+  insertion inside it, and forbid preceding alternatives. Exhaustive
+  labelled equality on 60 small cells covering 1..3 removals and up to
+  four insertions. Does not prove connectedness of the target class.
+- Initial 2→3 at e120 and 2→2 at e121 gave 1,581 extra keys of the
+  provisional e121 stream. Audit detected mixed levels: round 3's
+  e120 stream had one e119; its e121 stream had 23 e120s. Strict split
+  after iterative frontier gives 1,223/13,030. Earlier 5+69 e119 proof
+  bundle is unrelated and unaffected. Boundary 121→122→121 with cached
+  edits grew e121 to 13,076. Critical e122 / e123 returns gave 13,082
+  then 13,087. Prototype 3→4 on 37 recent/critical sources gave five
+  new classes relative to 13,082, overlapping three of the critical
+  return; second pilot on 144 older critical sources yielded zero.
+  Union 13,089. Full e122 lateral 2→2 (~0.45 CPU-h) produced just two
+  extra e121s (13,091). Wide e123 bridge from 5,906 sources through
+  230,936 new upper parents (~0.2 CPU-h) produced one more (13,092).
+  Final rare frontier added no further keys. `scratch/G/round4/*.plan`
+  and edit/canon logs record measured estimates and worker caps.
+- Three vertices on 47 critical seeds gave zero new e120/e121 keys;
+  square replacement also zero after exact seven-tag controls. Random
+  add/thin excursions at depths 3/6/9/14 recover all three n8 controls
+  but no new target classes in 8,000 walks. Naive degree-five gluing
+  65 n27 seeds (11.75 CPU-s, no completion) would consume ~24 CPU-h
+  over all 477,142 anchors; not scaled. For a d5 vertex in an order-33
+  graph through 121 edges, its exterior H27 has >=85 edges and the
+  neighbour degree sum is <=36. Private cells have <=4, so if U
+  exterior vertices have no attachment then the sum is >=39−2U;
+  at least two triangle-free incident additions are available. This
+  is an observation, not a proof there are no degree-five cases.
+- Exact supplied-root validity: pure independent alpha checks across
+  baseline plus new deltas, strict levels and sparse canonical
+  distinctness. 1,223 e120 inputs excluded unpinned. Of 13,092 e121
+  inputs, 10,268 cliques and 2,813 unpinned dual LRATs cover all but
+  11. Those 11 unpinned cores were SAT (not actual extensions); the
+  e169-pinned degree/coverage relaxation refutes all 11 by both LRAT
+  checkers. Total e<=168 cannot have a degree-six root with e121 by
+  Z>=48. Unpinned full/triple-column samples hit caps and their
+  sequential supervisors were stopped; no higher-scope result for the
+  11. All pure one-edge children of the e120 catalogue occur
+  in the frozen e121 list (12,289); all valid one-edge deletions of
+  the latter give exactly the supplied e120 list. The 803 remaining
+  supplied e121 classes are deletion-critical. The absent six types
+  across both levels cannot be assumed to lie in either level. The
+  count dependency is Angeltveit §§3.3 and 6 (14,395), not a claim
+  the individual e120 count 1,223 was published as exact.
+
 ## Round 3: complete e119 cover, demand cliques and degree-seven floor
 
 - Exact replacement fixes a labelled exterior after removing two or three

@@ -1,53 +1,65 @@
-# Lane C — round 3, 2026-11-21
+# Lane C — round 4, 2026-11-21
 
-**Open:** R(3,10), Case R and R(6). No candidate graph. Critic accepted
-R(7) as `cert` in round 1; custom trace, not Lean. In R(6), J is the
-graph of codegree-six pairs. A P4 or P5 means a span of distinct
-consecutive roots in J, not an induced subgraph of G.
+**Open:** R(3,10), Case R and R(6). No candidate. In R(6), J is the
+graph of codegree-six pairs. P3/P4 means consecutive distinct roots
+in J, not an induced path of G. Prior critic accepted no-P4, so J
+has only components of order one, two or three. P2 below always means
+an *isolated edge component*, never an incident edge of a P3.
 
 ## Results and claims for H / critic
 
 | Label | Result | Evidence | CPU-h |
 |---|---|---|---:|
-| cert, accepted round 1 | R(7) excluded. Preserve exact custom trace scope. | `ralph/critic/round_001.md`, `ralph/lanes/A/R7_REPLAY.md` | — |
-| enum, retained | No J eight-cycle in R(6). | `proofs/cycle8_join.md`, `ralph/lanes/H/C6_REVIEW.md` | — |
-| enum, confirmed round 2 | No five consecutive distinct roots: 1,156 joined H30/e99 rows, 940 unsupported MTF pairs, 216 exhaustive trees (289,649 nodes); separate verifier checks every node. Round 3 A independently matched P5 exactly modulo reversal, with positive/negative controls. | `PATH_REPLAY.md`, `PATH_INPUTS.sha256`, `scratch/C/p5_trace_verify.log`, `ralph/lanes/A/P5_REPLAY.md` | 0.048 C + 0.003 A |
-| hand | Necessary eager projections onto one boundary side: given independent I in A avoiding v0, the available L-vertices are bounded by 9−\|I\| and D0 available by 8−\|I\| using v2; symmetric other side. Degree/triangle/MTF/codegree projection and row/column cross pin reduction. | `proofs/path_four_factor.md`, `ralph/lanes/H/P4_SIDE_REVIEW.md` | — |
-| cert, composite pending critic | **No P4 span in R(6)**: 2,454 independently matched A26 rows, 1,356 after the exact MTF filter; 1,187 unpinned CNFs plus 1,035 pinned CNFs cover all retained rows. Every LRAT checked twice, regenerated CNF hashes identical, independent filter/orbit index has no missing keys. Consequently J has only P1/P2/P3 components, ≤26 c6 pairs and ≤13 J-degree-two vertices; this does not close R(6). | `P4_REPLAY.md`, `P4_INPUTS.sha256`, `scratch/C/p4-index.log`, `scratch/C/p4replay-{0,1,2,3}.log` | 0.454 proof production + 0.264 replay |
-| enum, matched control | P4 new eager factor matches all 13 C21 feasible/infeasible keys, independently validates 8 witnesses; cap-only baseline solved 0/15 matched large rows, new unpinned proof pilot solves 14/15, pinned solves all six lower-stratum pilots. Full sweeps exhausted. | `P4_REPLAY.md`, `scratch/C/p4_factor_independent_control.log`, `scratch/C/p4proof-pilot.log`, `scratch/C/p4pinned-pilot.log` | 0.018 proof pilots |
-| hand | For three consecutive roots with diagonal codegree five, their order-22 residue has **e(X)≤64**. At equality the deleted graph is fixed up to relabelling (wing nonedges are K2,2, both private middle neighbours use that 2+2 set, other eligible wing attachments saturated). No reliance on the P4 result. | `proofs/path_three.md`, `P3_REPLAY.md` | — |
-| enum, boundary only | Direct tiny audit: all 512 wing patterns, Hall plus independence constraints, zero e>64, exactly one orbit at e64; e63 has 13 boundary orbits before further filtering, not extension results. C21 verifies all 42 oriented triple partitions and complete attachment positive/negative controls. | `verify_p3_boundary.py`, `scratch/C/p3boundary-e63.log`, `scratch/C/p3_top_{control,independent_control}.log` | <0.001 |
-| cert, composite pending critic | Diagonal-five P3/e64: all 59 census rows covered (3 pilot, 56 production, no misses or caps). Full replay matched all regenerated CNF/proof hashes and rechecked all LRATs. This leaves diagonal-five e(X)≤63, not a closure of diagonal five or R(6). | `P3_REPLAY.md`, `P3_INPUTS.sha256`, `scratch/C/p3e64-index.log`, `scratch/C/p3e64-index.tsv` | 0.584 production + 0.269 replay |
+| cert, accepted rounds 1/3 | R(7) excluded; no P4 in R(6); diagonal-five P3 has e(X)<=63. P5 and C8 enumeration are now redundant; do not rerun them. | `ralph/critic/round_001.md`, `ralph/critic/round_003.md`, `P4_REPLAY.md`, `P3_REPLAY.md`, `ROUND3_REPLAY.sha256` | prior |
+| cert, composite pending critic | **P3 diagonal five e63 excluded:** 13 ordered boundary orbits, 8 under reversal, times all 60 22-vertex/e63 residues. All 480 checked CakeLPR proofs and byte-identical regenerated CNF/proof hashes on full replay, zero caps. Gives e(X)<=62 with prior accepted result. | `ROUND4_REPLAY.md`, `proofs/p3_e63_relaxation.md`, `scratch/C/p3e63-final-index.log`, `ROUND4_REPLAY.sha256` | 0.587 produce + 0.284 replay |
+| cert, composite pending critic | **P3 diagonals three and four e65/e66 excluded:** each covers all 35 residue keys with a guarded variable-boundary CNF. All 70 matched regenerated hashes and replayed. Thus e(X)<=64 at these two diagonals, not e(X)<=63. | `ROUND4_REPLAY.md`, `proofs/p3_e63_relaxation.md`, `scratch/C/p3r4-upper-index.log` | 0.118 + 0.075 |
+| hand | **Isolated P2** e81 residue has minimum degree >=4. At e80 at most **one** degree-three vertex (supersedes earlier general counting bound of five); all degree-three vertices share the missing-edge wing neighbour, while any two nonadjacent degree-three vertices of the 26-residue contradict R(3,6)=18. C22 controls: 7 complete and 4 one-missing. | `proofs/isolated_pair.md`, `scratch/C/p2isolated-control.log` | <0.001 |
+| cert, composite pending critic | **Isolated P2 e80, with a degree-three anchor:** 22-residue X' has e(X')<=65 by hand; all-three-same-wing equality boundary has fixed codegree seven, and all 25 residues of the 2+1 boundary checked and replayed. Gives e(X')<=64, not an exclusion of e80. C21 checks 444 anchors, 23 exact equality boundaries and full SAT/corruption controls. | `proofs/isolated_pair_anchor.md`, `scratch/C/p2anchor-e65-index.log`, `scratch/C/p2anchor-control.log` | 0.024 + 0.012 |
+| hand + enum cover | At diagonal five a P3 cannot have both incident cross-edge counts >=8; at diagonal four they cannot both equal nine. Under reviewed e(X)<=64 at diagonal three, the f*=9 P3 branch has exactly two boundary layouts and 119 residue/layout tests unrun. For min f>=8, counts by e(X)=61..64 are 1/4/11/22 at diagonal three, 0/4/6/5 at diagonal four, no diagonal five. Counts are covers only; no claim for isolated edges. | `proofs/high_f_paths.md`, `scratch/C/p3-high-f-layouts.log` | <0.001 |
+| enum / estimate | Lite6 e63 matched 8/8 at 4.71 CPU-s each versus 39.12 for Min6; matched full baseline/root-twins plain refuted 16/16 each in 429/390 CPU-s. e62 fixed pilot 12/12, 6.11 CPU-s/key; full-selector table 1/2 checked, one cap. Flexible guarded s=3/4 capped on every tested e63/62/61/60 row; e64 passed 4/4 for each at ~11–13 CPU-s. Five fixed e61/e60 keys checked each in 56.56/80.50 CPU-s. | `ROUND4_REPLAY.md`, `scratch/C/p3e63-minpilot-*.log`, `scratch/C/p3low-pilot-*.log`, `scratch/C/p3extra-*.log` | sample |
+| open; checked partial coverage | Diagonal-five P3 e62: 90 ordered -> 49 reversal orbits -> 44 passing, independent C++/Python boundary audit; 30 x 44 = 1,320 tests. At 20:32:40 CET 702 checked (690 production +12 pilot), 543 replays, no caps observed, 618 absent. Do not close until exact full replay index passes. | `scratch/C/p3r4-boundary-index.log`, `scratch/C/p3e62-active-index.log`, `ROUND4_REPLAY.md` | 1.24 prod + 0.42 replay at snapshot |
 
-## Live jobs
+## Live jobs — all in `scratch/C`, one core and 16 GB limit each
 
-None. P3 e64 replay wrappers 3160833, 3160842, 3160849, 3160857
-ended by 19:32 CET, all `IDENTICAL`. Archived commands, timings and
-PIDs for all completed jobs are in `LOG.md`.
+| Wrapper PID | Command template (shard argument) | Log | Started CET | Expected end / wall cap CET |
+|---:|---|---|---|---|
+| 1345478 | `p3_low_trials.py --mode fixed --prove --seconds 45`, e62 residue shard 0 | `p3e62-full-0.log` | 20:13:13 | ~20:48–20:55 / 21:13:13 |
+| 1345482 | same, shard 1 | `p3e62-full-1.log` | 20:13:13 | ~20:48–20:55 / 21:13:13 |
+| 1345489 | same, shard 2 | `p3e62-full-2.log` | 20:13:13 | ~20:47–20:54 / 21:13:13 |
+| 1345498 | same, shard 3 | `p3e62-full-3.log` | 20:13:13 | ~20:47–20:54 / 21:13:13 |
+| 1752307 | `replay_p3_e62_shard.sh 0` | `p3e62-replay-0.log` | 20:20:28 | ~20:51–20:58 / 21:17:08 |
+| 1752313 | `replay_p3_e62_shard.sh 1` | `p3e62-replay-1.log` | 20:20:28 | ~20:51–20:58 / 21:17:08 |
+| 1810068 | `replay_p3_e62_shard.sh 2` | `p3e62-replay-2.log` | 20:21:36 | ~20:50–20:57 / 21:18:16 |
+| 1946269 | P2 replay phase ended; `replay_p3_e62_shard.sh 3` | `p3e62-replay-3.log` | 20:24:09 | ~20:50–20:57 / 21:20:49 |
 
-Measured static pilot 3/3 refutations at 17.57–20.09 CPU-s each;
-proof/check calibration 33.60–37.39 CPU-s each, ~70 MB per LRAT.
-Prelaunch estimate: 56 remaining cases ×40 CPU-s ≈2240 CPU-s,
-four cores ≈9–10 minutes idle or ≲20 minutes at 2× wall; about
-4 GB proof disk. Completed P4 job and cost details moved to `LOG.md`.
-
-Production finished all 56 remaining P3 e64 rows (1995.85 CPU-s),
-no caps; producer index `scratch/C/p3e64-index.log` has all 59 input
-keys. Three pilot CNFs replayed with identical hashes in 50.97 CPU-s.
-Full hash-bound replay: 917.02 CPU-s for 56 proofs versus estimate
-950 CPU-s; 967.98 CPU-s including the three pilot replays.
+Production skips six already-proved layout keys on each of seeds 17
+and 118; replay includes the pilots. Checker cap 165s/key. Replay waits
+for full producer `TERMINAL` for each seed; a capped row is logged as
+`REPLAY-SKIP` and remains open. Prelaunch estimate: 1,308 remaining keys
+x 6.11 CPU-s = 7,992 CPU-s at 4 cores (~33 min ideal), ~17 GB LRAT;
+headroom 8s/key = 2.91 CPU-h / 22 GB. Verification ~3 CPU-s/key streams
+behind production. Job metadata, including completed wrappers, is in
+`scratch/C/p3*.tsv`, `scratch/C/p2anchor*.tsv` and `LOG.md`.
 
 ## Next
 
-1. Ask H to review the P3 Hall bridge and the critic to accept both
-   exclusions only after reduction, coverage and replay audits.
-   Preserve initial and replay proof evidence.
-2. For diagonal five at e63, first test the 13 fixed-boundary orbits
-   from `p3boundary-e63.log` on the 60 e63 seeds, with a dispersed
-   pilot (all 13 survive fixed-boundary alpha/codegree/biclique checks).
-   Avoid scaling an untested
-   780-row cross product. Keep diagonal five's lower strata distinct.
-3. P3 diagonals 3 and 4 have different middle-attachment multiplicities;
-   isolated c6 edges (P2) have no common 22-vertex triple seed at all.
-   No claim about other R(M) or near-regular cases. Don't revive P4/P5
-   scans or the capped lazy-cut P4 pilot.
+1. First collect e62. Read exact job stats and logs. From `scratch/C`,
+   use `../../opt/venv/bin/python -B ../../ralph/lanes/C/p3_round4_index.py ../../gluing/val/r3_7_22.g6 . --part lower --replay --output p3e62-final-index.tsv`
+   under lane RAM/wall limits. Omit `--replay` and add `--partial` for
+   progress only. Any cap/missing row needs precise carry-over; do not
+   overwrite existing proofs or truncate retained logs.
+2. For e64 diagonals 3/4, 4/4 each pilot, 55 remaining each; budget
+   ~1,500–2,200 CPU-s production at measured rates. If approved, cover
+   e64 first; the f*=9 P3 branch then needs only the 60 e63 keys of
+   the b=0 boundary. No lower flexible full sweep at current cap rates.
+3. For diagonal five after e62, e61 has 149 passing layouts x6,
+   e60 320 x1. Five pilots each passed; 4.25 estimated CPU-h production
+   plus replay. Ask critic based on remaining budget; no launch yet.
+4. For isolated P2 e80 with a degree-three anchor, lower boundary
+   enumeration has 4/12/20/23/13 passing masks at e(X')=64..60
+   (`scratch/C/p2anchor-lower-control.log`). The orbit generator
+   matches all 444 C21 observed anchors; no lower proofs launched.
+   Start with a dispersed e64 pilot (236 keys in the full cover).
+   Work on e80 without that anchor and e81 separately; the 22-census
+   does not cover them. Do not generalize any of these to R(5) or
+   other degree distributions.

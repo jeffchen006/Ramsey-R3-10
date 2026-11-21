@@ -1,6 +1,6 @@
 # r310_ralph status
 
-Round 3 done at 2026-11-21T19:51:35 (run started 2026-11-21T16:32:33).
+Round 4 done at 2026-11-21T21:09:10 (run started 2026-11-21T16:32:33).
 
 - (3,10,40)-graphs verified by the flow: none
 - Solver processes now: 17 (cap 80), per lane {'B': 17}

@@ -2,11 +2,11 @@
 
 | lane | cores | reason |
 |---|---|---|
-| A | 4 | P5 coverage and root proof preservation are done; spend only on independent bindings or new coverage. |
-| B | 18 | Unchanged: protect the live 16-worker prefix and staged partial scans, not either full anchor branch. |
-| C | 8 | Reward checked P4 and P3/e64 exclusions; use the increment only for bounded e63/boundary pilots. |
-| D | 4 | Shared pins cut only one of 501 sampled profiles and close no kernel; retain a matched pilot budget. |
-| E | 20 | Reward the all-graphs crown closure; prioritize similarly small, exact involution strata. |
-| F | 2 | Bounded repairs are exhausted or relabel the same seed; require a nonisomorphic baseline before scaling. |
-| G | 22 | Reward 78 checked degree cuts; prioritize a calibrated complete e120 cover or direct obstruction. |
-| H | 2 | Unchanged: ledger and tightly scoped Lean bridges fit two cores. |
+| A | 2 | Compact dual-checker replay is done; two slots suffice for audit and new cover bindings. |
+| B | 18 | Unchanged: protect the 16-worker prefix and serialized e43/tail, not full e52/e44. |
+| C | 8 | Unchanged: finish the live producer/replay cover, then use bounded upper-layer pilots. |
+| D | 2 | Measured filters close no kernel and the whole-family bounds are too loose; retain a two-slot exact pilot budget. |
+| E | 21 | Reward the all-graphs a=6 exclusion; scale only an exact, calibrated involution stratum. |
+| F | 4 | Reward two nonisomorphic 24-score seeds; bound disjoint unseen-core pilots and independent recounts. |
+| G | 23 | Reward eight independent e168 cuts; prioritize the missing residue classes or an e168 obstruction. |
+| H | 2 | Unchanged: ledger, hypothesis audit and scoped Lean work fit two slots. |

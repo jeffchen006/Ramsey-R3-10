@@ -1,53 +1,49 @@
-# Lane E state — round 3
+# Lane E state — round 4
 
-2026-11-21; share 18 cores, peak 15 one-core foreground jobs. All
-results are for all graphs, not only MTF. No order-40 candidate or
-Ramsey verdict. Historic round results and job details: `LOG.md`.
+2026-11-21; share 20 cores, peak 15 one-core foreground jobs. No
+candidate graph submitted, no Ramsey verdict. All symmetry claims are
+about all graphs, not only MTF. Prior work and PIDs: `LOG.md`.
 
 ## Jobs
 
-No detached jobs this round or left over. All bounded batches are
-collected. Listed PIDs were foreground wrappers, not reusable handles.
-All solver/checker commands ran in `scratch/E` under `limited.sh`,
-`nice -n 5`, wall timeout and CPU cap (16 GiB virtual memory).
+No live lane-E jobs; no detached jobs this round. All listed wrapper
+PIDs were foreground batch children and were collected. Solver/scan jobs
+ran in `scratch/E` with `nice -n 5`, wall+CPU caps and 16 GiB `ulimit -v`.
 
-| Batch (one core per PID) | Local start; cap | Log/result |
+| Command / wrapper PIDs (one core each) | Local start; cap | Evidence and final status |
 |---|---|---|
-| `crown_exact ... local ... 4 4 4 4`, PIDs 1055712/1055714/1055717 | 18:54; 20 CPU / 40 wall s | `crown_w6.*.local.pilot.log`: 3/3 exhausted, total 0.54 CPU s |
-| W6 sorted certificates; W7/W8 static certificates, peak 15 | 18:56–18:57; 25 CPU s/stage | `crown_cert/w[678].*.log`: all 27 passed |
-| `crown_exact ... full ... 3 4 4 4 4 4`, PIDs 1405129/1405140/1405158 | 18:58; 65 CPU / 100 wall s | `crown_w5.*.full.pilot.log`: 3/3 exhausted, 4.95 CPU s; preceding 5-full projected controls had 3 models |
-| W5 nine full proof chains, PIDs 1529565–1529624; six simultaneous W4 pilots, PIDs 1529533–1529560 | 19:00; W4 pilot 35 CPU / 55 wall s | `crown_cert/w5.*.log`: 9/9 passed. `crown_w4.*.full.pilot.log`: 2 exhausted, 4 CPU-killed, not UNSAT |
-| W4 anchor residual, PIDs 1629917–1629937 | 19:02; 30 CPU / 50 wall s | `crown_w4.*.anchor.pilot.log`: five projected models (not candidates), star excluded |
-| W4 clean-group checks, PIDs 1699357–1699433 | 19:03; 65 CPU / 100 wall s | `crown_cert/w4.*.tight.log`: five exhausted, C4 CPU-killed |
-| C4 anchor-sort + short pair seed pilot | 19:05; 95 CPU / 135 wall cap | `crown_cert/w4.6.strong.log`: 6 calls, 2.04 CPU s |
-| W4 cold proofs, PIDs 1785258/1785264/1785269/1785281/1785292/1854133 | 19:04–19:06; 75 CPU s solve and 50 CPU s/check | `crown_cert/w4.*.log`: all 6 passed, worst solve 47.60 CPU s, worst DRAT check 48.45 CPU s |
-| Retained CNF regeneration + LRAT replay, four parallel, and SHA-256 checks | 19:07; verification-only | `crown_cert/w*.regen.log` 42/42; `crown_cert/hashcheck.log`; `slim5_round3_hashcheck.log` all pass |
+| `involution_cores.py calibrate/28/32`, serial | 19:57; 60 CPU/80 wall s max | `r4_cal_cores.log`, `r4_{28,32}_profiles.log`; 85/3 projected profiles |
+| `involution_sat.py --profiles r4_{28,32}_profiles.jsonl`, 727030–727059 | 20:01; 24 CPU/40 wall s | `r4_pilot/{28,32}.*.log`; 11/11 f28 unchecked UNSAT, 3/3 f32 CPU-killed |
+| CaDiCaL on six f28 *base* CNFs, 840828–840837 | 20:04; 25 CPU/45 wall s | `r4_base_sat/profile.*.log`; six SAT relaxations, not candidates or proof artifacts |
+| f28 six residuals, `involution_sat.py --seed 5`, 870780–870787; f32 nine pinned cores `--seed 6`, 870811–870936 | 20:04; f28 36 CPU/58 wall s, f32 24 CPU/42 wall s | `r4_pilot/28.res.*.log`: all CPU-killed; `32.*.*.log`: three unchecked UNSAT, six CPU-killed |
+| `overlap_windows.py --partitions`, PIDs 999132 (naive), then optimized foreground | 20:07; 75/80 CPU and 120/125 wall s | naive killed; optimized 54.13 CPU s, zero surviving root placements; superseded by weighted replay |
+| `replay_overlap28.sh`; 42 older crown proof hashes, serial | 20:11–20:12; 40 s outer for scalar replay | `r4_pilot/{overlap.replay,crown28.hashcheck}.log`, all checks pass |
+| `crown32_pressure.py` with `t=2/3/4`, 1451422–1451424; raw replay 1481620–1481622 | 20:15–20:16; 15/18 CPU s and 30 wall s | `r4_pilot/{w*.pressure.log,recheck/w*.log}`, all outputs byte-identical |
 
-## Claims and results for H/critic
+## Results and claims for H/critic
 
-| Claim/result | Label | Evidence | Core-hours (decisive computations) |
+| Claim/result | Label | Evidence | Decisive core-hours |
 |---|---|---|---:|
-| Complete exclusion of `(2,28,a=4)` across every `W=4..8`; no MTF or minimum-degree-five dependency. 42 core CNFs, all DRAT+LRAT verified, all independently regenerated and LRAT replayed. | cert | `ralph/lanes/E/crown28_exact.md`, `ralph/lanes/E/replay_crown28.sh`, `scratch/E/crown_cert/{SHA256SUMS,census.log,w*.log}` | 0.111 |
-| W4 crown clean-group lemma: `d_F(W)≤8` and at least `max(0,2e(W)−2)` clean attachments; each clean attachment is perfectly matched to `W`. Preserves a canonical label cover. | hand | `ralph/lanes/E/crown28_exact.md` | — |
-| Order-three `a=4`: pairwise footprint/degree CSP leaves 25/64 fixed-mask layouts at `f=7`, 116/144 at `f=10`, every template survives. At `f=7`, `S:1111` and `D:111` each have the single mask multiset `(1,2,3,4,8,12)` remaining up to relabeling. This is a necessary test only. | enum (filter), cases open by this method | `ralph/lanes/E/order3_a4_pairs.md`, `scratch/E/order3_a4_pairs.full.log` | 0.0006 |
-| `(5,5)` prior four proof packages remain intact; all retained hashes rechecked, not a new proof run. Keeps prior universal `δ≥5` dependency. | cert (round 1) | `ralph/lanes/E/slim5.md`, `scratch/E/slim5_round3_hashcheck.log` | 0.0006 |
+| `(2,28,a=6)` excluded. Hand reduction forces a four-cycle of overlapping size-six attachments. Four order-17 windows give average fixed-degree sum ≤62 but the exact window minimum is 66. Uses D-G3's seven `(3,6;17)` classes, no δ≥5/MTF dependency. | enum, pending review | `ralph/lanes/E/overlap28.md`, `replay_overlap28.sh`, `overlap17.g6`, `scratch/E/r4_pilot/overlap.replay.log` | 0.00017 |
+| Consequently all `f=28` attachment sizes now have exclusions reported, inheriting their distinct statuses; need H/critic to combine a≤3/a=5 hand, a=4 cert, a=6 enum, and a=7 F10. | pending aggregate | above; `involution.md`, `crown28_exact.md`, `notes/symsat.md` F10 | — |
+| `f=32`, t=2/3/4: singleton-neighbor capacity necessary bound. Of 6657/1407/356 eligible W cores, 6196/1136/313 survive. At t=4 with min degree of W at least 3, W is cubic and every full attachment has exactly two double rows. | hand bound; enum counts; no full t closure | `ralph/lanes/E/crown32_pressure.md`, `scratch/E/r4_pilot/recheck/w*.log` | 0.0013 |
+| `f=32` comparison: three unpinned CPU kills; three of nine pinned unchecked UNSAT, six CPU kills. Unpinned 207–229k base rows, pinned 136–168k. | enum for the three pins only; remaining open | `ralph/lanes/E/crown32_pressure.md`, `scratch/E/r4_pilot/32.*.log` | ~0.063 |
+| Prior `(2,28,a=4)` 42 proof bindings intact; no replayed or new proof search this round. `(5,5)` is already cert from round 1. | prior cert / integrity check | `ralph/lanes/E/crown28_exact.md`, `scratch/E/r4_pilot/crown28.hashcheck.log`; `ralph/lanes/E/slim5.md` | — |
 
-## Lessons and next steps
+## Next steps
 
-- Notify H/critic to independently review the complete `(2,28,a=4)`
-  scope. F can skip this branch. Do not claim all `f=28`: `a=6` is
-  distinct and remains open. Previously `(2,28,a≤3)` and `a=5` had hand
-  exclusions, and `a=7` was outside the open cover via Lemma 5.3.
-- For `(2,28,a=6)`, the complete-crown premise fails. Compare a quotient
-  obstruction: two unjoined independent pairs have fixed attachment
-  union at least 11, and three pairwise unjoined independent pairs
-  violate `R(3,4)=9` since at least ten fixed vertices avoid them.
-  Handle internal edge pairs separately; no new closure claimed.
-- `(2,32,t=2,3,4)` and smaller `(2,30)` windows were not touched this
-  round, as directed. Retain the all-graphs scope; use pinned censuses
-  before extending crown formulas. The `(2,32)` t=1 route retains
-  its distinct all-graphs minimum-degree-five premise.
-- For order three, test at least three outside orbits jointly before
-  scaling. Pair-optimal offsets can form triangles with a third orbit;
-  record exact layout scope. `(5,0)` and original open order-three
-  `a=2/3` remain open; don't rescale prior capped SAT unchanged.
+- H/critic: review the structural reduction and U-budget algebra
+  in `overlap28.md`; `cd scratch/E && bash ../../ralph/lanes/E/replay_overlap28.sh`
+  validates the complete min-66 check by two algorithms in under a
+  CPU second. BOARD notified F not to repeat the f=28 a=6 branch pending review.
+  The earlier 85-profile quotient census and 127,502-cycle join were
+  exploratory; the closure needs neither. Never treat SAT base models
+  nor CPU-killed lazy runs as candidates/exclusions.
+- For `f=32`, test the two cubic W cores within `(t=4,δ(W)≥3)` with
+  exact support pins: each double row uses two singleton slots of
+  nonneighbors which are adjacent to each other (triangle-freeness and
+  α(W+A_i)≤6). Then reuse their profiles in the four attachment
+  windows. Do not scale raw pinned/unpinned SAT from the measured sample.
+- `(2,30)` smaller windows, `(5,0)`, and order-three open cases untouched.
+  For order three, try three-orbit joint constraints only with a matched
+  pair baseline; the prior pair-footprint pilot left all templates alive.

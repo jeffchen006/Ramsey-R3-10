@@ -92,3 +92,44 @@ subsets counted with side labels (26 tight nonempty outer bounds).
 Logs: `scratch/H/p4-lean-side-build.log`,
 `scratch/H/p4-lean-axioms-final-audit.log`, `scratch/H/p4-cross-control.log`.
 No rebuild of the full Lean project, Mathlib, or PB artifacts was needed.
+
+## Round 4: fixed-root attachments and demands
+
+`lean/R310/RootDemand.lean` adds four checked statements:
+
+- `IsMTF.attachment_dominates`: every root neighbor's attachment
+  dominates the exterior. Independence is the existing neighborhood lemma.
+- `IsMTF.exists_attachment_for_demand`: every singleton exterior demand
+  or nonedge with no exterior common neighbor lies in one attachment.
+- `IsMTF.card_incompatible_demands_le_degree`: choose such an attachment
+  for each demand, then an actual cross edge for each pair of demands
+  forces different choices by independence. The resulting map into the
+  root neighborhood is injective. No independence-number bound is needed.
+- `IsMTF.total_edges_of_degree_six_residue`: with MTF, `alpha ≤ 9`,
+  degree six and a supplied residual floor `L`, the graph has at least
+  `L+48` edges. The existing MTF private-neighbor inequality gives 48.
+
+Neither the finite catalogue nor its demand witnesses or LRATs are
+formalized. The fourth theorem assumes the residual floor, so it is not
+a Lean proof of e(H6)≥120. `FLOOR6_REVIEW.md` documents the external
+dependencies of that floor and the exact distribution accounting.
+
+From `lean/`, with the pinned cache and CPU 148 (or a permitted CPU):
+
+```sh
+export PATH="$HOME/.elan/bin:$PATH" LEAN_NUM_THREADS=1 LEAN_STACK_SIZE_KB=8192
+ulimit -v 16777216
+timeout 200 nice -n 5 taskset -c 148 lake --packages="$PWD/../scratch/H/packages-local.json" build --old R310.RootDemand
+timeout 150 nice -n 5 taskset -c 148 lake --packages="$PWD/../scratch/H/packages-local.json" env lean -j1 -s8192 ../ralph/lanes/H/AxiomsRound4.lean > ../scratch/H/root-demand-axioms.log
+python3 -S -B ../ralph/lanes/H/check_axioms.py ../ralph/lanes/H/AxiomsRound4.lean ../scratch/H/root-demand-axioms.log
+timeout 275 nice -n 5 taskset -c 148 lake --packages="$PWD/../scratch/H/packages-local.json" build --old R310
+python3 -S -B ../ralph/lanes/H/check_root_demand_control.py
+```
+
+The targeted and umbrella builds passed; no Mathlib source build. The
+audit allows only `propext`, `Classical.choice`, `Quot.sound` and found
+exactly four reports. The Python test has five tight C5 controls;
+non-MTF C6/C7 fail the singleton/pair demand as expected. The ten known
+six-regular order-22 graphs give 220 rooted controls, 3,300 singleton and
+2,259 pair demands, and 28,866 incompatible pairs with disjoint attachment
+choice sets. Logs: `scratch/H/root-demand-{build-v2,axioms-audit,integrated,control}.log`.

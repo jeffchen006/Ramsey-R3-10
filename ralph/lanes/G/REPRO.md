@@ -144,3 +144,57 @@ c++ -O3 -Wall -Wextra -Werror -Wno-unused-function -std=c++17 -Igluing/src "$G/e
 The source of truth for the 74 usable roots is exact checked count plus
 independent witnesses, not traversal connectivity. For reconstructing the
 search sequence, see the measured stages in `LOG.md`.
+
+# Round 4: e168 cuts and strict-level residue census
+
+```sh
+G=ralph/lanes/G
+W="$PWD/scratch/G/round4"
+nice -n 5 timeout 30s python3 -S -B "$G/scan_private_equality.py" --control scratch/G/exoo39.matrix
+for stem in private_equality_cuts private_equality_t9; do
+  nice -n 5 timeout 45s python3 -S -B "$G/scan_private_equality.py" --verify "$G/$stem.jsonl"
+done
+nice -n 5 timeout 30s python3 -S -B "$G/private_packing.py"
+nice -n 5 timeout 30s python3 -S -B "$G/check_private_packing_cuts.py"
+python3 -S -B "$G/freeze_round3.py" | diff - "$G/round3_frozen.csv"
+python3 -S -B "$G/summarize_round4.py" | diff - "$G/round4_cases.csv"
+nice -n 5 timeout 145s bash "$G/replay_e120_partial.sh" "$W/e120_review" "$W"
+```
+
+The strict e120/e121 census uses GR Tables 4 and 14, and Angeltveit,
+*R(3,10) ≤ 41*, EJC 32(4) #P4.30 (2025), arXiv:2401.00392v2,
+§§3.3 and 6: 14,395 combined order-33 classes through e121. The paper
+does not give an exact e120 level count. `check_floor121_catalogue.py`
+requires strict levels, an independent alpha and triangle check, and
+sparse canonical distinctness. It refuses incomplete coverage unless
+`--allow-gap` is explicitly supplied. `replay_e120_partial.sh` verifies
+all 1,223 supplied e120 exclusions but intentionally does not claim
+the combined count matches. Check the current gap in `STATE.md`.
+
+Build the novel edge repair and the scoped square replacement with
+`c++ -O3 -march=native -Wall -Wextra -Werror -std=c++17 -Igluing/src`
+and the respective `.cc` source. Tests are `check_witness_edit.py`
+(60 exact labelled n8 cells) and `check_cycle_replace.py` (seven
+exact tagged n8 squares). The search loops use `run_witness_edit.sh`
+with explicit source edge levels and disjoint scratch shards; each
+stage's parameters/estimates are in `scratch/G/round4/*.plan`.
+Every count was recomputed from strict `pickg -e` partitions. The
+round-3 e120 snapshot had one e119 mixed into its 1,178 rows, and its
+e121 frontier had 23 e120s; neither issue affects the accepted floor
+120 proof (which used the separate exact 5+69 catalogue) or LP cuts.
+
+Frozen e121 scope: of 13,092 rows, 10,268 clique traces and 2,813
+unpinned root-core LRATs pass. `e121.core.sat.tsv` indexes the 11
+complementary roots whose core was SAT; root-clause satisfaction is
+not a gluing extension. All 11 refute at **total e=169** using
+`root_glue.py --edges 169 --relaxed`, both LRAT checkers. The residual
+121 and Z>=48 already forbid e<169. Do not promote this e121 package
+to an unpinned claim. Replay by (i) validating the three clique/exception
+partitions indexed by `e121.frozen.sha256`, (ii) regenerating core CNFs
+in the ten original shards and two deltas and checking existing LRATs
+only for `cert` rows, and (iii) regenerating the 11 pinned CNFs from
+`e121.core.sat.g6` with `root_glue.py --edges 169 --relaxed` and
+byte-matching `e121_e169/*.cnf` before dual replay. Prior root_glue
+controls use the same code path and actual rooted MTF witnesses;
+`scratch/G/root/calib_relaxed.log`. The six unsupplied residue types
+remain open; there is no new global degree-six floor.

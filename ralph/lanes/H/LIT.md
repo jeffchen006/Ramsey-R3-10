@@ -96,3 +96,21 @@ Search scope: arXiv and exact DOI/title lookups; EJC/DS1, ACM, IJCAI, Springer a
   construction reports; no classical 40/41 resolution, 39-vertex bulk
   file, or exact 30/88-and-up order-30 count located. The three negative
   search results are not completeness claims.
+
+## Round 4: primary count audit and current status
+
+- Rechecked the [current DS1 release](https://www.combinatorics.org/ojs/index.php/eljc/article/view/DS1)
+  (April 24, 2026) and [Angeltveit's journal paper](https://www.combinatorics.org/ojs/index.php/eljc/article/view/v32i4p30)
+  (November 3, 2025; arXiv v2 remains the latest preprint version). The
+  November 21 search did not locate a later exact result. No newly public
+  GR–Angeltveit 39-vertex census or exact dense order-30 count was located.
+  This gives no new input batch for B or F, and no coverage change elsewhere.
+- [GR v4](https://arxiv.org/abs/1210.5826v4), March 20, 2013, Tables 4 and
+  14: the 33/118 and 33/119 counts 5 and 69 are exact, but 33/120 has
+  lower bound **1,223**, 33/121 lower bound **13,081**. Together with
+  Angeltveit's exact 14,395 total through 121 (arXiv v2, §3.3), the unknown 33/120
+  count is between **1,223 and 1,240**. No graph6 download for that
+  complete level was located. G can use the interval to rule out
+  completeness of a sub-1,223 set, not to certify a set of size 1,223;
+  A can audit supplied proofs separately. GR also gives the exact
+  order-32 counts 39, 952, 18,598, 234,681 at e=104..107.

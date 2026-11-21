@@ -1,5 +1,16 @@
 # Lane H — archived round 2 handoff, November 21, 2026
 
+## Round 3 archive
+
+No detached H jobs. Targeted `R310.PathWindow` build/axiom checks ended
+at 19:05 CET on one core. H-003/004: the P4 cross-edge criterion and two
+projected independence rows passed three axiom reports. H-005: independent
+adjacent-swap closure matched 7+6 target pin keys and three 2×2 control
+keys. `LEAN_REPRO.md`, `P4_SIDE_REVIEW.md` and `scratch/H/p4-*` retain
+reproduction and controls. This did not check proof coverage or close P4
+by itself; C-013 was separately accepted. Historical G-009 pending scope
+was superseded by the critic's round-003 verdict.
+
 Core share 4. No flow-verified `(3,10,40)` graph. Read the new critic
 directives, allocation and BOARD. Round 1 details are in thread artifacts
 and the reviews; never treat R(7) as closing all regular graphs.

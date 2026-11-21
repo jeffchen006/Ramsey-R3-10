@@ -17,7 +17,7 @@ class ClauseList(list):
 
 
 def pinned_graph(formula, degree, kernel, side, profile, min_edge, diameter=True, private=True,
-                 triangle=True, codegree='all'):
+                 triangle=True, codegree='all', fixed_min_cycles=False):
     width = degree - 1
     limit = (1 << width) - 1
     opposite = range((1 - side) * width, (2 - side) * width)
@@ -73,17 +73,59 @@ def pinned_graph(formula, degree, kernel, side, profile, min_edge, diameter=True
             offset = sum(sum(bool(mask >> coord & 1) for mask in fixed) for coord in bits(support & limit))
             formula.atleast(products, minimum - offset)
 
+    if fixed_min_cycles:
+        minimum = sum(row.bit_count() for row in kernel) // 2
+        thresholds = {}
+
+        def common_terms(first, second, excluded=None):
+            return [formula.both(edge[first][witness], edge[second][witness])
+                    for witness in range(order) if witness != excluded
+                    and edge[first][witness] != -yes and edge[second][witness] != -yes]
+
+        def codegree_thresholds(first, second):
+            key = tuple(sorted((first, second)))
+            if key not in thresholds:
+                products = common_terms(first, second)
+                fixed_count = products.count(yes)
+                hits = [product for product in products if product != yes]
+                selected = []
+                for target in (2, 3):
+                    if target <= fixed_count:
+                        selected.append(yes)
+                    elif target > fixed_count + len(hits):
+                        selected.append(-yes)
+                    else:
+                        claim = formula.var()
+                        formula.atleast(hits, target - fixed_count, (-claim,))
+                        selected.append(claim)
+                formula.add(-selected[1], selected[0])
+                thresholds[key] = tuple(selected)
+            return thresholds[key]
+
+        for coord in range(1, degree + 1):
+            neighbors = [vertex for vertex, literal in enumerate(edge[coord]) if literal == yes]
+            for endpoint in neighbors:
+                if fixed_min_cycles == 'deficit':
+                    flags = [flag for other in neighbors if other != endpoint
+                             for flag in codegree_thresholds(endpoint, other)]
+                    formula.atleast(flags, minimum)
+                else:
+                    common = [term for other in neighbors if other != endpoint
+                              for term in common_terms(endpoint, other, coord)]
+                    formula.atleast(common, minimum)
+
     return edge
 
 
 def enumerate_profile(degree, kernel, side, profile, min_edge, mode, output, diameter=True, private=True,
-                      triangle=True, codegree='all'):
+                      triangle=True, codegree='all', fixed_min_cycles=False):
     start = time.process_time()
     outputs = 0
     cuts = 0
     with Cadical195() as solver:
         formula = Formula(solver)
-        matrix = pinned_graph(formula, degree, kernel, side, profile, min_edge, diameter, private, triangle, codegree)
+        matrix = pinned_graph(formula, degree, kernel, side, profile, min_edge, diameter, private, triangle,
+                              codegree, fixed_min_cycles)
         order = len(matrix)
         universe = (1 << order) - 1
         while solver.solve():
@@ -118,6 +160,7 @@ def main():
     parser.add_argument('output', type=Path)
     parser.add_argument('--line', type=int, default=0, help='1-indexed; 0 tests every input profile')
     parser.add_argument('--min-edge', action='store_true')
+    parser.add_argument('--fixed-min-cycles', choices=('direct', 'deficit'))
     parser.add_argument('--mode', choices=('relax', 'first', 'all'), default='all')
     parser.add_argument('--omit-diameter', action='store_true')
     parser.add_argument('--omit-private', action='store_true')
@@ -130,6 +173,7 @@ def main():
     kernel = decode(args.catalogue.read_text().splitlines()[args.index])
     assert len(kernel) == 2 * (args.degree - 1) and max(map(int.bit_count, kernel)) <= 2
     assert args.export_cnf is None or (args.mode == 'relax' and args.line > 0)
+    assert args.fixed_min_cycles != 'deficit' or args.codegree == 'all'
     with args.output.open('w') as output:
         for pos, line in enumerate(args.profiles.read_text().splitlines(), start=1):
             if args.line and pos != args.line:
@@ -143,14 +187,14 @@ def main():
                 formula = Formula(clauses)
                 pinned_graph(formula, args.degree, kernel, args.side, profile, args.min_edge,
                              not args.omit_diameter, not args.omit_private, not args.omit_outer_triangles,
-                             args.codegree)
+                             args.codegree, args.fixed_min_cycles)
                 with args.export_cnf.open('w') as dimacs:
                     print(f'p cnf {formula.variables} {len(clauses)}', file=dimacs)
                     dimacs.writelines(' '.join(map(str, clause + [0])) + '\n' for clause in clauses)
                 return
             enumerate_profile(args.degree, kernel, args.side, profile, args.min_edge, args.mode, output,
                               not args.omit_diameter, not args.omit_private, not args.omit_outer_triangles,
-                              args.codegree)
+                              args.codegree, args.fixed_min_cycles)
 
 
 if __name__ == '__main__':

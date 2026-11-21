@@ -1,4 +1,47 @@
-# Lane G state — round 3, 2026-11-21
+# Lane G state — round 4, 2026-11-21
+
+## Round 4: eight e168 cuts and strict residue census
+
+| Label | Result | Evidence | CPU-h (approx.) |
+|---|---|---|---:|
+| hand + cert | Equality in the MTF private bound forces a simple signature graph on the six neighbours, with exactly six possible class profiles. Six e168 cuts have exact rational certificates using accepted floors 120/107 and published floors 95/86, independent of both gluing floors. Seven matched t9 improvements at the old threshold minus one, six overlapping the eight cuts. | `rows/equality_private.md`, `private_equality_{cuts,t9}.jsonl`, `scan_private_equality.py` | <0.05 |
+| hand + cert | Two independent e168 cuts `(5,0,9,26)` and `(6,2,2,30)` use matching parity and typed pair packing, needing floor 120 only. Checked unit-weight Farkas sums give `0<=-1` and `0<=-2`. Separate exact packing enumerator agrees on all eight new cuts; 2,450 brute-matched small controls. | `rows/private_packing.md`, `check_private_packing_cuts.py`, `round4_cases.csv` | <0.001 |
+| cert (individual) | All 1,223 strict e120 residues ruled out at a degree-six MTF root: 1,157 checked demand cliques, 66 dual-checked LRATs. No-solve replay passes. | `replay_e120_partial.sh`, `root_certs/e120_partial.sha256`, `scratch/G/round4/e120_replay.log` | 0.01 |
+| cert (individual, total e<=169) | All 13,092 supplied e121 residues ruled out for an MTF degree-six root through total e169: 10,268 cliques and 2,813 core LRATs unpinned; 11 other LRATs pinned to total e169, the first possible total by Z>=48. Combined known catalogue is 14,389 of 14,395, so at most six as yet unidentified e120/e121 types can occur at degree-six roots through e169; no new global floor. | `scratch/G/round4/{e121.frozen.g6,e121.frozen.count.log,e121.frozen.sha256,e121.shards.replayed,e121_e169/proofs.log}`, `root_certs/e121_frozen.sha256` | ~0.15 |
+| enum / open | Cached witness edits and up/down bridges reached the strict combined count 14,389 (e120=1,223, e121=13,092). All 12,289 e121 children of the known e120s are covered, and thinning every known e121 returns exactly the 1,223 known e120s. Exactly 803 supplied e121s are deletion-critical. At most six combined types remain; completeness is not inferred from any move. | `witness_edit.cc`, `scratch/G/round4/{e121.frozen.critical.g6,e121.critical.log,*.plan}`, `LOG.md` | ~1.3 |
+
+**368 near-regular distributions + R remain**, conditional on the accepted
+baseline and pending review of the eight additional cuts. **12** would be
+cut by a complete MTF e88 exclusion. The 8 new cuts themselves do not need
+gluing. There is no claim of floor 121 or 122 until the strict combined cover
+is independently bound. `round3_frozen.csv` was delivered to H/A/B; A owns
+independent catalogue packaging. No e107 scaling this round.
+
+No detached jobs. The final optional supervisors below were stopped
+explicitly after inspecting their PID arguments; their current children
+were limited to 30/15 seconds. No inference from stopped probes.
+
+| PID | Command / log | Cores | Start | Expected end |
+|---:|---|---:|---|---|
+| 2734616 | Foreground sequential unpinned full-CNF CaDiCaL, `scratch/G/round4/e121_full/proofs.log` | 1 | 20:45 | stopped 20:48 |
+| 2742562 | Foreground sequential unpinned triple-column CaDiCaL, `scratch/G/round4/e121_pairs/proofs.log` | 1 | 20:47 | stopped 20:48 |
+
+Next: seek exact remaining six via the
+original archive or a targeted decomposition, not another unconditional
+2-edit sweep; the matched e122 lateral closure and broad e123 return
+added only two and one e121 classes respectively. A/H: independently
+replay the equality and packing cuts, and bind the partial census. If
+the six keys are obtained, filter by demand clique before LRAT. Do not
+mistake the strict count or ordinary graph validity for extendability.
+
+The e120 list in round 3 had 1,177 strict e120s plus one e119 (not 1,178
+e120s). Likewise the 10,843 e121 frontier had 23 e120s. Their proof runs
+were still valid for each supplied residue, and the accepted floor 120 /
+floor 107 and e167 cuts use the separate clean catalogues. Round 4 uses
+explicit level splits, independent alpha/triangle checks and canonical
+distinctness (`check_floor121_catalogue.py`).
+
+## Round 3 handoff (historical)
 
 ## Round 3 result and jobs
 

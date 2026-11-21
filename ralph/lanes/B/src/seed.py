@@ -1,6 +1,7 @@
 """Rebuild exact upstream inputs in small resumable jobs; run from scratch/B."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
+import hashlib
 import itertools
 from pathlib import Path
 import subprocess
@@ -57,10 +58,13 @@ def preprocess(directory, steps, chunk):
 
 def worker(job):
     prefix, count, arguments = job
-    with prefix.with_suffix('.in').open('rb') as source, \
+    input_path = prefix.with_suffix('.in')
+    input_digest = hashlib.sha256(input_path.read_bytes()).hexdigest()
+    with input_path.open('rb') as source, \
             prefix.with_suffix('.raw').open('wb') as out, \
             prefix.with_suffix('.log').open('w') as log:
         run(arguments, stdin=source, stdout=out, stderr=log)
+        print(f'input_sha256={input_digest}', file=log)
     log_text = prefix.with_suffix('.log').read_text()
     if f'in={count} ' not in log_text or 'bad graph6' in log_text:
         raise ValueError(f'incomplete: {prefix}')
@@ -70,7 +74,7 @@ def worker(job):
         raise ValueError(f'nonempty output lost in canonicalization: {prefix}')
     prefix.with_suffix('.tmp').replace(prefix.with_suffix('.canon'))
     prefix.with_suffix('.raw').unlink()
-    prefix.with_suffix('.in').unlink()
+    input_path.unlink()
     print(f'{prefix}: {log_text.strip()}', flush=True)
 
 

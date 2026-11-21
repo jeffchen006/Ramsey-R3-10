@@ -384,10 +384,17 @@ def run(args, kernel, output):
                              args.no_k33, args.shared)
                   for side in sides]
         profiles = [occupants for occupants, _, _ in builds]
+        blockers = ()
+        if args.opposite_blocks:
+            from opposite_shadow import projected_kernel
+            from small_shadow_blocks import add_blockers
+
+            blockers = tuple(add_blockers(formula, projected_kernel(kernel, side), profile)
+                             for side, profile in zip(sides, profiles))
         lex = order_profile(formula, kernel, args.degree, args.side, profiles[0]) if args.profile_lex else 0
         matrix = join(formula, kernel, args.order, args.degree, profiles, args.shadow_edges) if args.side is None else None
         print(f'ENCODE types={list(map(len, profiles))} shadow={tuple(rows for _, rows, _ in builds)} '
-              f'obstructions={tuple(forbidden for _, _, forbidden in builds)} lex={lex} '
+              f'obstructions={tuple(forbidden for _, _, forbidden in builds)} lex={lex} blockers={blockers} '
               f'variables={formula.variables} clauses={formula.clauses} cpu={time.process_time()-start:.4f}', flush=True)
         outputs = 0
         iterations = 0
@@ -437,6 +444,7 @@ def main():
     parser.add_argument('--no-k33', action='store_true')
     parser.add_argument('--shared', choices=(2, 3), type=int, default=0)
     parser.add_argument('--profile-lex', action='store_true')
+    parser.add_argument('--opposite-blocks', action='store_true')
     parser.add_argument('--limit', default=0, type=int)
     args = parser.parse_args()
     kernel = decode(args.catalogue.read_text().splitlines()[args.index])

@@ -82,3 +82,12 @@ is **stopped**, not a timeout or an UNSAT answer.
   at a=4 (`enum`); `(2,28,a=4)` prior W≤6 bound superseded;
   order-three a=4 fixes |H|=12 with eight pinned templates (`hand`),
   all 16 pass the one-orbit relaxation. See the lane evidence docs.
+
+Round-3 bounded job archive (all collected): W6 local 1055712/14/17
+(18:54, cap 20 CPU/40 wall s); W6–8 proofs (18:56, max 15 slots);
+W5 exact 1405129/1405140/1405158 (18:58, cap 65/100 s), W5 cold
+1529565–1529624 and W4 pilot 1529533–1529560 (19:00, W4 cap 35/55 s);
+W4 anchor 1629917–1629937 (19:02, cap 30/50 s), clean checks
+1699357–1699433 (19:03, cap 65/100 s); W4 cold 1785258/1785264/
+1785269/1785281/1785292/1854133 (19:04–19:06; solve/check caps 75/50 CPU s).
+Replay at 19:07 ended 42/42 with matching hashes.

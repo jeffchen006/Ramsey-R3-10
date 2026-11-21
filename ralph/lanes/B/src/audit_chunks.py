@@ -1,10 +1,12 @@
 """Audit a finished Lane B generation or MTF pass against an exact input count."""
 import argparse
+import hashlib
+import itertools
 import re
 from pathlib import Path
 
 
-def audit(directory, degree, size, chunk_size):
+def audit(directory, degree, size, chunk_size, source=None):
     expected = [f'd{degree}_{index:05d}' for index in range((size + chunk_size - 1) // chunk_size)]
     actual = sorted(file.stem for file in directory.glob('*.canon'))
     if actual != expected:
@@ -18,11 +20,20 @@ def audit(directory, degree, size, chunk_size):
         if len(rows) != 1 or int(rows[0][0]) != want or 'bad graph6' in log:
             raise ValueError(f'{stem}: invalid or incomplete count')
         _, output, seconds = rows[0]
+        if source is not None:
+            block = list(itertools.islice(source, chunk_size))
+            if len(block) != want:
+                raise ValueError(f'{stem}: missing bound inputs')
+            digest = hashlib.sha256(b''.join(block)).hexdigest()
+            if re.findall(r'^input_sha256=([0-9a-f]{64})$', log, re.MULTILINE) != [digest]:
+                raise ValueError(f'{stem}: ordered input hash differs')
         canonical_nonempty = (directory / f'{stem}.canon').stat().st_size > 0
         if canonical_nonempty != (int(output) > 0):
             raise ValueError(f'{stem}: canonical output disagrees with log')
         cpu += float(seconds)
         raw += int(output)
+    if source is not None and source.read(1):
+        raise ValueError('extra bound inputs')
     print(f'{directory}: audited {size} inputs, {len(expected)} chunks, {raw} raw outputs, {cpu:.2f} solver CPU s')
 
 
@@ -32,5 +43,10 @@ if __name__ == '__main__':
     parser.add_argument('degree', type=int)
     parser.add_argument('size', type=int)
     parser.add_argument('chunk_size', type=int)
+    parser.add_argument('--bind', type=Path, help='verify ordered SHA-256 for each rendered input chunk')
     args = parser.parse_args()
-    audit(args.directory, args.degree, args.size, args.chunk_size)
+    if args.bind is not None:
+        with args.bind.open('rb') as source:
+            audit(args.directory, args.degree, args.size, args.chunk_size, source)
+    else:
+        audit(args.directory, args.degree, args.size, args.chunk_size)

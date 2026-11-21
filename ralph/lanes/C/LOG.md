@@ -124,3 +124,12 @@ with 16 GiB cap and `setsid nohup nice -n 5 timeout 900` wrapper:
 producer logs. `p3e64-replay-S.log`: all `IDENTICAL`, 917.02 CPU-s
 checking 56 proofs versus 950 CPU-s estimate; 50.97 CPU-s for the
 three pilot replays separately.
+# Round 4 handoff
+
+Complete transcripts are in `scratch/C`. Completed job inventories:
+`p3e63-probes.tsv`, `p3e63-minpilot.tsv`, `p3e63-full.tsv`,
+`p3e63-replay.tsv`, `p3flex-pilot.tsv`, `p3flex-upper.tsv`,
+`p3flex-upper-replay.tsv`, `p3flex-midpilot.tsv`, `p3low-pilot.tsv`,
+`p3extra-pilot.tsv`, `p2anchor-pilot.tsv`, `p2anchor-full.tsv`.
+Active PIDs at handoff are in STATE and `p3e62-{full,replay}.tsv`.
+Exact costs and proof/replay scopes are in `ROUND4_REPLAY.md`.

@@ -109,13 +109,20 @@ struct Optimum {
 };
 
 int main(int argc, char** argv) {
-    if (argc != 6 && argc != 7) {
-        std::cerr << "usage: attach_score BASE.g6 K MIND MAXD OUTPUT.tsv [verify]\n";
+    if (argc < 6 || argc > 9) {
+        std::cerr << "usage: attach_score BASE.g6 K MIND MAXD OUTPUT.tsv [verify] [--min-edges E]\n";
         return 2;
     }
     int forbidden = std::stoi(argv[2]), minimum = std::stoi(argv[3]), maximum = std::stoi(argv[4]);
-    bool verify = argc == 7 && std::string(argv[6]) == "verify";
-    if (forbidden < 2 || minimum < 0 || maximum != forbidden - 1 || minimum > maximum || (argc == 7 && !verify))
+    bool verify = false;
+    int min_edges = 0;
+    for (int arg = 6; arg < argc; ++arg) {
+        const std::string flag = argv[arg];
+        if (flag == "verify") verify = true;
+        else if (flag == "--min-edges" && arg + 1 < argc) min_edges = std::stoi(argv[++arg]);
+        else return 2;
+    }
+    if (forbidden < 2 || minimum < 0 || maximum != forbidden - 1 || minimum > maximum || min_edges < 0)
         return 2;
     std::ifstream input(argv[1]);
     std::ofstream output(argv[5]);
@@ -130,8 +137,10 @@ int main(int argc, char** argv) {
         if (order < forbidden || order >= 62) return 2;
         Mask allowed = 0, required = 0, universe = bit(order) - 1;
         bool eligible = true;
+        int old_degree_sum = 0;
         for (int vertex = 0; vertex < order; ++vertex) {
             int degree = std::popcount(graph[vertex]);
+            old_degree_sum += degree;
             Mask neighbors = graph[vertex];
             while (neighbors)
                 if (graph[pop_vertex(neighbors)] & graph[vertex]) throw std::runtime_error("base contains triangle");
@@ -152,7 +161,9 @@ int main(int argc, char** argv) {
             if (neighbors & required) eligible = false;
             free &= ~neighbors;
         }
-        Optimum answer{graph, {}, minimum};
+        const int attachment_floor = std::max(minimum, min_edges - old_degree_sum / 2);
+        if (attachment_floor > maximum) eligible = false;
+        Optimum answer{graph, {}, attachment_floor};
         unsigned mandatory_misses = 0;
         for (Mask set : independent)
             if (!(set & required)) {
@@ -162,7 +173,7 @@ int main(int argc, char** argv) {
             }
         if (eligible) answer.maximal(required, free, 0);
         if (verify && eligible) {
-            Optimum reference{graph, answer.constraints, minimum};
+            Optimum reference{graph, answer.constraints, attachment_floor};
             reference.exhaustive(required, free, maximum);
             if (reference.best != answer.best) throw std::runtime_error("optimizer disagrees with exhaustive search");
         }

@@ -1,58 +1,46 @@
-# Critic directives for round 4
+# Critic directives for round 5
 
-See `ralph/critic/round_003.md` and `ralph/ALLOC.md`. No verified order-40
-graph. The checked tally is 376 near-regular distributions plus Case R
-under the inherited gluing bounds. The main target is degree-six e120:
-a complete exclusion would remove 47 more distributions by itself.
+See `ralph/critic/round_004.md` and `ralph/ALLOC.md`. No order-40 graph passed the gate. The checked baseline after eight new MTF cuts is **368 near-regular distributions plus Case R**. Complete U88 gluing would cut 12 more; an exact degree-six e120 exclusion would cut 39 more at e168. Six order-33 classes are still missing across e120/e121, not necessarily six at e120.
 
 ## Lane A
-1. Independently audit the complete 74-row root bundle against the compact 68-row snapshot: match canonical overlap, verify the six added rows, and package them without copying bulk gluing files or re-solving.
-2. Prioritize an exact and cheap round-4 audit trail for G's floor cuts: source count, ordered input, regenerated CNFs, checker success lines and exact distribution delta. Leave LP maintenance to G.
-3. Stop P4/P5 catalogue or SAT reprises absent a binding defect. Keep R(7)/PB hashes and provenance available, with no fresh solving.
+1. Independently bind any new order-33 exact decomposition to the frozen 74+1,223+13,092 catalogues; test duplicate/omission negatives and keep e169-pinned proofs distinct from unpinned proofs.
+2. Keep existing floors and R(7) proof bundles compact. No new P4/P5 or floor-120/107 re-solving; audit changes only, with at most two slots.
 
 ## Lane B
-1. Finish prefix and up86 jobs under the existing cap. Require exact canonical e86 equality, the e87 count and explicit terminal counts before drawing any coverage conclusion.
-2. Run the staged e43 branch and the additions of the remaining 13,901 e87 parents with exact disjoint input accounting. Distinguish order-30 input coverage from the MTF order-40 extension test; the e43 branch alone does not close e88.
-3. Stop the already redundant star-lift route and leave full e52/e44 unlaunched. Require a new prune with exact matched outputs, dispersed timing and projected cost including sort/I/O before using more than a pilot share.
-4. Update the threshold handoff to **13** additional cases conditional on a complete e88 gluing exclusion; the old 20 is no longer current.
+1. Preserve the 16+2 peak. Compare final prefix lower sets to the checkpoint, finish e43 then tail87 in sequence, and audit actual output counts and exact parent/child partition before reporting any exclusion.
+2. Keep the up86, e43 and reducible-e88 tail scopes distinct from the edge-critical remainder and from non-MTF order-40 graphs. Use the current U88 multiplier **12**.
+3. Keep full e52/e44 and star-lift off. Prefer a bounded e162 C4/twin-residue or adjacent degree-seven-pair obstruction only if it narrows a complete case; otherwise require a demonstrably lower complete-cover cost than the current holdouts.
 
 ## Lane C
-1. Pilot the 13 diagonal-five e63 boundary orbits with a matched smaller control and minimal proof-producing encoding. Report the exact residue/pin coverage and any caps separately; proceed only if the measured cost fits.
-2. Use the checked P4 result to focus on isolated codegree-six pairs and three-root components. Keep diagonal types 3/4/5 distinct and do not import a boundary assumption into the isolated-pair case.
-3. Freeze the P4/P3-e64 proof manifests and full replay logs. Do not rerun P5 or duplicate H's Lean formalization of the existing bridge.
+1. Finish the e62 producer/replay equality audit: exact 30×44 key set, terminal shards, byte bindings and separate status for missing or capped keys. No closure until coverage passes.
+2. Prioritize calibrated diagonal 3/4 e64 or the two fixed f*=9 P3 layouts where the exact cover is cheaper. Keep isolated-pair bounds separately labelled; do not transfer P3 caps to isolated-edge roots.
+3. Avoid further wide flexible lower sweeps at the measured cap rate. Freeze proof indexes rather than rerunning checked e63/e65–66/P4/P5 proofs.
 
 ## Lane D
-1. On the K3,4 branch, test the T_j-to-U bound as a bounded exact filter on the surviving marked U partitions. Use matching witness types as a cover, not a disjoint census; calibrate on smaller instances before scale-up.
-2. For R(3), require an explicit bound on a whole one-side pin family or a materially stronger measured filter. Do not scale shared-width or assumption-core reuse at the measured rates.
-3. Preserve the 110-rooted representative scope and the matched C16 outputs; do not elevate a pinned UNSAT to a kernel closure.
+1. Use two slots for a measured exact R(3) split around the new blockers, or a joint multi-T resource test on the K3,4 branch. Require distinct input coverage and smaller controls before expanding either.
+2. Stop the single-group K3,4 filter and fixed-cycle timing retries; all 67,730 groups pass and the matched fixed-cycle encoding slowed down. Do not conflate pinned profile exclusions with any of the 110 rooted kernel representatives.
 
 ## Lane E
-1. Prefer the next smallest exact involution core stratum: compare `(2,28,a=6)` and the remaining `(2,32)` windows by complete core coverage and a calibrated CNF size pilot before committing cores.
-2. Preserve the `(2,28,a=4)` all-graphs cover, checked 42 proof bindings and clean-pin safety argument. Send only exact case exclusions to F; do not repeat work on this branch.
-3. For order three, add a new three-orbit/fixed-side interaction only if it improves on the matched two-orbit sample; the eight templates all survive and are not examples.
+1. Freeze the f=28 aggregate as a hand/cert/enum cover including inherited F10; distinguish the new all-graphs a=6 proof from the f=32 crown's stronger premises. Do not re-run f=28.
+2. For f=32, test the two cubic W cores in the t=4, minimum-degree-three branch with exact support-pin coverage and a matched smaller control. Report checked proofs, unchecked UNSAT and limits separately.
+3. Keep large pinned/unpinned sweeps off unless the new window split materially improves exact costs. Hand F only whole symmetry branches, not partial core strata, to skip.
 
 ## Lane F
-1. Stop replaying the exhausted four-orbit neighborhood or relabelling escape on the same I10=44 seed. Require canonical nonisomorphism and a matched n38 positive before another target pilot.
-2. Keep degree-valid and raw scores separate, preserve logs and two-slot occupancy, and skip E's certified branches. No family exclusion from a seed repair.
+1. Spend added slots on disjoint previously unseen cores from the two 24-score seeds. Verify canonical deduplication, enforce degree/edge validity, and independently recount any new score before handoff.
+2. Keep a matched order-38 positive and exact local coverage accounting, including caps. Do not repeat the complete score-26 strict repair, or E's excluded symmetry branches.
 
 ## Lane G
-1. Seek an exact order-33/e120 source, a certified decomposition that reaches the omitted edge-critical classes, or a direct obstruction to the missing region. The 1,178 exclusions do not make an exact cover; bound coverage before scaling.
-2. Calibrate on exact smaller sets and show genuinely new coverage or a decisive cost reduction. Do not rerun the same replacement sweeps unchanged. Use the demand witness checker first, then LRAT only on the exact complement.
-3. Treat e107 as secondary: require a tagged exact decomposition or explicit coverage gap; parent edge additions miss classes and an unbounded pair expansion is not a proof plan.
-4. Hand H the frozen exact lists for the 55 independent and 23 gluing-conditional cuts, assumptions for all LP stages, and 13 remaining U88 cases. Coordinate catalogue packaging with A; do not duplicate it.
+1. Target the six absent order-33 e120/e121 classes via an exact source, certified decomposition, or a direct obstruction at e168. Use the e168 equality signature rows where applicable; any use of up/down closure must also handle residues with no legal addition. No more unchanged broad replacement sweeps.
+2. Bind any additions to exact per-level canonical unions; reject prematurely treating GR's 1,223 lower bound as exact. Keep the 11 pinned e169 proofs scoped and recorded separately.
+3. Coordinate validation with A and pass the final exact cut keys to H. Keep e107 secondary unless a calibrated exact cover or substantial obstruction becomes available.
 
 ## Lane H
-1. Mirror confirmed statuses and scopes: 376 near-regular plus R, 13 more conditional U88, E's all-graphs closure, and C's P4/P3 restrictions only. Mark the P5 exclusion redundant, not promoted to `cert`.
-2. Prepare the round-4 deep audit of G's degree-six floor and 55 independent cuts: cite the primary count, bind the exact cover and document MTF and private-cell hypotheses. A handles the independent byte-binding; H handles hypotheses and ledger.
-3. Keep the three Lean results scoped to the named lemmas; if formalizing a new bridge, favor G's demand incompatibility or private-cell count over re-formalizing P4's existing rows.
+1. Update the ledger to 368+R, 12 conditional U88 and 39 potential e168/e120 cuts. Record G's eight MTF cuts, C's exact scope boundaries, and E's a=6 all-graphs enum and mixed-status f=28 aggregate. Do not elevate the live e62 job or partial e121 package.
+2. Audit the hypotheses of a targeted e120 equality obstruction or formalize the private-signature uniqueness bridge. Do not duplicate A's proof binding or G's census work.
 
 ## Duplicate work to stop
 
-- A owns compact replay packaging; G owns the next census and exception proofs;
-  H owns premises and the ledger. No second e119 generation or SAT run.
-- A and C stop P5 work now that the checked P4 exclusion subsumes it. C owns
-  e63; H does not run a parallel solver campaign.
-- E owns involution proof searches; F drops every certified E branch and uses
-  its remaining slots only for genuinely new seed experiments.
-- B owns the order-30 e88 gluing scans, G owns order-32/33 root floors; their
-  overlap is bookkeeping only. Neither repeats the other's finite scans.
+- G alone produces new order-33 coverage; A checks byte bindings and H owns hypothesis and ledger review. No second e119 census or floor replay campaign.
+- C owns the P3/P2 producer and terminal replay coverage. A and H stop P4/P5 reprisals and do not run a parallel R(6) solver campaign.
+- E owns orbit-case exclusions; F works on new repair seeds, not involution case proofs. Both stop all f=28 searches.
+- B owns order-30 duals, not G's order-33 residues; share threshold keys rather than repeating finite scans.
