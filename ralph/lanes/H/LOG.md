@@ -74,3 +74,9 @@ edge-floor bridge. See `LEAN_REPRO.md`, `FLOOR6_REVIEW.md`, and H-006–008.
 The historical 376+R, U88=13 and 47 e168 degree-six cases predate G's
 eight cuts. Round 5 proofs and their precise scopes are in `LEAN_REPRO.md`
 and `ROUND5_REVIEW.md`.
+
+Round 5's `check_private_signature_control.py` matched 13 C13 equality
+roots, 52 doubles and 208 of 1,872 tight common-anchor family checks;
+K2,3 serves as the no-full-cell negative control. The 12/270 Lean
+axiom checks passed. Its preliminary tracking of 368+R and 12 U88
+is historical after the round-005 critic confirmed 278+R / ten U88.

@@ -1,70 +1,56 @@
-# Lane G state — round 5, 2026-11-21
+# Lane G state — round 6, 2026-11-21
 
-## Current baseline and scope
+## Baseline and open work
 
-**283 near-regular distributions + R** remain against the critic's
-round-4 baseline (368+R), if the round-5 cover is accepted. No order-40
-candidate. **10** of these are conditional U88 (two e169 overlaps with
-the new direct cuts). Lane B's pending global degree-seven floor 108
-would cut five more (including its separate e162 result; do not double
-count), yielding **278+R** and 10 refreshed U88 keys. Neither its proof
-nor either gluing floor is needed for the main 85 cuts.
+**278 near-regular distributions + R**, unchanged this round. No
+order-40 candidate. Exact `round6_baseline.csv` includes the five
+floor-108 cuts; the direct e162 cut is not additional. Send B/H the
+ten conditional keys in `round6_u88.csv`. The 20 remaining e168
+degree-six pins are in `round6_e168_d6.csv` (11 one-root, nine two-root).
 
-The six order-33 e120/e121 keys are still missing. None has degree five.
-No global floor 121/122 for all degree-six MTF residues is claimed;
-39 previous potential e168/floor121 cuts now reduce to 20 independent
-remaining keys. The 11 prior e169-pinned proofs remain pinned.
+The six order-33 e120/e121 classes are still missing at unknown levels.
+All 1,223 supplied e120 and 13,092 supplied e121 rows retain their prior
+gluing scopes. The 11 e169-pinned proofs are not unpinned. No floor
+121/122 for all degree-six MTF residues was proved.
 
-## Round 5 results and claims
+## Results and claims
 
-| Label | Result / claim | Evidence | CPU-h |
+| Label | Result | Evidence | CPU-h |
 |---|---|---|---:|
-| pub + enum | The full 477,142-key class `(3,8;27)` leaves 118 keys for a degree-five root in `(3,9;33)`. Two exact maximal-column filters agree byte-for-byte. Two exact extenders canonically agree on all 984 min-five classes, e123..130. | `rows/no_degree_five_residue.md`, `root_certs/{d5_order27_survivors,d5_order33}.g6`, `audit_d5_cover.py`, `scratch/G/round5/audit_d5_cover.log` | 1.29 filters, 0.02 gluing |
-| cert conditional on enumerated cover | All 118 fixed-core extensions at cap122 dual-LRAT UNSAT. Exact non-MTF minimum degree-five lower bound 123 at order 33; five verified positive graphs attain it. | `d5_fixed.py`, `scratch/G/round5/d5/{cap122,full_e123.can.g6}`, cover audit log | est. 0.14–0.3 |
-| enum | Both full exact outer degree-six maximal-column gluers reject all 984 residues. No parent edge, MTF, or distribution premise. The exact canonical source, shard partition, counts and logs all pass audit. | `maximal_prefilter.c`, `check_maximal_prefilter.cc`, `scratch/G/round5/{d6,audit_d5_cover.log}` | 0.056 |
-| hand + exact Farkas, contingent on enum | In an MTF `(3,10;40)` graph, every degree-six vertex is adjacent to every other one, so `n6<=2`. The new global pair cap is `c(6,t)<=t-6`. 84 direct unit-Farkas cuts; e168 `(2,9,0,29)` also cut by odd `Z` vs `Z=48` (uses accepted floor120). Five improved t9 bounds. | `rows/no_degree_five_residue.md`, `d5_global_cuts.jsonl`, `scan_d5_cuts.py --verify`, `round5_cases.csv` | <0.06 |
-| estimate/open | Order-32 d4 pilot leaves 237/520 cores at 3.233 CPU-s. It is not the tiny-survivor regime; require a tighter early edge cap or a different split before scaling. | `scratch/G/round5/d4.pilot.max.log` | <0.001 |
-| conditional exact Farkas | Assuming Lane B's floor 108: five further cuts (two independent of gluing floors, three with them) and 39 tightened threshold keys. Four removals and four additions among candidate U88 keys; still ten. | `floor108_overlap.jsonl`, `scratch/G/round5/floor108_summary.log` | 0.025 |
-
-Calibration: all 178 degree-five order-22 graphs recovered from 2,576
-cores by both implementations, with all 70 exterior types from 944
-actual roots. Both outer filters accept 220 regular order-22 roots.
-The row analogue checks C13, C35, saturated Exoo39, all 191 saturated
-order-22 graphs and a nonvacuous smaller adjacent-peer control. See
-`scratch/G/round5/{d5.fullcontrol.binding.log,check_d5_rows.log}`.
+| hand + enum | Equality-root private pairs admit matchings of size `3+1_{ij∈J}`. Label a perfect matching on every edge of a signature spanning tree, fixing 20 exterior edges. A independently binds 3,700 labelled signature graphs, 14 orbits and all 112 orbit/pin pairs. | `rows/signature_matchings.md`, `equality_template.py`, `scratch/{G/round6/template.cover.log,A/pair6/g-template-audit.log}` | <0.001 |
+| cert | In the exact induced three-anchor window with 12 privates and `q=0..3` distinct doubles, the minimum **exterior** edge counts are 9,11,15,18. Four lower-cap proofs pass both LRAT checkers; four independent positive controls attain each bound. No claim of a completion to 40. | `local_signature_budget.py`, `scratch/G/round6/localproof/`, `rows/signature_matchings.md` | <0.002 |
+| hand + estimate | Retained-anchor edge floors, independent-double contact and even-cycle rows, exact local floors, and adjacent-root strip inequalities. All 112 base and all 112 strengthened projected LPs numerically feasible; **zero cuts**. Actual C13 and n9/p3 equality substitutions pass; Hall analogues pass C35 and saturated Exoo39. | `signature_rows.py`, `scratch/G/round6/signature{.control-final,-final.lp}.log` | 0.032 total, 0.010 final |
+| enum | No structural inverse mark among all 13,092 supplied e121 rows and 90,223 supplied e122 rows. Independent n12 controls agree on all 104 partial and 52 full upper marks and lower alpha verdicts. Not an upper-class census. | `mark_inverse.cc`, `test_mark_inverse.py`, `scratch/G/round6/{inverse.control,e121.full.inverse,e122.full.inverse}.log` | <0.001 |
+| hand | Two adjacent d6 equality roots give a residue half with a five-column strip, `X` of order 28/84 edges, and exactly two uncovered pairs. Cross role path/leaf is necessary on both halves when n8=2, on at least one when n8=4. Lane A proved the two-root zero-addition branch impossible; this does not prove any missing level complete. | `rows/signature_matchings.md`, `ralph/lanes/A/ADJACENT_DEG6.md` | — |
+| estimate/open | Direct normalized 40-vertex CNF pilots: 4 cap5k + 8 cap20k + 4 cap100k, zero models, all capped. Two unmarked and three cross-role-marked exact 33-vertex half-pilots cap100k also have zero models. Neither route has an estimate to UNSAT. | `scratch/G/round6/{template*,half*}.log`, `half_template.py` | 0.074 |
+| hand + exact arithmetic (replay of accepted prior results) | 984-class round-5 cover and 85+5 cut keys frozen with exact refreshed identities. No new assertion of completeness for e120/e121. | `ROUND6_FREEZE.sha256`, `freeze_round6.py`, `scratch/G/round6/freeze.replay.log` | <0.01 |
 
 ## Jobs
 
-No live G jobs. All listed detached wrappers finished; checked `ps`,
-all terminal files and logs. Times CET; one core per listed PID. The
-foreground eight-input *relaxed* core pilot included SAT and wall caps;
-it is not used for any exclusion (`d5/high.pilot.log`).
-
-| PIDs | Command (cwd `scratch/G/round5`) | Log | Start | Expected then / outcome |
-|---|---|---|---|---|
-| 3743061–3743068 | `timeout 1200s bash ../../../ralph/lanes/G/run_d5.sh ID` | `d5/worker.ID.log` | 21:22:12 | 21:32–38; all 32 done by 21:29:39 |
-| 4025790, 4025791, 4025793, 4025797, 4025803, 4025809, 4025815, 4025822 | `timeout 1000s bash ../../../ralph/lanes/G/audit_d5_shard.sh ID` | `d5/audit.worker.ID.log` | 21:28:40 | 21:33–40; all 32 done 21:32–33 |
-| 4097864, 4097888, 4097910, 4097924, 4097941, 4097958, 4097980, 4098003 | `timeout 1000s bash ../../../ralph/lanes/G/replay_d5_fixed.sh STEMS` | `d5/lrat.worker.ID.log` | 21:31:41 | 21:34–38; 118/118 checked with pilots by 21:33:29 |
-| 4736, 4737, 4739, 4740, 4741, 4742, 4743, 4745 | `timeout 200s bash -c ... bash d6/full.ID` (`./maximal_prefilter 9 6 --witness`) | `d6/worker.ID.log`, `d6/full.ID.log` | 21:35:49 | 21:36–38; all 8 done by 21:36:19 |
+No live jobs, no detached launches. Foreground runs all completed
+within their limits; peak eight concurrent pilot solvers, share 25.
 
 ## Handoff
 
-- A/critic: independent review of the finite cover and bytes, entry point
-  `rows/no_degree_five_residue.md`; Lane G already ran independent C++
-  generation and `audit_d5_cover.py --lrat`. H: bind 85 exclusion keys,
-  record exact status and consider formalizing the elementary hand bridge.
-  B: U88 now 10 relative to G's baseline. If floor108 is accepted then
-  replace the key set using `floor108_summary.log` (still 10).
-- Next: after `n6<=2`, prioritize the 20 still-open e168 cases with a
-  degree-six root. Only a cover of missing e120 graphs or a different
-  direct obstruction can close them. Any remaining e120 graph is
-  deletion-critical and has at most five distinct one-edge e121 children;
-  do not assume it has children. No unchanged broad replacement sweep.
-  Downstream possibility: exact order-32 d4 low-edge cover if the cut
-  reduces the measured 46% survivor rate by orders of magnitude.
-- Prior accepted floors: degree-six 120 (`rows/floor120.md`, complete 5+69
-  classes, unpinned checked proofs); degree-seven 107 (`rows/floor7.md`).
-  No assumptions about extension of general e120/e121 classes. Historical
-  runs, mislabeled mixed levels and scope repairs are in `LOG.md` and
-  `REPRO.md`. Frozen `round4_cases.csv` reproduces its accepted 368+R and
-  all round-4 rows, including its independent signature/packing cuts.
+- H/critic: local exact triple edge rows and the hand matching-tree
+  normalization are suitable separate claims. Do not change the
+  distribution baseline. A independently checked the mask cover.
+- If new e121/e122 keys appear, `mark_inverse` is a fast exact delta
+  scan; verify alpha after the deletion and canonically bind newly
+  recovered e120 rows before any LRAT run. The 90,223 e122 rows are
+  only a supplied set. Missing e120 cases with a single degree-six
+  root may have zero additions and need a different exact source.
+- Strongest narrow target: path/leaf strip alone would close the two
+  two-root pins with n8=2,4, subject to a checked refutation. The other
+  half roles are path/center and matching/incident. Look for a narrow
+  **complete** smaller window source or a contact inequality that
+  correlates overlapping triples. Do not scale the capped flat SAT
+  pilots or repeat broad replacements without a new selector.
+- Only perfect matching pins are valid. The first local q=0 pilot
+  used weak pins and was discarded; the final proofs use forest
+  perfect pins only. All order-40 and 33-vertex shape runs were on
+  connected signature graphs, so this correction changes none of
+  those pilot scopes. Replay recipes are in `REPRO.md`.
+- Prior accepted floors: degree-six 120 (`rows/floor120.md`),
+  degree-seven 108 (Lane B `FLOOR7_108.md`). No order-32 d4 expansion:
+  237/520 pilot survivors, no new cap. More history in `LOG.md`.

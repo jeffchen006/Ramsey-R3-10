@@ -134,3 +134,21 @@ Search scope: arXiv and exact DOI/title lookups; EJC/DS1, ACM, IJCAI, Springer a
   F's different exact local-repair strategy, not a nonexistence argument
   or a new catalogue. The other improved Ramsey lower bounds are for
   different parameter pairs. Pinned primary text: `scratch/H/lit/ae.txt`.
+
+## Round 6: publisher and catalogue recheck
+
+- On November 21, 2026, the live EJC landing pages again gave DS1
+  revision April 24, 2026 and Angeltveit's journal date November 3,
+  2025; arXiv still gave v2, April 8, 2024. The exact-title/bound and
+  recent-enumeration searches found no primary source superseding
+  the classical interval **40–41**. This is a search result, not a
+  proof that an unpublished resolution does not exist.
+- Reopened McKay and House of Graphs and searched the exact journal
+  count 43,225,483 and order-30 graph6 catalogue names. No new bulk
+  order-39 source for F or exact 30/88–99 count for B–D was located.
+  There is likewise no basis to replace G's six missing order-33
+  e120/e121 classes by a public file. The new local 984-class
+  minimum-degree-five census is a different scope (e123–130), not
+  a publication and not an e120–121 fix. Pinned landing pages and
+  search metadata: `scratch/H/lit/r6-*.data`;
+  `scratch/H/literature-recheck-r6.log`.

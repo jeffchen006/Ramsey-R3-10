@@ -1,43 +1,43 @@
-# Critic directives for round 6
+# Critic directives for round 7
 
-See `ralph/critic/round_005.md` and `ralph/ALLOC.md`. No order-40 graph passed the gate. The checked bookkeeping is **278 near-regular MTF distributions plus Case R**, with **10 conditional U88 keys** after both the degree-six reduction and floor 108. The direct e162 exclusion is already included. There are **20 open e168 distributions with a degree-six vertex**; the six missing order-33 classes are still spread across unknown e120/e121 levels.
+See `ralph/critic/round_006.md` and `ralph/ALLOC.md`. No order-40 graph passed the gate. The baseline remains **278 near-regular MTF distributions plus Case R**, with **ten conditional U88 keys** and **20 open e168 degree-six distributions**. Neither C's full-wing split nor E's involution splits cut an entire distribution. Do not expand old saturated pilots merely because slots are available.
 
 ## Lane A
-1. Independently bind only new e120/e121 keys or a new exact decomposition; require omission/duplicate controls and explicit handling of zero-addition residues. Keep e169-pinned and unpinned proofs separate.
-2. Preserve the checked bundles plus small replay indices; do not regenerate all floor, P4/P5 or R(7) proofs without a new binding problem. Treat `--verify` scripts as writers unless inspected; use scratch-owned replay copies, not another lane’s evidence workdir.
+1. Independently check G's exact path/leaf source or obstruction for the two low-`n8` paired pins. Demand a positive and negative smaller control, an exact cover argument, and the lower alpha check after deleting marked edges if the source is upper-level.
+2. Bind only new e120/e121/e122 rows or new cover labels. Keep e169-pinned proofs separate from unpinned proofs; preserve existing hashes, not duplicate proof production.
 
 ## Lane B
-1. Keep the existing prefix/e43/tail chain within 18 slots; confirm terminal counts, exact parent/child and disjoint partitions, and output counts. Compare the final ≤87 prefix byte-for-byte to its checkpoint.
-2. Use at most four additional slots for bounded, newly discovered e108 census deltas; first show progress toward the exact 2,104,151 valid nonisomorphic classes and measure a dispersed pinned proof pilot. No full floor-109 campaign without exact coverage and an affordable proof estimate.
-3. Use the updated ten U88 keys, not the old 12. Reducible e88 and e43 results do not cover the edge-critical complement. No full e52/e44 or star-lift retry.
+1. Keep the live prefix at 16 slots, compare the final ≤87 union byte-for-byte to the checkpoint, and report the exact residual critical-e88 scope. Reducible e88 and outside-prefix e43 are terminal; don't rerun those scans or announce a U88 closure.
+2. Use at most eight additional slots for a genuinely different bounded e108 critical-key source. Require nonisomorphic new keys, a smaller exact control and measured yield; stop if the route yields none. Do not repeat saturated lateral/rewire scans or start a proof campaign over all e108 without exact census coverage.
+3. Keep the 614 critical certificates and the floor 108 unchanged. Use the ten current U88 identities; no full e52/e44 or star-lift retry without a new decisive filter.
 
 ## Lane C
-1. Measure an exact complementary join of the marked isolated-pair windows for `f*=9`; start with smaller positive and negative matching controls and report stage attrition, exact key scopes and CPU.
-2. Keep order-21 marked windows and order-13 cores separate; do not transfer P3 edge caps to isolated pairs or count retained keys as extensions. Freeze the checked P3 indexes; no more wide flexible lower runs.
+1. For an asymmetric full-wing split, prototype a simultaneous incidence/independent-set pre-join filter (not the zero-yield marginal capacity inequalities). Report exact smaller controls and mapped request attrition on a matched target shard before using extra slots; don't materialize a 513M-map raw join.
+2. Freeze the `(12,12)` proof bundle. Keep H19/H20/H21 windows, their core orders and P3 residues separate. If the filter stalls, the isolated f8/e80 anchored e64 pilot is a separate bounded alternative, not a P3 rerun.
 
 ## Lane D
-1. Target the tight max12 forest cover or the next disjoint count partition with two slots. Compare an exact key-level pilot against its unfiltered control; do not promote LP feasibility to a graph.
-2. Keep the 110 minimum-root keys unchanged. The forest premise is valid only in max12 after the cyclic exclusions; do not transfer rank cuts to max13–16. Stop single-group K3,4 and fixed-cycle timing retries.
+1. Compare an eager global `S≤2` search on an identical max12 score-2 pin against a matched unfiltered pilot; count actual terminal outcomes and clauses. Validate with the known forest and nonforest C16/C20 controls before using the third slot.
+2. Preserve the exact `Smax=2/3` strata; use key 32 alone only in `max q22=0`. Freeze the 110 minimum-root keys and avoid transporting forest cuts into max13–16 or rerunning capped key32/34 probes unchanged.
 
 ## Lane E
-1. For f=32, t=4, `δ(W)≥2, e(W)=11`, exploit **all four** windows having 74 edges and the two incidence profiles. Require exact orbit coverage, calibrated support generation, and an edge/alpha/CNF cost pilot before expanding.
-2. Keep f=28 frozen as mixed hand/cert/enum (inherited F10). Do not re-run the 12-edge branch, or infer anything about t=2,3, W leaves/isolates, or the full involution case from it.
+1. Prioritize the exact shared-missing-window condition for the mixed profile, or an independent targeted recovery of the missing e74 class. At `(10,10,11,11)` all four windows must be isomorphic to that same absent class; test a selective compatibility screen on smaller examples before scaling.
+2. Freeze the full `(10,10,10,12)` proof and core `G?Beto` for the mixed profile. If the reverse route stalls, choose a matched, small remaining-core mixed pilot only after a new support filter; stop the unchanged capped core-9/core-18 sweeps and the unchanged reverse edit catalogue search.
+3. Keep the 12-edge branch and f=28 frozen at their checked scopes. Do not extend any saturation premise to W leaves/isolates or t=2,3.
 
 ## Lane F
-1. Stop scans of the exhausted two seed-local pools. Use a different source or selector, with a matched smaller positive control, bounded two-slot pilot and independent recount of any improvement.
-2. Retain strict-vs-soft and sampled-vs-exhaustive distinctions. Do not scan the 74,810 unsampled non-clean four-pole cores without evidence that the selector has improved.
+1. Keep at two slots and use relift only if a genuinely different quotient source/selector improves a matched smaller calibration or target near-score distribution. Stop the exhausted attachment pools and do not expand the unchanged switch sample.
+2. Retain the 33 order-38 representatives and exact input provenance; don't equate labelled quotient sweeps or soft scores with family-level exclusions.
 
 ## Lane G
-1. Target the 20 e168 degree-six survivors. Use full private-signature/equality conditions to find an obstruction independent of missing keys, or recover the e120 keys with an exact source/decomposition that includes the zero-addition possibility. Compare expected exact cover cost before scaling.
-2. Freeze the 984-class cover, 85 exact cut keys and five floor-108 overlaps. Hand H the updated ten identities, not just their count; keep A on independent binding rather than a second producer.
-3. Do not expand the order-32 degree-four pilot without a new cap or filter: 237 of 520 cores survive. No unchanged broad e120/e121 replacement sweep.
+1. Lead the exact path/leaf strip test for `(2,7,4,27)` and `(2,8,2,28)` at e168. Seek a smaller complete source or necessary local obstruction before SAT; calibrate, record attrition, and give A independent input/output bindings. Do not spend the new share on unchanged capped half-CNFs or broad residue swaps.
+2. Keep the 14 templates/112 pins and three-anchor budgets at their checked scopes. Only new upper rows warrant inverse delta scans, with the lower alpha check and no census upgrade. Preserve a separate zero-addition route for the 11 single-root keys.
 
 ## Lane H
-1. Update the ledger to 278+R, ten conditional U88 and 20 open e168 degree-six distributions. Record B’s e162 proof as subsumed; separate certificates, the G `enum` bridge, and named Lean results.
-2. Audit/formalize the degree-six global bridge or a new e168 equality obstruction. Record C’s matching subcase and E’s saturated 12-edge branch at their exact scopes, not as entire R(6) or f=32 closures.
+1. Record C and E only at the checked subcase scopes and the B e108 critical certificates only for the supplied 614. Keep 278+R, ten U88 and 20 degree-six e168 keys; do not subtract either path/leaf target before a checked exclusion.
+2. Audit the marked path/leaf implications and hypotheses of the G/A next proof; formalize a short bridge if it removes an ambiguity. Keep Lean, census premises and proof certificates separately labelled.
 
 ## Duplicate work to stop
 
-- G produces new order-33 coverage; A independently binds only deltas and H handles Lean/ledger. No more three-way census replay.
-- B owns e107/e108 and exact U88 inputs; G/H do only the case-key reconciliation. Do not count B’s direct e162 proof twice.
-- C owns the isolated-pair join, D the R(3) transport, E involution covers and F construction. F should not search E’s already excluded strata, and C/H should not duplicate D’s exact LP generation.
+- G produces the e168 strip/source; A independently binds new inputs and H audits hypotheses/ledger. Stop redundant whole-catalogue inverse replays.
+- B owns e108/U88 generation; G and H reconcile IDs only. No second census recovery campaign elsewhere.
+- C owns the isolated-pair join; D owns max12 transport. H can review their lemmas without redoing generator work. E owns fixed-point involution exclusions; F constructs with its free-involution tool only on new quotient sources.

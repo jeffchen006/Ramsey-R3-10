@@ -1,5 +1,23 @@
 # Lane D — round 3, 2026-11-21
 
+## Historical round 5 handoff (jobs ended)
+
+- Max-root, not min-root: 111 kernels independently counted by genbg
+  across max12..16 as 35/39/26/8/3. Max12 has codegrees 2..3, 19
+  isolate keys ruled out by hand and cyclic 19/20/22 ruled out by
+  exact transport Farkas (`enum`, critic round 005 confirmed).
+  After these exclusions every edge kernel in max12 is a forest.
+- Round 5 star fixed point on all 16 no-isolate keys: only 20/22
+  refuted by projection; 14 feasible relaxations. Their earlier
+  composite Farkas and 24/31 CakeLRAT checks are superseded by the
+  unfiltered LP, not Sec. 7 certificates. `TRANSPORT.md` and
+  `scratch/D/round5_evidence.sha256` retain these results.
+- Key34 (`k=6`) checked by exact Farkas with/without forest;
+  k=7..14 feasible LPs. Key21 filtered IPM feasible. Integer-mask
+  MILP hit cap; no claim. No change to 110 min-root keys.
+- Completed supervisors 30557 (star 24,26,27,28,29,30,31,32),
+  136533 (transport 19..34), 479273 (key34 k=6..14), all gone.
+
 ## Historical round 4 handoff (no jobs carried)
 
 - `TRIPLE_U.md`: all 67,730 marked K3,4 U rows pass one T-group

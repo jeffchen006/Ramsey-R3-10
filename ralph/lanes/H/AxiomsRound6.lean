@@ -1,0 +1,7 @@
+import R310
+
+#print axioms R310.nbrIn_le_sub_six_of_exterior_minDegree
+#print axioms R310.IsMTF.degree_six_isClique_of_exterior_minDegree
+#print axioms R310.IsMTF.card_degree_six_le_two_of_exterior_minDegree
+#print axioms R310.IsMTF.exterior_minDegree_of_no_degree_five
+#print axioms R310.IsMTF.e168_degree_six_peer_profiles

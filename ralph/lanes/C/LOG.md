@@ -167,3 +167,17 @@ Exact costs and proof/replay scopes are in `ROUND4_REPLAY.md`.
 - The earlier C22 controls for isolated pair/anchor results,
   e63/upper fixed-flexible regressions, and expensive generic
   flexible low strata are in `ROUND4_REPLAY.md`; don't rerun them.
+# Round 6 — complementary full-wing windows
+
+- Four proof shards started 22:27:33 CET (PIDs 1308534, 1308577,
+  1308640, 1308734, hard end 22:39:33); four replay shards started
+  22:31:12 (PIDs 1401955, 1401989, 1402053, 1402098, hard end
+  22:43:12). All ran under `scratch/C`, one core each. Exact commands
+  and logs: `scratch/C/p2r6-cross-{jobs,replay-jobs}.tsv`.
+- 1,134 terminal CakeLRAT proofs on the H21/H21 `(12,12)` survivor
+  cover and independent CNF regeneration plus full proof replay.
+  Evidence `ROUND6_REPLAY.{md,sha256}`. The join and necessary
+  screens are enum; no claim about all `f*=9` configurations.
+- H19 pilot: 39 necessary profiles, 4,749 marked H19 class keys
+  from 381 K12 cores. Raw pairing estimate is prohibitive. K13/side12
+  unprofiled capped; aggregate independent-capacity scan had no loss.

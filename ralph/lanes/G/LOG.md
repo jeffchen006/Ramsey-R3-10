@@ -1,5 +1,44 @@
 # Lane G experiment log
 
+## Round 6: matched private cells and marked halves
+
+- Forced perfect matchings along signatures give 20 fixed edges on a
+  tree per e168 degree-six root. Independently audited by A: 3,700
+  labelled J, 14 orbits, 112 compatible orbit/distribution pairs.
+  Verify symmetry only along a forest of **perfect** matchings. The
+  first local q=0 cap9 pilot incorrectly used shared weak pins and
+  was discarded; no order-40 or marked-half pilot used a weak pin.
+- Three-anchor windows have exact exterior minima 9/11/15/18 for
+  0/1/2/3 doubles, respectively. Four dual LRATs and four checked
+  positive graphs; equality and Hall coefficients also tested on
+  C13, C35, saturated Exoo39, and an order-nine p=3 equality root.
+  Retained-anchor edge-table floors, weighted independent-double
+  contact bounds, and companion strip rows do not close any of the
+  112 compatible pairs in the projected LP (37.29 CPU-s final).
+- Initial d6 equality CNF pilot: four cap5,000 runs with 0 models,
+  47.93 CPU-s. Replacing sequential counters with compact totalizers,
+  preloading 22,714–26,043 local alpha clauses and dropping the
+  redundant global edge cardinality yields eight cap20,000 runs
+  (four MTF, four not), 50.7 CPU-s, all capped with no models. Four
+  strengthened runs at cap100,000 also give no models (112.33 CPU-s).
+  A plain sweep cannot be costed to a proof from these samples.
+- A's two-d6 inverse mark checked on 36 partially augmented and 18
+  fully augmented smaller rows, matching its independent output
+  on all 104/52 marks, including lower alpha. A sparse sample projects
+  <2 CPU-s per upper source; actual 0.196 CPU-s on all 13,092 supplied
+  e121 rows, 0.985 CPU-s on all 90,223 supplied e122 rows. No mark in
+  either. This does not cover unsupplied classes or zero-addition
+  residues for the single-d6 keys. Two-d6 zero-addition is impossible
+  by A's hand proof, but that alone does not close a distribution.
+- Exact necessary half-shapes K5 minus two pairs have path/leaf,
+  path/center and matching/incident cross-endpoint roles. The two
+  unmarked pilots (22.32 CPU-s), and then all three compulsory-column
+  domination pilots (34.40 CPU-s), cap at 100k conflicts with zero
+  models. A proof for path/leaf alone would handle the two two-d6
+  pins with n8=2 or 4, but no pilot is such a proof.
+- Frozen prior 984/85/5 binding and ten U88 identities. No e120/e121
+  additions recovered, no order-40 graph, and no incremental cut.
+
 ## Round 5: complete degree-five obstruction, 85 independent cuts
 
 - The old 65-core baseline (11.40 CPU-s) projects to about 23 CPU-h over

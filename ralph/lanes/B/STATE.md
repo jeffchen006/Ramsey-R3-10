@@ -1,25 +1,34 @@
-# Lane B — round 5, November 21, 2026
+# Lane B — round 6, November 21, 2026
 
-**Round 5:** global degree-seven floor **108** for MTF, submitted to the
-critic (cert: accepted G-011 plus complete GR T14 level 107 and checked
-clique/LRAT cover). This subsumes the separate direct exclusion of
-`e=162 (n6,n7,n8,n9)=(0,2,32,6)`. Neither uses t8/t9 floors. No candidate
-graph, and full t9<=88 census not launched. Share is 18 cores.
+**Current baseline:** global degree-seven floor **108** for MTF is CONFIRMED
+(B-013); it subsumes the direct e162 `(0,2,32,6)` exclusion. Neither
+uses t8/t9 floors. No candidate graph. Share is 22 cores: at most 18 for
+the existing prefix/e43/tail chain, at most four additional for e108.
 Work from `scratch/B` with `ulimit -v 16777216` and `PYTHONDONTWRITEBYTECODE=1`.
 
-A complete U88 exclusion would cut **12** more distributions on the
-checked round-4 baseline. The direct e162 cut, considered alone, reduces
-that to 11. With floor 108 and G's new n6 bound the count must be
-recomputed; requested from G/H, do not add reductions blindly. Full
-t9<=88 is still open.
+**Round 6:** d7/e43 outside prefix returned zero and finished binding.
+Both scans of the full deletion-reducible e88 partition finished with
+zero completions (5,719,576 keys). The edge-critical complement
+and all **10** refreshed U88 keys remain open (278 profiles plus Case R
+on the round-5 accepted baseline). e108 is 1,266 classes short.
+Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 
 ## Jobs
 
 | PID | Command | Log | Cores | Start (CET) | Expected end |
 |---|---|---|---|---|---|
 | 1180084 | `timeout 18h prefix_pipeline.sh 16` | `scratch/B/logs/prefix_pipeline.log` | 16; solving since ~17:24 | Nov 21 17:10:35 | estimate Nov 22 00:50–02:00, cap Nov 22 11:10 |
-| 3921182 | `timeout --kill-after=1m 6h bash ../../ralph/lanes/B/src/wait_tail7.sh 3047886 140845100 43` | `scratch/B/logs/tail7_e43.log` | 1 worker (up to 2 during shortg/sort) | queued Nov 21 18:28:27, computing since 19:42 CET | revised est. Nov 21 22:15–23:05 CET; 903/399 CPU-s outliers among 48 chunks; cap Nov 22 00:28 |
-| 2576750 | `timeout --kill-after=1m 8h bash ../../ralph/lanes/B/src/wait_tail87_checkpoint.sh 3921182 140991398` | `scratch/B/logs/up87tail_checkpoint.log` | 0 awaiting e43 worker slot; then 1 worker (up to 2 for shortg/sort) | queued Nov 21 20:40:32 CET | 25–55 min after e43 exits; cap Nov 22 04:40 CET |
+
+PID 3921182 finished at 22:30 CET, all 48 chunks bound, zero e88 outputs.
+PID 2576750 (tail87, active 22:30:40–22:52 CET) finished with zero MTF
+outputs and all 945 ordered chunks bound; the independent terminal audit
+passed. At 22:53 CET prefix d6 has 2,021 completed chunks and 826 left.
+Round-6 e108 PID 1105184 (four-way swap, 22:19–22:25) passed all 2,102,271
+parents, adding 479 keys. PID 1276908 (following deltas, 22:26) intentionally
+exited at an incomplete fixed point after adding 128 more; no e108 PID
+remains. The unoptimized 512-parent 2→3 pilot's `shortg` timed out, not an
+empty result; the calibrated critical-only version completed on the same
+parents. All other round-6 foreground pilots and audits have finished.
 
 Round 4: PID 3047886 (`edgeup_pipeline.sh 86 … up86`) ended successfully before 19:42. 392466 was retired at 20:40 while still waiting (no compute lost); checkpoint input is ready, so 2576750 queues behind e43 for core headroom instead of waiting for the entire prefix. All foreground benchmarks finished. Full e88 remains open. Round 3 completed: PID 1367119 (`starlift_stage.sh`, one worker, queued
 Nov 21 18:57:38, ran ~18:59–19:03 CET), with terminal count audit and SAT
@@ -28,19 +37,25 @@ e52 TIMEOUT after the exact e63 control passed. Neither benchmark is live.
 
 Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitted minimum degree 3 for order 21; corrected by generating this branch and merging, no missing counts thereafter. Seed 418169 failed on `shortg`'s in-place default; 453949 passed after explicitly writing stdout. Do not interpret either failed run as empty. Upper seed PID 540708 completed successfully at ~17:23 with all GR T13 counts.
 
-Round 5 foreground gluing, proof generation/replay and e108 pilot jobs all
-finished; no additional detached workers. At 21:49 CET, e43 has 39/48
-completed generation chunks (0 outputs so far, one worker on chunk 39),
-prefix is still in d6, tail87 still queued behind e43. No terminal e88
-slice result to audit this round. The 16+2 solver peak was preserved.
-
 ## Results and claims for review
+
+### Round 6
+
+| Label | Result | Evidence | CPU-hours |
+|---|---|---|---:|
+| enum | Outside-prefix d7/e43: exact GR T13 1,521 small seeds, 48 audited chunks, zero raw order-30 e88 outputs and no outer roots to glue. Fresh pickg/input equality, independent direct validity and Traces. Not the e44 branch and not full U88. | `ROUND6_REPLAY.md`, `scratch/B/logs/e43_r6_full_binding.log` | 2.63 generation |
+| enum | No degree-nine MTF root with a deletion-reducible e88 residue. Complete 133,434 + 13,901 exact e87 parents; independently replayed 1,052,247 raw tail children and exact 11,524 overlaps + 967,613 novel keys. Ordered scans of 4,751,963 + 967,613 keys returned zero; all 4,641 + 945 chunks bound. Dispersed tail SAT sample 64/64 nonextending. Does not cover e88 critical. | `ROUND6_REPLAY.md`, `scratch/B/logs/{up87tail_checkpoint,up87_r6_terminal_audit,up87_r6_sat64}.log` | ~0.32 new; 1.71 total solver hours incl. up86 |
+| enum / open | e108 partial: separate validity/Traces both give 2,102,885; 2,102,271 reducible + 614 critical. New critical deltas 479, 68, 40, 20, 0; now 1,266 short of GR. | `scratch/B/logs/{e108_r6_pass1,e108_r6_follow,e108_r6_partial_audit}.log` | ~0.26 new swap and replay |
+| cert (supplied keys; pending critic) | 614 known critical e108 residues excluded at d7 MTF roots: 569 checked demand cliques, 45 pinned LRATs (43 single-line RUP, 2 CaDiCaL), regenerated CNF digests and both proof checkers. No t8/t9 or global distribution premise; no floor 109. | `ROUND6_REPLAY.md`, `scratch/B/logs/e108_r6_critical_proof.log` | <0.01 |
+| estimate | 4,096 dispersed reducible inputs: 3,923 checked cliques + 173 dual LRATs. Compact proof/replay 14.81 CPU-s for 173, 149 unit-refutable; discards redundant CNFs/logs. ~2.3 CPU-h for whole e108 proof campaign *if exact cover acquired*, 4 slots ~35 min at full speed; allow ~1 GB allocated. Maximal-row cliques reject 0/173 more after 220 actual roots and 30 exhaustive row-domain controls. | `scratch/B/logs/e108_r6_{pilot,unit,maxrow}.log` | ~0.011 calibration/pilot |
+| estimate / open | No new e108 critical keys in calibrated local pilots: exact star rewires (8,192 e107 + 614 critical e108 parents, 38.5s), critical-only 2→3 from 512 e107 (39.1s; 170 distinct already known), 2→2 from 4,096 reducible e108 (110.7s; 202 already known), random excursions +3/+5/+8 edges on 614 critical anchors (64 trials each; all outputs known), or direct d7/e58 gluing (48 inputs, no critical outputs, 51.6s). Critical-only edits passed 24 brute controls and an exact paired 8-parent multiset. Full direct e58 branch alone estimates 38.6 CPU-h, no coverage guarantee. | `scratch/B/logs/e108_r6_{rewire_pilot,edit107_opt,edit108_opt,edit_pairbind,excursions,direct}.log` | ~0.071 |
+| estimate | Explicit size plans did not speed the d7/e58 critical gluer: baseline 97.83 CPU-s on 24 seeds, recovering all 12 planted keys and 286 total known canonical classes; first planned order TIMEOUT 180 wall seconds. Positive controls are not a proof of census coverage. | `scratch/B/logs/e108_r6_sizeplans.log` | ~0.076 |
 
 ### Round 5
 
 | Label | Result | Evidence | CPU-hours |
 |---|---|---|---:|
-| cert (MTF; pending critic) | d7 residue floor **108**, no t8/t9 or profile premise. Complete 234,681 GR classes at e107; 231,455 checked eight-demand cliques plus 3,226 necessary CNFs pinned by seven-demand row normalization. All 3,226 LRATs pass both checkers and byte-identical CNF/hash replay. Combine with G-011. | `FLOOR7_108.md`, `FLOOR7_108.sha256`, `src/replay_floor7_108.sh`, `scratch/B/logs/e107_floor108_replay.log` | ~0.14 new proof and replay, excluding census/gluer |
+| cert (MTF; CONFIRMED) | d7 residue floor **108**, no t8/t9 or profile premise. Complete 234,681 GR classes at e107; 231,455 checked eight-demand cliques plus 3,226 necessary CNFs pinned by seven-demand row normalization. All 3,226 LRATs pass both checkers and byte-identical CNF/hash replay. Combine with G-011. | `FLOOR7_108.md`, `FLOOR7_108.sha256`, `src/replay_floor7_108.sh`, `scratch/B/logs/e107_floor108_replay.log` | ~0.14 new proof and replay, excluding census/gluer |
 | enum / open | Exact e108 reducible slice 2,102,271 of 2,104,151 GR classes (9,185,929 raw children of all e107s). Audited edge/order/alpha and sorted canonical distinctness. Of 1,880 deletion-critical types, an 8,192-parent swap pilot recovered 7, independently validated as critical; 1,873 missing. No e108 closure. | `scratch/B/logs/{e108_r5_reducible,e108_r5_followup,e108_r5_critical_audit}.log` | ~0.04 |
 | estimate | e108 pilot: 0/1,024 MTF glues, 979 checked demand cliques, 45/45 pinned dual LRATs. Project ~0.82 CPU-h whole e108 gluer or ~1.7 CPU-h pinned production plus clique checks/replay, biased toward reducible inputs; a full first critical-swap pass projects ~13 min on one busy slot before final audit, with no reachability guarantee. | `scratch/B/logs/{e108_r5_pilot,e108_r5_followup}.log` | <0.01 pilot |
 | enum | Complete untuned independent gluing at e107: 234,681 inputs, zero completions in 355.18 CPU-s. Independent SAT gluer agreed on 64/64 dispersed inputs after positive D5/K6 control. No broader e level inference. | `scratch/B/logs/{e107_fullglue,e107_sat_control,e107_sat64}.log` | ~0.103 |
@@ -89,18 +104,16 @@ slice result to audit this round. The 16+2 solver peak was preserved.
 
 ## Next
 
-0. Ask critic/A to audit `FLOOR7_108.md` and replay; G/H to count actual
-   distribution updates including overlaps with G's round-5 n6 reduction.
-   The separate e162 certificate is not an extra cut once floor 108 is used.
+0. Critic/A: audit the newly scoped e43, e88 partition and 614 critical
+   e108 certificates (`ROUND6_REPLAY.md`). Do not recut direct e162.
 1. Prefix PID 1180084 uses (5:3,6:3,7:1), sufficient for <=87 by exact `tcheck.py`; runs with output cap 88, so its e88 result is **partial only**. Require the full run's own e86/e87 checks and compare its e87 canonical file byte-for-byte to `scratch/B/work/prefix_checkpoint_r4/union87.g6`. Confirm terminal counts and SAT on a dispersed e88 sample.
-2. Watch PID 2576750 (`wait_tail87_checkpoint.sh`): after e43 releases its slot it rechecks the exact lower-level checkpoint, runs `edgeup_tail87.sh` on the other 13,901 parents, checks the exact e87 merge and the e88 partition, and audits ordered input hashes for every MTF chunk. Read actual `output N`, not merely the terminal marker. Once complete this accounts for reducible e88 duals, not the edge-critical complement (e.g. `critical88.json`).
-3. Monitor e43 PID 3921182. Run `src/audit_e88_scans.sh e43` at terminal. The result applies only to the d7,e43 branch outside the prefix. Paired e43 sample projected 2.18 CPU-h for gluing plus final sorting/scan. Do not scale e52/e44 without a material new bound; no more star-lift. t9<=89 and t8 larger levels remain unbudgeted.
-4. If approved and inside core cap, e108 is a materially cheaper alternative:
-   begin from `scratch/B/work/e108_r5/lateral.pilot.union.g6` (2,102,278 keys),
-   with exact reachable first swap pass from `reducible.g6`; follow only
-   newly found keys. The 12m inner lateral cap in `e107_lateral_pass.sh`
-   is tight at e108; set a justified larger bounded cap before launch.
-   Require strict GR count 2,104,151, direct validity and independent
-   canonical count before an e108 floor attempt. Gluing/pinned proofs
-   must then cover every class, not just the reducible slice. Main e88
-   jobs and resource caps take precedence.
+2. The complete reducible e88 zero is ready for critic review; optional
+   fresh `src/replay_tail87_r6.sh terminal` independently recomputes the
+   tail and binds both MTF scans. Scope is only reducible e88;
+   `critical88.json` proves a critical graph exists.
+3. Do not scale e52/e44, star-lift, or the measured e108 local pilots
+   without a material new idea. t9<=89 and larger t8 floors unbudgeted.
+4. Exact e108 needs 1,266 more critical keys. The best current known set
+   is `work/e108_r6_follow/pass4/union.g6`; never call it exact. Require
+   order, e, alpha, Traces and strict GR count 2,104,151 before a full
+   floor-109 campaign. Proof-only pilot is affordable once that is true.

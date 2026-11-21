@@ -1,5 +1,40 @@
 # Lane A state
 
+Round 6 (2026-11-21), core share 2. No candidate or case closure. Worked on
+the exact e168 equality decomposition, independently of Lane G's SAT
+pilot. No e120/e121 delta was supplied during this audit. The combined
+census gap remains six; the old R(7) cubes are not needed.
+
+## Round 6 jobs
+
+| PID | Foreground command / log in `scratch/A/pair6/` | Cores | Start | End |
+|---:|---|---:|---|---|
+| 1293540 | known smaller calibration + 32-row `pilot --compare`, `calibration-final.log` | 1 | 22:26:56 | finished 22:27:05 |
+| 1326872 | optimized 32-row pilot, `pilot32-fast.log` | 1 | 22:28:21 | finished |
+| 1385779 | `audit_equality_templates.py`, `g-template-audit.log` | 1 | 22:30:29 | finished |
+| 1412471 | forward scan on the 1,223 frozen e120 rows, `known-e120-marks.log` | 1 | 22:31:38 | finished 22:31:42 |
+| 1462206, 1479199 | inverse controls, `inverse-calibration.log`, `inverse-control8.log` | 1 each, sequential | 22:33 | finished |
+
+No live/stopped lane A jobs; all other foreground attempts ended as well.
+
+## Round 6 results and claims
+
+| Label | Result | Evidence | Core-h |
+|---|---|---|---:|
+| hand (conditional on accepted d6 floor/adjacency) | The nine e168 distributions with two d6 vertices cannot contain a zero-addition d6 residue. Both e120 residues have a compatible marked independent five-set with exactly two legal additions inside it, even both at once. The e121 inverse has mark degrees 7,7,8,8,8 and one internal edge; e122 has five degree-eight vertices and two internal edges. Inverse deletion checks alpha again. | `ADJACENT_DEG6.md`, `ADJACENT_DEG6.sha256` | — |
+| enum (supplied rows only) | Forward/inverse validated at 52 oriented C13 roots, 12 oriented order-eight roots and 18 two-addition order-12 controls; omission/duplicate and bad lower-alpha controls fail. The complete marked scan of the frozen 1,223 e120 rows found zero marks; eight e121 controls found zero structural inverse marks. | `scratch/A/pair6/{inverse-calibration,calibration-final,known-e120-marks,inverse-control8}.log` | 0.007 including controls |
+| enum (cover only) | Independent `geng`/`labelg` comparison matches G's 14 canonical equality templates (3 two-d6), 3,700 labelled masks and 112 compatible template/distribution pairs covering all 20 keys. Rejects omitted template, relabelled duplicate and omitted pin. No formula or SAT verdict audited. | `audit_equality_templates.py`, `scratch/A/pair6/g-template-audit.log` | <0.001 |
+| cert provenance | Prior compact R(7), floor and high-residue audit hashes still pass without regenerating proofs. | `scratch/A/pair6/preserved-{r7,audits}.log` | <0.001 |
+
+Next: bind any e120/e121 delta against the frozen hashes with `bind-delta`;
+use `inspect-upper` on new rows for labelled inverse marks. An exact e121
+cover would suffice for the paired slice using verified downward incidence;
+the eleven n6=1 cases still need the zero-addition branch. Keep e169-pinned
+and unpinned proofs separate. No broad inverse sweep (eight e121 rows took
+2.62 CPU-s); no old proof replay without a new binding problem.
+
+## Round 5 archive
+
 Round 5 (2026-11-21), core share 2. No candidate graph and no new case
 closure. Followed the critic's frozen residue audit directive; no new
 solving for R(7), floor-120/107, or P4/P5.

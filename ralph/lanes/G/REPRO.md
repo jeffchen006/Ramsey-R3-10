@@ -239,3 +239,48 @@ No LP solver is needed to recheck the 85 cuts and five threshold
 certificates: `python3 -S -B ralph/lanes/G/scan_d5_cuts.py --verify
 ralph/lanes/G/d5_global_cuts.jsonl` from the repository root. Run
 `summarize_round5.py` to reproduce the exact cut keys and U88 overlap.
+
+## Round 6: equality templates and supplied upper-mark scan
+
+From repository root, `python3 -B ralph/lanes/G/freeze_round6.py`
+rebuilds `ralph/lanes/G/round6_baseline.csv`. `round6_u88.csv` and
+`round6_e168_d6.csv` are exact subsets, not exclusions. Check retained
+input/output bindings with `sha256sum -c ralph/lanes/G/ROUND6_FREEZE.sha256`.
+
+From a reviewer-owned scratch directory, with `ROOT` pointing at the
+repository root and the usual nice, timeout, and RAM limits:
+
+```bash
+G=$ROOT/ralph/lanes/G
+P=$ROOT/opt/venv/bin/python
+O=$ROOT/opt/bin
+W=$ROOT/scratch/G/round6
+$P -B "$G/equality_template.py" > template.cover.replay
+cmp template.cover.replay "$W/template.cover.log"
+$P -B "$G/equality_template.py" --control "$ROOT/scratch/A/rc7/C13.g6"
+$P -B "$G/signature_rows.py" --control "$ROOT/scratch/A/rc7/C13.g6" "$ROOT/scratch/G/exoo39.matrix"
+$P -B "$G/signature_rows.py" --output signature.replay.jsonl
+```
+
+The local minima `(9,11,15,18)` are for the exterior edges of the
+induced three-anchor window, not the whole residue. For each `q`, run
+`local_signature_budget.py --pairs q --cap (minimum-1) --cnf q.cnf`,
+substituting integer arguments, compare to `$W/localproof/qQ.cnf`,
+then run `lrat-check` and `cake_lpr` on that DIMACS and the retained
+LRAT. At `--cap minimum --graph q.g6`, check the graph independently
+with `tools/check_graph.py --n (15+q) --k 7` and recount edges in the
+last `12+q` vertices. The scripts use only perfect forest matchings;
+an early local q=0 pilot with weak pins is superseded and not evidence.
+
+```bash
+c++ -O3 -std=c++17 -Wall -Wextra -Werror -I"$ROOT/gluing/src" "$G/mark_inverse.cc" -o mark_inverse
+python3 -B "$G/test_mark_inverse.py" ./mark_inverse
+./mark_inverse 5 4 1 1 8 121 < "$W/../round4/e121.frozen.g6" > e121.replay.tsv
+./mark_inverse 5 4 2 0 8 122 < "$W/../round4/all122.latest.g6" > e122.replay.tsv
+```
+
+Both supplied-level mark outputs are empty. The scanner checks
+triangle-freeness, order and edge count of each input; any match must
+pass alpha after the mark-edge deletion. It does not infer either
+upper catalogue is complete. The join theorem and binding controls
+are in Lane A's `ADJACENT_DEG6.md`.

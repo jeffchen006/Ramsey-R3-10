@@ -169,3 +169,27 @@ roots, 52 double signatures, 1,872 common-anchor families (208 tight).
 K2,3 shows why the full-cell hypothesis cannot be dropped. C's planted
 degree-four controls and alpha counterexamples are in
 `scratch/C/p3r5-complete-arms.log`. See `ROUND5_REVIEW.md` for premises.
+
+## Round 6 degree-six global bridge and e168 neighbour profiles
+
+The pinned-cache `build --old R310` passed. These theorems live in
+`lean/R310/ResidueDegreeFive.lean`; no code from either enumerator is
+imported. With the published Ramsey bound and the no-exterior-degree-five
+input, the exterior degree is at least six. This implies the strengthened
+codegree cap and the clique/count bound `n6 ≤ 2`. The e168 theorem assumes
+an adjacent peer, no third degree-six vertex and residue floor 120.
+
+```sh
+bash ralph/lanes/H/build_private_signature.sh build --old R310 > scratch/H/round6-integrated.log 2>&1
+bash ralph/lanes/H/build_private_signature.sh env lean -j1 -s8192 ../ralph/lanes/H/AxiomsRound6.lean > scratch/H/round6-targeted.log 2>&1
+bash ralph/lanes/H/build_private_signature.sh env lean -j1 -s8192 scripts/Axioms.lean > scratch/H/round6-project.log 2>&1
+sed '/^wall=/d' scratch/H/round6-targeted.log > scratch/H/round6-targeted-axioms.log
+sed '/^wall=/d' scratch/H/round6-project.log > scratch/H/round6-project-axioms.log
+python3 -SB ralph/lanes/H/check_axioms.py ralph/lanes/H/AxiomsRound6.lean scratch/H/round6-targeted-axioms.log
+python3 -SB ralph/lanes/H/check_axioms.py lean/scripts/Axioms.lean scratch/H/round6-project-axioms.log
+python3 -SB ralph/lanes/H/check_round6_scope.py
+```
+
+Five targeted and 275 project reports passed; only standard axioms.
+The Python run checks key identities and calibrates the separate hand
+refinement on C13(1,5) (52 ordered roots). See `ROUND6_REVIEW.md`.

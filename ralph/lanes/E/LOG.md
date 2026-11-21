@@ -142,3 +142,20 @@ ran in `scratch/E` with `nice -n 5`, wall+CPU caps and 16 GiB `ulimit -v`.
 - `(2,30)` smaller windows, `(5,0)`, and order-three open cases untouched.
   For order three, try three-orbit joint constraints only with a matched
   pair baseline; the prior pair-footprint pilot left all templates alive.
+
+## Round 5 archive
+
+- All jobs collected. Saturated f32 case `t=4,δ(W)≥2,e(W)=12`:
+  1,058 cubic plus 6,904 noncubic checked CakeLRAT proofs, 1.2144
+  production core-hours; replay regenerated all cubic and 56 sampled
+  noncubic CNFs. See `cubic32.md`, `replay_cubic32.sh`, and
+  `scratch/E/r5_{cubic,saturated}/freeze.log` and their hash lists.
+- `window73.md` uses the exact 62-class degree census to show W
+  saturation `d_F=8` and for `e(W)≥9` attachment saturation `d_F=7`,
+  giving `e(G)=176`. The 25-vertex 396-class control was independent.
+  At 11 edges the only incidence profiles are `(10,10,10,12)` and
+  `(10,10,11,11)`. This was an enum-assisted necessary bound, not a
+  closure. The pre-orbit forecast `e11.forecast.log` was preliminary;
+  the round-6 exact case counts supersede it where computed.
+- Frozen f28 mixed-status cover in `f28_cover.md`; unchanged f32
+  `t=0,1` work, `f=30` reductions, and `(5,5)` proof. No candidate.
