@@ -30,3 +30,6 @@ import R310.GenLex
 import R310.Rc7
 import R310.R7
 import R310.Mc
+import R310.Residue
+import R310.Wedge
+import R310.PathWindow

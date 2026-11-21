@@ -74,7 +74,7 @@ theorem residue_neighbor_row [DecidableRel G.Adj] {fixed localPart outsidePart :
     · exact (mem_filter.1 hv).2
     · exact (mem_filter.1 hv).2
   have hind' : G.IsIndepSet ((lhs ∪ rhs : Finset V) : Set V) :=
-    (isIndepSet_neighborFinset h3 root).subset (by simpa only [coe_subset] using hnbr)
+    Set.Pairwise.mono (by simpa only [coe_subset] using hnbr) (isIndepSet_neighborFinset h3 root)
   have hind'' : G.IsIndepSet ((fixed ∪ (lhs ∪ rhs) : Finset V) : Set V) := by
     rw [coe_union, isIndepSet_iff, Set.pairwise_union]
     refine ⟨hind, hind', ?_⟩
@@ -105,7 +105,7 @@ theorem card_filter_common_neighbors_le_one [DecidableRel G.Adj] {cap : ℕ}
   have hadj := mem_inter.1 (hsub hcommon)
   have hnon : ¬ G.Adj left right := fun hedge =>
     h3 {left, right, common} (is3Clique_triple_iff.2
-      ⟨hedge, mem_neighborFinset.1 hadj.1, mem_neighborFinset.1 hadj.2⟩)
+      ⟨hedge, (mem_neighborFinset _ _ _).1 hadj.1, (mem_neighborFinset _ _ _).1 hadj.2⟩)
   exact (not_le_of_gt hsize) ((card_le_card hsub).trans (hcap left right hne hnon))
 
 /-- A complete bipartite subgraph forces the rest to split into two smaller
@@ -123,14 +123,14 @@ theorem card_add_two_le_of_biclique [DecidableRel G.Adj] {left right : Finset V}
   let touches := rest \ avoids
   have hleft : G.IsIndepSet (left : Set V) := by
     obtain ⟨r, hr⟩ := rightNonempty
-    apply (isIndepSet_neighborFinset h3 r).subset
+    refine Set.Pairwise.mono ?_ (isIndepSet_neighborFinset h3 r)
     intro u hu
-    exact mem_neighborFinset.2 (hcross u hu r hr).symm
+    exact (mem_neighborFinset _ _ _).2 (hcross u hu r hr).symm
   have hright : G.IsIndepSet (right : Set V) := by
     obtain ⟨l, hl⟩ := leftNonempty
-    apply (isIndepSet_neighborFinset h3 l).subset
+    refine Set.Pairwise.mono ?_ (isIndepSet_neighborFinset h3 l)
     intro v hv
-    exact mem_neighborFinset.2 (hcross l hl v hv)
+    exact (mem_neighborFinset _ _ _).2 (hcross l hl v hv)
   have hdisjL : Disjoint left avoids := by
     apply Finset.disjoint_left.2
     intro v hv havoids
@@ -195,6 +195,7 @@ open Finset SimpleGraph
 
 variable {V : Type*} [Fintype V] [DecidableEq V] {G : SimpleGraph V}
 
+omit [Fintype V] in
 /-- A four-step running intersection bound. At each step, six members of
 the next nine-set have already appeared. -/
 theorem card_union_four_le_eighteen (first second third fourth : Finset V)
@@ -234,7 +235,7 @@ theorem card_le_of_neighborhood_cover [DecidableRel G.Adj] {fixed near : Finset 
     exact (mem_compl.1 hresidue) (mem_union_left _ hfixed)
   have hanti : ∀ u ∈ fixed, ∀ v ∈ residue, ¬ G.Adj u v := by
     intro u hu v hv hav
-    exact (mem_compl.1 hv) (mem_union_right _ (hcover u hu (mem_neighborFinset.2 hav)))
+    exact (mem_compl.1 hv) (mem_union_right _ (hcover u hu ((mem_neighborFinset _ _ _).2 hav)))
   have hsmall : #residue < order := by
     simpa using (residue_order_row h3 hα hR hind
       (localPart := residue) (outsidePart := ∅) (by simpa using hdisj)
@@ -242,6 +243,40 @@ theorem card_le_of_neighborhood_cover [DecidableRel G.Adj] {fixed near : Finset 
   have hsize := card_union_add_card_inter fixed near
   dsimp [residue] at hsmall
   rw [card_compl] at hsmall
+  omega
+
+/-- A four-root codegree-six chain in Case R has adjacent endpoints once the
+two diagonal nonedges are known. The published R(3,6) bound is a hypothesis. -/
+theorem codegree_six_chain_endpoints_adj {G : SimpleGraph (Fin 40)} [DecidableRel G.Adj]
+    (hTriangle : G.CliqueFree 3) (hIndep : G.indepNum ≤ 9) (hRamsey : Ramsey3Le 6 18)
+    (hRegular : ∀ vertex, #(G.neighborFinset vertex) = 9)
+    (first second third fourth : Fin 40) (hCard : #({first, second, third, fourth} : Finset _) = 4)
+    (hFirstOverlap : #(G.neighborFinset first ∩ G.neighborFinset second) = 6)
+    (hSecondOverlap : #(G.neighborFinset second ∩ G.neighborFinset third) = 6)
+    (hThirdOverlap : #(G.neighborFinset third ∩ G.neighborFinset fourth) = 6)
+    (hFirstSecond : ¬ G.Adj first second) (hSecondThird : ¬ G.Adj second third)
+    (hThirdFourth : ¬ G.Adj third fourth) (hFirstThird : ¬ G.Adj first third)
+    (hSecondFourth : ¬ G.Adj second fourth) : G.Adj first fourth := by
+  by_contra hFirstFourth
+  let roots : Finset (Fin 40) := {first, second, third, fourth}
+  let near := G.neighborFinset first ∪ G.neighborFinset second ∪ G.neighborFinset third ∪
+    G.neighborFinset fourth
+  have hSize : #roots = 4 := hCard
+  have hRootIndep : G.IsIndepSet (roots : Set (Fin 40)) := by
+    intro left hLeft right hRight hDifferent
+    simp only [roots, mem_coe, mem_insert, mem_singleton] at hLeft hRight
+    rcases hLeft with rfl | rfl | rfl | rfl <;> rcases hRight with rfl | rfl | rfl | rfl
+    all_goals first | exact (hDifferent rfl).elim | assumption
+                    | (intro hedge; exact (by assumption : ¬ G.Adj _ _) hedge.symm)
+  have hNear : #near ≤ 18 :=
+    card_union_four_le_eighteen _ _ _ _ (hRegular _) (hRegular _) (hRegular _) (hRegular _)
+      hFirstOverlap hSecondOverlap hThirdOverlap
+  have hCover : ∀ vertex ∈ roots, G.neighborFinset vertex ⊆ near := by
+    intro vertex hVertex neighbor hNeighbor
+    simp only [roots, mem_insert, mem_singleton] at hVertex
+    rcases hVertex with rfl | rfl | rfl | rfl <;> simp [near, hNeighbor]
+  have hBound := card_le_of_neighborhood_cover hTriangle (by omega) hRamsey hRootIndep hCover
+  simp only [Fintype.card_fin] at hBound
   omega
 
 end R310

@@ -1,0 +1,145 @@
+--- sym.cpp
++++ sym.cpp
+@@ -90,6 +90,9 @@
+     vector<int> symCycles;
+     bool symFast = false;
+     bool symBatch = false, symVerify = false;
++    bool symExchange = false;
++    int symStar = 0;
++    int recordMinDegree = -1;
+     i64 moveLimit = 0;
+     int restartRandom = 0;
+     int bench = 0;
+@@ -401,6 +404,22 @@
+ 
+ // best metric: weighted score, or (sawtooth mode) unweighted count of bad sets + triangles
+ static inline i64 metric() { return P.sawPeriod > 0 ? cntK + cntT : score(); }
++static i64 bestDegreeValid = LLONG_MAX;
++static void recordDegreeValid() {
++    if (P.recordMinDegree < 0 || cntK >= bestDegreeValid || cntT || cntE) return;
++    for (int vertex = 0; vertex < N; ++vertex)
++        if (pc(adj[vertex]) < P.recordMinDegree) return;
++    string destination = P.out + ".valid.g6";
++    string temporary = destination + ".tmp";
++    FILE* output = fopen(temporary.c_str(), "w");
++    if (!output) throw runtime_error("cannot open degree-valid checkpoint");
++    fprintf(output, "%s\n", toG6().c_str());
++    if (fclose(output) || rename(temporary.c_str(), destination.c_str()))
++        throw runtime_error("cannot write degree-valid checkpoint");
++    bestDegreeValid = cntK;
++    fprintf(LOG, "VALID t=%.2f K=%lld e=%lld\n", now() - t0, (long long)cntK, (long long)nEdges);
++    fflush(LOG);
++}
+ static void noteBest() {
+     i64 s = metric();
+     if (s < bestScore) {
+@@ -507,6 +526,9 @@
+         checkedOrbits++;
+     }
+ }
++#include "sym_exchange.inc"
++#include "sym_star.inc"
++
+ static i64 symMoveFast(int id) {
+     mv.clear();
+     i64 initialScore = score();
+@@ -619,6 +641,7 @@
+ static i64 proposeMove0(bool &ok) {
+     ok = true;
+     if (P.symm) {
++        if (P.symExchange) return exchangeMove();
+         if (P.focus > 0 && cntK > 0 && rndu() < P.focus) {
+             for (int tries = 0; tries < 4; tries++) {
+                 if (bad.empty()) refreshBad(4096);
+@@ -714,7 +737,10 @@
+                 if (P.symm) {
+                     fullCount();
+                     np = max(2, (int)(P.perturb * orbits.size()));
+-                    for (int i = 0; i < np; i++) { symMove(rndi((int)orbits.size())); mv.clear(); }
++                    for (int i = 0; i < np; i++) {
++                        if (P.symExchange) exchangeMove(true); else symMove(rndi((int)orbits.size()));
++                        mv.clear();
++                    }
+                     np = 0;
+                 }
+                 for (int i = 0; i < np; i++) {
+@@ -724,6 +750,7 @@
+                 }
+             }
+             fullCount();
++            recordDegreeValid();
+             pending = ACT_NONE;
+         }
+         bad.clear();
+@@ -755,6 +782,7 @@
+                     i64 d = score() - s0;
+                     if (d <= 0 || rndu() < exp(-d / T)) {
+                         vrAcc++;
++                        recordDegreeValid();
+                         if (metric() < cyc0Best) { cyc0Best = metric(); noteBest(); sawReset(it); }
+                         if (cntK == 0 && cntT == 0) {
+                             int act = onFound();
+@@ -769,7 +797,9 @@
+             i64 d = proposeMove(ok);
+             movesDone++;
+             if (d <= 0 || rndu() < exp(-d / T)) {
++                if (P.symExchange && !mv.empty()) ++exchangeAccepted;
+                 mv.clear();
++                recordDegreeValid();
+                 if (metric() < cyc0Best) { cyc0Best = metric(); noteBest(); sawReset(it); }
+                 if (cntK == 0 && cntT == 0) {
+                     int act = onFound();
+@@ -927,6 +957,12 @@
+         else if (a == "-symfast") P.symFast = true;
+         else if (a == "-symbatch") P.symBatch = true;
+         else if (a == "-symverify") P.symBatch = P.symVerify = true;
++        else if (a == "-symexchange") P.symExchange = true;
++        else if (a == "-symstar") P.symStar = 1;
++        else if (a == "-symstar2") P.symStar = 2;
++        else if (a == "-symstar2flex") P.symStar = 3;
++        else if (a == "-record-min-degree") P.recordMinDegree = stoi(val());
++        else if (a == "-syma-max") exchangeAmax = stoi(val());
+         else if (a == "-moves") P.moveLimit = stoll(val());
+         else { fprintf(stderr, "unknown arg %s\n", a.c_str()); return 2; }
+     }
+@@ -938,13 +974,18 @@
+     }
+     if (P.n < 2 || P.n > 62 || P.k < 3 || P.k > P.n || P.symm < 0 || P.symf < 0 || P.symf > P.n ||
+         (P.symm && (P.grow0 || P.method != "sa")) || (P.symFast && (!P.symm || P.wT || P.sawPeriod)) ||
+-        (P.symBatch && (!P.symm || P.w9))) {
++        (P.symBatch && (!P.symm || P.w9)) || (P.symExchange && (!P.symFast || P.restartRandom || P.bench || P.dlo || P.init == "random")) ||
++        (P.symStar && (P.symExchange || !P.symFast || P.symm > (P.symStar == 1 ? 8 : 5) || P.init == "random" || P.w9)) ||
++        (!P.symExchange && !P.symStar && exchangeAmax >= 0)) {
+         fprintf(stderr, "invalid size or unsupported symmetry settings\n"); return 2;
+     }
+     N = P.n; K = P.k; targetN = P.n;
+     if (P.grow0) N = P.grow0;
+     if (P.degcap < 0) P.degcap = K - 1;
+     if (P.softcap < 0) P.softcap = K - 1;
++    if (P.recordMinDegree >= 0 && (P.recordMinDegree > P.softcap || P.out.empty() || P.method != "sa" || P.symStar || P.grow0)) {
++        fprintf(stderr, "invalid degree-valid checkpoint settings\n"); return 2;
++    }
+     if (P.sawPeriod > 0) P.wT = (i64)(P.wK * P.sawMin);
+     if (P.degcap > 0 && P.maxdeg > P.degcap) P.maxdeg = P.degcap;
+     ALLV = (N == 64) ? ~0ULL : ((1ULL << N) - 1);
+@@ -983,12 +1024,19 @@
+     } else loadStart((int)P.seed);
+     fullCount();
+     if (P.symFast && cntT) { fprintf(stderr, "-symfast seed must be triangle-free\n"); return 2; }
++    if (P.symExchange || P.symStar) {
++        if (!attachmentLimit(adj)) { fprintf(stderr, "seed exceeds fixed attachment maximum\n"); return 2; }
++        if (P.symExchange) prepareExchange();
++    }
++    recordDegreeValid();
+     noteBest();
+     fprintf(LOG, "start K=%lld K1=%lld T=%lld e=%d (count %.3fs)\n", (long long)cntK, (long long)cntK1, (long long)cntT, edgesNow(), now() - t0);
+     fflush(LOG);
+-    bool f = (P.method == "tabu") ? runTabu() : runSA();
++    bool f = P.symStar ? runStarPolish() : (P.method == "tabu") ? runTabu() : runSA();
+     saveBest("best");
+     if (P.symVerify) fprintf(LOG, "ORBIT_VERIFY checked=%lld\n", (long long)checkedOrbits);
++    if (P.symExchange) fprintf(LOG, "EXCHANGE attempts=%lld evaluated=%lld accepted=%lld\n",
++                              (long long)exchangeAttempts, (long long)exchangeTrials, (long long)exchangeAccepted);
+     fprintf(LOG, "END found=%d t=%.2f moves=%lld best K=%lld K1=%lld score=%lld\n", (int)f, now() - t0,
+             (long long)movesDone, (long long)bestK, (long long)bestK1, (long long)bestScore);
+     fclose(LOG);

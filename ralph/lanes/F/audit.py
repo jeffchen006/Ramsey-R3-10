@@ -19,7 +19,7 @@ def audit(checkpoint, k):
     degrees = [mask.bit_count() for mask in neighbors]
     if any(not independent(mask, neighbors) for mask in neighbors):
         raise ValueError(f'{checkpoint}: not triangle-free')
-    prefix = checkpoint.name.removesuffix('.best.g6')
+    prefix = checkpoint.name.removesuffix('.best.g6').removesuffix('.valid.g6')
     log = checkpoint.with_name(f'{prefix}.log')
     match = re.search(r'^sym .*cycles=([0-9,]+)$', log.read_text(), re.M) if log.exists() else None
     cycles = []
@@ -30,9 +30,19 @@ def audit(checkpoint, k):
                 image(mask, permutation) != neighbors[permutation[index]] for index, mask in enumerate(neighbors)):
             raise ValueError(f'{checkpoint}: symmetry check failed')
     count = sum(1 for _ in independent_sets(neighbors, (1 << len(neighbors)) - 1, k))
+    maximum_codegree = max(((mask & neighbors[other]).bit_count()
+                            for vertex, mask in enumerate(neighbors) for other in range(vertex)
+                            if not mask >> other & 1), default=0)
+    attachment_max = None
+    if cycles:
+        fixed = sum(1 << vertex for vertex, image in enumerate(permutation) if vertex == image)
+        attachment_max = max(((mask & fixed).bit_count() for vertex, mask in enumerate(neighbors)
+                              if not (fixed >> vertex & 1)), default=0)
     return {'tag': prefix, 'n': len(neighbors), 'k': k, 'I_k': count, 'cycles': cycles,
             'edges': sum(degrees) // 2, 'degree_range': [min(degrees), max(degrees)],
-            'degree_excess': sum(max(0, degree - k + 1) for degree in degrees), 'evidence': str(checkpoint)}
+            'degree_excess': sum(max(0, degree - k + 1) for degree in degrees),
+            'max_codegree': maximum_codegree, 'max_fixed_attachment': attachment_max,
+            'evidence': str(checkpoint)}
 
 
 def publish(path):

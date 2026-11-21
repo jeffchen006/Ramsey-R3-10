@@ -1,0 +1,21 @@
+family	r1_direct_raw_I10	r2_cumulative_direct_raw_I10	r2_degree_valid_I10	r2_degree_valid_edges	label	evidence_or_note
+Z10_4_blocks	31	30	-	-	open	scratch/F/r1/long_b4m10.best.g6; nested in Z5 and free involution, degree 10
+Z8_5_blocks	40	40	-	-	open	r1 only; nested in free order 4, degree 10
+Z5_free_8_blocks	30	30	67	180	open	scratch/F/r1/long_b8m5.best.g6; flex partial, raw 30 degree 10
+order2_f0	56	56	108	180	open	scratch/F/r2/p4_square.best.g6 inherits score 108, direct weighted start 134; flex complete on inherited seed
+order2_f16	85	85	-	-	open	r1 only
+order2_f18	66	66	-	-	open	r1 only
+order2_f20	58	58	-	-	open	r1 only
+order2_f22	101	101	-	-	open	r1 only
+order2_f24	97	97	-	-	open	r1 only
+order2_f26	108	108	-	-	open	r1 only
+order2_f28	33	33	-	-	open	r1 only; not repeated after E branch exclusions
+order2_f30	42	42	-	-	open	r1 only; not repeated after E branch exclusions
+order2_f32	87	87	-	-	open	r1 only; not repeated after E branch exclusions
+order3_f1	58	58	195	180	open	scratch/F/r2/sa40_p3f1.best.g6
+order3_f4	101	101	293	180	open	scratch/F/r2/record40_p3f4.valid.g6; separate checkpoint from weighted best
+order3_f7	76	76	-	-	open	r1 only; not repeated after E branch exclusions
+order3_f10	30	30	44	180	open	scratch/F/r1/long_p3f10.best.g6; maximum fixed attachment 2, maximum codegree 5
+order4_free	40	40	108	180	open	scratch/F/r2/sa40_p4free.best.g6; flex partial
+order4_mixed	49	49	-	-	open	r1 only
+attached_39_component	-	-	142	178	enum	scratch/F/r2/attachbest.g6; optimum over all degree-valid one-vertex attachments of 28113 specified bases

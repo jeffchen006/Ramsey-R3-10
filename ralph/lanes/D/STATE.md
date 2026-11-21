@@ -1,9 +1,58 @@
-# Lane D — round 1, 2026-11-21
+# Lane D — round 2, 2026-11-21
 
-**Open:** No R(3) closure or 40-vertex candidate. First-round directives: none.
-Read required report and notes. Allocation 12; preferring small bounded samples.
+**Open:** No R(3) kernel closure or 40-vertex candidate. Lane share 8;
+at most four simultaneous children used this round.
 
-## Results
+## Round 2 results
+
+| Label | Result | Evidence | CPU-h |
+|---|---|---|---:|
+| hand | Two-side mask-count factorization; exact local residue test; three singles plus their three pair supports force a triangle. | `ralph/lanes/D/SIDE_FACTOR.md`, `factor_sat.py` | — |
+| enum | 2/18/266 minimal forbidden multisets on 2/3/4 labelled coordinates, or 1/7/22 up to coordinate permutations. DFS and exhaustive optional-edge replay on the negative orbit representatives; corrupt t=2 library rejected. | `scratch/D/side_obstructions_orbit.json`, `scratch/D/side_obstructions_verify.log`, `scratch/D/negative_width2_fake.log` | 0.014 (two generations plus replay) |
+| enum | Exact C16 controls, 13/13 kernels each for base factor, local-library factor and additionally no-K3,3 factor. Same five canonical graphs as root-only SMS and exact per-kernel labelled equality among variants; independent graph checker passed. | `scratch/D/factor_cal16{,_local,_k33}/`, `scratch/D/factor_cal16_k33/labelled_check.log` | 0.0018 |
+| open | Baseline joined factor: 0/10 decisions, 10 CPU-limit exits on the old stratified SMS sample; no graph models, assembly 1.8–2.2 CPU-s (per kernel). No full-run extrapolation. | `scratch/D/r3_factor75/k*.log`, `r3_survivor_sample.tsv` | 0.203 |
+| enum | Four matched mask pilot IDs, 8 side instances: first 100 profiles each for shadow and local-library versions (not uniform or exhaustive). Local rows reject 47/800 shadow outputs, and no strengthened output fails direct replay. No side is refuted. | `scratch/D/marginal_pilot/replay.tsv`, `scratch/D/marginal_smoke/` | 0.029 |
+| hand | Saturated biclique incidence bound: R(3) has no K3,3, so triple supports at any center are unique. Also R(4) has no K4,4, and any K3,4 in R(4) has exactly the described 15+18 outside attachment split. Equality controls checked at n=6 and n=10. | `ralph/lanes/D/SATURATED_BICLIQUE.md`, `scratch/D/biclique_equal.log` | — |
+| enum | R(3) four-cycle kernel obstruction checks 65/238 oriented matches, all already excluded by C. No change to 110 root-swap representatives. Triple uniqueness rejects 284/800 shadow marginals (245/400 on IDs 88,227), numbers are sample-only. | `scratch/D/r3_biclique.log`, `scratch/D/marginal_pilot/replay.tsv` | <0.001 extra |
+| open | Strengthened joined factor (local library and unique triples): still 0/4 decisions, all CPU-limit exits with zero models. The first marginal improvement did not translate into a joined verdict. | `scratch/D/r3_factor75_k33/k*.log` | 0.083 |
+
+## Round 2 job estimates and ledger
+
+**None active.** Reconciled all eight supervisor PIDs at 18:10 CET;
+each worker log contains all expected child outcomes.
+
+110 root-swap representatives are a cover of surviving rooted kernels,
+not a partition of unrooted models. Exact C16 calibration on 13 kernels
+recovered all five expected classes in 2.10 CPU-s including import. Plan:
+matched 10-probe R(3) survivor sample, caps 75 CPU-s and 225 wall-s each,
+at most 0.208 CPU-h on up to four cores (three probes/worker maximum).
+This is a bounded comparison against round 1, not a full-run estimate.
+
+Marginal catalogue pilot: four matched Boolean-mask probe ids (149,
+151, 88, 227), both sides, 100 outputs maximum each with/without the
+extra exact local rules. Smoke 149 used 32.32 CPU-s across all four
+children; remaining three ids project roughly 97 CPU-s, capped at
+180 CPU-s total with at most two simultaneous child processes.
+
+Strengthened joined pilot estimate: the original 10 probes all timed
+out (730.95 aggregate CPU-s). A directly replayed sample of 800
+shadow marginals rejects 284/800 on repeated triples (at high-edge
+IDs 88,227: 245/400). With the hand saturation inequality plus the local
+library, C16 again matches. Retest the same four mask IDs only, 75 CPU-s each (0.083 CPU-h
+maximum), two workers; no full sweep from the projection reduction.
+
+| Timeout PID | Command (after timeout) | Log in scratch/D | Cores | Start | Hard end |
+|---:|---|---|---:|---|---|
+| 2801295 | `factor_probe.sh r3_factor75 75 149 34 88` | `r3_factor75/worker-149.log` | 1 | 17:56:44 | 18:09:14 |
+| 2801296 | `factor_probe.sh r3_factor75 75 151 111 227` | `r3_factor75/worker-151.log` | 1 | 17:56:44 | 18:09:14 |
+| 2801297 | `factor_probe.sh r3_factor75 75 155 51` | `r3_factor75/worker-155.log` | 1 | 17:56:44 | 18:09:14 |
+| 2801298 | `factor_probe.sh r3_factor75 75 16 39` | `r3_factor75/worker-16.log` | 1 | 17:56:44 | 18:09:14 |
+| 3013391 | `marginal_probe.sh marginal_pilot 151 88` | `marginal_pilot/worker-151.log` | 1 | 18:03:04 | 18:07:39 |
+| 3013393 | `marginal_probe.sh marginal_pilot 227` | `marginal_pilot/worker-227.log` | 1 | 18:03:04 | 18:07:39 |
+| 3184312 | `FACTOR_STRENGTHENED=1 factor_probe.sh r3_factor75_k33 75 88 149` | `r3_factor75_k33/worker-88.log` | 1 | 18:07:48 | 18:16:33 |
+| 3184313 | `FACTOR_STRENGTHENED=1 factor_probe.sh r3_factor75_k33 75 227 151` | `r3_factor75_k33/worker-227.log` | 1 | 18:07:48 | 18:16:33 |
+
+## Round 1 results (historical)
 
 | Label | Result | Evidence | CPU-h |
 |---|---|---|---:|
@@ -24,7 +73,7 @@ Read required report and notes. Allocation 12; preferring small bounded samples.
 | open | Boolean-mask projection on the same four survivors, 0/4 decisions in each of original eager, optimized eager, sparse lazy, and native-cardinality runs. All child outcomes 124/152 (timeouts). Sparse eager CNF while delaying residual rows uses ~1.0–1.75M clauses; native uses ~1.7–3.1k selectors and ~9.5–24.7k native rows. Both finished assembly; neither logged a 10-model checkpoint or a verdict. | `scratch/D/r3_mask{,_v2,_lazy,_native}/k*.log` | 0.263 |
 | enum | R(3) kernel 0: SMS UNSAT, Lean checked 249 SB clauses, 812 lazy IS clauses passed shape check, all 9,880 TRI present, CakeLPR verified. Lean rejected a complement-flipped witness in the C22 trace control. Lane C already excludes kernel 0. Link (a) (verified base encoding) missing; no new `cert` claim. | `scratch/D/r3_proof/k0000.checked/{sym-lean,cnf,cake}.log`, `scratch/D/cal22_proof/k0000.checked/bad-lean.log` | 0.0018 solver only |
 
-## Jobs
+## Round 1 jobs (historical)
 
 **None active**, as checked at 17:06 CET. Historical launch table below.
 
@@ -59,14 +108,21 @@ script passes `bash -n`; avoid live edits to it.
 - `hand`: with R(3) minimum edge C4 count 13, every vertex has at least
   five singleton-codegree partners; all R(3) outside masks are distinct.
   Evidence for both hand claims: `ralph/lanes/D/ENCODING.md`.
-- No new certified kernel closure and no candidate. Do not scale the
-  measured variants unchanged, and leave R(4) until progress on R(3).
-- Next try factoring projections into two side profiles: on each side use
-  only 8 singles, 28 pairs, 56 triples. Singleton multiplicities are <=1;
-  pair/triple multiplicities <=2 since any inner pair already shares the
-  root. Enforce pair-capacity and the singleton-codegree matching locally,
-  then couple side profiles only for cross-pair and residual constraints.
-  Measure coverage/counts first on C16, then on IDs 149,151,88,227.
+- Round 2 hand claims: see `SIDE_FACTOR.md` for local support feasibility
+  and `SATURATED_BICLIQUE.md` for the incidence bound and its consequences.
+  The local catalogue and both control/measurement claims are `enum`;
+  neither supplies a refutation of a new R(3) kernel.
+- Do not scale the measured joined variants unchanged. A new marginal
+  tightening worth testing is a single shared graph of private-singleton
+  vertices: triangle-free, each present pair support forces a singleton
+  edge (if both singles exist), and any present triple support on three
+  private coordinates forces at least one edge among those singles.
+  This couples decisions that the independent t-coordinate local
+  witnesses otherwise make separately. Calibrate first and require a
+  measurable improvement in the matched marginal sample.
+- Keep R(4) as a later priority; its saturation equality is a hand
+  reduction only. Consider overlap residues around a codegree-3 pair if
+  independent singleton coupling proves too weak.
 - Use `survivor_orbits.py` to rebuild the 110-orbit list from C's two
   baseline shards. If a future R(3) kernel solves, `check_trace.py`
   reproduces the R3 proof plumbing, but finish the VeriPB/CakePB encoding

@@ -5,7 +5,8 @@ scratch="$root/scratch/H"
 project="$root/lean"
 export PATH="${ELAN_HOME:-$HOME/.elan}/bin:$PATH"
 export LEAN_NUM_THREADS=2 LEAN_STACK_SIZE_KB=65536
-export XDG_CACHE_HOME="$scratch/cache" GIT_TERMINAL_PROMPT=0
+export XDG_CACHE_HOME="$scratch/cache" MATHLIB_CACHE_DIR="$scratch/cache"
+export GIT_TERMINAL_PROMPT=0
 ulimit -v 16777216
 mkdir -p "$scratch/lean-artifacts"
 cd "$project"
@@ -34,14 +35,23 @@ if [[ ${1:-} == dynamic ]]; then
     for dependency in "$project/.lake/packages/"*; do
         LEAN_SRC_PATH="$LEAN_SRC_PATH:$dependency"
     done
-    "${timed[@]}" timeout 1500 "$scratch/cache-dyn" get > "$scratch/cache-dynamic.log" 2>&1
+    "${timed[@]}" timeout 1500 stdbuf -oL -eL "$scratch/cache-dyn" get \
+        --repo=leanprover-community/mathlib4 > "$scratch/cache-download.log" 2>&1
 else
-    "${timed[@]}" timeout 1080 "${lake_cmd[@]}" exe cache get > "$scratch/cache-pinned.log" 2>&1
+    "${timed[@]}" timeout 1500 stdbuf -oL -eL "${lake_cmd[@]}" exe cache get \
+        > "$scratch/cache-download.log" 2>&1
 fi
 test -f "$scratch/lean-artifacts/mathlib/lib/lean/Mathlib.olean"
-"${timed[@]}" timeout 900 "${lake_cmd[@]}" --no-build build mathlib/+Mathlib \
+"${timed[@]}" timeout 900 "${lake_cmd[@]}" --old --no-build build mathlib/+Mathlib \
     > "$scratch/mathlib-cache-check.log" 2>&1
-"${timed[@]}" timeout 900 "${lake_cmd[@]}" build > "$scratch/lake-build.log" 2>&1
-"${timed[@]}" timeout 240 "${lake_cmd[@]}" env lean scripts/Axioms.lean > "$scratch/axioms.log" 2>&1
-"${timed[@]}" timeout 300 "${lake_cmd[@]}" build +R310.Residue +R310.Wedge \
-    > "$scratch/lemmas-build.log" 2>&1
+"${timed[@]}" timeout 900 "${lake_cmd[@]}" build --old > "$scratch/lake-build.log" 2>&1
+"${timed[@]}" timeout 240 "${lake_cmd[@]}" env lean -j1 -s8192 scripts/Axioms.lean \
+    > "$scratch/axioms.log" 2>&1
+python3 -B "$root/ralph/lanes/H/check_axioms.py" scripts/Axioms.lean "$scratch/axioms.log" \
+    > "$scratch/axioms-audit.log"
+bash "$root/ralph/lanes/H/check_round1_exports.sh" > "$scratch/project-export.log" 2>&1
+new_axioms="$root/ralph/lanes/H/AxiomsRound1.lean"
+"${timed[@]}" timeout 240 "${lake_cmd[@]}" env lean -j1 -s8192 "$new_axioms" \
+    > "$scratch/axioms-new.log" 2>&1
+python3 -B "$root/ralph/lanes/H/check_axioms.py" "$new_axioms" "$scratch/axioms-new.log" \
+    > "$scratch/axioms-new-audit.log"

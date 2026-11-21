@@ -1,61 +1,57 @@
-# Lane H — round 1, November 21, 2026
+# Lane H — round 2 handoff, November 21, 2026
 
-Core share 4; no first-round critic directives. No flow-verified (3,10,40)
-graph. Read the current critic directives and BOARD before resuming.
+Core share 4. No flow-verified `(3,10,40)` graph. Read the new critic
+directives, allocation and BOARD. Round 1 details are in thread artifacts
+and the reviews; never treat R(7) as closing all regular graphs.
 
 ## Jobs
 
-| Supervisor / worker | Command | Log | Cores | Start / hard stop (host CET) |
+| PID(s) | Command | Log | Cores | Start / finish |
 |---|---|---|---:|---|
-| 1253143 / shell 1253159 / cache 1253379 | `timeout 3000 taskset -c 148-149 bash ralph/lanes/H/lean_round1.sh dynamic` (launcher `scratch/H`, Lake in `lean`) | `scratch/H/lean_round1_dynamic.log`, `cache-dynamic.log`, then `mathlib-cache-check.log`, `lake-build.log`, `axioms.log`, `lemmas-build.log` | 2 | 17:12 / 18:02, fetch stage cap 17:37 |
+| — | No running H jobs | — | 0 | — |
+| 2792146 / 2792150 / cache 2795221 / leantar 2803817 | `timeout 3120 taskset -c 148-149 bash ralph/lanes/H/lean_round1.sh` | `scratch/H/{cache-download,mathlib-cache-check,lake-build,axioms}.log` | 2 | 17:56:31 / 18:16 (legacy axiom read retry required) |
 
-Last checked ~17:24: pinned cache helper still reading Mathlib sources for
-hashes; no fetch output yet. No solver jobs. Earlier PIDs 517645, 667823,
-667827, 989560, 989565 are gone; none should be restarted as-is. First
-Lake cache attempts hit instance/thread/runtime overhead; the prior
-static cache linker attempt was stopped deliberately. The partial copy
-`scratch/H/lake-work` is not a valid package cache. Read `lean_round1.sh`
-and `link_from_lake.sh` before further Lean setup.
+Old cache job 1253143/1253159/1253379 hit its fetch cap (exit 124).
+Probe 2729770/2729780 downloaded all 9,031 files and hit its 100-s cap
+while unpacking; the ordinary Lake job resumed successfully. Integrated
+build and both single-threaded axiom checks ran in the foreground and
+finished. No solver jobs were started. Do not restart old job IDs.
 
-## Evidence and claims
+## Results and claims
 
-| Label | Result | Evidence | CPU-h |
+| Label | Result | Evidence | Core-h |
 |---|---|---|---:|
-| pub | Audit: classical bounds remain 40–41 in sources found through November 21. Angeltveit journal §7 reports at least 43,225,483 distinct order-39 graphs; no full or bulk release located and no new exact order-30 dense level (e ≥ 88) located. | `LIT.md` | — |
-| hand | R(7) boundary/package/DFS reduction review: necessities, side ordering, first-present-mask branching and domain-shortage leaves justify the proof format. | `R7_REVIEW.md`, C-003/C-004 | — |
-| hand | R(6) codegree-path and C8-window reduction reviewed; sequential neighbourhood union bounds replace four-way inclusion–exclusion in the first step. | `C6_REVIEW.md`, C-006 | — |
-| enum | Independently reconstructed C8 cover without C code, nauty, or precomputed windows; 191 checked seeds, 270 eligible placements, 32 residue families, 95,984 four-type words, zero complementary half-load pairs. Both toy load controls pass. | `check_cycle8.py`, `scratch/H/cycle8-independent-v2.log`, C-007 | 0.0014 final / 0.012 incl. unoptimized replay |
-| cert (same checker, exact replay) | G's six conditional distribution certificates and 231 threshold certificates all replay, zero failures. Does not certify the original gluing floors or exclude e88. | `scratch/H/recheck-G-base.log`, `scratch/H/recheck-G-threshold.log`, G-001/G-002 | <0.001 |
-| enum (calibration) | Native pinned Lean `sbcheck-dyn` accepts all 157 witnesses on A's order-18 SMS control; separately the interpreted check also passed. | `scratch/H/dyn-link.log`, `scratch/H/sbcheck-valid.log` | <0.01 |
-| open | Standalone Lean extract emitted R/S8/N OPBs with 99,701 / 99,700 / 99,700 constraints. This provenance is provisional: no byte comparison to full-project export yet. | `scratch/H/emit-standalone.log`, `scratch/H/emit/out/`, `check_round1_exports.sh`, A-001 | <0.01 |
-| open | Drafted C's residue and overlap rows, biclique exclusions, the C6 four-neighbourhood/cover steps, and G's typed wedge identities. Typechecking and axiom audit not complete; drafts are not imported by `lean/R310.lean`. | `lean/R310/Residue.lean`, `lean/R310/Wedge.lean`, `AxiomsRound1.lean` | — |
+| Lean | Built pinned Lean v4.35.0 project with `lake exe cache get`, then checked all 9,045 Mathlib targets without building Mathlib from source. Integrated build succeeded. The legacy 263 reports and 15 new reports contain only standard axioms. | `LEAN_REPRO.md`, `scratch/H/{cache-download,mathlib-cache-check,lake-build,lake-integrated,axioms-one-legacy,axioms-one-new}.log` | about 0.30 for cache/verified builds/audits, excluding failed pilots |
+| Lean (H-002) | C's mask/residue and biclique rows, four-root endpoint step (diagonal nonedges supplied), local overlap identities, G's typed wedge identities. Ramsey bounds are hypotheses where needed; no full path census or LP run is formalized by these lemmas. | `lean/R310/{Residue,PathWindow,Wedge}.lean`, `AxiomsRound1.lean`, `scratch/H/axioms-one-new-audit.log` | included above |
+| cert (H-001, A-001 scope) | Full `R310.Files` emits 99,701 / 99,700 / 99,700 constraints, byte-identical to provisional R/S8/N. A's binder checks all 189,418 retained PB rows and proof artifact hashes. No SAT cube cover or new UNSAT claim. | `scratch/H/{project-export-direct,pb-bind}.log`, `LEAN_REPRO.md` | 0.007 |
+| hand | Audited C P4/P5 overlap and port coverage, E t=1 crown no-isolate bound, D's saturated biclique bound. P5 trace checks supplied residues only, and remains `enum` pending critic acceptance of the chain. | `PATH_WINDOW_REVIEW.md`, `CROWN_REVIEW.md`, `BICLIQUE_REVIEW.md` | — |
+| enum control | Independent C21 local overlap check passed all 42 P4 and 42 P5 oriented controls; corrupted nonpath rejected. No C8 replay this round. | `check_path_control.py`, `scratch/H/path-control.log` | <0.001 |
+| pub / open | Literature updated; published bounds remain 40–41 in sources found through Nov 21. No public GR–Angeltveit bulk census or exact new order-30 dense level located. | `LIT.md` | — |
 
-Ledger refreshed in `ralph/CLAIMS.md`, preserving the lanes' labels and
-pending critic verdicts. R(7) is the strongest round result: A independently
-regenerated the cover and replayed 49,569,079 nodes for all 977,008 C pairs.
-Keep C-004/C-007 `enum` pending critic acceptance. E's order-five/five-fixed
-case has four checked DRAT proofs; D's symmetry quotient of C's 78 exact
-R(3) exclusions leaves 110 representatives. B's planned prefix cannot
-close e88 and F has no order-40 witness.
+Ledger mirrors critic round 001: C-004 is `cert` (custom trace + hand
+reduction with published seeds, not Lean); C-007 is `enum`; G-001 retains
+both gluing floors. G-002's 30 thresholds include six already conditionally
+excluded, so a complete MTF e88 result removes at most the additional 24
+as counted at the start of round 2. G-004 is recorded only at e(H6)=118
+for e(G)=166 until the residual edge level and exact affected keys are
+linked to the new certificate. See BOARD request at 18:13.
 
-## Next round
+## Team status and next steps
 
-1. Collect bounded cache/build logs first. Cache uses Lean v4.35.0 and
-   Mathlib v4.35.0 commit `56a005855ea17e0b0958f73ec801ae140b0a1679`;
-   path-override manifest in `scratch/H/packages-local.json` bypasses the
-   slow Lake git diff on pinned packages. `lean --print-prefix` has
-   `bin/leantar`; the cache command must run inside `lean` with elan PATH
-   and `LEAN_SRC_PATH` from the launcher. `cache query` is not useful for
-   upstream per-file caches. If the 25-minute fetch stage expires during
-   hashing or unpacking, give the pinned helper a longer budget; do not
-   launch overlapping package writers or build Mathlib from source.
-2. Verify the full project build and `lean/scripts/Axioms.lean`, then
-   typecheck `+R310.Residue +R310.Wedge` and run `AxiomsRound1.lean`. Fix
-   drafts before integration or any `Lean` claim. Get the C6 path
-   endpoint lemma from the two generic drafted cover steps if time permits.
-3. After `R310.Files` builds, run `bash ralph/lanes/H/check_round1_exports.sh`
-   for the bytewise formal/provisional OPB comparison and notify A/D.
-4. Ask the critic to review the two finite packing proofs, especially
-   hand coverage and input census dependencies. Prefer new C6 path splits
-   and D's mask-profile factorization to bulk raw SMS. Reconcile new lane
-   claims with the ledger without upgrading any labels.
+R(7)'s accepted trace remains strongest overall. C/A's overlapping window
+method gives the most convincing new regular-case evidence: P4 cover
+matched independently (2,454 rows), P5 supplied-residue replay checked
+all 1,156 residues, and P4 remains open after the local reduction to
+1,356 rows. D still has 110 rooted R(3) orbits. E's f=32 t=1 and f=30
+window exclusions retain enum, G's exact five-residue branch has a narrow
+ledger row, B has not covered e88, and F has no witness.
+
+1. Mirror new reviewer verdicts. Get G's dependency and affected-key list
+   before combining e166 exclusions with gluing-dependent results. Get
+   independent P5 cover verification/critic acceptance before promoting it.
+2. Ask C for the next short local statement, especially the MTF forced
+   cross-edge criterion. Do not rerun C8 or regenerate historic R(7) cubes.
+3. Keep `scratch/H/lean-artifacts` and pinned `packages-local.json`; builds
+   use `--old` and `-j1 -s8192` for direct axiom reads. No heavy
+   `R310Cases` table rebuild this round. Full-cube provenance is now bound;
+   no reason to revisit unless inputs change.

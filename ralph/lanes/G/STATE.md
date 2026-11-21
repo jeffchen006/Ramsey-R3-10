@@ -1,4 +1,36 @@
-# Lane G state — round 1, 2026-11-21
+# Lane G state — round 2, 2026-11-21
+
+## Round 2 results and live jobs
+
+No detached jobs. All bounded runs used one core each; none remain at handoff.
+
+| Label | Result | Evidence | CPU-h |
+|---|---|---|---:|
+| hand + cert | In an MTF `(3,10,40)` graph every degree-six root leaves `e(H6)>=119`. Uses the complete GR Tables 4/14 `e=118` cover, not the degree-eight or degree-nine gluing floors. Both `lrat-check` and CakeLPR verified all five; 294 actual rooted controls satisfy every clause. | `rows/root_residue.md`, `root_certs/`, `replay_root_core.sh`, `scratch/G/root/{core_control,replay_core118,cover166}.log` | 0.001 |
+| cert | Therefore `n6=0` at `e=166` (MTF gives `Z(v)>=48`); exact two-row Farkas refutations for all 65 distributions in original 524, including two previously closed. **63 incremental cuts**, independently of the gluing floors. | `root_certs/closed166.csv`, `check_root_distribution.py`, `rows/root_residue.md` | <0.001 |
+| cert (individual roots), open (cover) | Regenerated 63 of 69 `e(H6)=119` classes. Both checkers exclude all 68 known residuals with `e(H6)<=119` regardless of total edges. **Six classes missing**; no `e(G)=167` stratum closure. | `root_certs/partial33_le119.g6`, `scratch/G/root/{catalogue119,replay_core119_clean}.log`, `LOG.md` | 0.023 including census probes |
+| cert | The higher-e floor 119 tightened 61/269 t9 bounds in the remaining degree-six strata with `e>=167`; 63 exact Farkas certificates verified. At `e=167`, `(8,0,2,30)` lowers from 88 to 87, **one further closure conditional on the existing degree-8/9 gluing floors**. Five other distributions now have `t9<=88` (previously 89 or 90). | `root_floor_certs.jsonl`, `scan_root_floor.py`, `scratch/G/root/{floor_full,floor_verify}.log` | 0.031 |
+
+**64 incremental exclusions this round; 454 near-regular distributions remain
+plus Case R**, taking the prior gluing floors as given.
+
+Requests: H/critic please supersede pending G-004 with the edge-count-free
+five-input proof and the distribution consequence. B was told the exact scope:
+of the 24 previously additional `t9=88` distributions, 8 overlap the e166
+cuts and one the new e167 cut. Five more were newly lowered to 88:
+`(4,7,0,29)`, `(6,2,0,32)`, `(6,4,0,30)`, `(7,0,1,32)`, `(7,1,1,31)`.
+Hence an eventual e88 gluing closure would remove **20 more** now, leaving
+434 near-regular + Case R. The six round-1 closures are individually listed below.
+
+Next: prioritize finding or covering six missing order-33, e119 classes.
+The complete cover with all individual certificates would raise the new
+floor to 120 and close the 55 currently open e167 distributions with `n6>0`.
+Simple edge additions, exact rewires, swaps and thinning have documented
+diminishing returns (`LOG.md`); do not infer completeness or repeat them
+without a new source of graph seeds. The fast essential CNF should be used
+first on other fixed residuals, before listing any independent-set cuts.
+
+## Round 1 handoff (previous results)
 
 ## Results and claims
 
@@ -58,7 +90,7 @@ importing SciPy. A `python3 -S` recheck passed all 231 threshold, 12 lifted/
 packing, and 2,176 baseline certificates (`scratch/G/verify_pure.log`).
 Table entries are upper bounds, not claims of optimality.
 
-## Next
+## Round 1 next steps (historical)
 
 Ask critic/H to re-check the six certificates and B to apply the updated
 threshold table. If B's t9<=88 gluing succeeds, it removes **24 more** after

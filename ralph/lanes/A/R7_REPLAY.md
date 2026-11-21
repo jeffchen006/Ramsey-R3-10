@@ -1,16 +1,34 @@
 # R(7) independent trace replay
 
-Status: independent branch-certificate replay; acceptance of the checker and
-hand reduction as `cert` is for the critic. This is not an LRAT proof of the
-SMS base/cubes, and does not rely on the historical 464-cube split.
+**Status: cert.** The critic accepted the custom branch certificate and hand
+reduction in `ralph/critic/round_001.md` (C-004). This is not an LRAT proof of
+the SMS base/cubes and does not rely on the historical 464-cube split.
 
-Run `bash ralph/lanes/A/replay_r7.sh` from the root. Inputs are the four McKay
-residues in `scratch/A/rc7/r38_27_e85.g6` and Lane C's
-`scratch/C/R7_full.{0,1,2,3}.txt`, `scratch/C/R7_trace.{0,1,2,3}.bin`.
-Checks bind each proof input to the labelled adjacency matrix of the
-corresponding graph6 line, verify four distinct triangle-free e85 graphs
-of independence number at most 7, and replay the traces. The fact that the
-class has size four is the previously cited table fact in the report.
+From the root, choose a fresh directory with an existing parent under workspace
+`scratch`:
+
+```sh
+bash ralph/lanes/A/replay_r7.sh scratch/A/r7-another-replay
+```
+
+All output (binary, compiler temporary files, and logs) stays in that new
+directory; this refuses a preexisting directory. The preserved inputs are
+the four McKay residues in `scratch/A/r7-proof-v1/r38_27_e85.g6`, the four
+`R7_full.*.txt` pair lists and four `R7_trace.*.bin` streams in the same
+directory. A second argument selects another copy of that input directory.
+`R7_INPUTS.sha256` pins these nine files by name, and `R7_CODE.sha256` pins
+the checker, front end, and graph checker. No Lane C scratch path, shared SAT
+tool, or nauty binary is needed. Requires Bash, GNU C++ (C++20/libstdc++),
+Python 3.10+, GNU coreutils, `/usr/bin/time`, and `prlimit` on the current
+x86-64 host (POPCNT).
+
+The seed check binds each labelled adjacency matrix to a graph6 line, checks
+triangle-free, e=85, α≤7, and uses distinct isomorphism-invariant fingerprints
+to establish pairwise nonisomorphism. A vertex signature consists of its
+degree and the multiset of `(other degree, common-neighbour count)` across
+all vertices; a graph fingerprint is the multiset of these signatures.
+Completeness depends on the published class size four (GR Table 13; D-C8e in
+`notes/DEPENDENCIES.md`).
 
 ## Soundness obligations
 
@@ -53,5 +71,5 @@ class has size four is the previously cited table fact in the report.
 - `scratch/A/rc7/replay-sample.log`: 64 trace roots / 3,641 nodes accepted
   before the full replay. Full logs: `scratch/A/rc7/replay-X{0,1,2,3}.log`.
 - End-to-end `scratch/A/rc7/replay-final.log`: 977,008 trees, 49,569,079 nodes;
-  approximately 55.5 CPU-seconds and peak RSS about 65 MiB. The artifact
-  digests (including all four proofs and side files) are in `R7_INPUTS.sha256`.
+  approximately 55.5 CPU-seconds and peak RSS about 65 MiB. The new packaged
+  replay in `scratch/A/r7-replay-round2` reproduced both counts in 57.6 CPU-s.

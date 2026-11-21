@@ -2,7 +2,7 @@
 set -eu
 tag=$1; shift
 rc=0
-../build/ls_sym -n 40 -k 10 -w9 0 -maxdeg 9 -out "$tag" "$@" &
+"${F_LS:-../build/ls_sym}" -n 40 -k 10 -w9 0 -maxdeg 9 -out "$tag" "$@" &
 solver=$!
 printf '%s\n' "$solver" > "$tag.solver.pid"
 wait "$solver" || rc=$?

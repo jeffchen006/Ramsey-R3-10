@@ -1,64 +1,60 @@
-# Lane E state
+# Lane E state — round 2
 
-Round 1 complete (Nov 21). Share: 10 cores. All symmetry results use
-all graphs, not just MTF. No candidate graphs sent to the gate.
+2026-11-21, core share 16, one core at a time except brief overlap of two
+bounded foreground checks. All results are for all graphs, not merely
+MTF. No candidate graph sent to the flow and no new Ramsey verdict.
+Round 1 details (including PIDs and calibrations) are in `LOG.md`.
 
 ## Jobs
 
-No continuing search or checker. Terminated only the redundant unpinned
-run after the four checked pins covered `(5,5)`; log UNKNOWN from SIGTERM
-is **stopped**, not a timeout or an UNSAT answer.
+No detached jobs launched in round 2. All round 1 PIDs collected, none
+live. The bounded foreground checks and their estimates/results follow;
+all logs are in `scratch/E`, all use `nice -n 5`, `timeout`, a CPU limit,
+and the 16 GB virtual-memory limit in `limited.sh`.
 
-| Timeout PID / solver PID | Command after limits, cwd `scratch/E` | Log | Cores | Start / planned deadline (host clock) | Final |
-|---|---|---|---:|---|---|
-| 153778 / 153885 | `python3 -u ../../ralph/lanes/E/orbit_run.py 5 5 n40_p5_f5 --time 3600` (CPU 3600, outer 4200 s) | `n40_p5_f5.log` | 1 | Nov 21 16:37 / 17:47 | SIGTERM 17:01; ~0.274 core-h |
-| 736690 / 736840 | `python3 -u ../../ralph/lanes/E/slim5.py II n40_slim5_II --time 330` (CPU 375, outer 420 s) | `n40_slim5_II.log` | 1 | 16:55 / 17:02 | VERIFIED |
-| 736693 / 736748 | same with `IC n40_slim5_IC` | `n40_slim5_IC.log` | 1 | 16:55 / 17:02 | VERIFIED |
-| 736699 / 736847 | same with `CC n40_slim5_CC` | `n40_slim5_CC.log` | 1 | 16:55 / 17:02 | VERIFIED |
-| 736702 / 736771 | same with `CD n40_slim5_CD` | `n40_slim5_CD.log` | 1 | 16:55 / 17:02 | VERIFIED |
+| Check (1 core each) | Start host time; CPU / wall cap | Log and outcome |
+|---|---|---|
+| `crown_sieve` partition-first pilot, PID 2818480 | 17:57; 90 / 180 s | `crown27.sample.log`: CPU-limit kill, 84.53 CPU s, zero completed anchors; not UNSAT |
+| `crown_sieve_v3 32-1 < crown27.g6` | 18:00; 60 / 120 s | `crown27.full.log`: completed, 2.78 CPU s; 33-anchor pilot 0.96 CPU s |
+| `replay_crown32_t1 < crown27.g6` | 18:02; 90 / 180 s | `crown27.replay.full.log`: completed, 10.56 CPU s; 33-anchor pilot 2.15 CPU s |
+| `replay_crown32_t1 all-windows` e87 control | 18:04; 90 / 180 s | `crown27.replay.e87.control.log`: 17/17 match optimized branch |
+| `order3_a4_profiles.py` | 18:08; 60 / 120 s | `order3_a4_profiles.v2.log`: completed, 9.20 CPU s; all profile relaxations feasible |
+| `crown30_windows.py . --probe11` (complete pair/triple mode) | 18:15; 130 / 210 s | `crown30_probe11.v3.log`: completed, 89.51 CPU s; pair-only precursor 80.33 CPU s |
+| `crown30_windows.py . --a4-w12` | 18:16; 40 / 60 s | `crown30_a4_w12.log`: completed, 2.97 CPU s; 1.19 CPU s profile-count pilot |
+| `crown28_windows.py . 8 7 6 5 4`, PIDs 3611467/3611477 | 18:20; 50 / 80 s | `crown28.replay.log`: completed; partial survivors at 4–6, no jobs remain |
 
-## Claims and evidence (for H/critic)
+## Claims and results (for H/critic)
 
-| Claim | Label | Evidence | Core-hours |
+| Claim or result | Label | Evidence | Core-hours (decisive runs) |
 |---|---|---|---:|
-| `(5,5)` excluded | cert | `ralph/lanes/E/slim5.md`; four `scratch/E/n40_slim5_*.log`, proof files and `cert_sha256.txt` | 0.1485 |
-| Original all-graphs `δ≥5` certified result replayed (not new mathematical claim) | cert | `scratch/E/deg4_replay.log`, `deg4_k10.{cnf,drat,lrat}`; original generator `critic/src/deg4_cnf.py`, Review 4 | 0.0155 |
-| `(2,34)` excluded, no catalogue needed | hand | `ralph/lanes/E/involution.md`; `scratch/E/cal_involution.log` | <0.001 |
-| `(2,32,a=5)` excluded | enum | `ralph/lanes/E/involution.md`, `check_min27.py`, `min27.g6`; `scratch/E/min27_check.log` | <0.001 |
-| `(2,32)` with sizes `5,5,5,6` and an isolate in `W` excluded | enum | Same files; the 3,3,12,12 possible core/low triples all fail to partition | <0.001 |
-| `(2,28,a=5)` and `(2,30,a=6)` excluded; also replace old `enum` exclusions at `a<=3` for those same `f` | hand | `ralph/lanes/E/involution.md`; Petersen and 3–6 pair phase controls in `scratch/E/cal_involution.log` | <0.001 |
-| `(3,f,a)` excluded for `f∈{7,10}`, `a∈{5,6}` (strengthens prior `enum`) | hand | `ralph/lanes/E/cross_neighborhood.md`; C35 and all 729 order-12 shape controls in `scratch/E/cal_cross.log` | <0.001 |
+| `(2,32)` with sizes `5,5,5,6` fully excluded. No-isolate branch: 1,470 distinct valid anchors, 13,279 eligible `W` windows, zero required `6,5,5` partitions. Different independent subset/color replay matches every anchor. Add E-006 for isolates. | enum | `ralph/lanes/E/crown32_t1.md`, `scratch/E/crown27.{manifest,full.log,replay.full.log}`, `scratch/E/cal_crown_v3.log` | 0.0037 |
+| `(2,30,a=5)` now requires `|W|≤10`; `(2,30,a=4)` now requires `|W|≤11`. Single extremal deletions checked in both directions; then optimistic pair and triple packing excludes the next size. | enum | `ralph/lanes/E/crown30_windows.md`, `scratch/E/crown30_windows.log`, `scratch/E/crown30_probe11.v3.log`, `scratch/E/crown30_a4_w12.log` | 0.0262 |
+| `(2,28,a=4)` now requires `|W|≤6`; complete 3/9 core censuses give no pair at 8 or triple at 7. Higher-multiplicity necessary test leaves 3/15, 6/9, 6/6 cores at sizes 6,5,4. | enum (upper bound only) | `ralph/lanes/E/crown28_windows.md`, `scratch/E/crown28.{w78.log,w456.probe.log,replay.log}` | 0.0049 |
+| Order three, root with four fixed neighbors: exactly 12 moved neighbors, never 15; eight pinned templates cover the residue. A singleton in any position of an ordered block decomposition yields the forbidden sixth independent vertex. | hand | `ralph/lanes/E/order3_a4.md`; 5-orbit `2,1,2` witness in `scratch/E/order3_a4_profiles.v2.log` | <0.003 |
+| All 16 `(f=7/10,a=4,pin)` cases survive the local order-three profile relaxation. This is not a SAT model or new closure; six prior UNKNOWN open-branch runs were not relaunched. | open | `ralph/lanes/E/order3_a4_profiles.py`, `scratch/E/order3_a4_profiles.v2.log` | 0.0026 |
+| Preserve `(5,5)` four checked proof packages and exact `δ≥5` dependency. Round 2 verified all retained proof/CNF/witness/map hashes, not a mathematical rerun. | cert (round 1) | `ralph/lanes/E/slim5.md`, `scratch/E/cert_sha256.txt`, `scratch/E/slim5_hash_recheck.log` | <0.001 this round |
 
-## Tooling and measured work
-
-- `orbit_run.py` uses the original satcore linked against `opt/cadical`
-  and original `verify_sc.py` with `opt/bin/drat-trim` for unboosted proofs.
-  Positive `(3,9,35)` controls order 7 and 5 pass (0.34 and 29.06 CPU s).
-- `slim5.py`: exact five-fixed-point attachment and residual type pins;
-  audit of the formula streams lazy witnesses. Smaller `(3,7,22)` with
-  `(5,2)` had SAT IC/CD and DRAT-verified UNSAT II/CC. Deliberately
-  strengthened lazy clause rejected. Full target pins took 22–64 wall
-  seconds to solve (previous unpinned 1321.55 s); DRAT time dominated.
-- `orbit_boost.py`: order-three weighted degrees, exact single/pair
-  orbit anti-neighborhood constraints, optional seeded independent-set
-  clauses. `--boost quotient|seeded` currently `--search-only`. C35
-  `(3,5,a=1)` `seeded` SAT (0.28 CPU s); `(3,7,22; p=3,f=1,a=1)`
-  UNSAT unchecked (0.12 CPU s). Extra C35 `a=2` trial unknown at 180 s
-  (not the positive control). On `(3,10,2)`, `(3,10,3)`, `(3,7,2)`
-  (here notation `p,f,a`), both 150 s `quotient` and `seeded` trials
-  ended UNKNOWN: `scratch/E/sample_*.log`; 0.198 core-h total. No new
-  runtime estimate for finishing these jobs and no long launch.
+`W` means the fixed vertices without moved neighbors. The `(2,32)`
+crown depends on the universal Review 4 `δ≥5` certificate (plus its
+published C35 hypothesis); the `(2,28)/(2,30)` crown bounds do not.
+`(2,32,a=5)` is separately excluded as E-002, and `(2,34)` as E-001.
 
 ## Next steps
 
-- Do not rerun `(5,5)` unless requested by the critic. Keep checked
-  artifacts. Use pinned structural splits rather than increasing raw
-  time for open order-three cases. The 12-vertex cross-neighborhood
-  pattern and fixed-footprint options are promising for `a=4`.
-- `(2,32,a=6)` crown with `t` size-six attachment sets. `t=1` now
-  requires `W` without an isolate and has a size-27 residual with at
-  most 87 edges: only 1,470 anchor classes. Build a crown-pinned
-  extension splitter, calibrate on the Petersen fixed-set template,
-  then measure a small sample before seeking cores. `t=2,3,4` open.
-- `(2,28,4)` and `(2,30,{4,5})` have the same crown layout but remain
-  open. Cases with few fixed points and `(5,0)` still open.
+- Ask H/critic to replay new enum claims and keep them scoped. The board
+  gives F exact search exclusions; no blanket f or a exclusions from the
+  new partial window bounds.
+- For `(2,28,a=4,|W|=6)`, add joint triangle information between
+  attachments on the three surviving W core classes. The current complete
+  optimistic graph permits cross-part triangles by design. Use forced
+  pair edges (delete an allowed edge and test the independence bound) or
+  exact small residual SAT; complete smaller test before scaling.
+- For the `(2,32)` t=2,3,4 crown, attempt the complementary pair cover:
+  two selected attachment masks together must hit every independent
+  7-set in the anchored residual, or the remaining `W+Ai` fails. Do not
+  scale raw partition-first enumeration; it made no progress at 85 CPU s.
+- For order three use cross-orbit footprint interactions, not raw time.
+  Two outside orbits sharing an attached fixed vertex of `A` cannot
+  join (triangles); combine their masks with antineighborhood independence
+  bounds. `(5,0)`, open order-three `a=2/3`, and involutions with fewer
+  fixed points remain distinct and unresolved.

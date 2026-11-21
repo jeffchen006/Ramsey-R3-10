@@ -26,7 +26,7 @@ theorem weighted_sum_codegrees (left right : Finset V) :
     simp only [card_filter, inc]
     refine sum_congr rfl fun center _ => ?_
     by_cases hfirst : G.Adj first center <;> by_cases hsecond : G.Adj second center <;>
-      simp [inc, hfirst, hsecond]
+      simp [hfirst, hsecond]
   have hdegree (endpoints : Finset V) (center : V) :
       #(endpoints ∩ G.neighborFinset center) = ∑ last ∈ endpoints, inc last center := by
     rw [show endpoints ∩ G.neighborFinset center = endpoints.filter (fun last => G.Adj last center) by
@@ -56,7 +56,7 @@ theorem sum_codegrees_between_classes (h3 : G.CliqueFree 3)
       intro third hthird
       obtain ⟨hfirstThird, hsecondThird⟩ := mem_inter.1 hthird
       exact h3 {first, second, third} (is3Clique_triple_iff.2
-        ⟨hedge, mem_neighborFinset.1 hfirstThird, mem_neighborFinset.1 hsecondThird⟩)
+        ⟨hedge, (mem_neighborFinset _ _ _).1 hfirstThird, (mem_neighborFinset _ _ _).1 hsecondThird⟩)
     simp [hempty]
   · simp [hne, hedge]
 
@@ -74,7 +74,7 @@ theorem sum_codegrees_within_class (h3 : G.CliqueFree 3) (vertices : Finset V) :
   have hcount : ∑ second ∈ vertices.filter (fun second => first ≠ second ∧ ¬ G.Adj first second),
       codeg second = ∑ second ∈ vertices.erase first, codeg second := by
     rw [show vertices.erase first = vertices.filter (fun second => first ≠ second) by
-      ext second; simp [ne_comm]]
+      ext second; simp [ne_comm, and_comm]]
     rw [sum_filter, sum_filter]
     refine sum_congr rfl fun second _ => ?_
     by_cases hedge : G.Adj first second
@@ -83,7 +83,7 @@ theorem sum_codegrees_within_class (h3 : G.CliqueFree 3) (vertices : Finset V) :
         intro third hthird
         obtain ⟨hfirstThird, hsecondThird⟩ := mem_inter.1 hthird
         exact h3 {first, second, third} (is3Clique_triple_iff.2
-          ⟨hedge, mem_neighborFinset.1 hfirstThird, mem_neighborFinset.1 hsecondThird⟩)
+          ⟨hedge, (mem_neighborFinset _ _ _).1 hfirstThird, (mem_neighborFinset _ _ _).1 hsecondThird⟩)
       simp [hedge, codeg, hempty]
     · simp [hedge]
   change (∑ second ∈ vertices.filter (fun second => first ≠ second ∧ ¬ G.Adj first second),

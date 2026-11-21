@@ -1,5 +1,6 @@
 import R310.Residue
 import R310.Wedge
+import R310.PathWindow
 
 #print axioms R310.indepNum_induce_add_card_le
 #print axioms R310.residue_order_row
@@ -10,6 +11,9 @@ import R310.Wedge
 #print axioms R310.not_biclique45
 #print axioms R310.card_union_four_le_eighteen
 #print axioms R310.card_le_of_neighborhood_cover
+#print axioms R310.codegree_six_chain_endpoints_adj
 #print axioms R310.weighted_sum_codegrees
 #print axioms R310.sum_codegrees_between_classes
 #print axioms R310.sum_codegrees_within_class
+#print axioms R310.adjacent_window_overlap
+#print axioms R310.successive_window_inter_union

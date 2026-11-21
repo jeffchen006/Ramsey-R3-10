@@ -2,11 +2,11 @@
 
 | lane | cores | reason |
 |---|---|---|
-| A | 10 | Toolchain is ready and the independent R(7) trace passed; retire duplicate R(7) SAT work. |
-| B | 18 | Protect the existing 16-worker prefix; do not fund full e88 generation at the measured rate. |
-| C | 6 | R(7) and the R(6) eight-cycle are closed; add room for bounded path-window experiments. |
-| D | 8 | Keep the kernel reduction work, but do not scale encodings that timed out on the matched sample. |
-| E | 16 | Reward checked symmetry exclusions and prioritize the small involution residue sieve. |
-| F | 10 | Preserve calibrated witness search; narrow follow-ups to degree-valid scores and distinct families. |
-| G | 8 | Reward six conditional closures and give exact degree-6-root experiments room to run. |
-| H | 4 | Unchanged: ledger and bounded Lean/provenance checks. |
+| A | 6 | R(7) packaging and PB binding are done; reserve a bounded independent P5 replay, not more cubes. |
+| B | 18 | Unchanged: protect the live 16-worker prefix plus the staged partial scans; no full e88 launch. |
+| C | 6 | Unchanged: P5 is excluded; use bounded structural P4 pilots rather than scaling capped SAT. |
+| D | 6 | The biclique cut is sound but closes no new kernel; preserve only a matched pilot budget. |
+| E | 18 | Reward the checked (2,32) t=1 closure and give exact small-core triangle tests room to run. |
+| F | 6 | Rewire and repair audits are finite negative results; retain a bounded budget for a new escape move. |
+| G | 18 | Reward 64 checked cuts; budget bounded calibrated experiments for the six missing e119 residues. |
+| H | 2 | Full Lean/PB provenance is bound; ledger and scoped follow-up checks fit two cores. |

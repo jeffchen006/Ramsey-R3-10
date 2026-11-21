@@ -1,54 +1,61 @@
-# Lane C — round 1, 2026-11-21
+# Lane C — round 2, 2026-11-21
 
-**Open:** Case R and R(3) remain open. Complete R(7) nonextension was
-independently replayed by A; formal acceptance of the non-SAT certificate
-by the critic is pending. No candidate graphs.
+**Open:** R(3,10), Case R, and R(6). No candidate graphs. Critic accepted
+round-1 R(7) as `cert`, a custom trace with published seeds and hand
+reduction, not Lean; A has preserved its package. Round-1 detail is in
+`LOG.md`, with reproduction in `RESULTS.md` and `TRACE.md`.
 
-Read required report and notes; no round-1 critic directives. Share 4 cores.
-New approach: project an edge kernel's outside vertices to multiplicities of
-their kernel-neighbourhood masks. A type must hit every independent d-set of
-the kernel. Regular degree and codegree constraints, independent-set residue
-order bounds, and degree caps in the residues give a mask-count LP. HiGHS
-searches only for integer-weight Farkas proofs, checked independently of the
-solver with integral arithmetic.
+Round-2 directive addressed: use consecutive order-22 residue windows;
+split P4/P5 from isolated codegree-six edges and the P3 diagonal subcases.
+No C8 rescan. Allocation 6 cores; at most 1 used by C at a time.
 
-## Results
+Write J for the graph of codegree-six pairs. `P4` means four distinct
+consecutive roots in J, not a graph induced by these roots in G. The
+P4 cover joins two order-22 windows at X20, leaving a 26-vertex graph
+A with marked endpoints. The P5 cover joins two A's along the middle
+order-22 window, recovering H30 = G - N[v2], with 99 edges. The remaining
+nine independent neighbours of v2 give three types of size-eight masks.
+
+## Results and claims for H / critic
 
 | Label | Result | Evidence | CPU-h |
 |---|---|---|---:|
-| hand | Mask-count constraints are necessary for any regular edge extension | `ralph/lanes/C/proofs/edge_kernel_projection.md` | — |
-| enum | Replayed actual masks at all 140 edges of C35 and 660 edges of the ten known 6-regular order-22 graphs, plus C5; small n=6 negative control | `scratch/C/calibrate.txt` | 0.010 |
-| cert | 78 of the 238 R(3) kernels have no regular extension of codegree cap 3. Exact integer Farkas recheck of every refutation. 160 feasible projections (not graph completions) remain for lane D. | `scratch/C/R3_part{0,1}.jsonl`, logs, `scratch/C/R3_survivors.g6`, `kernel_projection.py verify` | 0.116 scan+verify |
-| enum | Stronger rows (expanded star, shared masks, globally minimum rooted edge) pass C35/22 replays but all eight sampled baseline survivors still have feasible LPs. | `scratch/C/calibrate_strong.txt`, `scratch/C/R3_strong_sample.log` | 0.020 |
-| enum | R7 boundary-pair projection passes all seven known K2,2 pair controls on 22 vertices. First R7 seed still allows 261,824 unordered package-pairs; 90 s wall cap reached before all four seeds reported. Not an exclusion. | `pair_packages.py`, `scratch/C/pair_calibration.log`, `scratch/C/pair_r7.log` | <0.025 |
-| enum | R7 set-variable SAT model recovers valid regular extensions from all seven order-22 controls. Large pilot bounded to 360 s wall per seed; no reliable extrapolation of solve time. | `pair_set_sat.py`, `scratch/C/set_sat_calibration.log` | <0.001 calibration |
-| enum | R7 C-colour packing DFS recovers completions on all seven planted order-22 side-pair controls. On 64 evenly spaced pairs at seed 0: 64 no-extension, 3,641 total nodes (0.01 CPU-s, generation 55.77 CPU-s). | `colour_packing.cpp`, `scratch/C/colour_calibration.log`, `scratch/C/R7_sample{_gen,_packing}.log` | 0.016 |
-| estimate | Full R7 scan per seed: about 56 CPU-s pair generation + ~40 CPU-s packing at pilot mean; could be much more if tail dominates. Four independent seeds; allow 1200 s wall per seed under high shared load. | `scratch/C/R7_sample{_gen,_packing}.log` | ~0.11 estimated |
-| enum, independently replayed | R(7): all four fixed e85 seeds from Lemma R7 have no extension. 977,008 total pairs, zero SAT or limits, max 198 nodes/pair. Produced 49,569,079-node trace; A verified exact independent package cover and every node. Retain enum until critic accepts non-SAT cert. Full order-22 shape calibration recovered exactly seven known classes: 973 packages, 80 labelled outputs. | `proofs/pair_packing.md`, `TRACE.md`, `scratch/C/R7_full.*.log`, `scratch/C/full_control.log`, `ralph/lanes/A/R7_REPLAY.md`, `scratch/A/rc7/replay-X*.log` | 0.087 enumeration + 0.029 trace + 0.015 A replay |
-| hand | Every (3,10,40)-graph is K3,6-free and K4,5-free, without regularity. | `proofs/bicliques.md`, `scratch/C/bicliques_fast.log` | <0.001 |
-| hand | In Case R the graph of codegree-six pairs has path components on at most ten vertices or eight-cycles; four consecutive vertices have adjacent endpoints in G and both diagonal codegrees three. Sharp C21 path control. | `proofs/codegree_six_paths.md`, `scratch/C/codegree_paths.log` | <0.001 |
-| enum, exact profile replay | In R(6) there is no eight-cycle component. 191 order-22 census graphs → 270 placements → 32 X families; no complementary pair of loads from 95,984 words. Compact obstructions on at most eight of 16 coordinates per X replayed exactly; corrupted proof rejected. The codegree-six graph in R(6) therefore must be a union of short paths if this exclusion is accepted. | `proofs/cycle8_join.md`, `scratch/C/cycle8_profiles.log`, `scratch/C/cycle8_obstructions.json`, `scratch/C/cycle8_{verify,bad_verify}.log` | 0.002 scan + <0.001 check |
+| cert (round 1, accepted) | R(7) excluded. Preserve custom trace label. | `ralph/critic/round_001.md`, `ralph/lanes/A/R7_REPLAY.md` | — |
+| enum (round 1, retained) | No J eight-cycle in R(6). | `proofs/cycle8_join.md`, `ralph/lanes/H/C6_REVIEW.md` | — |
+| hand | P4 and P5 overlap reductions, no inducedness premise. G is MTF in Case R. For P4, an edge Y--Z is present exactly when the endpoint masks on X20 are disjoint. | `proofs/path_windows.md`, `ralph/lanes/H/PATH_WINDOW_REVIEW.md` | — |
+| enum | P4 cover: 31,994 markings / 13,613 X20 families → 2,454 labelled A26 rows. A independently matched it exactly; this is not an extension test. | `path_windows.py`, `scratch/C/p4_full.{g6,log}`, `ralph/lanes/A/P4_REPLAY.md` | 0.020 C + 0.014 A |
+| enum | P5 cover: 177 triple-window families / 47,031 port-pair trials before disjointness; 1,156 labelled H30/e99 rows. | `path_window_join.py`, `scratch/C/p5_full.{g6,log}` | 0.003 |
+| enum, exact trace replayed | No distinct five-root J span in R(6), hence no path component of order at least five, conditional on the P5 cover. 940 unsupported MTF pairs, 216 exhaustive trees (289,649 nodes, max 10,760), no complete packing or limit. Separate verifier replayed all supplied residues; do not promote final exclusion without critic approval of coverage and replay. | `path_neighbourhood.py`, `verify_path_trace.py`, `scratch/C/p5_attachment_full.{log,tsv}`, `scratch/C/p5_trace.jsonl`, `scratch/C/p5_trace_verify.log`, `PATH_REPLAY.md` | 0.012 enumeration + 0.013 trace production + 0.020 trace checking |
+| enum | P4 MTF forced cross-edge criterion leaves 1,356/2,454 rows. Fixing each exact D0--D3 cross pattern and propagating degree, codegree, TF, MTF tries 36,039 branches and leaves the same 1,356 rows (34,395 partial assignments). This is not an extension result. | `path_four_forced.py`, `scratch/C/p4_forced_full.{g6,log}` | 0.0082 |
+| enum control / open pilot | Exact coverage/attachments find C21 (42 oriented planted spans); missing cover row and forged trace leaves rejected. P4 SAT control: 8 valid smaller witnesses independently checked, 5 UNSAT. Larger sample (3 spread rows per e(A) stratum 77..81): 15/15 hit iteration cap, no verdict. | `PATH_REPLAY.md`, `scratch/C/p4_sat_{control,independent_control,sample}.log` | 0.002 SAT pilot |
 
 ## Jobs
 
-| Timeout PID / initial worker PID | Command from `scratch/C` (each via `setsid nohup nice -n 5 timeout 1500 bash`) | Log | Cores | Start CET | Expected end CET |
+| Timeout PID | Command from `scratch/C` | Log | Cores | Start CET | Expected / actual end |
 |---|---|---|---:|---|---|
-| — | No running detached jobs | — | 0 | — | — |
+| 2770701 (finished) | `setsid nohup nice -n 5 timeout 1800` + `python3 -B ../../ralph/lanes/C/path_windows.py ../../gluing/val/r3_7_22.g6 ../../opt/bin/labelg --output p4_full.g6` | `scratch/C/p4_full.log` | 1 | 17:56:02 | Hard end 18:26:02; completed in 89.02 s |
 
-Detached R3 scan PIDs 267941 and 267942 completed both scan and recheck.
-Set SAT pilot PIDs 594938/594939 elapsed to 360 s without verdict; no survivors
-or refutations from those probes. The new DFS is entirely separate.
-The four complete packing runs (PIDs 759502/759503/759504/759506, start
-16:56:06) all recorded `complete`, with zero `node-limit` and zero `SAT`.
-Trace runs (timeout PIDs 897148/897149/897150/897151; 17:01:09 start)
-completed with identical text outcomes and expected byte counts. No remaining jobs.
+No detached jobs remain. Foreground tasks use `nice`, `timeout` and 16 GiB
+virtual cap. P4 estimate 757 CPU-s (sample 96 families in 5.34 user-s of
+13,613, setup was sunk); actual 72.47 CPU-s. P5 join 10.55 CPU-s. P5
+attachment estimate 48 CPU-s from spread 96-row sample; actual 42.34 CPU-s.
+P4 propagation estimate 29.4 CPU-s; actual 29.44 CPU-s. P5 trace checker
+spread 24-row sample 1.18 CPU-s, estimates 57 CPU-s by rows / 111 by nodes;
+actual 71.25 CPU-s.
 
 ## Next
 
-R3 list given to D; clustering equivalent oriented kernels reduces those
-survivors to 110 representatives in D's work. H asked to formalize short
-lemmas. Critic should review independent R7 trace and C8 census projection.
-Next round: try overlap joins on long codegree-six paths using their 22-vertex
-triple residues; handle short P3 components (three possible diagonal values)
-and isolated codegree-six pairs separately. Never assume C8 is the only R(6)
-case. `RESULTS.md` gives regeneration and evidence details.
+- Request critic review of P5 (especially coverage of port isomorphisms and
+  independent trace verifier); keep `enum` until accepted. A independently
+  verified P4 coverage. H reviewed both hand reductions; Lean unclaimed here.
+- If both C8 and P5 exclusions accepted, J in R(6) has only isolated vertices
+  and P2/P3/P4 components. P4: split by edge count 77..81 and D0--D3 pattern;
+  factor the two side packings using distinct loads and cover demands. Do not
+  scale the measured lazy-cut pilot as-is.
+- P3: use N(v0) intersect N(v2) contained in N(v1); keep codegree-3, -4,
+  and -5 diagonals separate. Each consecutive pair residue with a third J
+  neighbour has a marked degree-three vertex whose deletion with its closed
+  neighbourhood gives the 22-census. At P3 the two marked end roots in H30
+  are nonadjacent, so the P4/P5 edge-based join does not apply.
+- P2 (isolated c6 pair) is not covered by any triple-window result. Case R(3)
+  independently reduced to 110 rooted reps in D's work (round 1); not a partition.

@@ -43,3 +43,30 @@ Two later unrefereed reports are **leads only**: Unsolved Lab's [R(3,10) report]
 | G | Angeltveit–McKay's local join and finite flag-SDP papers suggest constraints that correlate more than one local view; neither supplies a separating row for our regular case. |
 
 Search scope: arXiv and exact DOI/title lookups; EJC/DS1, ACM, IJCAI, Springer and Wiley references; McKay/HoG plus targeted `(3,10,39)` count and graph6 searches and `(3,9;30,88)` through dense-class searches. An absent find is not proof that no release exists. No mail, posting, or dataset requests were made.
+
+## Round 2 cross-check and adjacent results
+
+- Rechecked the journal §7 and Radziszowski DS1.18 §2.1(d). The exact
+  published figure is still Angeltveit's *partial* count 43,225,483;
+  the survey rounds it to at least 43 million. [McKay's current index](https://users.cecs.anu.edu.au/~bdm/data/ramsey.html)
+  still does not expose the GR–Angeltveit file. A candidate third-party
+  mirror, [`linxy/RamseyGraph` at `7ca0863`](https://huggingface.co/datasets/linxy/RamseyGraph/tree/7ca0863),
+  repackages smaller graph classes; its raw and processed indexes are not
+  a new source for B's order-30 dense levels or F's order-39 seeds.
+- Marcelo Campos, Matthew Jenssen, Marcus Michelen, and Julian Sahasrabudhe,
+  *A new lower bound for the Ramsey numbers R(3,k)*, [arXiv:2505.13371](https://arxiv.org/abs/2505.13371)
+  (May 19, 2025), gives asymptotic constant 1/3; Zion Hefty, Paul Horn,
+  Dylan King, and Florian Pfender, *Improving R(3,k) in just two bites*,
+  [arXiv:2510.19718v3](https://arxiv.org/abs/2510.19718v3) (February 19,
+  2026), raises it to 1/2 with a random blow-up/filter construction. Samuel
+  Harris et al., [arXiv:2609.01782v1](https://arxiv.org/abs/2609.01782v1)
+  (September 1, 2026), gives a short alternative with a weaker constant.
+  Their asymptotic statements cannot be substituted at k=10; a possible
+  seed generator for F would first have to beat a smaller finite control.
+- Milos Tatarevic, *An upper bound of 60 for the Ramsey number R(3,3,3,3)*,
+  [arXiv:2610.36648v2](https://arxiv.org/abs/2610.36648v2) (November 6,
+  2026), uses global incidence counting, local neighbourhood classifications,
+  Lean reductions and two independent SAT solvers. The v1 bound was 61;
+  neither version concerns the two-colour R(3,10), and the two-solver step
+  is not an end-to-end Lean proof. This is an architecture precedent for
+  A/C/D/G, not a new count, closure, or gluing floor.

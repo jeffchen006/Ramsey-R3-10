@@ -1,8 +1,43 @@
 # Lane A state
 
-Round 1 (2026-11-21). Core share 14. No critic directives for the first round.
+Round 2 (2026-11-21), core share 10. Critic directives: preserve R(7), replay
+Lane C's path-window cover independently, help bind the retained PB chain.
+R(3,10) remains unresolved. Do not regenerate R(7) SAT cubes.
 
-## Jobs
+## Round 2 jobs
+
+None running or detached. The R(7) replay, P4 controls/full replay and PB
+binding each used a single foreground worker and finished. No SAT was launched.
+
+## Round 2 results and claims
+
+| Label | Result | Evidence | Core-h |
+|---|---|---|---:|
+| cert (C-004; already accepted) | Preserved four R(7) seeds, pair lists and traces independently from Lane C's scratch. Portable replay checked all 977,008 roots and 49,569,079 nodes in 57.6 CPU-s. | `R7_REPLAY.md`, `R7_INPUTS.sha256`, `R7_CODE.sha256`, `scratch/A/r7-proof-v1`, `scratch/A/r7-replay-round2/replay-X*.log`; critic `round_001.md` | 0.0160 |
+| enum (coverage only) | Independent P4 window replay exactly matches 2,454 labelled rows, 31,994 placements, 13,613 core classes. All 42 shorter-case planted paths recovered; deleted row, forged empty cover, forged triangle row rejected. Does not close any R(6) path branch. | `P4_REPLAY.md`, `check_path_cover.py`, `scratch/A/path/{control,missing,forged-closed,forged-triangle,sample,full}.log` | 0.0176 incl. sample |
+| open (PB provenance only) | Verified exact composition of retained PB input: 99,701 provisional cube rows + 89,717 independent case rows; altered augmentation and altered PB input both rejected. Proof/input/output artifacts pinned and checked. Full-project `cube_R.opb` not yet available at handoff. | `PB_BINDING.md`, `PB_ROUND1.sha256`, `scratch/A/rc7/{bind-provisional.log,pb-manifest.log,bind-control/*log}` | <0.003 |
+
+P4 full replay calibrated before launch: sample 96 classes/18 rows, 13.28
+CPU-s including global setup, and C's production scan 72.85 CPU-s. Expected
+few CPU-minutes, bounded to 600 CPU/900 wall seconds and 16 GiB virtual memory;
+actual 49.82 CPU-s, 58.26 wall, 247 MiB peak RSS.
+
+## Next
+
+- H: when actual `R310.Files` export is available, follow `PB_BINDING.md`.
+  Byte equality and exact composition reuse the old PB chain without solving
+  any SAT cubes. A binder pass alone does not establish Lean provenance.
+- Coordinate with C for an independent replay of its next path-window
+  reduction or certificate, first on an exact planted control. Do not treat
+  the 2,454 survivors as actual completions.
+- Preserve `scratch/A/r7-proof-v1` (21 MB on disk). Other lanes can choose
+  scratch output with `bash ralph/lanes/A/replay_r7.sh NEW_SCRATCH_OUTPUT_DIR`.
+
+## Round 1 archive
+
+Core share was 14. No critic directives for the first round.
+
+### Jobs
 
 No running or detached Lane A solver jobs. PID 357158 (L300 cubing) finished at its wall cap;
 PID 504661 (unfiltered X0) and the compact X0 retry finished at their CPU
@@ -10,7 +45,7 @@ limits. All trace replays and cube probes exited. Tool bootstrap complete.
 Tool session 46254 (timeout PID 1165159, Python PID 1165160, CakePB PID 1272170)
 completed the provisional base check, 353.78 s wall and `RESULT: OK`.
 
-## Results
+### Results
 
 | Status | Evidence | Result | Core-h |
 |---|---|---|---:|
@@ -24,14 +59,12 @@ completed the provisional base check, 353.78 s wall and `RESULT: OK`.
 | enum | `scratch/A/rc7/fresh-sample/` | Five freshly emitted PRc7 cubes UNSAT with LRAT, lazy-IS, and block-SB checks (median 1.13 s CPU); historical median 5.2 s is not directly comparable. Base and cover separate. | <0.02 |
 | enum | `scratch/A/rc7/{C13-positive,C13-negative,C22-positive,side-C22}.log` | Unordered attachment encoding yields known C13 and a known 6-regular C22; C13 with codegree cap 1 UNSAT. Side filter preserved actual C22 attachments. | <0.001 |
 | open | `scratch/A/rc7/{set-X0,compact-X0}.log` | X0 attachment SAT neither solves before 180 CPU s. Side support clauses reduce pair conflicts 6,333,526 → 11,447 and initial RSS/time, but did not close X0. | 0.100 |
-| enum (trace replay verified; cert acceptance pending) | `R7_REPLAY.md`, `R7_INPUTS.sha256`, `scratch/A/rc7/replay-final.log` | Independent replay of Lane C's R(7) branch proofs: 4 bound seeds, verified exact cover of 977,008 side pairs, checked 49,569,079 nodes with no cutoff. Rejected a fake closure at a planted C22 root. | 0.0154 per full replay |
+| cert (now accepted) | `R7_REPLAY.md`, `R7_INPUTS.sha256`, `scratch/A/rc7/replay-final.log` | Independent replay of Lane C's R(7) branch proofs: 4 bound seeds, verified exact cover of 977,008 side pairs, checked 49,569,079 nodes with no cutoff. Rejected a fake closure at a planted C22 root. | 0.0154 per full replay |
 
-## Claims / handoff
+### Notes
 
-- Main result: no R(7) extensions in the independently covered/replayed
-  enumeration. The traces are a separate finite proof format, not LRAT.
-  Ask critic/H to accept the reduction + checker before marking `cert`.
-  No graph witness and no determination of R(3,10).
+- No R(7) extensions in the independently covered/replayed enumeration.
+  The traces are a separate finite proof format, not LRAT; accepted by critic.
 - `check_sms.py` checks block membership explicitly as well as checked IS shape,
   all triangles, SB witnesses, and cake_lpr; `--allow-input-extras` only treats
   allowed exact input clauses as assumptions. Base and cover still need checks.
@@ -45,13 +78,6 @@ completed the provisional base check, 353.78 s wall and `RESULT: OK`.
 - `side_filter.py` prunes pair choices via hitting all independent (k-3)-sets,
   MTF demand, and same-side c=7 K2,2. This exploratory SAT route did not close
   X0; Lane C's side-package + common-neighbor-mask DFS is the successful route.
-- Reproduce the independent graph6/cover/trace check via `bash ralph/lanes/A/replay_r7.sh`.
-  Do not delete `scratch/C/R7_full.?.txt`, `scratch/C/R7_trace.?.bin`, or the
-  four seed graph6s without preserving them; their hashes are pinned.
 - Historical `Rc7b_L300.cubes`, 99 timeout IDs and proofs were not in this
   checkout or git history. Don't spend more CPU reconstructing the original
   split unless the manifests turn up and the critic needs the SAT route.
-- Next: check the proper Lean-emitted PRc7 base with `check_base.sh` if the
-  provisional H export is not yet bound. On acceptance of R(7), coordinate with C/D on
-  what the corresponding finite-cover approach can do in R(6), without
-  scaling the already-measured full fixed-X gluing dead ends.

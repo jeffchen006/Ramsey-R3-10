@@ -73,7 +73,7 @@ def extend_holes(base, forbidden, holes):
 def main():
     arg = argparse.ArgumentParser(description=__doc__)
     arg.add_argument('--k', type=int, default=10)
-    arg.add_argument('--holes', type=int, choices=(2, 3), default=2)
+    arg.add_argument('--holes', type=int, choices=(2, 3, 4), default=2)
     arg.add_argument('--max-pairs', type=int, default=80, help='maximum repairs per input')
     arg.add_argument('--shuffle', type=int, help='randomize candidate order with this seed')
     arg.add_argument('--need-bad', action='store_true')

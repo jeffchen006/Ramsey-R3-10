@@ -1,0 +1,8 @@
+seed 0: m=27 colours=750 packages=142843
+seed 0: compatible_pairs=261824 bad_start=0 nodes=13504667 complete_lists=0 REAL_GRAPHS=0 cpu=31.0s
+seed 1: m=27 colours=750 packages=142703
+seed 1: compatible_pairs=261586 bad_start=0 nodes=13495477 complete_lists=0 REAL_GRAPHS=0 cpu=29.0s
+seed 2: m=27 colours=750 packages=139630
+seed 2: compatible_pairs=226943 bad_start=0 nodes=10195773 complete_lists=0 REAL_GRAPHS=0 cpu=19.7s
+seed 3: m=27 colours=750 packages=139565
+seed 3: compatible_pairs=226655 bad_start=0 nodes=10037987 complete_lists=0 REAL_GRAPHS=0 cpu=25.8s

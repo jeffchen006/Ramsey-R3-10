@@ -1,4 +1,116 @@
-# Lane B reproducibility and round 1 notes
+# Lane B reproducibility and round notes
+
+## Round 2: two-edge slice launch estimate (written before launch)
+
+From every known e86 graph, add one nonedge with no common neighbour, canonicalize,
+and repeat to e88. This is exactly the slice of e88 graphs with a two-edge deletion
+chain to e86: triangle-freeness and the independence upper bound survive each legal
+addition; reversing the deletion chain proves coverage of the slice. It is not the
+full e88 class. On the order-22 control the single e60 graph produces exactly the
+six canonical e61 graphs; the separate irreducibility checker gives the empty
+complement (`scratch/B/logs/edgeup2_pilot.log`).
+
+Pilot on 32 dispersed e86 inputs: 2,592 raw / 2,590 unique e87, 196,999 raw /
+98,408 unique e88. Canonicalization of e88 cost 1.29 CPU s / 5.53 s wall.
+The exact MTF pilot completed all 98,408 inputs with zero outputs in 104.48 CPU s;
+median 1.055 ms/input over 97 chunks, range 0.898–1.338 ms/input. Scaling 32 to
+1,800 forecasts up to ~11.1M raw and up to ~5.54M unique e88 before intersample
+deduplication, a ~1.6 CPU-h scan at the pilot mean, plus ~0.03 CPU-h canonicalizing.
+Recent pilot throughput ~1,000–1,100 MTF inputs/s wall gives a ~1.5–2.5h estimate
+including sorting/I/O under contention. Hard cap 5h, 1 solver core (shortg+sort
+can temporarily be two busy processes), 16 GB address-space limit, estimated
+<4 GB incremental scratch. This is within Lane B's 18-core allocation alongside
+the 16-worker prefix and does not authorize the full e88 census.
+
+Observed: 133,434 canonical e87 graphs, then 10,142,430 raw and 4,751,963
+canonical e88 graphs, with edge addition taking 9.89 CPU s / 146.87 wall s and
+canonicalization 69.28 CPU s / 202.37 wall s at the second level. Continue the
+MTF scan before making a slice-level exclusion claim. Independent SAT agreed on
+24 dispersed pilot e88 graphs (`logs/edgeup2_pilot_sat.log`, all solver UNSAT,
+no checked SAT proof). Once `n30.py` checks the complete e87 census and the
+two-edge scan finishes, `src/edgeup_tail87.sh` checks set inclusion, computes the
+remaining 13,901 e87 parents, and scans only their new e88 outputs. This would
+cover every e88 with *at least one* Ramsey-preserving deletion, but no edge-critical e88.
+
+The slice is demonstrably incomplete: 3,037 of 5,994 distinct e88 lines sampled
+from d5 prefix chunks are outside `up86` (stratified by chunks, not a class-wide
+fraction). One of those is provably edge-critical: `critical88.json` contains an
+explicit independent 9-set for each single-edge deletion. `src/critical_witness.py
+check` uses the workspace graph checker and verifies all 88 deletion witnesses;
+a corrupted witness is rejected (`scratch/B/logs/critical88.log`). The separate
+Python checker gets the same seven critical graphs as the C gluer/checker on the
+97 order-22 graphs through e63. The e88 graph is a dual only, not an order-40 witness.
+
+The exact critical-edge swap rule tests possible additions only inside the
+intersection of all independent K-sets created by the deleted edge: a single
+addition kills every new K-set iff both endpoints lie in that intersection.
+`critical_swaps.py` matched direct delete/add testing at all 12 order-22
+controls (seven nontrivial labelled neighbors in total). A bounded walk from
+the critical e88 seed expanded 256 labelled graphs, reached 957, and did not
+reach an outside-prefix graph; 701 were still on the frontier at the cap
+(`logs/critical_swaps_88.log`, 3.19 CPU s). No connectivity or coverage claim.
+
+## Round 2: faster missing-branch generation
+
+`gluetriple`: prefilter future choices after selecting two attachments by hitting
+every independent (K-2)-set disjoint from both. The order-22 canonical set of
+191 is unchanged at each tested setting, but 24 dispersed e52 inputs took 45.82
+CPU s versus 11.04 s with the early filter disabled. Decreasing of node count
+(9.08M to 8.34M) is insufficient. Do not scale.
+
+`g84`: in `-A 58 -B 51 -C 42` mode (K=8, e=88), keep only graphs with no
+degree-5/6/7 vertex whose dual is admitted by the existing prefix. For attachment
+set S, its vertex's eventual Z is exactly `D + sum_{x in S}(deg_H(x)+1) +
+sum_{T != S} |S ∩ T|`, so use mutable slack and prune when any bound fails.
+All Z caps use `88 - max(published minimum, prefix input ceiling + 1)` for
+the respective degrees; do not read the prefix-input ceiling as a nonexistence
+statement. Check actual Z at each vertex before output. Minimum degree 3 at e88
+follows from the GR e85 minimum at n27: a degree-2 vertex would have Z>=4.
+For n22 e63, the unfiltered profile mode reproduces all 60 graphs, and the
+degree-5 dual threshold 33 reproduces the exact independent 24-graph filter.
+Toggling the MTF scope is unrelated: these are (3,9;30) duals, only the final
+40-vertex scan is MTF-only.
+
+`g84 -I` keeps only graphs for which every edge deletion introduces an
+independent (K+1)-set. On a root edge, this demands a (K-1)-set in H disjoint
+from the attachment. Performs the general witness search at output. It recovers
+the exact independently filtered seven critical order-22 graphs <=63; the
+96-input e52 run yields zero critical among 162 raw e88 outputs and takes
+49.53 CPU s. No standalone speed gain. Depth counters show ~42.6M early
+failed compatibility-set intersections at depths 1 and 2, next to ~4.2M
+alpha rejections at depth 2 (`logs/g84_652_irred.log`).
+
+`gluecheap`: skip per-candidate degree scans already enforced by the parent
+eligibility mask and visit only known low-degree H vertices for deficit checks;
+test the two-child intersection cheaply, use restrict-qualified contiguous
+operations on complete words, and check depth-2 alpha after ruling out an
+empty child. At larger depths, checks remain early as before. Pair rows ensure
+the two-attachment checks. The full canonical order-22 control matches byte
+for byte. The 36-parent n23,e51 sample gives exactly 37,550 raw outputs versus
+`glue5` (34.24 vs the earlier 44.09 CPU s). On the 96-parent e52 sample the
+162 raw e88 outputs match exactly (44.37 vs 49.03 CPU s for `gluetrans`, and
+63.25 for `glue5`; edge cap is 88 in all cases, 88 is the only output there).
+`src/paired_speed.sh` runs four seeded eight-graph sub-blocks per level, checks
+raw equality, and verifies every filtered output against `profile_filter.py`.
+
+| Inner branch | `gluetrans` CPU seconds/input | `gluecheap` CPU seconds/input | `gluecheap` outside-prefix CPU seconds/input |
+|---|---:|---:|---:|
+| n23 e52 | 0.555 (0.456–0.676) | 0.491 (0.419–0.578) | 0.468 (0.383–0.541) |
+| n22 e44 | 4.539 (3.181–5.244) | 3.927 (2.775–4.685) | 4.087 (2.935–4.795) |
+| n22 e43 | 6.008 (5.051–6.514) | 5.103 (4.593–5.754) | 5.158 (4.599–5.653) |
+
+Each row is 32 distinct parents in four seeded blocks; ranges are block means.
+Outside-prefix outputs were empty on all three sets; raw plain output counts
+were 4, 3,356, 66 respectively. For the exact 1,521-parent e43-only branch,
+5.158 CPU s/parent predicts 2.18 CPU-h; the observed mean of 5.203 wall s/parent
+predicts 2.20h on one worker, and scaling the slowest block gives 2.40 CPU-h.
+Reserve 0.3–0.6h for sort, MTF scan, and contention; sampled outside-prefix
+canonicalization is empty, and live prefix throughput includes canonicalization
+at roughly 7 large chunks/min. Queue e43 behind up86 so e43 can use one worker
+and still fit the 18 process slots even when canonicalization uses shortg+sort.
+Expected end about 22:00–22:40 CET; cap 6h from queue. The complete missing e52
+and e44 levels together project ~1,423 CPU-h before overhead (~79h even at full
+18-core occupancy), so do not launch either at full scale in this run.
 
 ## Sources and seed lineage
 
