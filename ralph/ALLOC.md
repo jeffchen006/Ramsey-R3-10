@@ -2,11 +2,11 @@
 
 | lane | cores | reason |
 |---|---|---|
-| A | 2 | Unchanged: independent binding of new marked-strip source and delta keys. |
-| B | 24 | +2: terminal reducible e88/e43 scans and new e108 critical certificates; reserve 16 for the live prefix and up to eight for bounded new deltas. |
-| C | 10 | +2: checked (12,12) closure; reserve extra slots only for a selective asymmetric pre-join pilot. |
-| D | 3 | +1: max12 shrank from 13 to nine rooted keys; use a matched score-cap pilot, not broad strengthening retries. |
-| E | 19 | +2: checked profile-A and one-core mixed exclusions; keep 16 as the batch ceiling until the mixed/reverse pilot justifies a bigger run. |
-| F | 2 | Unchanged: validated relift is cheap; no gain in target nearness and no request for more cores. |
-| G | 18 | −7: template and local-budget gains did not make capped half-CNFs decisive; prioritize an exact path/leaf split over wide pilots. |
+| A | 3 | +1: full independent paired proof replay; bind terminal lower/mixed covers and safeguard exact source generation. |
+| B | 25 | +1: checked 1,142-key scout delta; reserve 16 for prefix and up to nine for bounded new-source/proof work. |
+| C | 8 | −2: the 16–21 bound is checked, but 99.9% of raw maps remain; use small exact blocker and pre-join pilots, not a broad join. |
+| D | 4 | +1: punctured-root cover has a fresh exact calibration; allow a matched small target pilot, not more score-cap retries. |
+| E | 16 | −3: checked 785→57 queue reduction and core closure; retain the prior working batch ceiling, no need for the extra burst slots. |
+| F | 2 | Unchanged: exact two-seed trade neighborhoods exhausted without gain; only a genuinely new source or selector warrants a pilot. |
+| G | 20 | +2: confirmed c=3 and c=2/min-degree-three paired exclusions; preserve 18 live slots and reserve up to two for exact source or overlay controls. |
 | H | 2 | Unchanged: ledger, hypothesis audits and scoped Lean work fit two slots. |

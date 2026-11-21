@@ -7,6 +7,8 @@
 # fence (ralph/bin/fence.py). hmz 0.2.1/0.2.2's own codex harness fails with the SoruxGPT account.
 # Claude later: ENGINE=hmz WORKER=claude/claude-opus-5-5:high CRITIC=... ./launch.sh --resume
 # Extra -p settings may follow, e.g.: ./launch.sh -p round_minutes=45,cores=64
+# Models per lane and idea scouts: flow params lane_models, scout_every, first_scout_round, scouts, scout_model.
+# Resume with the time left:  DURATION=2340m HOURS=48 ./launch.sh --resume
 set -euo pipefail
 cd "$(dirname "$0")"
 HMZ=${HMZ:-$HOME/.local/share/uv/tools/hmz/bin/hmz}
@@ -16,7 +18,8 @@ CRITIC=${CRITIC:-codex/gpt-6.2-sol:high}   # used only by ENGINE=hmz
 MODEL=${MODEL:-gpt-6.2-sol}
 DURATION=${DURATION:-48h}
 args=()
-params="budget.duration=$DURATION,hours=${DURATION%h},engine=$ENGINE,model=$MODEL"
+HOURS=${HOURS:-${DURATION%h}}   # run length shown to the agents; set it when DURATION is a remainder (resume)
+params="budget.duration=$DURATION,hours=$HOURS,engine=$ENGINE,model=$MODEL"
 case "${1:-}" in
   --dry-run)
     params="budget.duration=40m,dry_run=true,max_rounds=1,hours=0.5,engine=$ENGINE,model=$MODEL"

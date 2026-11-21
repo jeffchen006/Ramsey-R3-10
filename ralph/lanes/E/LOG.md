@@ -159,3 +159,22 @@ ran in `scratch/E` with `nice -n 5`, wall+CPU caps and 16 GiB `ulimit -v`.
   the round-6 exact case counts supersede it where computed.
 - Frozen f28 mixed-status cover in `f28_cover.md`; unchanged f32
   `t=0,1` work, `f=30` reductions, and `(5,5)` proof. No candidate.
+
+## Round 6 archive
+
+- Profile `(10,10,10,12)` at saturated m11 excluded over all 19
+  cores: 180,325 projections, 128,474 graph witnesses, 51,845
+  primary checked LRATs and 144 exact lifts of six residual
+  projections (101 witnesses, 43 checked LRATs). 2.9089 primary
+  CPU-hours. All solver wrappers `2053353`–`2053368` collected,
+  22:51:33–23:04:28. Evidence `m11.md` and
+  `scratch/E/r6_e11/profile_a11.final.log`.
+- Mixed m11 `G?Beto` excluded: 9,012 projection and 39,503 lift
+  graph witnesses; 389 remaining projections with checked LRATs.
+  No runoff to other cores; core-9 and core-18 raw graph scans
+  capped, despite exact support generation. Their traces are not
+  complete. Other prior f32/e12 and f28 scopes unchanged.
+- Reverse e74 partial catalogue 1,624/1,625; known maximum degree
+  seven has multiplicity at most four. For mixed m11 all four
+  windows must be the same missing class. No new class from
+  complete one-/two-star and two-edge swap sweeps.

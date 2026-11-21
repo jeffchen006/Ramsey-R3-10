@@ -57,6 +57,15 @@ LANES = {
     'H': 'Literature scout, claim ledger, Lean',
 }
 LIMIT = 6000  # characters of each lane's report that go into the critic's prompt and the round file
+# Idea scouts: a fresh session beside the lanes every few rounds; it reads only, then writes one idea file.
+SCOUT_FOCUS = {
+    'R': 'Case R (9-regular): the max-codegree sub-cases that are still open (read the latest ralph/rounds file '
+         'and ralph/CLAIMS.md for what is closed). Lanes C and D.',
+    'N': 'The open near-regular MTF degree distributions N(e) and the residue / gluing floors they depend on. '
+         'Lanes B and G.',
+    'G': 'The 41 side (a construction that could find a (3,10,40)-graph if one exists), the open symmetry cases, '
+         'and any global method that would cut many open cases at once. Lanes E and F.',
+}
 
 HEADER = """# r310_ralph: round {round}, {who} (fresh session)
 
@@ -124,6 +133,14 @@ class Params(FlowParams):
     model: str = Field(default='gpt-6.2-sol', description="Model of the 'exec' engine.")
     effort: str = Field(default='high', description="Reasoning effort of lane turns ('exec' engine).")
     critic_effort: str = Field(default='high', description="Reasoning effort of the critic ('exec' engine).")
+    lane_models: str = Field(default='D:gpt-6.2-astra,F:gpt-6.2-astra,critic:gpt-6.2-astra',
+                             description="'exec' engine: model per lane or 'critic', as NAME:MODEL,...; others use model.")
+    scout_every: int = Field(default=3, ge=0, description='Run idea scouts beside the lanes every N rounds (0 = never).')
+    first_scout_round: int = Field(default=9, ge=1, description='The first round with idea scouts.')
+    scouts: str = Field(default='R,N', description=f'Scout focuses, letters of {sorted(SCOUT_FOCUS)}.')
+    scout_model: str = Field(default='gpt-6.2-astra', description="Model of the scouts ('exec' engine).")
+    scout_effort: str = Field(default='xhigh', description="Reasoning effort of the scouts ('exec' engine).")
+    scout_minutes: int = Field(default=50, ge=2, le=240, description='Minutes a scout turn should take; cut 10 min later.')
 
 
 async def gate(ws, *args, timeout=900):
@@ -165,6 +182,9 @@ async def r310_ralph(task: str, *, agents: Agents, envs: Envs, params: Params, c
     last_gates = state.get('gates', {'note': 'first round of this run'})
     lane_fails = state.get('lane_fails', {})
     dead_rounds = 0
+    models = {k.strip(): v.strip() for k, _, v in
+              (part.partition(':') for part in params.lane_models.split(',')) if k.strip() and v.strip()}
+    scout_names = [x for x in (s.strip().upper() for s in params.scouts.split(',')) if x in SCOUT_FOCUS]
 
     async def read(path, default=''):
         try:
@@ -172,12 +192,12 @@ async def r310_ralph(task: str, *, agents: Agents, envs: Envs, params: Params, c
         except Exception:  # noqa: BLE001 -- a missing task file is the operator's to fix; say so in the prompt
             return default
 
-    async def exec_turn(prompt, limit, name, effort):
+    async def exec_turn(prompt, limit, name, effort, model):
         """One turn as a fresh `codex exec` session (ralph/bin/turn.sh); its log stays in scratch/flow/turns."""
         base = f'scratch/flow/turns/r{state.get("round", 0) + 1:03d}_{name}'
         await ws.write(f'{base}.prompt', prompt.encode())
         minutes_ = max(1, int(limit.total_seconds() // 60))
-        code, _, err = await ws.exec(['bash', f'{R}/bin/turn.sh', params.model, effort, str(minutes_),
+        code, _, err = await ws.exec(['bash', f'{R}/bin/turn.sh', model, effort, str(minutes_),
                                       f'{base}.prompt', f'{base}.last', f'{base}.log'],
                                      timeout=limit.total_seconds() + 300)
         said = await read(f'{base}.last')
@@ -190,12 +210,12 @@ async def r310_ralph(task: str, *, agents: Agents, envs: Envs, params: Params, c
             return 'throttled', f'(no turn: throttled; exit {code}; log {base}.log)\n{log_tail[-600:]}'
         return 'failed', f'(the turn failed: exit {code}; log {base}.log; {err.strip()[-200:]})\n{log_tail[-800:]}'
 
-    async def turn(agent, prompt, limit, delay=0, name='turn', effort='high'):
+    async def turn(agent, prompt, limit, delay=0, name='turn', effort='high', model=None):
         """One turn in a fresh session; returns its status and what it said."""
         if delay:
             await asyncio.sleep(delay)
         if params.engine == 'exec':
-            return await exec_turn(prompt, limit, name, effort)
+            return await exec_turn(prompt, limit, name, effort, model or models.get(name, params.model))
         started = time.monotonic()
         try:
             said = await agent.run(prompt, session=await agent.spawn(), env=ws,
@@ -238,6 +258,20 @@ async def r310_ralph(task: str, *, agents: Agents, envs: Envs, params: Params, c
                       gates=json.dumps(last_gates, indent=1))
         task_common = await read(f'{R}/TASK_COMMON.md', f'(missing: {R}/TASK_COMMON.md)')
         note = f'\n\n## Operator note\n{task.strip()}\n' if task.strip() else ''
+        last_scouts = state.get('scouts', {})
+        if not dry and last_scouts.get('round') == round_no - 1 and last_scouts.get('files'):
+            note += ('\n\n## Idea scouts of the last round (claims, not facts)\n'
+                     f'Read the parts for your lane in {", ".join(last_scouts["files"])}. The critic put the best of '
+                     'them into its directives; re-check any scout result before you build on it.\n')
+        scouting = bool(params.scout_every and not dry and scout_names and round_no >= params.first_scout_round
+                        and (round_no - params.first_scout_round) % params.scout_every == 0)
+        scout_prompts = {}
+        if scouting:
+            brief = await read(f'{R}/SCOUT_TASK.md', f'(missing: {R}/SCOUT_TASK.md)')
+            for s in scout_names:
+                name = f'r{round_no:03d}_{s}'
+                head = HEADER.format(who=f'idea scout {name}', minutes=params.scout_minutes, grace=10, **common)
+                scout_prompts[s] = f'{head}{brief}\n\nYOUR_NAME: {name}\nFOCUS: {SCOUT_FOCUS[s]}\n'
 
         prompts = {}
         for x in lanes:
@@ -254,6 +288,10 @@ async def r310_ralph(task: str, *, agents: Agents, envs: Envs, params: Params, c
         watcher = asyncio.create_task(watch(stop, killed_log))
         try:
             limit = timedelta(minutes=minutes + grace)
+            scout_job = asyncio.gather(*(turn(worker, scout_prompts[s], timedelta(minutes=params.scout_minutes + 10),
+                                              (len(lanes) + i) * params.stagger_seconds, name=f'scout_{s}',
+                                              effort=params.scout_effort, model=params.scout_model)
+                                         for i, s in enumerate(scout_prompts)))
             results = await asyncio.gather(*(turn(worker, prompts[x], limit, i * params.stagger_seconds,
                                                   name=x, effort=params.effort)
                                              for i, x in enumerate(lanes)))
@@ -261,8 +299,18 @@ async def r310_ralph(task: str, *, agents: Agents, envs: Envs, params: Params, c
             said = {x: r[1] for x, r in zip(lanes, results)}
             for x in lanes:
                 lane_fails[x] = 0 if status[x] == 'ok' else lane_fails.get(x, 0) + 1
+            scout_results = await scout_job
+            sstatus = {s: r[0] for s, r in zip(scout_prompts, scout_results)}
+            ssaid = {s: r[1] for s, r in zip(scout_prompts, scout_results)}
+            scout_files = [f'review/ideas/r{round_no:03d}_{s}.md' for s in scout_prompts]
 
             reports = '\n\n'.join(f'### Lane {x} ({status[x]})\n{clip(said[x])}' for x in lanes)
+            if scout_prompts:
+                reports += ('\n\n## Idea scouts this round (claims, not facts)\nRead their files. Put the ideas that '
+                            'deserve a test, with the calibration each needs, into the lane sections of LATEST.md; '
+                            'append each dead end they measured as one line to review/ideas/TESTED.md.\n\n'
+                            + '\n\n'.join(f'### Scout {s} ({sstatus[s]}), file {f}\n{clip(ssaid[s], 3000)}'
+                                          for s, f in zip(scout_prompts, scout_files)))
             chead = HEADER.format(who='critic', minutes=cminutes, grace=cgrace, **common)
             if dry:
                 cbody = DRY_CRITIC.format(root=root, r=R) + f'\nLane statuses: {status}'
@@ -314,10 +362,14 @@ async def r310_ralph(task: str, *, agents: Agents, envs: Envs, params: Params, c
             'lanes_failing_in_a_row': {x: n for x, n in lane_fails.items() if n},
             'critic_turn': cstatus,
         }
+        if scout_prompts:
+            gates['scout_turns'] = sstatus
         if 'error' in scanned or 'error' in seen:
             gates['gate_errors'] = [x['error'] for x in (scanned, seen) if 'error' in x]
 
         lane_text = '\n\n'.join(f'## Lane {x}: {LANES[x]} ({status[x]})\n{clip(said[x], 20000)}' for x in lanes)
+        lane_text += ''.join(f'\n\n## Idea scout {s} ({sstatus[s]}): {f}\n{clip(ssaid[s], 6000)}'
+                             for s, f in zip(scout_prompts, scout_files))
         await ws.write(f'{R}/rounds/round_{round_no:03d}.md',
                        (f'# Round {round_no}\n\nBegan {began}; ended {now()}.\n\n'
                         f'## Flow checks\n```json\n{json.dumps(gates, indent=1)}\n```\n\n{lane_text}\n\n'
@@ -342,6 +394,8 @@ async def r310_ralph(task: str, *, agents: Agents, envs: Envs, params: Params, c
         state['found'] = found
         state['lane_fails'] = lane_fails
         state['gates'] = last_gates = gates
+        if scout_prompts:
+            state['scouts'] = {'round': round_no, 'files': scout_files}
         if found:
             return f'r310_ralph: a (3,10,40)-graph was verified in round {round_no}: {found}. R(3,10) = 41.'
     return f'r310_ralph ended after round {state.get("round", 0)}; no (3,10,40)-graph verified.'

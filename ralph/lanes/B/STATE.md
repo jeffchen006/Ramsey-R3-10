@@ -1,10 +1,15 @@
-# Lane B — round 6, November 21, 2026
+# Lane B — round 7, November 21, 2026
 
 **Current baseline:** global degree-seven floor **108** for MTF is CONFIRMED
 (B-013); it subsumes the direct e162 `(0,2,32,6)` exclusion. Neither
-uses t8/t9 floors. No candidate graph. Share is 22 cores: at most 18 for
-the existing prefix/e43/tail chain, at most four additional for e108.
+uses t8/t9 floors. No candidate graph. Share is 24 cores: keep the prefix
+at 16 slots; at most eight additional for genuinely new bounded sources.
 Work from `scratch/B` with `ulimit -v 16777216` and `PYTHONDONTWRITEBYTECODE=1`.
+
+**Round 7:** two calibrated e108 pilots recovered no new key, so neither
+was scaled. Same partial census (1,266 missing) and 614 supplied-key
+certificates; no floor-109 or U88 upgrade. Prefix replay is ready when
+the sole remaining supervisor finishes. See `ROUND7_REPLAY.md`.
 
 **Round 6:** d7/e43 outside prefix returned zero and finished binding.
 Both scans of the full deletion-reducible e88 partition finished with
@@ -18,6 +23,11 @@ Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 | PID | Command | Log | Cores | Start (CET) | Expected end |
 |---|---|---|---|---|---|
 | 1180084 | `timeout 18h prefix_pipeline.sh 16` | `scratch/B/logs/prefix_pipeline.log` | 16; solving since ~17:24 | Nov 21 17:10:35 | estimate Nov 22 00:50–02:00, cap Nov 22 11:10 |
+
+At Nov 21 23:41 CET there are 2,338 of 2,847 completed d6 chunks (509
+remaining, including active); d5 and d7 generation is done. No final
+prefix canonical file or terminal MTF outcome yet. All round-7
+foreground tests and pilots finished; no new detached process.
 
 PID 3921182 finished at 22:30 CET, all 48 chunks bound, zero e88 outputs.
 PID 2576750 (tail87, active 22:30:40–22:52 CET) finished with zero MTF
@@ -38,6 +48,14 @@ e52 TIMEOUT after the exact e63 control passed. Neither benchmark is live.
 Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitted minimum degree 3 for order 21; corrected by generating this branch and merging, no missing counts thereafter. Seed 418169 failed on `shortg`'s in-place default; 453949 passed after explicitly writing stdout. Do not interpret either failed run as empty. Upper seed PID 540708 completed successfully at ~17:23 with all GR T13 counts.
 
 ## Results and claims for review
+
+### Round 7
+
+| Label | Result | Evidence | CPU-hours |
+|---|---|---|---:|
+| enum / estimate | Adjacent-pair critical reconstruction checks 374 labelled smaller cases, reconstructs all 42 e22 critical control keys from all e22 stems, and 18/42 from e21 stems. On 2,700 critical-e108 stems it finds 32 known keys; 2,549 e107 stems give none. Zero novel key; do not scale. | `ROUND7_REPLAY.md`, `scratch/B/logs/e108_r7_{adjacent_control,adjacent_sample,final_retest}.log` | ~0.001 including calibration |
+| enum / estimate | Degree-six/e65 pilot from exact 396-key source: 25 seeds, 45,192 labelled outputs, 21/21 planted critical keys, zero new. Root-edge screen matches exact smaller controls but retains all 268,617 candidates on the target shard; paired core times 16.71 vs 16.40 s. | `ROUND7_REPLAY.md`, `scratch/B/logs/e108_r7_d6_{control,pilot,binding}.log` | ~0.01 pilot |
+| open | Prefix still running at 16 slots. New replay script checks exact byte equality at ≤87 and isolates prefix-critical e88 after terminal chunk binding. Calibrated 201→159+42 split; no target replay yet. | `src/replay_prefix_r7.sh`, `scratch/B/logs/prefix_r7_replay_control.log` | <0.001 |
 
 ### Round 6
 
@@ -104,15 +122,21 @@ Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitt
 
 ## Next
 
-0. Critic/A: audit the newly scoped e43, e88 partition and 614 critical
-   e108 certificates (`ROUND6_REPLAY.md`). Do not recut direct e162.
-1. Prefix PID 1180084 uses (5:3,6:3,7:1), sufficient for <=87 by exact `tcheck.py`; runs with output cap 88, so its e88 result is **partial only**. Require the full run's own e86/e87 checks and compare its e87 canonical file byte-for-byte to `scratch/B/work/prefix_checkpoint_r4/union87.g6`. Confirm terminal counts and SAT on a dispersed e88 sample.
+0. Critic/A: retain exact scopes of the e43 and reducible e88 partitions,
+   and the 614 supplied-key e108 certificates. Do not recut direct e162.
+1. Prefix PID 1180084 uses (5:3,6:3,7:1), sufficient for <=87 by exact
+   `tcheck.py`; output e88 is **partial only**. When the canonical file
+   appears, run `src/replay_prefix_r7.sh lower` (from scratch with limits),
+   then `terminal` after bound MTF zero, followed by a dispersed independent
+   SAT sample on prefix-critical keys. Residual critical e88 outside prefix
+   and e43 requires d6/e52 or d7/e44; still no total count or exclusion.
 2. The complete reducible e88 zero is ready for critic review; optional
    fresh `src/replay_tail87_r6.sh terminal` independently recomputes the
    tail and binds both MTF scans. Scope is only reducible e88;
    `critical88.json` proves a critical graph exists.
-3. Do not scale e52/e44, star-lift, or the measured e108 local pilots
-   without a material new idea. t9<=89 and larger t8 floors unbudgeted.
+3. Do not scale e52/e44, star-lift, the e108 adjacent-stem or d6/e65 pilots,
+   or old e108 local pilots. Require a new source/filter with measured yield.
+   t9<=89 and larger t8 floors unbudgeted.
 4. Exact e108 needs 1,266 more critical keys. The best current known set
    is `work/e108_r6_follow/pass4/union.g6`; never call it exact. Require
    order, e, alpha, Traces and strict GR count 2,104,151 before a full

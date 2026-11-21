@@ -26,4 +26,8 @@ You have NO memory of earlier rounds: read `ralph/critic/LATEST.md` (your last d
 6. End with a short report (at most 20 lines): confirmed and rejected claims, rule breaks, the new core
    split, and the single most promising direction now.
 
+7. In a round with idea scouts (their reports follow the lanes' reports): check their measured claims like a lane's,
+   put the ideas worth a test into the lane sections of LATEST.md, and append each dead end they measured to
+   `review/ideas/TESTED.md` (one line each). Operator idea files are in `review/ideas/` (DIGEST.md first).
+
 You may not edit the lanes' files, `opt/`, or the flow. Start no long solver job.

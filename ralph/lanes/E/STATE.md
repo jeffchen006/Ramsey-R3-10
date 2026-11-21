@@ -1,55 +1,46 @@
-# Lane E state — round 6
+# Lane E state — round 7
 
-2026-11-21; share 17 cores. All symmetry claims start with all graphs,
-not MTF. No candidate graph; no claim on the Ramsey verdict. Round 5
-is archived in `LOG.md`. Main scope: `(p,f,t)=(2,32,4), δ(W)≥2`.
+2026-11-22; allocation 19 cores, batch ceiling 16. All symmetry
+claims concern all graphs, not MTF. No candidate; no Ramsey verdict.
+Main scope remains `(p,f,t)=(2,32,4), δ(W)≥2`.
 
 ## Jobs
 
-Round-6 working directory `scratch/E/r6_e11`. All jobs collected;
-no live lane-E solver or checker. Detached production history:
+No live lane-E solver or checker, no detached jobs this round.
+Foreground production ran in `scratch/E/r7_shared`.
 
-| Wrapper PIDs | Command | Start and expected end | Cores and logs |
+| Wrapper PID(s) | Command | Start, end | Cores, logs |
 |---|---|---|---|
-| `2053353`–`2053368` | `batch_a11.py solve plan.a11.tsv --output proof.a11 --offset OFFSET --stride 16`, `nice -n 5`, wall 1380 s, CPU 1080 s, RAM 16 GiB | 22:51:33; all terminal at 23:04:28; cap would be 23:14:33 | 16; `proof.a11/{pids.tsv,worker.OFFSET.log,bind.OFFSET.jsonl}` |
+| `617493`–`617496` | `prove_shared74.sh cover.3.jsonl todo.3.tsv proof.3 OFFSET 4`, nice 5, wall 180 s, CPU/RAM limits applied | 00:10:16, all collected before 00:12:06 | 4; `proof.3/worker.{0,1,2,3}.log` |
+| `713723` (Python `713734`) | `bind_shared74.py cover.3.jsonl --trace scan.3.final.jsonl --proofs proof.3`, wall 210 s/CPU 150 s | 00:12:24, finished after 109 wall-s | 1; `bind.proof.3.log` |
 
-Other jobs are collected. Four foreground pair-lift wrappers `1353334`–
-`1353337` finished, zero extra catalogue classes. Mixed core censuses
-`1764448`, `1764449`, `1764451`: exact support generation completed all
-three; proof scan finished for core 0, CPU-killed after a *partial*
-scan for each of 9 and 18. Do not treat those partial traces as covers.
-Six foreground core-0 LRAT wrappers `1819545`–`1819550` finished;
-389/389 checked. Independent core-0 replay finished at 22:54.
-Final profile-A rescue and freeze finished at 23:04:59.
+All round-6 detached workers `2053353`–`2053368` had already ended;
+round-7 checked prior bundles by SHA, not a new proof campaign.
 
 ## Results / claims for H and critic
 
 | Claim | Label | Evidence | Core-hours |
 |---|---|---|---:|
-| `(2,32,t=4,δ(W)≥2,e(W)=11,W=G?Beto)` excluded for both incidence profiles; 9,012 projection witnesses and 39,503 lifted witnesses replay; 389 distinct remaining primary windows checked and replayed. No expansion to other cores in `(10,10,11,11)`. | cert, pending independent scope review | `ralph/lanes/E/m11.md`; `scratch/E/r6_e11/{core0.replay.log,core0.certificates.sha256}` | ~0.07 including replay |
-| All four windows have 74 edges whenever `e(W)≥9` under accepted saturation premises. At `e(W)=8,P=2`, the profiles are `b=(10,10,14,14)` and group deficits `(1,1,0,0)`; the two size-74 windows have at least six degree-seven vertices. | hand deduction conditional on enum saturation, not closure | `ralph/lanes/E/m11.md` | — |
-| 1,624/1,625 known 74-edge classes (GR13), none with >4 degree-seven vertices. Any `m=11` solution would have ≥2 windows isomorphic to the same missing class; for `(10,10,11,11)` all four must be so. The 74-edge maximum degree-seven **multiplicity** is not settled. | enum-assisted necessary condition, not closure | `scratch/E/r6_e11/{addswap2.g6,catalogue_second.log,twoswap_full.log}`, `ralph/lanes/E/m11.md` | ~0.075, exploration |
-| Full `(2,32,t=4,δ(W)≥2,e(W)=11,b=(10,10,10,12))` excluded: 19 core keys, 180,325 projections, 128,474 verified/replayed graph witnesses, 51,845 native CakeLRAT checks, and six primary SAT windows resolved by 144 exact omitted-group supports (101 witnesses + 43 independently replayed LRATs). No caps/missing. Overlaps core 0, not a closure of the other profile. | cert, pending independent scope review | `scratch/E/r6_e11/{graph.a11.replay.log,profile_a11.final.log,profile_a11.certificates.sha256}`, `ralph/lanes/E/m11.md` | 2.9089 primary + 0.0068 rescue/replay |
-| Inherited f28 frozen mixed-status; e12 saturated branch frozen with 7,962 LRATs. Prior `(5,5)` is cert. No reruns. | previous statuses | `f28_cover.md`, `cubic32.md`, `slim5.md` | — |
+| At `(2,32,t=4,δ(W)≥2,e(W)=11)`, profile `(10,10,11,11)`, **`W=G?bBro` only** excluded under inherited universal degree and E-021 census premises. 7,046 projections, 36,612 full support orbits; 4,879 projection witnesses cover 23,294 lifts, 12,939 incompatible lifts, 322 other graph witnesses, 57 fresh-CNF checked LRATs. All scope/receipt identities independently replay. | hand + enum + cert, pending critic | `ralph/lanes/E/shared74.md`, `scratch/E/r7_shared/{bind.cover.3.log,replay.3.final.log,bind.proof.3.log,freeze.3.sha256}` | ~0.07 final census, proof, replay |
+| Shared-window compatibility: degree-seven extras form a clique of size ≤2; `K=6,7,8` and at least `|S_i|+|S_j|−K` fixed-W high roots must map to each other. Compare exact marked-root incidence patterns. On core 3: 785→57 proof residuals, 16.28 CPU-s with graph-first vs 71.32 isom-first. C13 controls 520 positive/520 negative. | hand conditional on E-021 + measured enum filter | `ralph/lanes/E/shared74.md`; `scratch/E/r7_shared/{scan.3.unfiltered.log,scan.3.graphfirst.log,marked.final.pilot.log}` | ~0.01 matched timings |
+| Prior E-019 profile A and E-020 core `G?Beto` unchanged, manifests rehash. E-017 e12 and mixed-status f=28 frozen. Prior `(5,5)` cert remains unchanged. | inherited statuses | `m11.md`, `cubic32.md`, `f28_cover.md`, `slim5.md`; `scratch/E/r7_shared/prior.freeze.log` | — |
 
 ## Next steps
 
-- H/critic: audit the now frozen profile-A and core-0 boundaries
-  from `m11.md`. Full profile A includes exactly the shape
-  `(10,10,10,12)`. Don't rerun this batch unless a binding fails;
-  `freeze_a11.py freeze --with-rescue` writes indexes, so use a
-  scratch copy for any independent freeze replay.
-- Remaining main m11 target is profile `(10,10,11,11)` except core
-  `G?Beto`. Directly running the broad pinned SAT set is too large:
-  core 9 alone has 192,113 feasible-after-domination projections and
-  1,909,123 lifts. Do primary propagation before materializing exact
-  omitted supports, and bind a small number of additional entire cores.
-  Two-retained-group alpha screen finds only 11 witnesses on 6,114
-  feasible pairs; depth-three two-literal branch finds only 2 new proofs
-  on 389 residual projections. Do not scale either as the main route.
-- The reverse 74-edge catalogue remains one short. All 1,624 roots
-  were reattached at one/two vertices or two changed edges without
-  recovering it. Don't repeat those moves unchanged. The last class,
-  if it has ≤4 degree-seven vertices, additionally eliminates m9, m10,
-  and deficit-two m8. If m8 has zero deficit, all W are 2-regular;
-  `W=C8` or `2C4`. No conclusion for W leaves/isolates or `t=2,3`.
+- H/critic: audit `shared74.md` at exactly the `G?bBro` scope, plus
+  the necessary cut. K=8 must be included when both big groups
+  have six singletons. Only the `*.final.*` receipts and
+  `freeze.3.sha256` are the final proof bundle. Early `scan.3.jsonl`
+  omitted K=8; the corrected scan moved 12 incompatibilities to
+  graph witnesses without changing the set of 57 residual LRATs.
+- Remaining mixed cores: 17. Use `--graph-first`; it preserves all
+  residual IDs and avoids computing canonical patterns for graph
+  propagation rejects. First estimate per-core census and proof
+  cost from fresh matched samples; next small likely cores 2, 4,
+  or 12. Do not rerun the old core-9/core-18 capped sweeps. 120-row
+  sample of each with new filter leaves 35/987 and 8/774 lifts before
+  graph propagation; not a whole-core result. No mixed closure for
+  any other core besides `G?Beto` and `G?bBro`.
+- The reverse e74 catalogue remains 1,624/1,625, max listed d7
+  multiplicity 4. No closure at m9, m10, m8 deficit two, or W
+  leaves/isolates/t=2,3. Do not repeat unchanged old edit moves.

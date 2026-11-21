@@ -36,9 +36,9 @@ def workspace(scans):
             return (0, '', '') if 'critic' in argv[5] else (124, '', '')
         return None
 
-    files = {'ralph/TASK_COMMON.md': 'COMMON RULES', 'ralph/CRITIC_TASK.md': 'CRITIC TASK',
+    files = {'ralph/TASK_COMMON.md': 'COMMON RULES', 'ralph/CRITIC_TASK.md': 'CRITIC TASK', 'ralph/SCOUT_TASK.md': 'SCOUT TASK',
              'ralph/found/g.g6': 'graph\n'}
-    files |= {f'ralph/lanes/{x}/TASK.md': f'LANE TASK {x}' for x in 'ABC'}
+    files |= {f'ralph/lanes/{x}/TASK.md': f'LANE TASK {x}' for x in 'ABCD'}
     return fakes.FakeEnvDriver(files, workdir='/ws', run=run)
 
 
@@ -94,3 +94,26 @@ async def test_exec_engine_runs_turn_script_per_lane_and_critic():
     assert 'COMMON RULES' in ws.text('scratch/flow/turns/r001_A.prompt')
     text = ws.text('ralph/rounds/round_001.md')
     assert '(cut)' in text and '## Critic (failed)' in text        # no last message = failed, not ok
+    assert TURNS[2][2] == 'gpt-6.2-astra'                           # the critic's model from lane_models
+
+
+async def test_models_per_lane_and_scouts_beside_the_lanes():
+    TURNS.clear()
+    worker, critic = fakes.FakeAgentDriver(), fakes.FakeAgentDriver()
+    ws = workspace([[], []])
+    await fakes.run_fake('r310_ralph', '', local=ws, agents={'worker': worker, 'critic': critic},
+                         params={'max_rounds': 2, 'gap_minutes': 0, 'stagger_seconds': 0, 'lanes': 'AD',
+                                 'scout_every': 2, 'first_scout_round': 1, 'scouts': 'R,N'})
+    names = [c[5].rsplit('/', 1)[1] for c in TURNS]
+    assert sorted(names) == sorted(['r001_scout_R.prompt', 'r001_scout_N.prompt', 'r001_A.prompt', 'r001_D.prompt',
+                                    'r001_critic.prompt', 'r002_A.prompt', 'r002_D.prompt', 'r002_critic.prompt'])
+    assert names.index('r001_critic.prompt') > max(names.index(f'r001_{n}.prompt') for n in ('A', 'D', 'scout_R'))
+    model = {c[5].rsplit('/', 1)[1]: c[2] for c in TURNS}
+    assert model['r001_A.prompt'] == 'gpt-6.2-sol' and model['r001_D.prompt'] == 'gpt-6.2-astra'
+    assert model['r001_scout_R.prompt'] == 'gpt-6.2-astra' and model['r001_critic.prompt'] == 'gpt-6.2-astra'
+    assert 'SCOUT TASK' in ws.text('scratch/flow/turns/r001_scout_R.prompt')
+    assert 'YOUR_NAME: r001_R' in ws.text('scratch/flow/turns/r001_scout_R.prompt')
+    assert 'FOCUS: Case R' in ws.text('scratch/flow/turns/r001_scout_R.prompt')
+    assert 'review/ideas/r001_N.md' in ws.text('scratch/flow/turns/r001_critic.prompt')
+    assert 'review/ideas/r001_R.md' in ws.text('scratch/flow/turns/r002_A.prompt')   # next round points the lanes
+    assert 'Idea scout R' in ws.text('ralph/rounds/round_001.md')

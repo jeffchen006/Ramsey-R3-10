@@ -22,7 +22,10 @@ use cores. A clean negative result with measurements is also a result.
 1. **Write only in this folder** (`<root>`), and only in your own places:
    `ralph/lanes/<L>/`, `scratch/<L>/` (large files), `ralph/found/` (candidate graphs), and one-line
    appends to `ralph/BOARD.md`. Lane A also owns `opt/` (shared builds). The critic owns
-   `ralph/critic/`, `ralph/ALLOC.md` and `scratch/critic/`. Lane H owns `ralph/CLAIMS.md` and may edit `lean/`.
+   `ralph/critic/`, `ralph/ALLOC.md` and `scratch/critic/`, and may append lines to `review/ideas/TESTED.md`.
+   Lane H owns `ralph/CLAIMS.md` and may edit `lean/`. Idea scouts (every few rounds, beside the lanes) write only
+   `review/ideas/<name>.md` and `scratch/ideas/<name>/`; `review/` is otherwise the operator's (read only).
+   Models: lanes D and F and the critic run on GPT-6.2-astra; the other lanes on GPT-6.2-sol.
    A Landlock write fence holds every turn and job to this folder, /tmp, /var/tmp, ~/.cache and
    ~/.elan (so put CARGO_HOME, PIP caches, builds under `opt/` or `scratch/<L>/`).
    Do not edit the files of the original repo in place (`cases/`, `sms/`, `gluing/`, ...): copy a file to

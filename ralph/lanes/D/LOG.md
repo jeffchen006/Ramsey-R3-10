@@ -209,3 +209,9 @@ script passes `bash -n`; avoid live edits to it.
   baseline shards. If a future R(3) kernel solves, `check_trace.py`
   reproduces the R3 proof plumbing, but finish the VeriPB/CakePB encoding
   link (a) before reporting `cert`.
+# Round 6 handoff archive (2026-11-21)
+
+- Open R(3), R(4); 110 minimum-root kernels unchanged. Alternate max12 forest cover: S=2 keys 24,25,26,28,29,32, S=3 keys 21,23,27. Exact `sum S=240+2*w`. For `max q22=0`, at least 60 edges have key32, so key32 alone covers that subset. Evidence `TIGHT_FOREST.md`, `scratch/D/seed_r6/forest_score.log`; round-6 critic confirmed.
+- Root-to-anchor q22 cap matches 360 C20 local decisions; seed-window and floor rows replayed 13 C16. Exact forest, signed-count and compact SAT replays repeated 144 smaller solves, matching all labelled graph and pin sets. `TIGHT_FOREST.md`, `scratch/D/seed_r6/{cal,q22-cal,sat16/check,compact16/check,no22-cal}.log`.
+- Open: key34 ordinary/forest/signed probes 48 CPU-s; key32 plain compact reaches 30,001 conflicts, global q22=0 caps at 55 CPU-s. Windows feasible at key34 and inconclusive at key21; q22 and endpoint pins no demonstrated gain. Evidence `scratch/D/seed_r6/{sat40,compact40,q22,key32pins}/`.
+- No jobs at handoff. Prior PIDs 30557, 136533, 479273 absent. Round 6 ~0.21 CPU-h; evidence frozen `scratch/D/round6_evidence.sha256`.

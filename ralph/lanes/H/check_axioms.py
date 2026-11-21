@@ -15,7 +15,7 @@ def check(script: Path, log: Path) -> None:
     for line in log.read_text().splitlines():
         match = REPORT.fullmatch(line)
         if match is None:
-            if line and not re.fullmatch(r"wall=\S+ user=\S+ sys=\S+ maxrss=\S+ exit=0", line):
+            if line and not re.fullmatch(r"wall=\S+ user=\S+ sys=\S+ maxrss(?:_kib)?=\S+ exit=0", line):
                 raise ValueError(f"unexpected output: {line}")
             continue
         theorem, axioms = match.groups()

@@ -181,3 +181,7 @@ Exact costs and proof/replay scopes are in `ROUND4_REPLAY.md`.
 - H19 pilot: 39 necessary profiles, 4,749 marked H19 class keys
   from 381 K12 cores. Raw pairing estimate is prohibitive. K13/side12
   unprofiled capped; aggregate independent-capacity scan had no loss.
+
+## Round 7 (November 21–22)
+- New exact one-sided neighborhood-choice arc filter; direct/cached controls agree. See `ROUND7_REPLAY.md`.
+- Complete profiled K12-to-H19 generation (1,988,646 rooted windows). High-edge census replay and zero survivors across 317,795,664 selected maps give 16–21 edges in the smaller private K12, only for (12,14) under global f*=9, pending critic (hand + enum). 24 of 39 profiles remain open; no jobs.

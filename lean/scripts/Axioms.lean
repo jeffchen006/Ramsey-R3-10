@@ -274,3 +274,8 @@ import R310
 #print axioms R310.IsMTF.exterior_minDegree_of_no_degree_five
 #print axioms R310.IsMTF.e168_degree_six_peer_profiles
 #print axioms R310.IsMTF.exists_minDegree_five_residue_through_e169
+#print axioms R310.strip_window_anchor_degree
+#print axioms R310.strip_window_unique_common
+#print axioms R310.strip_window_order_alpha
+#print axioms R310.strip_window_edge_level
+#print axioms R310.strip_window_edge_cap

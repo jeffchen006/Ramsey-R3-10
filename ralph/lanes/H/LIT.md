@@ -75,7 +75,7 @@ Search scope: arXiv and exact DOI/title lookups; EJC/DS1, ACM, IJCAI, Springer a
 
 - Jan Goedgebeur and Stanisław P. Radziszowski, *New Computational Upper
   Bounds for Ramsey Numbers R(3,k)*, EJC **20**(1), P30 (2013),
-  DOI `10.37236/2568`, [arXiv:1210.5826v2](https://arxiv.org/abs/1210.5826v2),
+  DOI `10.37236/2824`, [arXiv:1210.5826v2](https://arxiv.org/abs/1210.5826v2),
   Tables 4 and 14: the two lowest `(3,9;33)` levels have 5 classes at
   118 edges and 69 classes at 119. These are published counts, not a
   graph6 appendix. The paper marks the history of its edge-table
@@ -152,3 +152,28 @@ Search scope: arXiv and exact DOI/title lookups; EJC/DS1, ACM, IJCAI, Springer a
   a publication and not an e120–121 fix. Pinned landing pages and
   search metadata: `scratch/H/lit/r6-*.data`;
   `scratch/H/literature-recheck-r6.log`.
+
+## Round 7: dated cross-check and smaller-window sources
+
+- On November 21, 2026, both EJC pages were refetched with unchanged
+  bibliographic fields (DS1 rev. 18, Apr 24, 2026; Angeltveit
+  EJC **32**(4), #P4.30, DOI `10.37236/12936`, Nov 3, 2025).
+  Angeltveit arXiv:2401.00392 and the McKay and HoG catalogue
+  landing pages matched the round-6 bytes. The journal's §7
+  count remains a lower bound of 43,225,483 known order-39
+  classes, not a complete census; no public bulk file, superseding
+  `R(3,10)` bound, or exact count at 30/88–99 was found. This is
+  a scoped search result. The Pandey–Ravi exact-title Crossref
+  returned no matching journal entry among the top five results;
+  their primary arXiv:2601.03572 landing page still serves v1.
+  Pinned pages and queries: `scratch/H/lit/r7-*.data` and
+  `scratch/H/lit/r7-pandey.json`.
+- For A/E/G, GR Table 13 has exact order-26 `(3,8)` counts
+  at e73–77 of 62, 1,625, 23,409, 216,151 and 1,526,296;
+  e78–84 is uncounted in that table. The full McKay order-27
+  catalogue of 477,142 is a valid source for the paired strip
+  with center codegree three only. For the one-center strip,
+  the new upper caps 82/84 narrow but do not bound the search to
+  published counts or available files. The separate E reverse
+  window still depends on the missing e74 class. Source: GR DOI
+  `10.37236/2824`, Table 13; McKay Ramsey data as above.

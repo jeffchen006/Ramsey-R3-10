@@ -51,3 +51,11 @@ Sources: paper/latex/sec5-8, notes/{duo,SCOUT,core_plan,gluing,cases,cases_local
 - SMS on the complement form (DuLBG: R(8,3) 6x faster than R(3,8)). MIP / CP-SAT engines. BDD/ZDD. Exact SDP with codegree types.
 - The R(7)-style "fixed X + custom packing solver" for R(6) with f* <= 5 (1.77M X) and for other forced-X branches.
 - Batched selector SAT (Wesley) actually run on any list.
+
+- Round 7 fable_R trace grid LP, degree 12/130 rows: feasible again in `scratch/critic/r7/ideas/replay3.log`; no cut. This is not a verdict on untested SDPs.
+- Round 7 fable_G spectral/theta screen: C35 has theta ≈12.4106 at alpha 8 (`scratch/critic/r7/ideas/replay3.log`); don't use a theta<10 requirement as a necessary condition, or an alpha upper bound to prove alpha≥10.
+- Round 7 fable_G unpinned eager C35+5: 185 variables/306,440 clauses, no terminal answer in the reported 13-minute cap, no positive control (`fable_G.md`, `scratch/ideas/fable_G/eager35.log`); no unchanged retry and no exclusion.
+- Round 7 astra_N e88 two-card materialized join: 55,558 compatible d6/d6 record pairs on 1,024 inputs per side after overlap/budget screening (`scratch/ideas/astra_N/mate.log`); 10^12–10^13 total is an extrapolation, not a measured census. No materialized run; indexed multiway idea separate.
+- Round 7 astra_R R(6) three-root unstrengthened panel LP: feasible on the tested 8/8 diagonal-three rows and sampled 16+16 lower diagonal-five boundaries (`scratch/ideas/astra_R/{panel,lower}.log`); no further unchanged LP sweep.
+- Round 7 astra_R R(6) isolated wing fives tested independently per map: 795/796 sampled maps rejected, one cap, 12.62 CPU-s (`scratch/ideas/astra_R/full32.log`); too slow for the full join. Cached/inverted join is a distinct unmeasured idea.
+- Round 7 astra_R R(6), f*≤5 fixed-X side triples: all eight target pilots still had 56,773–93,666 candidates after the side-triple stage (`scratch/ideas/astra_R/wing.log`); no bulk traversal of the 1.77M source on this measurement.

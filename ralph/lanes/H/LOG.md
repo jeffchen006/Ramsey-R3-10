@@ -1,5 +1,18 @@
 # Lane H — archived round 2 handoff, November 21, 2026
 
+## Round 6 archive
+
+No detached jobs. H-013 and H-014 formalized the no-exterior-degree-
+five hand bridge and the two e168 peer profiles, conditional on
+G-019/the Ramsey bound and on the residue floor/adjacent peer,
+respectively. H-015 classified the two marked additions into the
+three shapes, checked by all five-label patterns and 52 oriented C13
+controls. Five targeted/275 project reports, 0.07 CPU-h Lean total.
+`ROUND6_REVIEW.md` and `check_round6_scope.py` bound the 278+R,
+ten U88 and 11+9 e168 keys. Critic round 006 confirmed all at their
+stated scopes. The literature recheck did not find a resolution,
+public bulk order-39 file or new exact 30/88–99 count.
+
 ## Round 3 archive
 
 No detached H jobs. Targeted `R310.PathWindow` build/axiom checks ended

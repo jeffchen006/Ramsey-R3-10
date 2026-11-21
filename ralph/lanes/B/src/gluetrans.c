@@ -45,6 +45,9 @@ static uint64_t *Pbuf, *Qbuf;         /* cont[x*W..] candidates containing x */
 static clock_t pair_time, search_time;
 
 static long long nout, nleaf, nnodes;
+#ifdef CRITICAL_ROOT_EDGES
+static long long root_edge_rows, root_edge_retained;
+#endif
 static int chosen[64];
 #define TMAX 26
 static unsigned char *atab; static int use_tab;
@@ -263,6 +266,20 @@ static void process(void)
     nl = 0;
     int lo = DMIN - 1 < 0 ? 0 : DMIN - 1;
     enum_indep(0, 0, allowed, lo, DMAX - 1);
+#ifdef CRITICAL_ROOT_EDGES
+    root_edge_rows += nl;
+    int retained = 0;
+    for (int index = 0; index < nl; ++index) {
+        set_t row = lst[index];
+        for (int witness = 0; witness < nL; ++witness)
+            if (!(row & L[witness])) {
+                lst[retained++] = row;
+                break;
+            }
+    }
+    nl = retained;
+    root_edge_retained += nl;
+#endif
     qsort(lst, nl, sizeof(set_t), cmp_size);
     N = nl; W = (N + 63) / 64; if (W == 0) W = 1;
     cand = lst; csz = malloc(sizeof(int) * (N ? N : 1));
@@ -342,5 +359,10 @@ int main(int argc, char **argv)
     if (!quiet)
         fprintf(stderr, "transposed pair CPU %.3fs search CPU %.3fs\n",
                 (double)pair_time / CLOCKS_PER_SEC, (double)search_time / CLOCKS_PER_SEC);
+#ifdef CRITICAL_ROOT_EDGES
+    if (!quiet)
+        fprintf(stderr, "root-edge witness rows retained=%lld/%lld\n",
+                root_edge_retained, root_edge_rows);
+#endif
     return 0;
 }
