@@ -262,3 +262,10 @@ import R310
 #print axioms R310.Gen.tri_iffG
 #print axioms R310.Gen.isc_iffG
 #print axioms R310.Gen.degree_graphOfG
+#print axioms R310.IsMTF.degree_six_signature_equality
+#print axioms R310.IsMTF.degree_six_double_signatures_injective
+#print axioms R310.IsMTF.degree_six_signature_edge_count
+#print axioms R310.complete_arms_avoid_wings
+#print axioms R310.complete_wings_excess_le_two
+#print axioms R310.IsMTF.degree_five_of_degree_six_pair
+#print axioms R310.IsMTF.exists_minDegree_five_residue_through_e169

@@ -3,7 +3,7 @@
 
 import argparse
 import csv
-from itertools import combinations, permutations
+from itertools import combinations, combinations_with_replacement, permutations
 from pathlib import Path
 from random import Random
 import subprocess
@@ -272,67 +272,79 @@ def audit(args):
           f'exact_sat={len(bases) if args.sat else 0}', flush=True)
 
 
-def soft_brute(base, k, lo, emin, emax):
+def soft_brute(base, k, lo, emin, emax, poles=2, include_fixed=False):
     size = len(base)
     universe = (1 << size) - 1
-    if any(not independent(mask, base) for mask in base) or next(independent_sets(base, universe, k), None) is not None:
+    if any(not independent(mask, base) for mask in base) or (
+            not include_fixed and next(independent_sets(base, universe, k), None) is not None):
         return None
     base_edges = num_edges(base)
     columns = [mask for mask in range(1 << size) if mask.bit_count() <= k - 1 and independent(mask, base)]
     best = None
-    for first_index, first in enumerate(columns):
-        for second in columns[first_index:]:
-            degrees = [mask.bit_count() + ((first >> vertex) & 1) + ((second >> vertex) & 1)
-                       for vertex, mask in enumerate(base)]
-            if min(degrees) < lo or max(degrees) >= k:
+    pairs = [(left, right) for right in range(poles) for left in range(right)]
+    for selected in combinations_with_replacement(columns, poles):
+        degrees = [mask.bit_count() + sum((column >> vertex) & 1 for column in selected)
+                   for vertex, mask in enumerate(base)]
+        if min(degrees) < lo or max(degrees) >= k:
+            continue
+        for pattern in range(1 << len(pairs)):
+            edges = base_edges + sum(column.bit_count() for column in selected) + pattern.bit_count()
+            if not emin <= edges <= emax:
                 continue
-            for edge in (0, 1):
-                if edge and (first & second):
-                    continue
-                sizes = [first.bit_count() + edge, second.bit_count() + edge]
-                edges = base_edges + sum(sizes) - edge
-                if min(sizes) < lo or max(sizes) >= k or not emin <= edges <= emax:
-                    continue
-                graph = [mask | (((first >> vertex) & 1) << size) | (((second >> vertex) & 1) << (size + 1))
-                         for vertex, mask in enumerate(base)]
-                graph += [first | (edge << (size + 1)), second | (edge << size)]
-                count = sum(1 for _ in independent_sets(graph, (1 << (size + 2)) - 1, k))
-                if best is None or count < best:
-                    best = count
-                    if best == 0:
-                        return best
+            graph = [mask | sum(((column >> vertex) & 1) << (size + index) for index, column in enumerate(selected))
+                     for vertex, mask in enumerate(base)] + list(selected)
+            for bit, (left, right) in enumerate(pairs):
+                if (pattern >> bit) & 1:
+                    graph[size + left] |= 1 << (size + right)
+                    graph[size + right] |= 1 << (size + left)
+            if any(not lo <= mask.bit_count() < k or not independent(mask, graph) for mask in graph[size:]):
+                continue
+            count = sum(1 for _ in independent_sets(graph, (1 << len(graph)) - 1, k))
+            if best is None or count < best:
+                best = count
+                if best == 0:
+                    return best
     return best
 
 
 def audit_soft(args):
-    bases = [parse_graph6(line) for line in args.cores.read_text().splitlines()]
+    core_lines = args.cores.read_text().splitlines()
     lines = args.summary.read_text().splitlines()
-    assert lines[-1] == f'terminal rows={len(bases)} capped=0'
+    assert lines[-1] == f'terminal rows={len(core_lines)} capped=0'
     by_row = {}
     with args.models.open() as stream:
         for record in csv.DictReader(stream, delimiter='\t'):
             index = int(record['row'])
-            assert index not in by_row
+            assert 0 <= index < len(core_lines) and index not in by_row
             graph = parse_graph6(record['graph6'])
-            base = bases[index]
-            assert len(graph) == len(base) + 2 and relabel(graph, range(len(base))) == base
+            base = parse_graph6(core_lines[index])
+            assert len(graph) == len(base) + args.poles and relabel(graph, range(len(base))) == base
             assert args.emin <= num_edges(graph) <= args.emax
             assert all(args.low <= mask.bit_count() < args.k and independent(mask, graph) for mask in graph)
             count = sum(1 for _ in independent_sets(graph, (1 << len(graph)) - 1, args.k))
             assert count == int(record['I_k']) <= args.ceiling
             by_row[index] = count
     brute_checked = positive = 0
-    for index, (record, base) in enumerate(zip(csv.DictReader(lines[:-1], delimiter='\t'), bases, strict=True)):
+    for index, (record, core_line) in enumerate(zip(csv.DictReader(lines[:-1], delimiter='\t'), core_lines, strict=True)):
         assert int(record['row']) == index
+        assert record['status'] in ('complete', 'bad_core')
+        if not args.clean_labels or args.brute:
+            base = parse_graph6(core_line)
+            is_bad = any(not independent(mask, base) for mask in base) or (
+                not args.include_fixed and next(independent_sets(base, (1 << len(base)) - 1, args.k), None) is not None)
+            assert (record['status'] == 'bad_core') == is_bad and (not is_bad or index not in by_row)
+        else:
+            assert record['status'] == 'complete'
         score = by_row.get(index)
         assert record['I_k'] == ('NA' if score is None else str(score))
         if args.brute:
-            minimum = soft_brute(base, args.k, args.low, args.emin, args.emax)
+            minimum = soft_brute(base, args.k, args.low, args.emin, args.emax, args.poles, args.include_fixed)
             assert score == (minimum if minimum is not None and minimum <= args.ceiling else None), (index, score, minimum)
             brute_checked += 1
             positive += minimum is not None and minimum > 0
-        print(f'row={index} score={score}', flush=True)
-    print(f'PASS cores={len(bases)} emitted={len(by_row)} brute={brute_checked} brute_positive={positive}', flush=True)
+        if not args.clean_labels or score is not None:
+            print(f'row={index} score={score}', flush=True)
+    print(f'PASS cores={len(core_lines)} emitted={len(by_row)} brute={brute_checked} brute_positive={positive}', flush=True)
 
 
 def main():
@@ -366,6 +378,9 @@ def main():
     for name in ('k', 'low', 'emin', 'emax', 'ceiling'):
         soft.add_argument(name, type=int)
     soft.add_argument('--brute', action='store_true')
+    soft.add_argument('--poles', choices=(2, 3, 4), type=int, default=2)
+    soft.add_argument('--clean-labels', action='store_true', help='require complete labels; recount all witnesses, not every bare core')
+    soft.add_argument('--include-fixed', action='store_true')
     args = parser.parse_args()
     if args.action == 'prepare-controls':
         prepare_controls(args.add)

@@ -133,3 +133,37 @@ Complete transcripts are in `scratch/C`. Completed job inventories:
 `p3extra-pilot.tsv`, `p2anchor-pilot.tsv`, `p2anchor-full.tsv`.
 Active PIDs at handoff are in STATE and `p3e62-{full,replay}.tsv`.
 Exact costs and proof/replay scopes are in `ROUND4_REPLAY.md`.
+
+## Round 5 collection and jobs (CET)
+
+- Round 4 e62 producer wrappers 1345478, 1345482, 1345489, 1345498
+  and replay wrappers 1752307, 1752313, 1810068, 1946269 were gone
+  at 21:10. All thirty seed groups in each phase were terminal;
+  1,308 production + 12 pilot = 1,320, all independently replayed
+  and rehashed. Exact costs in `ROUND5_REPLAY.md`. Former expected
+  21:13–21:21 wall caps did not determine their completion status.
+- e64 production/replay wrappers 3387435, 3387438, 3387440 (diag3,
+  shards 0/1/2) and 3387442, 3387445, 3387449 (diag4), all started
+  21:11:29, one core/16 GB each, hard cap 21:38:09. From scratch/C:
+  `setsid nohup nice -n 5 timeout 1600 bash ../../ralph/lanes/C/p3_e64_shard.sh D S`.
+  Producer wall cap per SAT call 65s; replay per checker 180s.
+  Logs `p3r5-e64-D-S-{wrapper,produce,replay}.log`. Seen terminal
+  before 21:20 and exact coverage 59+59, 8 reused pilot proofs.
+  Preestimate 11–13 CPU-s/key production (0.34–0.40 CPU-h),
+  conservative 0.61 CPU-h; actual 0.454 CPU-h plus 0.196 replay.
+- Mixed-arm pilot rows 13, 44, 79, 133: 4/4 passed both diagonals,
+  23.49 and 51.80 CPU-s. Preestimate 56+56 new keys ~1,054 CPU-s,
+  conservative 1,700, replay ~0.12 CPU-h and 1.5 GB retained proof.
+  Round-5 launch metadata `scratch/C/p3r5-mixed-jobs.tsv`. PIDs
+  4019348, 4019352, 4019355 (diag3 shards 0/1/2) and 4019360,
+  4019367, 4019373 (diag4 shards 0/1/2), all at 21:28:22 CET,
+  one core/16 GB each with wall cap 21:55:02 and expected end
+  ~21:32 (diag3), ~21:37 (diag4). Command from scratch/C:
+  `setsid nohup nice -n 5 timeout 1600 bash ../../ralph/lanes/C/p3_mixed_shard.sh D S`.
+  Logs `p3r5-mixed-D-S-{wrapper,produce,replay}.log`; checker and
+  SAT caps 150s/75s per key. All terminal and gone by 21:35:22.
+  Audit passed all 120 keys without caps, 1,146.19 CPU-s production
+  plus pilots and 326.42 CPU-s replay.
+- The earlier C22 controls for isolated pair/anchor results,
+  e63/upper fixed-flexible regressions, and expensive generic
+  flexible low strata are in `ROUND4_REPLAY.md`; don't rerun them.

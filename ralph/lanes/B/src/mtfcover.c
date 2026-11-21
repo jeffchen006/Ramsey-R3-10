@@ -18,6 +18,8 @@
 
 static int K, D, EMAX = 1 << 30, EMIN = 0, DMIN = -1, DMAX = -1, quiet = 0;
 static int mtf_only;
+static int pin_rows, pin_profile, row_quota[10], profile_quota[10];
+static long long profile_rejected;
 static graph_t H;
 static int m, eH, degH[64];
 static set_t ALLH;
@@ -99,6 +101,16 @@ static void leaf(void)
     for (int i = 0; i < D; i++) edges += POP(S[i]);
     if (edges < EMIN || edges > EMAX) return;
     for (int x = 0; x < m; x++) { int dg = degH[x] + cnt[x]; if (dg < DMIN || dg > DMAX) return; }
+    if (pin_profile) {
+        int observed[10] = {0};
+        ++observed[D];
+        for (int vertex = 0; vertex < m; ++vertex) ++observed[degH[vertex]+cnt[vertex]];
+        for (int row = 0; row < D; ++row) ++observed[1+POP(S[row])];
+        if (memcmp(observed, profile_quota, sizeof observed)) {
+            ++profile_rejected;
+            return;
+        }
+    }
     graph_t G; memset(&G, 0, sizeof G);
     G.n = m + D + 1;
     for (int x = 0; x < m; x++) G.adj[x] = H.adj[x];
@@ -216,6 +228,13 @@ static void cover_search(int depth, uint64_t *eligible, int edges)
         return;
     }
     if (edges + remaining*attachment_min > EMAX || edges + remaining*(DMAX-1) < EMIN) return;
+    if (pin_rows) {
+        for (int word = 0; word < W; ++word)
+            for (uint64_t options = eligible[word]; options; options &= options-1) {
+                int bit = CTZ(options);
+                if (!row_quota[1+csz[64*word+bit]]) eligible[word] &= ~BIT(bit);
+            }
+    }
     if (first_bit_from(eligible, 0) < 0) return;
     const uint64_t *branch = NULL;
     int branch_size = N + 1;
@@ -264,7 +283,9 @@ static void cover_search(int depth, uint64_t *eligible, int edges)
                 pair_covered[idx] += (set >> pair_x[idx] & set >> pair_y[idx] & 1);
             chosen[depth] = c;
             if (remaining > 1) save_union(set, depth, max_unions);
+            if (pin_rows) --row_quota[1+csz[c]];
             cover_search(depth+1, next, edges+csz[c]);
+            if (pin_rows) ++row_quota[1+csz[c]];
             for (int idx = 0; idx < npairs; ++idx)
                 pair_covered[idx] -= (set >> pair_x[idx] & set >> pair_y[idx] & 1);
             for (set_t left = set; left; left &= left-1) --cover[CTZ(left)];
@@ -436,6 +457,11 @@ static void process(void)
 {
     m = H.n; eH = g_edges(&H); ALLH = m ? (BIT(m) - 1) : 0;
     if (m + D + 1 > 64) { fprintf(stderr, "too big\n"); exit(1); }
+    if (pin_profile) {
+        int order = 0;
+        for (int degree = 0; degree <= 9; ++degree) order += profile_quota[degree];
+        if (order != m+D+1) { fprintf(stderr, "pinned profile has wrong order\n"); exit(1); }
+    }
     set_t allowed = 0;
     for (int x = 0; x < m; x++) {
         degH[x] = POP(H.adj[x]);
@@ -459,6 +485,7 @@ static void process(void)
         if (POP(set) < DMIN - 1) continue;
         if (mtf_only) {
             if (POP(set) >= DMAX) continue;
+            if (pin_rows && !row_quota[1+POP(set)]) continue;
             set_t dominated = set;
             for (set_t left = set; left; left &= left-1) dominated |= H.adj[CTZ(left)];
             if (dominated != ALLH) continue;
@@ -545,7 +572,7 @@ static void process(void)
 int main(int argc, char **argv)
 {
     int c;
-    while ((c = getopt(argc, argv, "k:d:e:E:m:M:qX")) != -1) {
+    while ((c = getopt(argc, argv, "k:d:e:E:m:M:qXs:p:")) != -1) {
         switch (c) {
         case 'k': K = atoi(optarg); break;
         case 'd': D = atoi(optarg); break;
@@ -555,7 +582,29 @@ int main(int argc, char **argv)
         case 'M': DMAX = atoi(optarg); break;
         case 'q': quiet = 1; break;
         case 'X': mtf_only = 1; break;
-        default: fprintf(stderr, "usage: glue2 -k K -d D [-e EMAX] [-E EMIN] [-m DMIN] [-M DMAX]\n"); return 1;
+        case 's': {
+            if (pin_rows) return 2;
+            pin_rows = 1;
+            for (const char *digit = optarg; *digit; ++digit) {
+                if (*digit < '1' || *digit > '9') return 2;
+                ++row_quota[*digit-'0'];
+            }
+            break;
+        }
+        case 'p': {
+            if (pin_profile) return 2;
+            pin_profile = 1;
+            const char *field = optarg;
+            for (int degree = 0; degree <= 9; ++degree) {
+                char *end;
+                long count = strtol(field, &end, 10);
+                if (end == field || count < 0 || count > 64 || *end != (degree == 9 ? '\0' : ',')) return 2;
+                profile_quota[degree] = (int)count;
+                if (degree < 9) field = end+1;
+            }
+            break;
+        }
+        default: fprintf(stderr, "usage: mtfcover -k K -d D [-e EMAX] [-E EMIN] [-m DMIN] [-M DMAX] [-X [-s ROWDEGREES] [-p N0,...,N9]]\n"); return 1;
         }
     }
     if (K <= 1 || K > 9 || D <= 0 || D > K || K-D+1 > 9) {
@@ -564,6 +613,15 @@ int main(int argc, char **argv)
     if (DMIN < 0) DMIN = D;
     if (DMAX < 0) DMAX = K;
     if (D > DMAX || D < DMIN) return 0;
+    if ((pin_rows || pin_profile) && (!mtf_only || DMAX > 9)) return 2;
+    if (pin_rows) {
+        int rows = 0;
+        for (int degree = 1; degree <= 9; ++degree) {
+            rows += row_quota[degree];
+            if (row_quota[degree] && (degree < DMIN || degree > DMAX)) return 2;
+        }
+        if (rows != D) return 2;
+    }
     char line[4096];
     long long nin = 0;
     clock_t t0 = clock();
@@ -577,5 +635,6 @@ int main(int argc, char **argv)
     if (!quiet)
         fprintf(stderr, "gluefast K=%d d=%d e=[%d,%d] deg=[%d,%d]: in=%lld nodes=%lld tuples=%lld leaves=%lld out=%lld cpu=%.2fs\n",
                 K, D, EMIN, EMAX, DMIN, DMAX, nin, nnodes, ntuples, nleaf, nout, (double)(clock() - t0) / CLOCKS_PER_SEC);
-    return 0;
+    if (pin_profile && !quiet) fprintf(stderr, "pinned histogram rejected %lld leaves\n", profile_rejected);
+    return ferror(stdin) || fflush(stdout) == EOF;
 }

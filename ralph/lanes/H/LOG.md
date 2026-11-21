@@ -66,3 +66,11 @@ ledger row, B has not covered e88, and F has no witness.
    use `--old` and `-j1 -s8192` for direct axiom reads. No heavy
    `R310Cases` table rebuild this round. Full-cube provenance is now bound;
    no reason to revisit unless inputs change.
+
+## Round 4–5 archive pointer
+
+Round 4 proved the MTF demand/attachment lemmas and the degree-six total
+edge-floor bridge. See `LEAN_REPRO.md`, `FLOOR6_REVIEW.md`, and H-006–008.
+The historical 376+R, U88=13 and 47 e168 degree-six cases predate G's
+eight cuts. Round 5 proofs and their precise scopes are in `LEAN_REPRO.md`
+and `ROUND5_REVIEW.md`.

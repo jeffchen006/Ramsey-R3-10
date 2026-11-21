@@ -34,3 +34,6 @@ import R310.Residue
 import R310.Wedge
 import R310.PathWindow
 import R310.RootDemand
+import R310.PrivateSignature
+import R310.CompleteArms
+import R310.ResidueDegreeFive

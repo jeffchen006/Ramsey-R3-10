@@ -1,5 +1,47 @@
 # Lane A state
 
+Round 5 (2026-11-21), core share 2. No candidate graph and no new case
+closure. Followed the critic's frozen residue audit directive; no new
+solving for R(7), floor-120/107, or P4/P5.
+
+## Round 5 jobs
+
+| PID | Command / log | Cores | Start | End |
+|---:|---|---:|---|---|
+| 3504835 | Foreground frozen proof-binding pilot, `scratch/A/residue5/proof-sample.log` | 1 | 21:14 | finished |
+| 3512117 | Foreground exact residue incidence, `scratch/A/residue5/moves-full.log` | 1 | 21:15 | finished |
+| 3570486 | Foreground independent full dual LRAT replay, `scratch/A/residue5/proof-full.log` | 1 | 21:17 | finished 21:25 |
+
+All ended normally; no live jobs or detached solvers. The other short
+foreground calibration and adversarial checks finished as well.
+
+## Round 5 results and claims
+
+| Label | Result | Evidence | Core-h |
+|---|---|---|---:|
+| cert (audit of G, supplied rows only) | Bound 14,315 e120/e121 labelled residues. All 11,425 clique witnesses checked. All 2,890 independent DIMACS rebuilds and dual LRAT replays passed, including 66 unpinned e120, 2,813 unpinned e121 and 11 e121 exact total-e169 proofs. Each of the last 11 has a valid SAT model for its much weaker unpinned core; mismatching one pinned LRAT against that core was rejected by both checkers. No e>169 claim for those 11. | `HIGH_RESIDUE_AUDIT.md`, `HIGH_RESIDUE_AUDIT.sha256`, `scratch/A/residue5/{index-full.tsv,proof-full.log,proof-cal.log,partition-negatives.log}` | 0.082 |
+| enum (exact incidence for supplied rows) + hand | 1,523 e119/e120 and 24,794 e120/e121 canonical incidences agree in both directions. 230 e120 and 803 e121 supplied classes are deletion-critical. All supplied e120 have legal additions. Any omitted e120 is deletion-critical with at most `6-m` distinct upper neighbors, where `m` is the missing e120 count. Zero additions is not ruled out. Supplied row 789 has 20 labelled additions but only five nonisomorphic children; the other e120 rows have at least ten. | `HIGH_RESIDUE_AUDIT.md`, `scratch/A/residue5/{moves-cal.log,moves-full.log,five-children.log}` | 0.012 |
+| open (census) | 14,389 of 14,395 still supplied. Bind-delta rejects this as complete, with no output. On the complete 191-graph C22 calibration, relabelled duplicates, omitted classes, insufficient counts and duplicate/omitted/bad proof-partition controls fail as expected. | `audit_residue_moves.py`, `scratch/A/residue5/{delta-negative.log,moves-cal.log,partition-negatives.log}` | 0.010 |
+| cert provenance | Compact R(7) and existing floor hashes still pass; no copies of bulk higher-level proof artifacts needed. | `scratch/A/residue5/preserved-{r7,floors}.log` | <0.001 |
+
+Pilot overhead ~0.016 core-h, including a 50-LRAT spread sample.
+Full proof replay estimate ~309 CPU-s and ~535 wall s; actual 294.63 CPU-s,
+440.45 wall s, 104 MiB RSS. Exact incidence estimate ≤90 CPU-s; actual
+40.07 CPU-s. Commands, wall/CPU limits and sampling in
+`scratch/A/residue5/estimates.txt` and `replay_high_residues.sh`.
+
+## Next
+
+- If G returns new e120/e121 rows, run `audit_residue_moves.py ... bind-delta`
+  against the original frozen raw hashes; use independent CNF bindings and
+  proof scopes for the new rows only. No complete new catalogue had been
+  announced by the handoff. A partial degree-five decomposition is not a
+  cover of all e120 types, nor is the zero-addition branch alone.
+- Retain `scratch/A/residue5/index-full.tsv`, the compact `complete-v2`
+  and `r7-proof-v1`. No need for a repeat replay without a defect or a delta.
+
+## Round 4 archive
+
 Round 4 (2026-11-21), core share 4. R(3,10) remains unresolved. No candidate
 graph and no fresh solving. The old R(7) SAT cubes are not needed; the
 critic accepted the independent finite proof in round 1.

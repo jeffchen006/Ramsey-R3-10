@@ -198,3 +198,44 @@ byte-matching `e121_e169/*.cnf` before dual replay. Prior root_glue
 controls use the same code path and actual rooted MTF witnesses;
 `scratch/G/root/calib_relaxed.log`. The six unsupplied residue types
 remain open; there is no new global degree-six floor.
+# Round 5: global min-five residual cover
+
+Commands here use the repository root unless explicitly `cd`'d. Source
+`scratch/A/rc7/r38_27.g6.gz` is the class of order-27 graphs; its raw
+decompressed SHA-256 is bound in `audit_d5_cover.py`.
+
+```bash
+cd scratch/G/round5
+ulimit -v 16777216
+gcc -O3 -march=native -I../../../gluing/src \
+  ../../../ralph/lanes/G/maximal_prefilter.c -o maximal_prefilter
+g++ -O3 -march=native -I../../../gluing/src \
+  ../../../ralph/lanes/G/check_maximal_prefilter.cc -o check_maximal_prefilter
+gcc -O3 -march=native -I../../../gluing/src ../../../gluing/src/glue6.c -o glue6
+# The raw order-27 source was partitioned by (zero-based line index) % 32.
+# run_d5.sh ID and audit_d5_shard.sh ID each accept worker ID 0..7;
+# IDs were run within the lane allocation, with explicit wrapper limits.
+cat d5/full.??.max > d5/survivors.raw.g6
+../../../opt/bin/shortg -q d5/survivors.raw.g6 d5/survivors.g6
+nice -n 5 timeout 180s ./glue6 -k 8 -d 5 -m 5 -e 130 \
+  < d5/survivors.g6 > d5/full_e130.g6
+nice -n 5 timeout 120s ./check_maximal_prefilter 8 5 --emit-all \
+  < d5/survivors.g6 > d5/full_e130.audit.g6
+../../../opt/bin/shortg -q d5/full_e130.g6 d5/full_e130.can.g6
+../../../opt/bin/shortg -q d5/full_e130.audit.g6 d5/full_e130.audit.can.g6
+cmp d5/full_e130.can.g6 d5/full_e130.audit.can.g6
+# Partition the 984 output keys by (zero-based line index) % 8. On each
+# d6/full.ID.in run both predicates, with 9 6; compare output counts/keys.
+nice -n 5 timeout 180s python3 -S -B ../../../ralph/lanes/G/audit_d5_cover.py --lrat .
+```
+
+`d5_fixed.py --edges 122 d5/survivors.g6 d5/cap122` regenerates numbered
+DIMACS using the repository venv. `replay_d5_fixed.sh STEM...` creates
+checked LRATs; it must be run with the usual nice/timeout and allocation
+rules. The checker logs and exact DIMACS/LRAT files are bound individually
+in `d5/cap122`. This does not certify the outer finite search as LRAT.
+
+No LP solver is needed to recheck the 85 cuts and five threshold
+certificates: `python3 -S -B ralph/lanes/G/scan_d5_cuts.py --verify
+ralph/lanes/G/d5_global_cuts.jsonl` from the repository root. Run
+`summarize_round5.py` to reproduce the exact cut keys and U88 overlap.

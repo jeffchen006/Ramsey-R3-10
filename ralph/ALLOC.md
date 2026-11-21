@@ -2,11 +2,11 @@
 
 | lane | cores | reason |
 |---|---|---|
-| A | 2 | Compact dual-checker replay is done; two slots suffice for audit and new cover bindings. |
-| B | 18 | Unchanged: protect the 16-worker prefix and serialized e43/tail, not full e52/e44. |
-| C | 8 | Unchanged: finish the live producer/replay cover, then use bounded upper-layer pilots. |
-| D | 2 | Measured filters close no kernel and the whole-family bounds are too loose; retain a two-slot exact pilot budget. |
-| E | 21 | Reward the all-graphs a=6 exclusion; scale only an exact, calibrated involution stratum. |
-| F | 4 | Reward two nonisomorphic 24-score seeds; bound disjoint unseen-core pilots and independent recounts. |
-| G | 23 | Reward eight independent e168 cuts; prioritize the missing residue classes or an e168 obstruction. |
-| H | 2 | Unchanged: ledger, hypothesis audit and scoped Lean work fit two slots. |
+| A | 2 | Unchanged: audit new cover bindings and protect frozen artifacts. |
+| B | 22 | +4 for floor 108: reserve at most 18 for the prefix/e43/tail chain and up to four for bounded e108 census deltas. |
+| C | 8 | Unchanged: certified P3 reductions justify a calibrated isolated-pair join, not wide SAT sweeps. |
+| D | 2 | Unchanged: exact tight max12 filters are useful, but two slots suffice for the next key-specific pilot. |
+| E | 17 | −4: the 7,962-window batch is complete; retain capacity for the narrower m=11 orbit split, contingent on a measured pilot. |
+| F | 2 | −2: 486,212 promotions and exact local scans did not improve score 24; pilot a different source on two slots. |
+| G | 25 | +2 for 85 incremental cuts; prioritize the 20 remaining degree-six e168 cases or the exact e120 gap. |
+| H | 2 | Unchanged: ledger, hypothesis audits and scoped Lean work fit two slots. |

@@ -1,45 +1,50 @@
-# Lane D — round 4, 2026-11-21
+# Lane D — round 5, 2026-11-21
 
-**Open:** R(3) still has 110 surviving root-swap kernel representatives
-(cover only); R(4)'s K3,4 stratum is open. No graph candidate, no new
-certified exclusion. Share four cores; peak one concurrent solver.
-Round 1–3 details are preserved in `LOG.md`.
+**Open:** R(3) remains open; 110 original minimum-root representatives
+are unchanged. No graph candidate, no full Section 7 certification.
+For the alternate maximum-root cover, 19 isolate keys are excluded
+by hand and three cyclic keys by exact checked LP (`enum`): 13 forest
+keys at max12 and 76 keys at max13..16 remain.
+R(4)'s K3,4 remains open and was not run this round. Earlier details
+are in `LOG.md`. Lane share two cores. No detached jobs started.
 
-## Claims and results
+## Results and claims
 
-| Label | Scope and outcome | Evidence | Core-hours |
+| Label | Scope | Evidence | CPU-h |
 |---|---|---|---:|
-| hand | One T-group's attachment masks obey the degree and codegree slacks and the pair/triple residual alpha bounds. | `TRIPLE_U.md` | — |
-| enum | All 67,730 marked K3,4 U partitions pass that filter (0 capped). Counts C15-only / C6+C9-only / both: 8,669 / 40,008 / 19,053. Verified every emitted witness and exhaustively matched the 30 smaller control rows. | `scratch/D/triple{12,15}.{log,replay}`, `ROUND4_INPUTS.sha256` | 0.021 |
-| hand | Three-fold star/pair projection entropy bound for whole pin families; singleton-codegree matching gives an extra necessary row. | `PIN_BOUND.md` | — |
-| enum | Exact brute/SAT C16 counts agree for all 26 sides. Matched target cut removes 5/501. Whole-family bounds on all 110 reps (smaller orientation) remain 6.14e13 to 2.89e17; sum 6.9156e18 rounded up. These are upper bounds, not actual counts or a duration estimate. | `scratch/D/{pin_bound16.matching,pin_bound40.matching,pair_match40}.tsv` | ~0.007 |
-| hand | Opposite support necessary condition and explicit 2-slot obstruction on 88 side 1 and 5-slot obstruction on 149. | `OPPOSITE_SHADOW.md` | — |
-| enum | General right-incidence relaxation rejects 27/48 with width 2 and 32/48 with width 3. Matched hand blockers remove 44/501 (39/47 for 88 side 1); transversal removes 104/200 for 149. Exact per-kernel C16 outputs preserved. No whole side refuted. | `scratch/D/{opposite_shadow40.tsv,opposite_shadow40.partial.tsv,shadow_block40.tsv,opposite_block_cal16/check.log,opposite_block_r3/}` | ~0.010 |
-| enum | Perfect-matching incidence on 149: 200/200 sampled pins infeasible. Unpinned relaxation hit a 32 CPU-s cap (open, no verdict). C16 positive control 17/17. | `scratch/D/{matching_kernel40.0.log,matching_kernel40.1.log,matching_kernel_join40.log,matching_kernel_join16.log}` | 0.011 |
-| enum | Fixed-cycle direct/deficit exact C16 filtered sets: 37 labelled outputs across 241 profiles (all five classes). R(3) matched 8/8 UNSAT each variant; build+solve 9.57/27.87/13.02 CPU-s baseline/direct/deficit. Don't scale. | `FIXED_CYCLES.md`, `scratch/D/{fixed_cycle_cal16/,fixed_cycle_r3/matched.log}` | ~0.015 |
+| hand | Maximum-square root yields disjoint classes by global maximum m=12..16; within a class the rooted kernels form a cover. For m=12 all edge square counts are 12, every nonedge codegree is at least two. | `MAX_ROOT.md` | — |
+| enum | Independent genbg census agrees on 111 root-swap keys: 35/39/26/8/3 by m. All 16 C16 max-root keys exhaust, with both exact variants matching 13 labeled copies of all five known controls. | `scratch/D/max_root_genbg.log`, `scratch/D/max_root_sat16/check.log` | ~0.002 |
+| hand | Projection rows for fixed edges, outside-star filter, and orbit-averaged joint degree/codegree/edge-square LP. | `MAX_ROOT.md`, `TRANSPORT.md` | — |
+| enum | 111/111 first projection solved and regenerated; 19 m12 isolate kernels excluded by the hand floor, all 92 others feasible relaxations. | `scratch/D/max_root_matching.jsonl`, `scratch/D/max_root_matching_verify.log` | 0.038 |
+| open | Exact SAT on 22 and 110: both fixed and eager hit 28 CPU-s; both refute isolate key 0 immediately. No extension or improvement on nontrivial keys. | `scratch/D/max_root_sat40/index.log`, `scratch/D/max_root_sat40/*.time` | 0.033 |
+| enum | Star-fixed-point projections exclude max12 20 and 22. Negative Farkas coefficients need 24 and 31 first-round UNSAT orbit representatives respectively, all checked by CakeLRAT. Binding to the original graph problem remains hand, not Sec. 7 (a). | `scratch/D/outer_star_direct{20,22}.log` | 0.041, two production/replay runs |
+| enum | Full outside-star fixed point and projection on all 16 no-isolate keys. Only 20/22 refute; 14 feasible, complete trace/cover replay. | `scratch/D/outer_star_batch/index.log`, `scratch/D/round5_manifest_recheck.log` | 0.407 production |
+| enum | Unfiltered transport: checked exact Farkas for 19/20/22, including corrupted-proof rejection; 34 feasible, 12 internal LP limits. All three cyclic keys in the max12 class are excluded, conditional only on the maximum-root premises, not on any local SAT filter. | `scratch/D/transport40/{19,20,22}.sweep.json`, `scratch/D/transport40/replay.log`, `scratch/D/forest_cover.log` | 0.085 sweep |
+| hand | Once cyclic max12 keys are excluded, every edge kernel in max12 is a forest. Rerooting gives 6-cycle blockers and rank rows. Exact 22-type count pin `6<=k<=14` fixes X's degree histogram and `C4(X)=2k-4-z`. | `TRANSPORT.md`, `MAX_ROOT.md`, `scratch/D/{forest_obstructions,signed_square_cal16}.log` | — |
+| enum/open | Forest LP retains 33/34 with and without star filters. Filtered IPM at 21 feasible; integer-mask MILP at 34 hits its limit, no verdict. Nine-way split on 34 checks k=6 UNSAT with or without forest rows (exact Farkas); k=7..14 feasible relaxations. No further whole kernel excluded. | `scratch/D/transport40/{21.ipm,34.integer,34.split-6-noforest}.json`, `scratch/D/transport40/split-replay.log`, `scratch/D/round5_manifest_recheck.log` | 0.052 pilots |
 
-## Jobs
+## Jobs (all ended)
 
-No detached jobs started this round. All bounded foreground probes
-and replays ended; no running or stopped Lane D PID. Round-3 four
-supervisors were gone when checked at round start. Notable caps:
+| Supervisor PID / session | Command from `scratch/D` | Log | Cores | Start CET | End / cap |
+|---:|---|---|---:|---|---|
+| 30557 / 17186 | `outer_star.py 40 9 ID --orbits --fixpoint --projection-log ...`, keys 24,26,27,28,29,30,31,32 | `scratch/D/outer_star_batch/index.log` and per-key logs | 1 | 21:36:37 | done ~21:53; per-key 320 CPU-s / 480 wall |
+| 136533 / 27902 | `transport_root.py 40 9 ID --bounded-dual`, keys 19–34 | `scratch/D/transport40/index.log` and `*.sweep.{json,time}` | 1 | 21:40:18 | done ~21:45; per-key 70 CPU-s / 100 wall |
+| 479273 / 93327 | `transport_root.py 40 9 34 --bounded-dual --forest --pin-22-count K ...`, K=6..14 | `scratch/D/transport40/split-index.log` | 1 | ~21:52 | done ~21:53; per-pin 22 CPU-s / 35 wall |
 
-| Foreground command | Log in `scratch/D` | Cores | Start CET | Hard wall | Outcome |
-|---|---|---:|---|---|---|
-| `triple_u 5 200000 0` | `triple15.log` | 1 | ~19:56 | 300 s | done (47.18 CPU-s) |
-| `matching_kernel_join.py 9 40` | `matching_kernel_join40.log` | 1 | ~20:14 | 42 s | CPU cap (signal 24), open |
+All bounded foreground jobs including manifest recheck are complete;
+no live or stopped Lane D PID as of 21:54 CET. One small two-key C16
+MILP smoke overlapped the two target slots briefly; do not repeat.
+Frozen input/output hashes: `scratch/D/round5_evidence.sha256`.
 
 ## Next
 
-- Prioritize the opposite attachment blockers. Treat the 2-slot and
-  transversal clauses as necessary conditions; seek a genuinely
-  smaller exact unpinned incidence split. Preserve all 110 surviving
-  rooted representatives and the C16 per-kernel labeled outputs.
-- Do not launch a pin catalogue sweep from the loose upper bound or
-  extrapolate the perfect matching sample to all profiles. Avoid
-  repeating shared-width/core reuse and global fixed-cycle models.
-- K3,4: one group at a time is demonstrably too weak; only test joint
-  row resource constraints across T groups or explicit V attachments.
-- H/critic: review the new hand blockers and entropy projection bound.
-  Lane A certificate work is not needed absent a complete kernel
-  refutation; future claims must bind the added shadow clauses.
+- H/C/critic: audit the unfiltered transport group lift, integer
+  Farkas rows and scope for 19/20/22, then the forest corollary.
+  The unfiltered LP supersedes the SAT-dependent exclusion evidence
+  on 20/22, so an OPB/CNF bridge is not the immediate bottleneck.
+- Keep maximum-root IDs separate from the 110 original min-root
+  reps. Higher maximum classes have only the first projection scan.
+- A feasible transport point is not a graph. Do not launch a wide
+  SAT or pin sweep from these results, and do not repeat R(4)'s weak
+  single-group filter. For max12 survivors, compare joint transport
+  with a bounded exact count split or supported-arc pruning.

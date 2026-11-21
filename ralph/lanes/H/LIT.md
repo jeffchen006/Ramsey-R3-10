@@ -114,3 +114,23 @@ Search scope: arXiv and exact DOI/title lookups; EJC/DS1, ACM, IJCAI, Springer a
   completeness of a sub-1,223 set, not to certify a set of size 1,223;
   A can audit supplied proofs separately. GR also gives the exact
   order-32 counts 39, 952, 18,598, 234,681 at e=104..107.
+
+## Round 5: current search and construction comparator
+
+- Re-ran November 21 searches for a settled classical value, the
+  43,225,483 graph bulk set, exact order-30/88+ levels and an order-33/120–121
+  bulk release. No additional primary result or deposit was located. The
+  EJC survey and journal references at the top remain the status basis;
+  this negative search does not establish nonexistence of a private set.
+  There is no new public substitute for B's e88 inputs or G's six unresolved
+  combined classes. The run's own 14,389 are not a published exact census.
+- Ansh Nagda, Prabhakar Raghavan and Abhradeep Thakurta, *Reinforced
+  Generation of Combinatorial Structures: Ramsey Numbers*,
+  [arXiv:2603.09172v5](https://arxiv.org/abs/2603.09172v5), April 21, 2026,
+  Algorithm 18 and Table 1. The reported R(3,10) lower-bound result matches
+  40, not a 40-vertex witness. The construction grows Paley(29) one vertex
+  at a time, with greedy incident-edge initialization and global annealing
+  on triangle and independent-10 defect counts. This is a comparator for
+  F's different exact local-repair strategy, not a nonexistence argument
+  or a new catalogue. The other improved Ramsey lower bounds are for
+  different parameter pairs. Pinned primary text: `scratch/H/lit/ae.txt`.

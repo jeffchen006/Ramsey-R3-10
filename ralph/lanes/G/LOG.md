@@ -1,5 +1,54 @@
 # Lane G experiment log
 
+## Round 5: complete degree-five obstruction, 85 independent cuts
+
+- The old 65-core baseline (11.40 CPU-s) projects to about 23 CPU-h over
+  the 477,142 order-27 cores. A maximal-independent-column filter cut the
+  same pilot to 0.409 CPU-s; its eventual pass rate was only 118/477,142.
+  All 32 production and audit shards cover exactly the round-robin source
+  bytes and agree entry by entry. Both filters validate core alpha and
+  triangle-freeness. The production and audit filters used 3,247.707 and
+  1,396.751 CPU-s, respectively. Naive exact gluing ran only on 118 keys,
+  not the full catalogue. Completeness uses the published exact count.
+- The 118 survivors give no min-five order-33 extension at e<=122 (also
+  118 dual-checked LRATs at cap122), exactly five classes first at e123,
+  and 984 classes through the absolute cap130. Two exact enumerators
+  produced 989 and 1,446 raw graphs with the same canonical output set.
+  `audit_d5_cover.py --lrat .` checks final shard incidence, edge layers,
+  validity, canonical set equality, and proof/verdict bytes.
+- All 984 order-33 graphs fail d6-root full independence gluing, with
+  zero survivors in two implementations (162.337 + 38.093 CPU-s). No
+  total-edge, maximality or distribution assumptions in the gluer.
+  Most higher e inputs were not suitable for a cascade of core LRATs:
+  the eight-input pilot returned both SAT relaxations and wall caps.
+  Only the complete, exact maximal-column search supports the global
+  result (`enum`); the checkers do not turn that enumeration into LRAT.
+- Hand bridge: at a d6 root, the exterior is `(3,9;33)`; it now has
+  minimum degree at least six. Every nonadjacent pair in an MTF graph
+  shares a neighbour. Two degree-six vertices therefore must be adjacent,
+  and their class is a clique. Cuts 84 rows by unit Farkas sums. The one
+  additional cut `(e,n6,n7,n8,n9)=(168,2,9,0,29)` follows from odd Z
+  versus the required Z=48 (floor 120 and private bound). Five exact t9
+  improvements. All 85 cuts and tightenings reconcile to round4_cases.csv;
+  the two closed U88 rows are `(169,6,2,0,32)` and `(169,7,0,1,32)`.
+- Exact smaller control: all 2,576 order-16 cores, both gluing codes
+  recover all 178 minimum-degree-five order-22 classes and 70 canonical
+  residue types from 944 roots; both outer predicates retain the 220
+  roots in the ten regular order-22 controls. C13/C35/saturated Exoo39,
+  all 191 saturated order-22 controls, and a 12-vertex positive with two
+  adjacent degree-three universal roots test the degree/packing rows.
+- Secondary d4 (order-32) triage only: 237/520 of the same order-27
+  cores pass the relaxed gluing filter in 3.233 CPU-s. Not an exclusion;
+  it would need an edge-capped or otherwise targeted stage before scale.
+  No unchanged e120/e121 replacement sweep; the six missing keys stay
+  open and the 11 old e169-pinned proof scopes are unchanged.
+- On Lane B's pending degree-seven floor 108, a separate 90.58 CPU-s
+  LP scan gives five additional exact cuts (two unglued, three using
+  existing gluing floors) and 40 tighter threshold certificates on 39
+  distinct keys. It includes the earlier e162 removal. Four U88 keys
+  disappear and four are added; the count stays 10. Conditional baseline
+  is 278+R; see `floor108_overlap.jsonl` and `floor108_summary.log`.
+
 ## Round 4: equality rigidity and a six-key census gap
 
 - Before new work, froze the accepted round-3 cuts and U88 intersection with

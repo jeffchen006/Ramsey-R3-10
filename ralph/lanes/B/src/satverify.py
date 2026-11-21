@@ -4,7 +4,7 @@ with G_v = H exists. Lazy (CEGAR) alpha constraints.
 vars x[i][h]: u_i ~ h (i < 9 neighbours of v, h in H).
  - N_H(u_i) independent in H, |N_H(u_i)| = 8
  - deg_G(h) = 9: sum_i x[i][h] = 9 - deg_H(h)
- - for independent sets I of H (|I| = s): #{i : u_i hits I} >= s
+ - for independent sets I of H (|I| = s): #{i : u_i hits I} >= d + s - alpha
    (initially all I with |I| = 8, and optionally 7; others added lazily when a model
    has an independent 10-set)
  - symmetry: rows x[0] >=lex x[1] >=lex ... (u_i interchangeable)
@@ -68,7 +68,9 @@ def find_indep(adj, m, k):
         return r | (1 << best)
     return find_indep(adj, m & ~(1 << best), k)
 
-def solve_one(s, init_sizes, degree=9, minimum=6, maximum=9):
+def solve_one(s, init_sizes, degree=9, minimum=6, maximum=9, alpha=None):
+    if alpha is None:
+        alpha = degree
     n, adj = g6dec(s)
     deg = [bin(a).count('1') for a in adj]
     pool = IDPool()
@@ -121,13 +123,18 @@ def solve_one(s, init_sizes, degree=9, minimum=6, maximum=9):
     nI = [0]
     def add_I(I):
         hs = [h for h in range(n) if I >> h & 1]
-        sz = len(hs)
+        minimum_hits = degree + len(hs) - alpha
+        if minimum_hits <= 0:
+            return
+        if minimum_hits > degree:
+            S.add_clause([])
+            return
         ys = []
         for i in range(degree):
             y = pool.id(('y', i, I))
             S.add_clause([-y] + [X[i][h] for h in hs])
             ys.append(y)
-        for c in CardEnc.atleast(lits=ys, bound=sz, vpool=pool, encoding=EncType.seqcounter).clauses:
+        for c in CardEnc.atleast(lits=ys, bound=minimum_hits, vpool=pool, encoding=EncType.seqcounter).clauses:
             S.add_clause(c)
         nI[0] += 1
     for sz in init_sizes:
@@ -148,7 +155,7 @@ def solve_one(s, init_sizes, degree=9, minimum=6, maximum=9):
             for h in range(n):
                 if X[i][h] in model:
                     gadj[u] |= 1 << h; gadj[h] |= 1 << u
-        J = find_indep(gadj, (1 << N) - 1, degree + 1)
+        J = find_indep(gadj, (1 << N) - 1, alpha + 1)
         if J is None:
             S.delete(); return 'SAT', it, nI[0]
         I = J & ((1 << n) - 1)
@@ -160,18 +167,20 @@ def main():
     degree = int(sys.argv[4]) if len(sys.argv) > 4 else 9
     minimum = int(sys.argv[5]) if len(sys.argv) > 5 else 6
     maximum = int(sys.argv[6]) if len(sys.argv) > 6 else 9
-    init = [int(x) for x in sys.argv[3].split(',')] if len(sys.argv) > 3 else [degree-1]
+    alpha = int(sys.argv[7]) if len(sys.argv) > 7 else degree
+    init = [int(x) for x in sys.argv[3].split(',')] if len(sys.argv) > 3 else [alpha-1]
     tot = 0
     res = {}
     for k, line in enumerate(open(fn)):
         if k >= mx:
             break
         t = time.time()
-        r, it, nI = solve_one(line.strip(), init, degree, minimum, maximum)
+        r, it, nI = solve_one(line.strip(), init, degree, minimum, maximum, alpha)
         dt = time.time() - t
         tot += dt
         res[r] = res.get(r, 0) + 1
         print(f'{k} {r} iters={it} Isets={nI} {dt:.3f}s', flush=True)
     print('total', tot, 'per graph', tot / max(1, sum(res.values())), res)
 
-main()
+if __name__ == '__main__':
+    main()

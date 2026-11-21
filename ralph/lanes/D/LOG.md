@@ -1,5 +1,24 @@
 # Lane D — round 3, 2026-11-21
 
+## Historical round 4 handoff (no jobs carried)
+
+- `TRIPLE_U.md`: all 67,730 marked K3,4 U rows pass one T-group
+  locally: 8,669 C15 only / 40,008 C6+C9 only / 19,053 both. All
+  witnesses and 30 smaller rows checked. No R(4) exclusion. Do not
+  rerun one-group filters or repeat fixed-cycle attempts.
+- `PIN_BOUND.md`: C16 relaxed pin counts exactly agree across 26
+  sides. The whole-family bounds on minimum-root R(3) sum to at most
+  6.916e18, too loose for a sweep. Matching cut removes 5/501 pins.
+- `OPPOSITE_SHADOW.md`: hand 2-slot obstruction on 88 side 1 and
+  5-slot transversal on 149. Widths 2/3 reject 27/32 of 48 sampled
+  profiles. Matched blockers remove 44/501 (39/47 on 88); transversal
+  removes 104/200 on 149. Opposite incidence pin test on 149 rejects
+  200/200, but unpinned 32 CPU-s cap; no whole kernel refuted.
+- `FIXED_CYCLES.md`: exact C16 filtered output calibration; matched
+  eight target variants cost 9.57/27.87/13.02 CPU-s (baseline/direct/
+  deficit), so do not scale. The 110 minimum-root representatives
+  remain a cover and no round-4 jobs remained.
+
 **Open:** R(3) still has 110 surviving root-swap kernel representatives
 (cover only); the R(4) K3,4 stratum remains open. No graph candidate.
 Lane share 6; peak four concurrent workers, no jobs remain.

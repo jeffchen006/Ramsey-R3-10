@@ -133,3 +133,39 @@ non-MTF C6/C7 fail the singleton/pair demand as expected. The ten known
 six-regular order-22 graphs give 220 rooted controls, 3,300 singleton and
 2,259 pair demands, and 28,866 incompatible pairs with disjoint attachment
 choice sets. Logs: `scratch/H/root-demand-{build-v2,axioms-audit,integrated,control}.log`.
+
+## Round 5: tight signatures, complete arms, degree-five residue
+
+- `lean/R310/PrivateSignature.lean`: common-anchor independent-family
+  bound, pair uniqueness given one full private cell, and the fixed
+  order-40 degree-six equality consequence at `e(G)≤e(H6)+48`.
+  There are six private cells of four and nine distinct double signatures.
+  Applicable at e168/e120 and e169/e121; no residue floor or census.
+- `lean/R310/CompleteArms.lean`: an outside vertex must hit a maximum
+  independent set; a T-avoider in the specified complete-arm path cannot
+  hit either wing. The complete-wing excess identity and 26-vertex bound
+  assume the support data; the partition, graph premises and e(X) upper
+  bounds are not in Lean.
+- `lean/R310/ResidueDegreeFive.lean`: a nonadjacent degree-six pair gives
+  residue degree five. If n6≥3 and e≤169, a minimum-degree-five order-33
+  residue through e121 is necessary, assuming the published R(3,8)≤28.
+  This reduction does not certify the finite residue search.
+
+From the workspace root, with the pinned cache (the launcher enters
+`lean/` and binds one permitted CPU; set `H_CPU` if needed):
+
+```sh
+bash ralph/lanes/H/build_private_signature.sh build --old R310
+bash ralph/lanes/H/build_private_signature.sh env lean -j1 -s8192 ../ralph/lanes/H/AxiomsRound5.lean > scratch/H/round5-wings-axioms.log
+python3 -SB ralph/lanes/H/check_axioms.py ralph/lanes/H/AxiomsRound5.lean scratch/H/round5-wings-axioms.log
+bash ralph/lanes/H/build_private_signature.sh env lean -j1 -s8192 scripts/Axioms.lean > scratch/H/round5-wings-project.log
+python3 -SB ralph/lanes/H/check_axioms.py lean/scripts/Axioms.lean scratch/H/round5-wings-project.log
+python3 -SB ralph/lanes/H/check_private_signature_control.py
+```
+
+The integrated build and 12 targeted / 270 project axiom reports pass.
+No Mathlib source build. The independent C13(1,5) control has 13 equality
+roots, 52 double signatures, 1,872 common-anchor families (208 tight).
+K2,3 shows why the full-cell hypothesis cannot be dropped. C's planted
+degree-four controls and alpha counterexamples are in
+`scratch/C/p3r5-complete-arms.log`. See `ROUND5_REVIEW.md` for premises.

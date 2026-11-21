@@ -120,6 +120,7 @@ struct Option {
 struct Patterns {
     Mask triangle_free = 0;
     std::array<Mask, 6> edge_on{};
+    std::array<Mask, 16> stable{};
     std::vector<std::pair<unsigned, Mask>> independent_triples;
     std::array<Loads, 64> degrees{};
 
@@ -147,6 +148,13 @@ struct Patterns {
                     independent_triples.push_back({(1u << first) | (1u << second) | (1u << third), ~(lh | lr | hr)});
                 }
         triangle_free = (count == 64 ? ~Mask{0} : bit(count) - 1) & ~cyclic;
+        for (unsigned subset = 1; subset < (1u << poles); ++subset) {
+            stable[subset] = triangle_free;
+            for (int right = 1; right < poles; ++right)
+                for (int left = 0; left < right; ++left)
+                    if ((subset & (1u << left)) && (subset & (1u << right)))
+                        stable[subset] &= ~edge_on[right * (right - 1) / 2 + left];
+        }
     }
 };
 
@@ -321,21 +329,23 @@ struct Score {
     int degree;
 };
 
-struct SoftPair {
+struct SoftJoin {
     const Join& join;
     const std::uint64_t ceiling;
     std::uint64_t best;
     std::vector<std::pair<Mask, std::uint64_t>> weighted;
     std::vector<Score> columns;
     Columns optimum{};
-    unsigned edge = 0;
-    std::uint64_t leaves = 0, pairs = 0;
+    unsigned edges_on_poles = 0;
+    std::uint64_t leaves = 0, pairs = 0, triples = 0;
+    using Totals = std::array<std::uint64_t, 64>;
+    using Layers = std::array<Mask, 5>;
 
-    SoftPair(const Join& problem, std::uint64_t ceiling_score)
+    SoftJoin(const Join& problem, std::uint64_t ceiling_score)
         : join(problem), ceiling(ceiling_score), best(ceiling + 1) {}
 
     void gather(Mask selected, Mask available, int degree) {
-        const int needed = std::max(0, join.low - 1);
+        const int needed = std::max(0, join.low - join.add + 1);
         if (degree + std::popcount(available) < needed) return;
         if (degree >= needed) {
             ++leaves;
@@ -351,7 +361,7 @@ struct SoftPair {
         }
     }
 
-    void run() {
+    void enumerate_columns() {
         const Mask allowed = join.universe & ~join.limits[1];
         std::vector<Mask> projected;
         independent(join.base, join.universe, join.forbidden - 1, [&](Mask set) {
@@ -368,6 +378,9 @@ struct SoftPair {
         std::sort(columns.begin(), columns.end(), [](const Score& left, const Score& right) {
             return left.misses != right.misses ? left.misses < right.misses : left.mask < right.mask;
         });
+    }
+
+    void search_pairs() {
         for (std::size_t first = 0; first < columns.size(); ++first) {
             const auto& left = columns[first];
             if (left.misses + left.misses >= best) break;
@@ -385,7 +398,7 @@ struct SoftPair {
                     edges + 1 >= join.low_edges && edges + 1 <= join.high_edges) {
                     best = subtotal;
                     optimum = {left.mask, right.mask, 0, 0};
-                    edge = 1;
+                    edges_on_poles = 1;
                 } else if (left.degree >= join.low && right.degree >= join.low &&
                            edges >= join.low_edges && edges <= join.high_edges) {
                     std::uint64_t total = subtotal;
@@ -395,34 +408,188 @@ struct SoftPair {
                     if (total < best) {
                         best = total;
                         optimum = {left.mask, right.mask, 0, 0};
-                        edge = 0;
+                        edges_on_poles = 0;
                     }
                 }
             }
         }
+    }
+
+    void search_triples() {
+        static const Patterns supported(3);
+        for (std::size_t first = 0; first < columns.size(); ++first) {
+            const auto& left = columns[first];
+            if (3 * left.misses >= best) break;
+            for (std::size_t second = first; second < columns.size(); ++second) {
+                const auto& middle = columns[second];
+                if (left.misses + 2 * middle.misses >= best) break;
+                const Mask first_union = left.mask | middle.mask;
+                const Mask first_shared = left.mask & middle.mask;
+                if (first_shared & join.limits[2]) continue;
+                ++pairs;
+                for (std::size_t third = second; third < columns.size(); ++third) {
+                    const auto& right = columns[third];
+                    const std::uint64_t subtotal = left.misses + middle.misses + right.misses;
+                    if (subtotal >= best) break;
+                    const Mask all = first_union | right.mask;
+                    const Mask shared = first_shared | (first_union & right.mask);
+                    if (!join.degrees_ok({0, all, shared, first_shared & right.mask, 0})) continue;
+                    const int outside_edges = join.edges + left.degree + middle.degree + right.degree;
+                    if (outside_edges > join.high_edges || outside_edges + 2 < join.low_edges) continue;
+                    ++triples;
+                    const unsigned allowed = (first_shared ? 0 : 1) | ((left.mask & right.mask) ? 0 : 2) |
+                                             ((middle.mask & right.mask) ? 0 : 4);
+                    const std::array<Mask, 3> pair_unions{first_union, left.mask | right.mask, middle.mask | right.mask};
+                    const std::array<int, 3> degrees{left.degree, middle.degree, right.degree};
+                    const Columns witness{left.mask, middle.mask, right.mask, 0};
+                    std::array<std::uint64_t, 3> pair_misses{};
+                    unsigned counted = 0;
+                    for (const unsigned pattern : {6u, 5u, 3u, 4u, 2u, 1u, 0u}) {
+                        if (subtotal >= best) break;
+                        if (pattern & ~allowed) continue;
+                        const int total_edges = outside_edges + std::popcount(pattern);
+                        if (total_edges < join.low_edges || total_edges > join.high_edges) continue;
+                        bool legal = true;
+                        for (unsigned pole = 0; pole < degrees.size(); ++pole) {
+                            const int degree = degrees[pole] + supported.degrees[pattern][pole];
+                            legal &= degree >= join.low && degree <= join.high;
+                        }
+                        if (!legal) continue;
+                        std::uint64_t total = subtotal;
+                        for (unsigned pair = 0; pair < pair_unions.size() && total < best; ++pair) {
+                            if (pattern & (1u << pair)) continue;
+                            if (!(counted & (1u << pair))) {
+                                independent(join.base, join.universe & ~pair_unions[pair], join.forbidden - 2, [&](Mask) {
+                                    return ++pair_misses[pair] >= best - subtotal;
+                                });
+                                counted |= 1u << pair;
+                            }
+                            total += pair_misses[pair];
+                        }
+                        if (!pattern && total < best)
+                            independent(join.base, join.universe & ~all, join.forbidden - 3, [&](Mask) {
+                                return ++total >= best;
+                            });
+                        if (total < best) {
+                            best = total;
+                            optimum = witness;
+                            edges_on_poles = pattern;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    void search_quads(const Patterns& supported, std::size_t start, unsigned depth, int cross,
+                      Mask active, const Totals& previous, const Layers& layers,
+                      std::array<Mask, 16>& unions, Columns& selected) {
+        const unsigned marker = 1u << depth;
+        const unsigned remaining = 3 - depth;
+        std::uint64_t floor = best;
+        for (Mask scan = active; scan;) floor = std::min(floor, previous[pop_vertex(scan)]);
+        for (std::size_t index = start; index < columns.size(); ++index) {
+            const auto& column = columns[index];
+            const std::uint64_t tail = remaining * column.misses;
+            if (floor + column.misses + tail >= best) break;
+            const int edges = cross + column.degree;
+            if (edges > join.high_edges || edges + 4 + static_cast<int>(remaining) * join.high < join.low_edges) continue;
+            Layers next = layers;
+            bool fits = true;
+            for (unsigned load = depth + 1; load >= 1; --load) {
+                next[load] |= column.mask & (load == 1 ? join.universe : layers[load - 1]);
+                if (next[load] & join.limits[load]) fits = false;
+            }
+            if (!fits || (!remaining && !join.degrees_ok(next))) continue;
+            Mask allowed = active;
+            for (unsigned earlier = 0; earlier < depth; ++earlier)
+                if (column.mask & selected[earlier]) allowed &= ~supported.edge_on[depth * (depth - 1) / 2 + earlier];
+            Totals total;
+            for (Mask scan = allowed; scan;) {
+                const int pattern = pop_vertex(scan);
+                const int internal = std::popcount(static_cast<unsigned>(pattern));
+                const int degree = column.degree + supported.degrees[pattern][depth];
+                if (degree < join.low || degree > join.high || edges + internal > join.high_edges ||
+                    edges + internal + static_cast<int>(remaining) * join.high < join.low_edges ||
+                    previous[pattern] + column.misses + tail >= best) {
+                    allowed &= ~bit(pattern);
+                    continue;
+                }
+                total[pattern] = previous[pattern] + column.misses;
+            }
+            if (!allowed) continue;
+            if (depth == 1) ++pairs;
+            if (depth == 2) ++triples;
+            for (unsigned subset = 0; subset < marker && allowed; ++subset) {
+                unions[marker | subset] = unions[subset] | column.mask;
+                if (!subset) continue;
+                const Mask charged = allowed & supported.stable[marker | subset];
+                if (!charged) continue;
+                std::uint64_t min_total = best;
+                for (Mask scan = charged; scan;) min_total = std::min(min_total, total[pop_vertex(scan)]);
+                std::uint64_t missing = 0;
+                independent(join.base, join.universe & ~unions[marker | subset],
+                            join.forbidden - 1 - std::popcount(subset), [&](Mask) {
+                    return ++missing >= best - tail - min_total;
+                });
+                for (Mask scan = charged; scan;) {
+                    const int pattern = pop_vertex(scan);
+                    total[pattern] += missing;
+                    if (total[pattern] + tail >= best) allowed &= ~bit(pattern);
+                }
+            }
+            if (!allowed) continue;
+            selected[depth] = column.mask;
+            if (remaining) {
+                search_quads(supported, index, depth + 1, edges, allowed, total, next, unions, selected);
+            } else {
+                for (Mask scan = allowed; scan;) {
+                    const int pattern = pop_vertex(scan);
+                    if (total[pattern] < best) {
+                        best = total[pattern];
+                        optimum = selected;
+                        edges_on_poles = pattern;
+                    }
+                }
+            }
+        }
+    }
+
+    void run(std::uint64_t fixed_score = 0) {
+        enumerate_columns();
+        if (join.add == 2) search_pairs();
+        else if (join.add == 3) search_triples();
+        else {
+            static const Patterns four(4);
+            std::array<Mask, 16> unions{};
+            Columns selected{};
+            search_quads(four, 0, 0, join.edges, four.triangle_free, {}, {}, unions, selected);
+        }
         if (best <= ceiling)
-            join.models << join.row << '\t' << best << '\t' << encode(join.build(optimum, edge)) << '\n';
+            join.models << join.row << '\t' << best + fixed_score << '\t' << encode(join.build(optimum, edges_on_poles)) << '\n';
     }
 };
 
 int main(int argc, char** argv) {
-    if (argc != 9 && argc != 10) {
-        std::cerr << "usage: pole_join CORES.g6 POLES K MIND MINEDGES MAXEDGES PER_CORE_CAP OUTPUT.tsv [PAIR_SCORE_CEILING]\n";
+    if (argc < 9 || argc > 11) {
+        std::cerr << "usage: pole_join CORES.g6 POLES K MIND MINEDGES MAXEDGES PER_CORE_CAP OUTPUT.tsv [SCORE_CEILING [--include-fixed]]\n";
         return 2;
     }
     const int add = std::stoi(argv[2]), forbidden = std::stoi(argv[3]), low = std::stoi(argv[4]);
     const int min_edges = std::stoi(argv[5]), max_edges = std::stoi(argv[6]);
     const auto cap = std::stoull(argv[7]);
-    const bool soft = argc == 10;
+    const bool soft = argc >= 10;
     const auto ceiling = soft ? std::stoull(argv[9]) : 0;
+    const bool include_fixed = argc == 11 && std::string(argv[10]) == "--include-fixed";
     if (add < 2 || add > 4 || forbidden <= add || forbidden > 62 || low < 0 || low >= forbidden ||
-        min_edges < 0 || min_edges > max_edges || cap == 0 || (soft && (add != 2 || ceiling > (1ULL << 60)))) return 2;
+        min_edges < 0 || min_edges > max_edges || cap == 0 || (soft && ceiling > (1ULL << 60)) ||
+        (argc == 11 && !include_fixed)) return 2;
     std::ifstream input(argv[1]);
     std::ofstream models(argv[8]);
     if (!input || !models) return 2;
     if (soft) {
         models << "row\tI_k\tgraph6\n";
-        std::cout << "row\tstatus\tcolumns\tleaves\tpairs\tI_k\n";
+        std::cout << "row\tstatus\tcolumns\tleaves\tpairs\ttriples\tI_k\n";
     } else {
         models << "row\tinternal_edges\tgraph6\n";
         std::cout << "row\tstatus\tcolumns\tcover_nodes\tlinks\ttriples\tquadruples\tedges0\tedges1\tedges2\tedges3\tedges4\n";
@@ -440,15 +607,19 @@ int main(int argc, char** argv) {
             while (neighbors) if (base[pop_vertex(neighbors)] & mask) valid = false;
             if (std::popcount(mask) < low - add || std::popcount(mask) >= forbidden) eligible = false;
         }
-        if (valid && join.misses(0, 0)) valid = false;
+        std::uint64_t fixed_score = 0;
+        if (valid && include_fixed) {
+            independent(base, join.universe, forbidden, [&](Mask) { return ++fixed_score > ceiling; });
+        } else if (valid && join.misses(0, 0)) valid = false;
         const char* status = valid ? "complete" : "bad_core";
         const bool maybe = valid && eligible && join.edges <= max_edges && join.edges + add * (forbidden - 1) >= min_edges;
         if (soft) {
-            SoftPair optimization(join, ceiling);
-            if (maybe) optimization.run();
+            const std::uint64_t spare = fixed_score <= ceiling ? ceiling - fixed_score : 0;
+            SoftJoin optimization(join, spare);
+            if (maybe && fixed_score <= ceiling) optimization.run(fixed_score);
             std::cout << row++ << '\t' << status << '\t' << optimization.columns.size() << '\t'
-                      << optimization.leaves << '\t' << optimization.pairs << '\t';
-            if (optimization.best <= ceiling) std::cout << optimization.best;
+                      << optimization.leaves << '\t' << optimization.pairs << '\t' << optimization.triples << '\t';
+            if (optimization.best <= spare) std::cout << optimization.best + fixed_score;
             else std::cout << "NA";
             std::cout << std::endl;
             models.flush();
