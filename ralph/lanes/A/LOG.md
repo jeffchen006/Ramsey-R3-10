@@ -1,5 +1,19 @@
 # Lane A state
 
+## Round 19 (history)
+
+Lossless order-12 connector lookup delivered to C: all 1,458 degree-three
+and 21 degree-four roots, 10 keys and 5,094 complete residual maps. All
+438 smaller roots, 105 literal candidate queries and 105 adverse edge
+mutations retained; `k<=2` deliberately unfiltered. Held-out 16-frame
+42679, x=0, host=97, neutral=7: 116 raw -> 12 both old margins,
+`(00,10,01,11)=(18,86,0,12)`, zero overlap with 544 old IDs; all right
+payloads independently rebound. No fifth search by A. C found 578/578
+legal fifth rows still passed; the separate signed baseline rejected
+12/12. `ROUND19_DELETION_CARDS.md`, `ROUND19_FREEZE.sha256`; 0.00536
+core-h and no jobs. R18's two physical source/margin weights were
+32,340->46 and 28,301->24, C covered 69 fresh signed joins.
+
 ## Round 16 (history)
 
 Independently rebuilt one-neutral marked cap-five 16/17 labelled roster

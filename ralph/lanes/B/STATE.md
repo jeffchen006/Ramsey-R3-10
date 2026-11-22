@@ -1,4 +1,11 @@
-# Lane B — round 19, November 22, 2026
+# Lane B — round 20, November 22, 2026
+
+**Round 20 (hand, pending; 0 solver core-h):** stayed parked. Private
+columns imply all 32/e108 graphs of minimum degree at most five are
+addable; any saturated case has minimum degree six with every d6
+puncture in `R(3,8;25,65..70)`. Three literal smaller controls, no target
+rescan or source acquisition. Five critical keys still absent; floor
+108 unchanged. `ROUND20_SATURATION.md`.
 
 **Rounds 18–19 (open, 0 solver core-h):** parked per critic. Still five
 absent critical 32/e108 keys, no independent input or priced exact cover.
@@ -31,32 +38,10 @@ incl. controls); stopped. Census still **2,104,146 / 2,104,151**. No floor 109,
 no change to e88/U88 or to the 238 near-regular distributions plus Case R.
 See `ROUND13_REPLAY.md` and `ROUND13.sha256`.
 
-**Round 12:** all **7,954** fresh e98 deck parents tested at d7/d8;
-1,724 distinct critical e108 outputs, **zero novel** by canonical merge
-and Traces. Five still missing; best census remains `work/e108_r11/union.g6`.
-No adaptive generation. The earlier 471 remain in their prior scope;
-the then-separate 745 were subsequently handled in round 13.
-See `ROUND12_REPLAY.md` and `ROUND12.sha256`.
-
-**Round 11:** lifted the 122 e98 parents (34 novel e108), then 255 more
-exact e98 deck parents (13 more). Stopped at two disjoint zero-yield
-batches. All 47 independently checked and blocked at MTF d7 roots (37
-cliques, 10 dual LRATs; critic review pending). Best census
-`work/e108_r11/union.g6`: **2,104,146 / 2,104,151, five missing**. The
-older-cohort complement gives 7,954 fresh exact e98 parents, not lifted.
-e95 d4/d5 terminal zero on all 560, completing the e95 source scope with
-N-001. e88/U88 and floor 108 unchanged. See `ROUND11_REPLAY.md`.
-
-**Round 10:** imported N's 61 critical e108 keys and certified their
-nonextensions (57 cliques, 4 dual LRATs). Stratified two-step lift from
-128 prefix-critical e88 seeds produced 5 new critical e108 keys, all from
-e98 parents; seven fresh e98 parents from those five produced 6 more.
-All 11 separately certified. Best census `work/e108_r10_micro/union.g6`:
-**2,104,099 / 2,104,151, 52 critical classes missing**. Round 10 exhausted
-the 256-per-level pilot cap; `work/e108_r10_e98_queue/fresh.g6` holds 122
-fresh e98 parents for a subsequent round only. Separate e88 price pilot
-not scalable yet (no coverage proof or 10x full-cost estimate). See
-`ROUND10_REPLAY.md` and `ROUND10.sha256`.
+**Rounds 10–12:** best census `work/e108_r11/union.g6` remains
+**2,104,146 / 2,104,151, five missing**. New-key tranches, exhausted and
+set-aside parent scopes, and the unpriced separate e88 pilot are in the
+results tables below and the corresponding `ROUND*_REPLAY.md` notes.
 
 Rounds 7–9 retired the null e108 discovery pilots. The e88 prefix replay
 covered 5,873,187 exact keys (including 153,612 critical) with zero completions;
@@ -72,10 +57,16 @@ Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 
 ## Jobs
 
-No live PIDs (0 cores); round-19 process cwd check found none. The 2-core
+No live PIDs (0 cores); no Lane B jobs launched in round 20. The 2-core
 allocation is a ceiling, not a launch order. Old job transitions: `LOG.md`.
 
 ## Results and claims for review
+
+### Round 20
+
+| Label | Result | Evidence | Core-h |
+|---|---|---|---:|
+| hand (pending) / open | Possible B-038 saturated gap narrowed: all degree-4 or -5 roots have legal incident additions. Any saturated 32/e108 graph has ≥8 d6 roots with punctures in e65..70 at order 25. No inference that any missing key lies in either subfamily. | `ralph/lanes/B/ROUND20_SATURATION.md`, `scratch/B/logs/r20_saturation_controls.log` | 0 solver; 0.02 CPU-s controls |
 
 ### Round 17
 
@@ -228,7 +219,8 @@ allocation is a ceiling, not a launch order. Old job transitions: `LOG.md`.
 0. Stay parked. Reopen only on an independently supplied new 32/e108 key
    or an exact coverage argument calibrated by recovering a deliberately
    withheld known key and priced for the full slice. e109 descent would miss
-   saturated keys. No second e109 screen or known-key ascent/descent.
+   saturated keys, now narrowed by hand to min degree six; neither arm is
+   priced. No second e109 screen or known-key ascent/descent.
 1. Critic/H: replay or audit the bounded prefix and scout proof tranche.
    `src/replay_prefix_r7.sh terminal` and `src/e108_scout_proofs_r8.sh replay work/e108_r8_scout_proofs`
    are ready. Do not re-launch prefix. Outside-prefix critical e88 after

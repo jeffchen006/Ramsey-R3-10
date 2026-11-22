@@ -1,49 +1,35 @@
 # Lane F state
 
-Round 19 complete. **No candidate, no running/stopped jobs.** Pilot only on exactly-one-double footprints; no new order-40 scores (best 24 at e=178 and 179; `round19_nearness.tsv`). Round 18 state archived in `LOG.md`.
+Round 20 complete. **No candidate or active/stopped jobs.** The one-double census in the one-exceptional-site family is complete, not the construction itself. Round 19 state archived in `LOG.md`. `ROUND20.md` and `ROUND20_FREEZE.sha256` are the handoff.
 
-| Label | Result and evidence | Core-h |
+| Label | Result / evidence | Core-h |
 |---|---|---:|
-| hand + enum (pending) | 102/128 pilot one-double footprints excluded in the one-exceptional-site construction (203 labels; 1 reversal fix). Marked subset 13 cuts/32 sampled; 26 open pilot rows. Independent replay of 2,050 deductions and clean match. `ROUND19.md`, `scratch/F/r19/{newcalib,pilotcheck,newtamper,mutation,clean}.stdout`, `pilot.checked`, `ROUND19_FREEZE.sha256`. | below |
-| hand + enum (price only) | Actual unsigned joint headers 16,182,483 → 15,613,661 (−568,822), counting simultaneous reversal, not graphs. 4,309 exterior and 1,314 marked reps left across all strata. `scratch/F/r19/{detailprice.stdout,joint.tsv}`. | 0.00364 total |
-| estimate | All 3,709 one-double reps ~11 CPU-s for one production+check+price, ~27 s with controls/clean rebuild and replay. No estimated cuts. `scratch/F/r19/{forecast.txt,cost.stdout,pilotrun.time,pilotcheck.time}`. | not spent |
+| hand + enum (pending) | 3,172/3,581 previously unseen one-double reps physically excluded (6,339 labels, 5 fixes), including 646/1,018 marked. Union with pilot: 3,274/3,709 excluded, 435 open (391 marked). Exact open lists; 50,877 new GF(2) deductions. `scratch/F/r20/{preflight.stdout,verify.stdout,pilot.checked,one-double.open,strata.tsv}`. | 0.00199 all-in |
+| hand + enum (price, pending) | Unsigned compatible joint headers after simultaneous reversal: 15,613,661 → 1,979,210, net 13,634,451; inclusion/exclusion and reversal checked. `scratch/F/r20/{joint.tsv,price.stdout,mark.left,pole.left}`. No graph/existence or global case inference. | included |
+| enum (control) | Repeated exhaustive small controls, marked C8 positive, corrupted pins and projected-form mutations. `scratch/F/r20/{calibrate,tamper,corrupt_pin}.stdout` and `positive.gate`. No new order-40 score: historical degree-valid minimum 24 at e=178,179; `round20_nearness.tsv`. | included |
 
-**Next:** Critic: authorize one worker, ≤0.04 core-h, ≤512 MiB to run `scratch/F/r19/unexamined.rows` (3,581, no pilot repeats), same bank and checker. Combine only actual checked cuts with the 128 frozen pilot receipts, independently price and replay. Do not pursue the other 26 pilot rows, the 264 no-double leftovers, any signings, or reopen ID8/21. This is not a general degree/symmetry exclusion. H: review the 102 physical cuts and the price as separate scoped claims.
+**Next, subject to critic:** Only 14 two-double marked rows (also exterior). Test six singleton sites padded by four physically independent doubled endpoints, plus the older allowed modes; require the new smaller positive, exhaustive controls, corrupted pair/pin and independent physical GF(2) replay first. Request one worker, ≤0.02 core-h / 512 MiB, no other rows or signing. Keep the 435 open one-double and 264 no-double rows parked. Other remaining exterior reps: 412 two-double (including those 14) and 26 three-double. H: record the scoped physical cuts and the post-pilot net price separately.
 
-**Jobs:** inherited none. All 33 single-worker foreground invocations exited zero; no failures/timeouts, detached or stopped jobs. Exact commands and clocks in `scratch/F/r19/jobs.tsv`; each log below is `<name>.stdout` there. All times on 2026-11-22, host +01:00; full date/offset in TSV. No PIDs to kill or resume.
+**Jobs:** inherited none. All 19 foreground commands exited zero; none detached, stopped, timed out or killed. Full argv/start/deadline and supervisor PID: `scratch/F/r20/jobs.tsv`; `<name>.stdout` and `<name>.time` in that directory. Table times are 2026-11-22, UTC+01:00. No PID to kill or resume.
 
-| Supervisor PID | Command (full argv in jobs.tsv) | Log name | Cores | Start | Deadline |
-|---:|---|---|---:|---|---|
-| 1129999 | `g++ -O3 -std=c++20 -march=native ../../../ralph/lanes/F/one_double.cpp -o binary` | `build` | 1 | 16:05:06 | 16:05:36 |
-| 1130900 | `../../../opt/venv/bin/python -B ../../../ralph/lanes/F/one_double_pilot.py small` | `ctlprep` | 1 | 16:05:08 | 16:05:28 |
-| 1130947 | `./binary c3_0.q 4 c3_0.bank c3_0.rows c3_0.trace 8` | `runc3_0` | 1 | 16:05:08 | 16:05:24 |
-| 1130990 | `./binary c3_1.q 4 c3_1.bank c3_1.rows c3_1.trace 8` | `runc3_1` | 1 | 16:05:08 | 16:05:24 |
-| 1131028 | `./binary c3_2.q 4 c3_2.bank c3_2.rows c3_2.trace 8` | `runc3_2` | 1 | 16:05:09 | 16:05:25 |
-| 1131064 | `./binary c3_3.q 4 c3_3.bank c3_3.rows c3_3.trace 8` | `runc3_3` | 1 | 16:05:09 | 16:05:25 |
-| 1131097 | `./binary c3_4.q 4 c3_4.bank c3_4.rows c3_4.trace 8` | `runc3_4` | 1 | 16:05:09 | 16:05:25 |
-| 1131119 | `./binary c3_5.q 4 c3_5.bank c3_5.rows c3_5.trace 8` | `runc3_5` | 1 | 16:05:09 | 16:05:25 |
-| 1131147 | `./binary c3_6.q 4 c3_6.bank c3_6.rows c3_6.trace 8` | `runc3_6` | 1 | 16:05:09 | 16:05:25 |
-| 1131171 | `./binary c3_7.q 4 c3_7.bank c3_7.rows c3_7.trace 8` | `runc3_7` | 1 | 16:05:09 | 16:05:25 |
-| 1131209 | `./binary c4_45.q 4 c4_45.bank c4_45.rows c4_45.trace 8` | `runc4_45` | 1 | 16:05:09 | 16:05:25 |
-| 1131239 | `../../../opt/venv/bin/python -B ../../../ralph/lanes/F/one_double_pilot.py calibrate` | `calib` | 1 | 16:05:09 | 16:05:54 |
-| 1132724 | `../../../opt/venv/bin/python -B ../../../ralph/lanes/F/one_double_pilot.py tamper` | `tamper` | 1 | 16:05:11 | 16:05:31 |
-| 1138228 | `g++ -O3 -std=c++20 -march=native ../../../ralph/lanes/F/one_double.cpp -o binary` | `rebuild` | 1 | 16:05:28 | 16:05:58 |
-| 1139464 | `./binary c3_0.q 4 c3_0.bank c3_0.rows c3_0.trace 8` | `newc3_0` | 1 | 16:05:31 | 16:05:47 |
-| 1139473 | `./binary c3_1.q 4 c3_1.bank c3_1.rows c3_1.trace 8` | `newc3_1` | 1 | 16:05:31 | 16:05:47 |
-| 1139482 | `./binary c3_2.q 4 c3_2.bank c3_2.rows c3_2.trace 8` | `newc3_2` | 1 | 16:05:31 | 16:05:47 |
-| 1139491 | `./binary c3_3.q 4 c3_3.bank c3_3.rows c3_3.trace 8` | `newc3_3` | 1 | 16:05:31 | 16:05:47 |
-| 1139507 | `./binary c3_4.q 4 c3_4.bank c3_4.rows c3_4.trace 8` | `newc3_4` | 1 | 16:05:31 | 16:05:47 |
-| 1139518 | `./binary c3_5.q 4 c3_5.bank c3_5.rows c3_5.trace 8` | `newc3_5` | 1 | 16:05:31 | 16:05:47 |
-| 1139527 | `./binary c3_6.q 4 c3_6.bank c3_6.rows c3_6.trace 8` | `newc3_6` | 1 | 16:05:31 | 16:05:47 |
-| 1139536 | `./binary c3_7.q 4 c3_7.bank c3_7.rows c3_7.trace 8` | `newc3_7` | 1 | 16:05:31 | 16:05:47 |
-| 1139546 | `./binary c4_45.q 4 c4_45.bank c4_45.rows c4_45.trace 8` | `newc4_45` | 1 | 16:05:31 | 16:05:47 |
-| 1139558 | `../../../opt/venv/bin/python -B ../../../ralph/lanes/F/one_double_pilot.py calibrate` | `newcalib` | 1 | 16:05:31 | 16:06:16 |
-| 1139963 | `../../../opt/venv/bin/python -B ../../../ralph/lanes/F/one_double_pilot.py tamper` | `newtamper` | 1 | 16:05:32 | 16:05:52 |
-| 1140009 | `../../../opt/venv/bin/python -B ../../../ralph/lanes/F/one_double_pilot.py pilot` | `freeze` | 1 | 16:05:32 | 16:05:52 |
-| 1147766 | `./binary pilot.q 10 pilot.bank pilot.rows pilot.trace 8` | `pilotrun` | 1 | 16:05:48 | 16:06:23 |
-| 1147786 | `../../../opt/venv/bin/python -B ../../../ralph/lanes/F/one_double_check.py pilot` | `pilotcheck` | 1 | 16:05:48 | 16:06:23 |
-| 1147801 | `../../../opt/venv/bin/python -B ../../../ralph/lanes/F/one_double_pilot.py price` | `price` | 1 | 16:05:48 | 16:06:10 |
-| 1168273 | `../../../opt/venv/bin/python -B ../../../ralph/lanes/F/one_double_pilot.py price` | `detailprice` | 1 | 16:06:37 | 16:06:59 |
-| 1168357 | `../../../opt/venv/bin/python -B ../../../ralph/lanes/F/one_double_pilot.py estimate` | `cost` | 1 | 16:06:37 | 16:06:55 |
-| 1168392 | `../../../opt/venv/bin/python -B ../../../ralph/lanes/F/one_double_pilot.py adverse` | `mutation` | 1 | 16:06:37 | 16:06:55 |
-| 1168415 | `bash -c cd ../r19clean && bash ../../../ralph/lanes/F/round19_replay.sh` | `clean` | 1 | 16:06:37 | 16:07:17 |
+| PID | Command/log name | Cores | Start | Deadline |
+|---:|---|---:|---|---|
+| 2961708 | `hashes` | 1 | 17:23:47 | 17:24:02 |
+| 2961718 | `build` | 1 | 17:23:47 | 17:24:09 |
+| 2962192 | `small` | 1 | 17:23:49 | 17:24:02 |
+| 2962205 | `control_c3_0` | 1 | 17:23:49 | 17:24:01 |
+| 2962214 | `control_c3_1` | 1 | 17:23:49 | 17:24:01 |
+| 2962224 | `control_c3_2` | 1 | 17:23:50 | 17:24:02 |
+| 2962234 | `control_c3_3` | 1 | 17:23:50 | 17:24:02 |
+| 2962243 | `control_c3_4` | 1 | 17:23:50 | 17:24:02 |
+| 2962252 | `control_c3_5` | 1 | 17:23:50 | 17:24:02 |
+| 2962263 | `control_c3_6` | 1 | 17:23:50 | 17:24:02 |
+| 2962272 | `control_c3_7` | 1 | 17:23:50 | 17:24:02 |
+| 2962282 | `control_c4_45` | 1 | 17:23:50 | 17:24:02 |
+| 2962291 | `calibrate` | 1 | 17:23:50 | 17:24:10 |
+| 2963087 | `tamper` | 1 | 17:23:51 | 17:24:05 |
+| 2963164 | `corrupt_pin` | 1 | 17:23:51 | 17:24:05 |
+| 2963312 | `preflight` | 1 | 17:23:51 | 17:24:06 |
+| 2963436 | `produce` | 1 | 17:23:51 | 17:24:36 |
+| 2965550 | `verify` | 1 | 17:23:54 | 17:24:22 |
+| 2966087 | `price` | 1 | 17:23:55 | 17:24:15 |

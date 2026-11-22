@@ -320,3 +320,14 @@ branch-max estimate for whole scan/replay 219.12 + 299.95 CPU-s. Total
 108.29 measured CPU-s; 24 collected foreground wrappers, one empty
 stdin invocation superseded. No exclusion. Evidence: E-042,
 `shared74_round18.md`, `scratch/E/r18_shared/freeze.1.sha256`.
+
+## Round 19 archive (2026-11-22)
+
+Conditional mixed core 1 `G?bFbo` only. Exact 24-branch ordered scan
+and unchanged replay: 68,323 projections, 565,531 lifts, 147 distinct
+terminal IDs, 16 E-042 proofs already counted once, 131 pending.
+All 3,385 old pilot projections / 12,814 receipts matched. Total
+321.01 CPU-s (0.08917 core-h), 48.14 MiB logical staging, no active
+jobs at handoff. Round 20 verified all ten historical wrapper PIDs
+were gone. A 16-ID matched proof pilot was frozen, not run.
+`shared74_round19.md`, `scratch/E/r19_shared/freeze.1.sha256`.

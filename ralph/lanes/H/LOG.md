@@ -162,3 +162,13 @@ The prior round-12 handoff is superseded for status by the critic's new
 degree-six floor and 40 exact removals. Round-12 details and scripts
 remain in `ROUND12_REVIEW.md` and `scratch/H/round12-*`; the 278 baseline
 is a historical denominator and the e168 strip work is not additive.
+
+## Round 19 archive
+
+H-034 proved only the capacity `t+(4−s)` and its transpose; 216
+small physical-site controls, 3/356 axiom reports, 0.04003 core-h.
+See `ROUND19_REVIEW.md` and the historical round-19 freeze. The
+critic confirmed the capacity implication in round 019; the lower
+matching implication is the separate, new H-035. The round-18 checked
+G balance 79,072 and C balance 2,542,514,376 are historical after
+round-19 review. No H jobs carried forward.

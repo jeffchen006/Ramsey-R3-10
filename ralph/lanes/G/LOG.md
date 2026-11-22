@@ -421,3 +421,16 @@ justify scaling (all four MIPs cap; no full-template cut). See
   0.11650 core-h and ~94 MiB total. See `ROUND18_REPLAY.md`, its freeze,
   and `scratch/G/round18/reconciliation.json`. No distribution/U88
   change and no transfer to other hole schemes or `h<8`.
+
+## Round 19 archival handoff
+
+- G-055 confirmed in `ralph/critic/round_019.md`: one fixed-left
+  middle formula, any right and allowed transpose, dual-checked;
+  107,772 historical ranks in scope, 57,947 fresh out of 79,072.
+  `scratch/G/round19/outstanding-if-verified.json` has the last
+  21,125 `matching+matching` ranks. 0.00854 core-h, no distribution or
+  U88 change. `ROUND19_REPLAY.md`, `ROUND19_FREEZE.sha256`.
+- `ROUND19_PREREG.md` and `scratch/G/round19/h7-prereg.json` froze
+  eight `h=7` pilots on six boards with an exact potential union of
+  184 extra **two-sided context orbits**. Baseline 51/1,213, not
+  51/81. No pilot was solved.

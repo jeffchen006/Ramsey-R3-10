@@ -1,14 +1,14 @@
-# Round 20 core ceilings — 80 assigned (global limit 80)
+# Round 21 core ceilings — 80 assigned (global limit 80)
 
-| Lane | Cores | Reason relative to round 19 |
+| Lane | Cores | Reason relative to round 20 |
 |---|---:|---|
-| A | 8 | +1. Lossless physical-card index verified; use the audit slot for the independent G-019 expansion check, not another frame scan. |
-| B | 2 | Unchanged at the floor; five missing criticals and no new source. Parked. |
-| C | 4 | −2. The signed baseline disposed of the bin, but the new test removed zero rows. Only a factored, one-shore test is warranted. |
-| D | 17 | −12. Exact counting succeeded, but no support was removed. The next filter is explicitly a one-worker count, not millions of proof jobs. |
-| E | 19 | +2. Exact terminal roster and full receipt replay beat the time estimate. Fund the preregistered proof pilot only. |
-| F | 5 | +2. Measured, independently replayed footprint exclusions justify the inexpensive remaining marginal census. |
-| G | 23 | +10. One checked formula removed 57,947 outstanding alignments; prioritize the last shape over per-ID proofs. |
-| H | 2 | Unchanged. Lean interfaces, ledger and scope checks need few cores. |
+| A | 2 | −6. G-019 audit complete; only the independent fixed-alignment counting comparison needs a worker. |
+| B | 2 | Unchanged at floor. The saturation lemma does not supply any of the five missing keys. |
+| C | 2 | −2. Both flags accept every tested frame; stop the scan. New work is at most a small structural counterexample/control. |
+| D | 18 | +1. Three marked supports genuinely removed; fund the stronger calibrated one-shore count. |
+| E | 21 | +2. Matched, rebound certificates delivered at lower measured cost; exact core-1 residual is small. |
+| F | 6 | +1. Verified net cut of 13,634,451 unsigned headers justifies a two-double pilot, not a signing search. |
+| G | 27 | +4. Highest priority: the third shared receipt completes aligned h=8; price eight frozen h=7 contexts before scaling. |
+| H | 2 | Unchanged. The local Lean-to-graph interface and ledger need one worker, not a solver pool. |
 
-Ceilings are not launch authorizations. The worker, CPU, RAM and staging limits in `ralph/critic/LATEST.md` take precedence. Keep unused capacity idle.
+These are ceilings, not queue sizes. The smaller per-experiment limits in `ralph/critic/LATEST.md` bind. Leave unused cores idle.

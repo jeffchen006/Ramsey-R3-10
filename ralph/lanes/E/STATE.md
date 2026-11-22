@@ -1,48 +1,44 @@
-# Lane E state — round 19 complete
+# Lane E state — round 20 complete
 
-2026-11-22 CET. Ceiling 17; critic authorized core 1 scan and exact
-Python replay only (≤2 workers, ≤0.30 core-h, ≤192 MiB new staging).
-All work stayed within that authorization. No target proof launch.
+2026-11-22 CET. Ceiling 19; critic authorized the frozen 16-ID
+matched proof pilot only. Used one serial worker, 0.00892 total
+core-h and ~36.4 MiB new staging, below 0.08 core-h / 96 MiB.
+Peak RSS 186,460 KiB under 1 GiB hard address-space cap.
 
 ## Jobs
 
-None active, detached, stopped or killed. All ten wrappers collected;
-full commands, CPU/wall caps, ends in `scratch/E/r19_shared/{jobs,exits}.tsv`.
+None active, detached, stopped or killed. All wrappers exited 0.
+Full commands and caps in `scratch/E/r20_shared/{jobs,exits}.tsv`.
 
-| Wrapper PID | Command and log stem | Cores | Start / actual end CET |
+| Wrapper PID | Command / log stem | Cores | Start / actual end CET |
 |---|---|---:|---|
-| 1075402 | inherited hash, merge controls and `prepare` | 1 | 16:03:15 / 16:03:16 |
-| 1086959 | positive/adversarial `controls` | 1 | 16:03:35 / 16:03:37 |
-| 1087116 / 1087118 | `full_core1_74.py scan 0/1` | 2 total | 16:03:37 / 16:04:38, 16:04:55 |
-| 1125234 / 1125230 | `full_core1_74.py replay 0/1` | 2 total | 16:04:55 / 16:06:18, 16:06:30 |
-| 1163191 | `full_core1_74.py finish` | 1 | 16:06:30 / 16:06:33 |
-| 1171627 | `price_full_core1_74.py` (`pricing.log`) | 1 | 16:06:50 / 16:06:50 |
-| 1182804 / 1191613 | supplemental text audit, then fixed byte-total cross-check | 1 each | 16:07:18 / 16:07:18; 16:07:43 / 16:07:43 |
+| 2981483 | inherited hashes and controls / `preflight` | 1 | 17:24:54 / 17:24:56 |
+| 2989989 | `paired_core1_74.py target` / `target` | 1 | 17:25:21 / 17:25:50 |
+| 3020250 | `paired_core1_74.py audit` / `audit` | 1 | 17:26:41 / 17:26:42 |
+| 3021229 | `reprice_core1_74.py` / `pricing` | 1 | 17:26:42 / 17:26:43 |
+| 3030352 | independent set and marker cross-check / `crosscheck` | 1 | 17:27:11 / 17:27:11 |
 
-## Results and claims for H / critic
+## Claims for H / critic
 
-Core 1 `G?bFbo` only, `(p,f,t)=(2,32,4)`, `δ(W)≥2`, `e(W)=11`,
-profile `(10,10,11,11)`, universal `δ(G)≥5` and E-021 all-graph
-sole-missing order-26/e74 class. All four omission roles and `K=6,7,8`;
-no MTF assumption. Evidence report: `shared74_round19.md`; all staging
-names below relative to `scratch/E/r19_shared/`.
+Core 1 `G?bFbo` only under E-021 and E-042/043 premises: mixed
+`(2,32,4)`, `δ(W)≥2`, `e(W)=11`, profile `(10,10,11,11)`, universal
+`δ(G)≥5` and the sole-missing all-graph order-26/e74 class. All graph
+scope, no MTF. See `shared74_round20.md`; evidence names in the table
+are relative to `scratch/E/r20_shared/`.
 
 | Item | Label | Evidence |
 |---|---|---|
-| Entire 24-branch, 12-shard cover (68,323 projections; 565,531 lifts) scanned, unchanged Python replayed, exactly merged. 147 terminal IDs across 113 projections and 14 branches; all 3,385 old pilot projections / 12,814 receipts match. | enum (conditional roster) | `finish.log`, `final.audit.fixed.log`, `terminal.1.jsonl`, `freeze.1.sha256` |
-| 24 old pilot terminals, of which the 16 E-042 proofs count once each. Pocket of 131 IDs in 103 projections remains; no new proofs or closure. | cert (inherited 16 only); open | `pending.1.jsonl`, `finish.log`, `../r18_shared/freeze.1.sha256` |
-| Full scan + replay 139.44 + 175.54 CPU-s vs 219.12 + 299.95 estimated. Pending base estimate 114.88 CPU-s / 148.43 MiB narrow or 221.70 CPU-s / 138.87 MiB wide. 54/131 use global rates; retries priced separately. | enum timing + estimate | `branch_rates.tsv`, `pricing.log`, `price.strata.tsv` |
+| Exactly 16 fresh physical IDs certified once each: width three and original width eight each freshly rebound and both checkers verified all 16/16; no fallbacks. Old 16 disjoint; 32 of 147 now certified and 115 unresolved. | cert (conditional local IDs only), open (core) | `paired.jsonl`, `target/`, `audit.log`, `crosscheck.log`, `residual.jsonl`, `freeze.1.sha256` |
+| Narrow 11.669 CPU-s vs wide 15.898 CPU-s route totals, ~26.6% less; target wrapper 28.79 CPU-s inclusive of driver. Total round 32.11 CPU-s. | enum (measurement) | `target.log`, `preflight.log`, `pricing.log` |
+| 115-ID narrow first estimate 88.00 CPU-s / 129.98 MiB no fallback; 142.95 CPU-s / 185.66 MiB for six stress fallbacks. Wide-only baseline 115.28 CPU-s / 126.59 MiB. Rates for 83 third / 25 branch / 7 global. | estimate | `reprice.strata.tsv`, `pricing.log` |
 
-Total 321.01 measured CPU-s (0.08917 core-h), 48.14 MiB new logical
-staging. The first supplementary audit failed a hardcoded byte total,
-then the rerun compared to independent file sizes and passed.
+## Next
 
-## Handoff
-
-- Request authority only for the frozen **16-ID** stratified matched
-  proof pilot in `proposed_pilot.1.jsonl`, at most 2 workers,
-  ≤0.08 core-h / ≤96 MiB new scratch. It was not run. Reprice after
-  independent rebinding; no extrapolated exclusion or bulk launch.
-- Four mixed cores `{1,6,9,18}` remain open, including core 1. `(5,5)`
-  was already certified. No candidate, full `(2,32)` debit, rigidity,
-  or Ramsey verdict.
+- Request critic authority for `residual.jsonl` only: one worker,
+  ≤0.065 core-h / ≤1 GiB per process / ≤224 MiB new staging. Narrow
+  first with fresh binding/dual check; width eight only on narrow
+  SAT/cap. Stop on budget, binding or checker failure, or wide SAT;
+  no partial proof counts as UNSAT. Not started.
+- Core 1 and the other three conditional mixed cores `{6,9,18}` remain
+  open; `(5,5)` remains certified. No candidate, full involution case,
+  rigidity, or Ramsey verdict.
