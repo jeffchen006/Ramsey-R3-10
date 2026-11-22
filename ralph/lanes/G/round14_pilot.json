@@ -1,0 +1,6 @@
+[
+  [[170, 2, 0, 14, 24], "matching+matching"],
+  [[170, 2, 0, 14, 24], "matching+middle"],
+  [[170, 2, 0, 14, 24], "middle+middle"],
+  [[170, 2, 6, 2, 30], "leaf+leaf"]
+]

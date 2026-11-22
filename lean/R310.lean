@@ -41,6 +41,8 @@ import R310.MarkedStrip
 import R310.CompletionBridge
 import R310.KernelReroot
 import R310.ReciprocalWindow
+import R310.PoleContacts
+import R310.BookFootprint
 import R310.RoundedIncidence
 import R310.AnchorSaturation
 import R310.IntersectingPairs

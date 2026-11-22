@@ -1,0 +1,11 @@
+import R310.PoleContacts
+import R310.BookFootprint
+
+#print axioms R310.full_mate_pair_of_max_contacts
+#print axioms R310.contact_add_two_le_of_disjoint_pole_columns
+#print axioms R310.disjoint_pole_columns_of_one_slot
+#print axioms R310.pole_contacts_le_seven_of_min_old_degree_eight
+#print axioms R310.two_mul_sum_card_le_biUnion_add_offDiag
+#print axioms R310.exteriorFootprint_two_term
+#print axioms R310.book_footprint_le_twenty_nine
+#print axioms R310.book_footprint_forces_opposite_contacts

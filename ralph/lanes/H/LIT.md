@@ -346,3 +346,23 @@ published full order-26 census; see `ROUND9_REVIEW.md`.
   reported double saturation as a construction bias only, not assume it
   or reproduce those seeds without an artifact. G's new d6 floor and
   conditional thresholds are local results, not new published numbers.
+
+## Round 14 targeted check — November 22, 2026
+
+- The EJC page still identifies the current DS1 as **April 24, 2026**;
+  Radziszowski, *Small Ramsey Numbers*, revision 18, Table Ia/§2.1,
+  DOI `10.37236/21`, remains the cited 40–41 source. Checked again:
+  Angeltveit, EJC **32**(4) #P4.30, DOI `10.37236/12936`; arXiv still
+  has `2401.00392v2` dated April 8, 2024. No superseding resolution
+  located. This is a dated search finding, not a proof of absence.
+- The public McKay index still has the smaller `r35_13.g6`, `r36_17.g6`,
+  `r37_22.g6`, `r38_27.g6.gz` and `r39_35.g6` controls. The fetched
+  House of Graphs route is the site shell, not independent new class
+  data. No new public Angeltveit/GR order-39 bulk file or exact dense
+  `R(3,9;30,e)` count was located; no second catalogue search/rebuild.
+  Responses and HTTP receipt: `scratch/H/lit/r14-*.data` and
+  `scratch/H/round14-literature.log`.
+- Implications for A–G remain as above. In particular C's cap-five
+  header census and B's reducible extensions are team computations,
+  not public Ramsey catalogues; F's necessary words are not new
+  order-39 constructions. No evidence changed lane scope.

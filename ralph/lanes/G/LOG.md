@@ -340,3 +340,14 @@ only path/middle noncross d8 B equality at mixed e168 `(2,7,4,27)`,
 not matching; the later d6 floor closes that parent by a different
 argument. `ROUND12_REPLAY.md` gives the source/role binding and
 replays; `ralph/critic/round_012.md` confirms the named scope.
+
+## Round 13 handoff (historical)
+
+The critic's floor 122 closes 20 e168, 19 e169, and the e170 parity
+key `(2,7,0,31)` from 278. Lane G matched all 238 survivors, and
+certified 12 conditional one-edge t9 improvements without any new
+U88. The 66 single and 30 paired projections all have exact integer
+points; the paired masks were joined on W vertices but not on its
+edges. Scout N mode 0 rejects all 512 disjoint fixed-source e122
+samples; bundling costs more and rejects nothing further. See
+`ROUND13_REPLAY.md`. No active jobs were handed to round 14.

@@ -203,3 +203,6 @@ Exact costs and proof/replay scopes are in `ROUND4_REPLAY.md`.
 
 ## Round 13 (November 22)
 - Independently matched both 9,959-row atlases and 55,055 frames; replayed the prior triple slice and bound a disjoint 1,554,349-ID cap-five 17/17 pilot. 197,502→327 panel, 97 joint, zero open (enum only). Full scope priced, not launched. `ROUND13_REPLAY.md`.
+
+## Round 14 (November 22)
+- Calibrated and took two independent streamed stage/terminal readouts of the cap-five 17/17 ordered alignment roster. Complete prefix `[0,24576)`: 12 shards, 67,417,211 headers, 12,594 panel, 3,464 joint IDs, zero unresolved. All stage bytes, independent header digests and terminal reason vectors agree. Stopped at expensive-tail gate; 90,054,790 headers still unscanned. `ROUND14_REPLAY.md`.

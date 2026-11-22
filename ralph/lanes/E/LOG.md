@@ -250,3 +250,15 @@ rejects 31/107 and 6/42 archived heavy-core sample IDs, but was slower
 as a scan prefilter. See `shared74_round12.md` and `scratch/E/r12_shared/`
 for exact receipts, proof streams, freeze files, and `jobs.tsv`. All 52
 old wrappers were collected at start of round 13; none live or stopped.
+# Round 13 handoff (archived in round 14)
+
+The critic accepted core 17 in `ralph/critic/LATEST.md` round 14.
+Scope: mixed saturated `(2,32,4)`, `δ(W)≥2`, `e(W)=11`,
+`(10,10,11,11)`, universal `δ(G)≥5`, E-021 all-graph premise;
+all four omissions and K=6,7,8. The core had 27 first branches,
+193,365 projections, 2,135,171 lifts and 262 fresh original-CNF
+CakeLRATs. Both ordered replays checked. Cost 0.36433 core-h main,
+0.62728 with unchanged Python audit; all 98 wrappers collected.
+`shared74_round13.md`, `scratch/E/r13_shared/freeze.17.sha256`.
+Native validator price reduced 3,530→1,508 CPU-s; width-three pilot
+129/129 checked but not used for closure. Seven mixed cores remained.

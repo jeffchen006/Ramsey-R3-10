@@ -1,50 +1,47 @@
-# Lane G state — round 13, November 22, 2026
+# Lane G state — round 14, November 22, 2026
 
 **238 near-regular MTF distributions plus R remain open.** No candidate.
-The critic's confirmed MTF d6 residue floor 122 removes exactly
-20 e168 + 19 e169 + one e170 `(2,7,0,31)` from the 278-key ledger.
-This round reproduced those removals, and found 12 new conditional
-t9 improvements; no further whole-key exclusions. All ten old U88
-keys are unchanged. Floor 123 is not proved, even with the e170 pin.
+The 40 degree-six floor cuts are inherited from the critic; none added
+this round. The ten conditional U88 keys and the round-13 t9 bounds
+are unchanged. No floor 123 or complete order-33/122 cover.
 
 ## Jobs
 
 | PID | Command | Log | Cores | Start | Expected end |
 |---|---|---|---:|---|---|
-| — | No active or detached G jobs | `scratch/G/round13/` | 0 | — | — |
+| — | No active or detached G jobs | `scratch/G/round14/` | 0 | — | — |
 
-Prior PIDs 3268364 (B-middle) and 3475785 (static replacements) were
-absent on entry; archived round-12 scopes are superseded by floor 122.
-Foreground one-core runs only this round, with per-command timeouts,
-16 GB virtual-memory cap and nice +5. At e170 there were still only
-96 one-/two-root signature rows; no census or proof-production queue.
+Initial internal-uncapped simplex PID 3097512 exhausted its 140-s
+outer CPU cap; window+MIP CPU-capped at 165 s. Neither an UNSAT.
+No detached launches. All commands used one thread, 16 GB virtual
+memory cap, nice +5 and wall limits. Largest RSS ~1.13 GiB.
 
 ## Results and claims
 
 | Label | Result | Evidence | User CPU-h |
 |---|---|---|---:|
-| hand + cert | Reconstruct 238 keys (same identities as critic); 39 direct floor cuts and one exact parity LP cut, all already confirmed. 12 **new** rational t9 thresholds, one edge each, with floors 108/97/88 and d6=122. No U88 increment or new closure; all 12 matched floor-120 relaxations numerically feasible at the new pins. | `scratch/G/round13/{thresholds.csv,multipliers.jsonl,t9.log,t9.binding.log}`, `round13_thresholds.py`, `ROUND13_REPLAY.md` | 0.014 |
-| hand + enum | e170 equality: 66 single-root signature rows and 30 paired rows all have exact integer points; one paired 4-s cap resolved on retry. The paired model joins both masks and degree on the same W sites, not W-edge identities. C13: 26 literal pairs survive; 260 broken swaps rejected. No graph and no distribution closure. | `rows/e170_equality_signatures.md`, `scratch/G/round13/{single,pair}.witnesses.jsonl`, `*.replay.log` | 0.052 |
-| hand + enum | Same-source held-out attachment comparison: N's support deletion rules reject all 512 distinct sampled e122 residues (128+384) in 16.62 CPU-s. Old clique+5k pinned core leaves 20 caps; 235 old-core UNSAT are unchecked. Bundling lowers waves but gives no new rejection and costs 17.90 s. Independent replay of 24 samples ×3 modes; actual 13 C13 equality attachments retained. No census or new floor. | `rows/e170_bundled_demands.md`, `scratch/G/round13/{attach,held}.*`, `ROUND13_REPLAY.md` | 0.044 incl. audit |
+| hand + enum | Built same-W-edge join: combined masks and degree on both endpoints, one matrix projected into both old residue edge tables, integer product capacities, target domination/codegree/private matching, optional mixed-wing induced edge windows. C13 all 26 literal positive pairs; 97 quota checks; literal C35/Exoo39 controls. | `rows/e170_shared_edges.md`, `round14_shared_edges.py`, `scratch/G/round14/{control,controls.final}.log` | ~0.014 controls incl. development |
+| hand + cert + enum | On four predeclared old population tuples: three exact Farkas/weighted-box contradictions even with both edge tables free, independently explained by absence of a compatible occupied common-neighbor type. One exact shared-edge integer point for matching+middle, but its W has 22 triangles and fails 38 window rows. Mutating that point's projected edge table retains all old rows but needs four shared edges where only three exist. No whole-template implication. | `scratch/G/round14/{recomplete-0.jsonl,cert-details.log}`, `round14_edge_control.py`, `ROUND14_REPLAY.md` | 0.017 incl. double replay |
+| open / estimate | Four free-population plain IPM/MIP prices: three numerically LP feasible, one LP cap, four MIP caps (one exact point via separate population pin above). Four free-population window LP caps. No cert/major full-template cost cut; do not scale. | `round14_pilot.json`, `scratch/G/round14/{plain-bounded,windows,windows-with-mip}.log`, `ROUND14_FREEZE.sha256` | 0.122 price incl. outer caps |
 
 ## Next round
 
-- H/critic: independently bind the 12 *conditional* t9 receipts and
-  retain gluing premises. Do not subtract these from 238. Across the
-  sixteen e170 d6 keys, nine have one root and seven an adjacent pair.
-- For e170, `Z=48`, `e(H)=122`, 24 private/9 double sites. Adjacent
-  roots have a shared order-28 core W, exactly one wing crossing,
-  and `e(W)=86`; the old e168 e84 strips or holes do not apply.
-  Any next pair experiment needs a stronger joint condition on
-  **edges** of W or independently complete coverage, not increasing
-  MIP caps on the 96 already explicitly feasible relaxations.
-- The old scout support rule on fixed supplied rows is stronger than
-  the priced old clique/core route; do not repeat the more costly
-  bundled variant absent a case where the scout rule leaves rows.
-  The named e122 inputs used here are partial. Do not launch a broad
-  e122 proof queue without an independently complete cover.
-- Stop all mixed e168 A/B/matching work and do not rediscover e121
-  classes. B owns descent to 32/e108. `review/ideas/r012_T.md` was absent
-  (referee/T failed). R's reciprocal panel concerns C, not this lane.
-- Historical round-12 claim, matching identities, and proofs remain
-  in `ROUND12_REPLAY.md` and `ROUND12_FREEZE.sha256`; not additive.
+- H/critic: independently bind the three rational certificates **only
+  to their named round-13 population tuples**, not the whole templates.
+  `ROUND14_REPLAY.md` has the commands; `cert-details.log` explains the
+  three contradictions by no possible common-neighbor type. No cut to
+  the 238 ledger, no extra U88 debit. One remaining pinned population
+  is only an integer relaxation point, not a graph.
+- Do not expand the free same-edge matrix to the other 26 templates
+  or increase solver caps. The cheap support check is appropriate if
+  a later algorithm actually supplies population tuples; this pilot
+  does not cover those tuples. A substantially smaller complete
+  projection would need a proof, not arbitrary population fixing.
+- For e170, sixteen d6 keys remain (nine single, seven adjacent pair).
+  `Z=48`, `e(H)=122`, 24 private/9 double sites; adjacent cores W have
+  order 28, one wing crossing, 86 W edges. Old e168 geometry is not
+  valid here. The 66+30 coarse integer witnesses are not embeddings.
+- Keep scout N mode 0 as fixed-source comparator if needed; do not
+  repeat the 512-sample experiment, bundle or launch an e122 census.
+  B owns descent to 32/e108. No e168 work. Round-13 exact threshold
+  gains and membership remain in `ROUND13_REPLAY.md` and its freeze.

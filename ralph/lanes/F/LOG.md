@@ -1,5 +1,40 @@
 # Lane F experiments
 
+## Archived round 13 state (collected before round 14)
+
+Round 13 complete. Allocation **2**, no live jobs, no target submitted. All 18 supervisors collected; 24.23 CPU-s (0.00673 core-h), including two corrected early failures. No target solve/score run. Observed best unchanged: **24 independent tens at e178 and e179**. R12 F-018..021 accepted; cyclic 19-pair cards and full (20)/(10,10)/(8,8,4) remain retired. Earlier job logs in `LOG.md`, analyses in `ROUND1.md`..`ROUND13.md`.
+
+| Label | Round 13 result submitted for review | Core-h |
+|---|---|---:|
+| hand | For any 36-vertex free-involution card after deleting four arbitrary vertices, max crossing degree must exceed six (even with noncyclic, nonuniform weights). Nine old contacts force a full pair; disjoint pole columns have at most seven. `ROUND13.md` §Edge and contact budget; physical controls `scratch/F/r13/freeze.stdout`. | included |
+| hand + enum | For the 18-pair cyclic crossing card, **only 5 of 120 unit profiles remain**, all simple r7 with the antipode. 340 labelled words, 108 unconditional old-card obstructions, hole/column/other-pole tests, all rechecked independently. 53 forces the parity cliques; 54's only strict 36-card has 180 nines with no independent ≤7 transversal. This is a necessary cover, not five positive models. `ROUND13.md`; `scratch/F/r13/{freeze.stdout,max.odd,holes.odd,rank.gate,round13.sha256}`. | 0.00556 incl. calibration, controls, source, two independent audits, dedup |
+| enum / estimate | Static quartet pricing on 53: 17,550 multisets, 998 rotation reps, 80 surviving weak reps/575 labelled-internal flag assignments; all violate same-parity clique rule. The optional GR-window price is not needed in the proof. Both score-24 decks: 7,414 strict deletion markings each, zero degree-compatible; zero of 9,490 R4 cards degree-compatible. `scratch/F/r13/{whole.stdout,windows.stdout,deckfull.stdout,cost_estimate.txt}`; `round13_nearness.tsv`. | 0.00117 incl. window/whole price (shared dedup above) |
+
+**Next (only if critic agrees):** unsigned pair-compatibility price on ID 15's 693 necessary six-/seven-site footprints. Its all-vertical old degree-eight card needs four disjoint physical columns; surviving footprints need not be jointly realizable. Do not launch signings on the five remaining parents without an old-card and addback viability gate. Keep R6, both score-24 controls and the new small controls. No cores requested. H/critic: review noncyclic hand bound and five-word necessary cover; no deficit counted against 238+R.
+
+**Round-13 jobs:** none live or stopped. Commands are relative to `scratch/F/r13`. First `small` failed a gate result-format assumption (its cyclicity predicate was also corrected); `unsigned` used a nonexistent old binary path. All subsequent calibrations and replays passed. `round13.sha256` binds sources, logs and receipts.
+
+| Supervisor / worker PID | Command | Log | Cores | Start | Deadline |
+|---|---|---|---:|---|---|
+| 918468 / - | `python3 -B ../../../ralph/lanes/F/four_slot.py control ` (wall 75s, CPU 55s) | `scratch/F/r13/small.{stdout,time}` | 1 | 2026-11-22T07:37:41+01:00 | 2026-11-22T07:38:56+01:00 |
+| 927361 / - | `python3 -B ../../../ralph/lanes/F/four_slot.py control ` (wall 60s, CPU 40s) | `scratch/F/r13/smallfix.{stdout,time}` | 1 | 2026-11-22T07:37:57+01:00 | 2026-11-22T07:38:57+01:00 |
+| 930613 / 930618 | `bash -ec python3\ -B\ ../../../ralph/lanes/F/four_slot.py\ source\;\ sed\ -n\ \"1~8p\"\ max.q\ \>\ unsigned.pilot.q\;\ /usr/bin/time\ -f\ \"%U\ %S\ %e\"\ -o\ unsigned.pilot.cost\ ../r9/forced\ unsigned.pilot.q\ 10\ 1\ price.support\ \>\ pilot.out\;\ cp\ ../r11/card.q\ /dev/null ` (wall 60s, CPU 40s) | `scratch/F/r13/prices.{stdout,time}` | 1 | 2026-11-22T07:38:12+01:00 | 2026-11-22T07:39:12+01:00 |
+| 937702 / - | `bash -ec ../r9/forced\ max.q\ 10\ 1\ max.support\ \>\ max.out\;\ ../r8/odd\ max.q\ 10\ 1\ max.odd\ \>\ max_odd.out\;\ awk\ \"\$\"\ max_odd.out\ \>\ /dev/null ` (wall 60s, CPU 45s) | `scratch/F/r13/unsigned.{stdout,time}` | 1 | 2026-11-22T07:38:30+01:00 | 2026-11-22T07:39:30+01:00 |
+| 945194 / - | `bash -ec ../r10/odd\ max.q\ 10\ 1\ max.odd\ \>\ max_odd.out\;\ cat\ max_odd.out\ \|\ tail\ -4 ` (wall 60s, CPU 45s) | `scratch/F/r13/unsignedfix.{stdout,time}` | 1 | 2026-11-22T07:38:49+01:00 | 2026-11-22T07:39:49+01:00 |
+| 962858 / - | `python3 -B ../../../ralph/lanes/F/four_decks.py 100 ` (wall 90s, CPU 55s) | `scratch/F/r13/deckpilot.{stdout,time}` | 1 | 2026-11-22T07:39:41+01:00 | 2026-11-22T07:41:11+01:00 |
+| 970791 / 970796 | `python3 -B ../../../ralph/lanes/F/four_decks.py 1 ` (wall 90s, CPU 60s) | `scratch/F/r13/deckfull.{stdout,time}` | 1 | 2026-11-22T07:40:08+01:00 | 2026-11-22T07:41:38+01:00 |
+| 983480 / 983491 | `bash -ec f=../../../ralph/lanes/F\;\ python3\ -B\ \"\$f/four_holes.py\"\ mark\;\ ../r10/odd\ holes.q\ 10\ 1\ holes.odd\ \>\ holes.out\;\ OPENBLAS_NUM_THREADS=1\ python3\ -B\ \"\$f/four_holes.py\"\ counts ` (wall 100s, CPU 55s) | `scratch/F/r13/holes.{stdout,time}` | 1 | 2026-11-22T07:40:48+01:00 | 2026-11-22T07:42:28+01:00 |
+| 1077181 / 1077196 | `bash -ec f=../../../ralph/lanes/F\;\ g++\ -O2\ -std=c++20\ \"\$f/four_columns.cpp\"\ -o\ columns\;\ python3\ -B\ \"\$f/four_calibrate.py\" ` (wall 90s, CPU 55s) | `scratch/F/r13/columnctl.{stdout,time}` | 1 | 2026-11-22T07:44:31+01:00 | 2026-11-22T07:46:01+01:00 |
+| 1089974 / - | `bash -ec for\ id\ in\ 8\ 54\ 116\;\ do\ sed\ -n\ \"\$\(\(id+1\)\)p\"\ max.q\ \>\ col\$id.q\;\ /usr/bin/time\ -f\ \"%U\ %S\ %e\ %M\"\ -o\ col\$id.cost\ ./columns\ col\$id.q\ 10\ 1\ 1\ col\$id.rows\ \>col\$id.log\;\ printf\ \"%s:\ \"\ \"\$id\"\;\ cat\ col\$id.cost\;\ wc\ -l\ col\$id.rows\;\ done ` (wall 75s, CPU 50s) | `scratch/F/r13/colprice.{stdout,time}` | 1 | 2026-11-22T07:44:49+01:00 | 2026-11-22T07:46:04+01:00 |
+| 1120408 / - | `bash -ec for\ id\ in\ 15\ 21\ 43\ 53\ 76\ 81\;\ do\ sed\ -n\ \"\$\(\(id+1\)\)p\"\ max.q\ \>\ col\$id.q\;\ /usr/bin/time\ -f\ \"%U\ %S\ %e\ %M\"\ -o\ col\$id.cost\ ./columns\ col\$id.q\ 10\ 1\ 1\ col\$id.rows\ \>col\$id.log\;\ head\ -1\ col\$id.log\;\ wc\ -l\ col\$id.rows\;\ done\;\ test\ \"\$\(du\ -bc\ col\*.rows\ \|\ tail\ -1\ \|\ cut\ -f1\)\"\ -lt\ 30000000 ` (wall 50s, CPU 30s) | `scratch/F/r13/colrest.{stdout,time}` | 1 | 2026-11-22T07:45:32+01:00 | 2026-11-22T07:46:22+01:00 |
+| 1165797 / 1165801 | `python3 -B ../../../ralph/lanes/F/four_whole.py ` (wall 90s, CPU 55s) | `scratch/F/r13/whole.{stdout,time}` | 1 | 2026-11-22T07:47:17+01:00 | 2026-11-22T07:48:47+01:00 |
+| 1206724 / - | `python3 -B ../../../ralph/lanes/F/four_windows.py ` (wall 75s, CPU 45s) | `scratch/F/r13/windows.{stdout,time}` | 1 | 2026-11-22T07:48:40+01:00 | 2026-11-22T07:49:55+01:00 |
+| 1225893 / - | `python3 -B ../../../ralph/lanes/F/four_rank.py small 5 4 32 ` (wall 60s, CPU 35s) | `scratch/F/r13/rankctl.{stdout,time}` | 1 | 2026-11-22T07:49:49+01:00 | 2026-11-22T07:50:49+01:00 |
+| 1229843 / - | `python3 -B ../../../ralph/lanes/F/four_rank.py col54 10 7 1 ` (wall 50s, CPU 30s) | `scratch/F/r13/rankpilot.{stdout,time}` | 1 | 2026-11-22T07:49:59+01:00 | 2026-11-22T07:50:49+01:00 |
+| 1234780 / 1234792 | `python3 -B ../../../ralph/lanes/F/four_rank.py col54 10 7 4 ` (wall 55s, CPU 30s) | `scratch/F/r13/rankall.{stdout,time}` | 1 | 2026-11-22T07:50:15+01:00 | 2026-11-22T07:51:10+01:00 |
+| 1264966 / 1264979 | `env OPENBLAS_NUM_THREADS=1 python3 -B ../../../ralph/lanes/F/four_replay.py ` (wall 140s, CPU 95s) | `scratch/F/r13/audit.{stdout,time}` | 1 | 2026-11-22T07:51:56+01:00 | 2026-11-22T07:54:16+01:00 |
+| 1293711 / 1293717 | `bash -ec f=../../../ralph/lanes/F\;\ export\ OPENBLAS_NUM_THREADS=1\;\ python3\ -B\ \"\$f/four_calibrate.py\"\;\ sha256sum\ max.q\ max.odd\ holes.q\ holes.odd\ col\{53\,76\,116\}.rows\ col54.\{models\,strict.g6\}\ \>\ invariant.sha256\;\ python3\ -B\ \"\$f/four_replay.py\"\;\ sha256sum\ -c\ invariant.sha256 ` (wall 120s, CPU 75s) | `scratch/F/r13/freeze.{stdout,time}` | 1 | 2026-11-22T07:53:29+01:00 | 2026-11-22T07:55:29+01:00 |
+
 ## Round 5 jobs (all ended)
 
 | supervisor / worker PID | Command | Log | Cores | Start | Wall deadline |

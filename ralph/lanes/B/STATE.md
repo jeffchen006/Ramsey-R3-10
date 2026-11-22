@@ -1,10 +1,19 @@
-# Lane B — round 13, November 22, 2026
+# Lane B — round 14, November 22, 2026
 
 **Current baseline:** global degree-seven floor **108** for MTF is CONFIRMED
 (B-013); it subsumes the direct e162 `(0,2,32,6)` exclusion. Neither
-uses t8/t9 floors. No candidate graph. Round-13 share was 12 cores;
+uses t8/t9 floors. No candidate graph. Round-14 share was 8 cores;
 only bounded foreground work (one solver at a time). Re-read the next allocation.
 Work from `scratch/B` with `ulimit -v 16777216` and `PYTHONDONTWRITEBYTECODE=1`.
+
+**Round 14:** bound the named **2,102,271** deletion-reducible 32/e108
+keys and excluded a deterministic **32,768** at d7 MTF roots by **31,407**
+checked demand cliques plus **1,361** independently rebuilt, dual-checked
+LRATs (64 overlap old 4,096 pilot). **159.74 CPU-s** plus 1.14 for controls
+and Traces. Whole reducible list estimates 2.85 core-h, not authorized;
+16 rank groups vary 49–186 in proof count. No discovery work. Census stays
+**2,104,146 / 2,104,151** (five missing), no floor 109, e88/U88 or profile
+change. `ROUND14_REPLAY.md` and `ROUND14.sha256`; no jobs.
 
 **Round 13:** all **545** authorized set-aside e98 parents tested at d7/d8;
 477 distinct critical e108 outputs, **zero novel** (22.23 CPU-s incl. audit).
@@ -42,25 +51,10 @@ fresh e98 parents for a subsequent round only. Separate e88 price pilot
 not scalable yet (no coverage proof or 10x full-cost estimate). See
 `ROUND10_REPLAY.md` and `ROUND10.sha256`.
 
-**Round 9:** both round-8 freezes verify. Two new e108 sources were
-calibrated on withheld order-16/e22 critical keys (33/42 pair-union,
-38/42 nonadjacent stems), but the held-out target probes added zero.
-Stop both. No e88 restart, no complement batch and no new certificates.
-Compare `ROUND9_REPLAY.md` and `ROUND9.sha256`. Census unchanged at
-2,104,027 of 2,104,151, still missing 124 critical classes.
-
-**Round 8:** e88 prefix finished and replayed with zero completions on
-5,873,187 exact keys, including 153,612 deletion-critical keys. The full
-e88 complement remains open. Separately imported 1,142 scout e108 keys; best
-census is 2,104,027 of 2,104,151, 124 missing. Certified the supplied scout
-tranche separately (761 cliques, 381 dual LRATs; pending critic). Prior 614
-proofs unchanged. Dispersed order-33 pilot was zero novel; do not scale.
-See `ROUND8_REPLAY.md`, `ROUND8_E108.sha256` and `ROUND8_PREFIX.sha256`.
-
-**Round 7:** two calibrated e108 pilots recovered no new key, so neither
-was scaled. Same partial census (1,266 missing) and 614 supplied-key
-certificates; no floor-109 or U88 upgrade. Prefix replay is ready when
-the sole remaining supervisor finishes. See `ROUND7_REPLAY.md`.
+Rounds 7–9 retired the null e108 discovery pilots. The e88 prefix replay
+covered 5,873,187 exact keys (including 153,612 critical) with zero completions;
+the full e88 complement remains open. See the respective `ROUND*_REPLAY.md`
+and freezes for old proof bundles, scopes and pilot details.
 
 **Round 6:** d7/e43 outside prefix returned zero and finished binding.
 Both scans of the full deletion-reducible e88 partition finished with
@@ -71,11 +65,12 @@ Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 
 ## Jobs
 
-No running B jobs at round end (0 cores). No round-13 or round-12 detached jobs.
+No running B jobs at round end (0 cores); no new detached jobs.
 All foreground lifts and replays exited; earlier PIDs below are gone.
 
 | PID | Command | Log | Cores | Start (CET) | Actual end (CET) |
 |---|---|---|---|---|---|
+| 2981850 | `e108_r14.py tranche work/e108_r14 work/e108_r14_replay` (foreground, `timeout 520s`) | `scratch/B/logs/e108_r14.log` | 1 | Nov 22 09:02:05 | Nov 22 ~09:04:47, status 0 |
 | 1180084 | `timeout 18h prefix_pipeline.sh 16` | `scratch/B/logs/prefix_pipeline.log` | 16 | Nov 21 17:10:35 | Nov 22 ~01:06, status 0 |
 
 Generation finished around Nov 22 00:57 CET (3,886 legacy chunks); the
@@ -100,6 +95,13 @@ e52 TIMEOUT after the exact e63 control passed. Neither benchmark is live.
 Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitted minimum degree 3 for order 21; corrected by generating this branch and merging, no missing counts thereafter. Seed 418169 failed on `shortg`'s in-place default; 453949 passed after explicitly writing stdout. Do not interpret either failed run as empty. Upper seed PID 540708 completed successfully at ~17:23 with all GR T13 counts.
 
 ## Results and claims for review
+
+### Round 14
+
+| Label | Result | Evidence | CPU-hours |
+|---|---|---|---:|
+| cert (named tranche, pending critic) | 32,768 of 2,102,271 supplied reducible 32/e108 residues blocked at d7 MTF roots, with 31,407 cliques and 1,361 rebuilt dual LRATs; exact prior-pilot overlap 64. No floor/profile effect. | `ROUND14_REPLAY.md`, `ROUND14.sha256`, `scratch/B/logs/e108_r14.log` | 0.045 incl. controls |
+| estimate | At measured rate 2.85 core-h / 87,300 LRATs / 215 MB proof payload for full named reducible list; proof counts 49–186 per 2,048-key group. No full run. | `ROUND14_REPLAY.md`, `scratch/B/logs/e108_r14_metrics.log` | included |
 
 ### Round 13
 
@@ -222,8 +224,10 @@ Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitt
 
 ## Next
 
-0. Critic/H: check round-13 receipts and host inventory via `ROUND13_REPLAY.md`;
-   retain exact e88 scopes and existing e108 proofs; do not recut direct e162.
+0. Critic/H: check the round-14 tranche (`ROUND14_REPLAY.md`). Only after
+   review, consider completing the named reducible partition: use exact
+   disjoint residual source IDs, interleave across rank and cap jobs. The
+   sample is not a tail bound. Retain exact e88 and e108 scopes.
 1. Critic/H: replay or audit the bounded prefix and scout proof tranche.
    `src/replay_prefix_r7.sh terminal` and `src/e108_scout_proofs_r8.sh replay work/e108_r8_scout_proofs`
    are ready. Do not re-launch prefix. Outside-prefix critical e88 after

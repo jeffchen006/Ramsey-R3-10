@@ -1,48 +1,51 @@
-# Lane H — round 13 handoff, November 22, 2026
+# Lane H — round 14 handoff, November 22, 2026
 
-Two-core ceiling. No H jobs or candidate. The accepted ledger through
-round 012 is **238 near-regular MTF distributions plus Case R** under
-inherited gluing premises as used by the baseline. Exactly 20 e168,
-19 e169 and one e170 d6 keys were removed via floor 122 and parity.
-Ten conditional U88 keys unchanged. Eight conditional E mixed cores
-remain in the reviewed ledger, not a fixed-point case closure. B is at
-**2,104,146/2,104,151** order-32/e108; five missing and the reducible
-extension cover still separate prerequisites of floor 109. Do not confuse
-this with the complete **14,395** order-33/through-e121 d6 census.
+Share two, no H solver, detached or stopped jobs; no candidate. The
+accepted ledger through round 013 remains **238 near-regular MTF
+distributions plus Case R**, ten conditional U88 keys; 12 improved
+residue cutoffs are not removals. **Seven** conditional E mixed cores
+remain after core 17; six only if pending core 5 is accepted. Do not
+conflate B's **2,104,146/2,104,151** order-32/e108 supply (five missing,
+reducible extension coverage separately required) and the complete
+**14,395** order-33 through-e121 census used by the degree-six floor.
 
 ## Jobs
 
 | PID | Command | Log | Cores | Start / end CET |
 |---|---|---|---:|---|
-| — | No live, detached or stopped H jobs. | — | 0 | — |
-| foreground, finished | Pinned `build_private_signature.sh`: single Lean units, whole `build --old R310`, targeted/integrated axioms | `scratch/H/round13-{parity,window-final,build-final,targeted,project,axioms}.log` | 1 | ~07:36–07:48 |
-| foreground, finished | `python3 -SB check_round13_{thresholds,controls}.py` separately under time and RAM limits | `scratch/H/round13-{thresholds,controls}.log` | 1 each | <1 s each |
+| — | None live, detached or stopped | — | 0 | — |
+| foreground, finished | Pinned Lean builds via `build_private_signature.sh` and targeted/project axioms checks | `scratch/H/round14-{pole-dev,pole-dev2,book-dev,build,targeted,project-first,project}.log` | 1 | ~09:04–09:11 |
+| foreground, finished | `python3 -SB check_round14_controls.py` (time and RAM capped) | `scratch/H/round14-controls.log` | 1 | 09:09, <1 s |
 
-No solver job or proof-farm replay. Used only existing Mathlib cache
-with the pinned v4.35.0 toolchain; 9 targeted and 319 project axiom
-reports pass with only `propext`, `Classical.choice`, `Quot.sound`.
+Build `--old R310` passed pinned Lean/Mathlib v4.35.0 without rebuilding
+Mathlib. Both 8 targeted and 327 integrated axioms checks passed. Initial
+integrated run hit resource/thread-allocation abort, not a proof failure;
+`env lean -j 1 -DElab.async=false scripts/Axioms.lean` passed on retry.
 
 ## Results and claims
 
 | Label | Result | Evidence | H core-h |
 |---|---|---|---:|
-| enum + conditional cert binding | Independently selected exact 40-key delta (matched both critic sets and scout delta), bound G's full 238-key table, and used an integer-scaled Farkas verifier for 39 direct, one parity and 12 t9 tightening receipts. Same existing G row builder; no feasibility/optimality or additional closure. The 12 bounds improve one edge each, with no new U88. | `check_round13_thresholds.py`, `scratch/H/round13-thresholds.log`, `ROUND13_REVIEW.md` | 0.00016 |
-| Lean, H-026 pending | At e170 d6, given explicit residue floor 122, the residue and Z are exactly 122 and 48. An adjacent degree-six peer requires another even-degree neighbor; this excludes no d8 given exactly the two d6 vertices. No formal census/adjacency assumption hidden. | `lean/R310/RootDemand.lean`, `scratch/H/round13-{axioms,controls}.log` | shared below |
-| Lean, H-027 pending | C's `e(P)+45=e(F_A)` from the literal regular triangle-free order-40 graph, full triple join and order-22 window. General equal-root-set balance and edge-window identities. Does not formalize reciprocal closure or the ≤64 cut. | `lean/R310/ReciprocalWindow.lean`, same axiom/control logs | ~0.068 combined Lean incl. development |
-| enum controls | 4,215 physical root splits and 16,325 nonempty odd arrays in C13/191 C22 hosts; 3,516 balanced oriented marks at widths one and two, planted width-three, 52 broken-regularity negatives. | `check_round13_controls.py`, `scratch/H/round13-controls.log` | 0.000064 |
-| open (dated search) | No resolution, bulk Angeltveit/GR file or new dense order-30 count located. Confirmed the archival CICM paper DOI `10.1007/978-3-032-38214-6_18`: online September 29, 2026, nominal volume 2027; still >100 doubly saturated order-39 examples and no separate graph deposit located. | `LIT.md`, `scratch/H/round13-literature.log` | — |
+| Lean H-028 pending | On an actual old induced card with a fixed-point-free graph automorphism, an outside pole with α contacts takes two mates. Disjoint four-pole columns permit at most α−2 contacts, specializing to ≤7 under old min degree 8 and α≤9. No formal edge-count or cyclic-word exclusion. | `lean/R310/PoleContacts.lean`, `scratch/H/round14-targeted.log` | shared below |
+| Lean H-029 pending | Two-term union bound, literal external degree/codegree bridge, capacity 29 off one 11-site book and 18 off two; required contacts into the opposite book count distinct sites. Explicit degree and codegree hypotheses, no type count formalized. | `lean/R310/BookFootprint.lean`, `scratch/H/round14-targeted.log` | 0.0611 combined incl. development and failed Lean run |
+| enum controls | All 388/5,789 labelled triangle-free 5/6-vertex graphs, 333 maximum-contact mates, 9,171 disjoint/missed images, 1,886 disjoint + 3,903 overlapping four-column controls, 7,456 footprints on C13/regular C22. | `check_round14_controls.py`, `scratch/H/round14-controls.log` | 0.00024 |
+| ledger | Imported all r013 decisions including D's 101 sufficient roots / 528 unordered internal pairs, F's five necessary words, G's 12 improvements and E's terminal-only 0.62728 core-h. New r014 submissions pending: A/C completed prefix, B's 32,768 reducible extensions, E core 5 and F word 15. | `ralph/CLAIMS.md`, `ROUND14_REVIEW.md` | — |
+| open (dated search) | No new resolution, dense order-30 census or bulk order-39 data located; targeted source check only. | `LIT.md`, `scratch/H/round14-literature.log` | — |
 
-## Ledger and next steps
+## Next steps
 
-- Imported round-012 confirmations incl. N, late C/D/G/R, eight mixed E
-  cores and H-024/025. A/G e168 results are historical and never double-
-  subtracted. T had no file and the failed T/referee gave no GAP.
-- Current round-13 G threshold, A panel, B complement/child, C pilot
-  and H Lean rows are pending critic. D/E/F and additional G work not
-  yet terminal when this handoff was written; collect later submissions
-  and avoid claiming results from live outputs.
-- Near-regular: price G's surviving e170 d6 equality windows (nine single,
-  seven paired); do not assume e122 complete. Regular: C's deterministic
-  bounded 17/17 shard after critic review has the strongest new measured
-  throughput case; predicted full cost is not a result. Retain D's
-  disjoint-pentagon theorem without expanding its K=2 local cuts.
+- Check later D/G/F/C submissions against the next critic review; never
+  promote a new count based on a live output. H confirmed none of the
+  pending claims independently beyond the two Lean interfaces and controls.
+- A/C’s 12-shard independently bound prefix `[0,24576)` is the best
+  measured regular route, not the full marked block: 67,417,211 headers,
+  12,594 matched terminal vectors, 148,231 rejected fillings, zero open
+  in prefix; 90,054,790 unscanned. The 7,059-filling resolved tail cost
+  3.859940 CPU-s; this is a pricing stop, not timeout. Price a replayable
+  faster tail path before finishing; C/A own scan/coverage respectively.
+- Near-regular: B's named extension tranche is useful on its own but
+  needs the full reducible coverage and five missing keys for floor 109.
+  G same-edge e170 joins explicitly not settled by the 66+30 mask-only
+  integral witnesses. No e168 work, no floor 123 or new U88 debit.
+- Formal work after reviewer input: prefer a remaining short graph bridge
+  used by C/G, not a second terminal or proof run.
