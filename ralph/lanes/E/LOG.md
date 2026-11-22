@@ -206,3 +206,11 @@ preserves all solutions on 67 controls and rejects 12 infeasible ones.
 Terminal work ~0.55 core-h; intentionally stopped broad pilot ~0.24
 core-h is not a TIMEOUT. All old wrappers collected before round 9.
 See `shared74_round8.md` and `scratch/E/r8_shared/freeze.final.2.sha256`.
+
+## Round 9 archive (2026-11-22)
+
+Mixed core 4 only: 17,840 projections / 110,716 lifts. Graph-only
+2,519 → marked 14 → fusion 0; all 14 marked survivors also have
+fresh-CNF CakeLRATs. The critic confirmed the scoped exclusion in
+`ralph/critic/round_009.md`. Terminal 88.55 CPU-s; no running jobs.
+See `shared74_round9.md` and `scratch/E/r9_shared/freeze.4.sha256`.

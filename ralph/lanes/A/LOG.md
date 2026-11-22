@@ -1,5 +1,17 @@
 # Lane A state
 
+## Round 9 (history)
+
+Mixed `(2,7,4,27)` terminal independent audits: noncross d8 j3 with
+δ(T)=3 (7,166 pin/CNF/trace hashes, 16 dual pilot replays), and
+noncross d9 j5 (162 exact roles and independent dual LRATs). Both
+orientations; four structural addback and four occupied-hole
+controls. The c1 variant crosswalk preserves 32 distinct-CNF and
+ten same-CNF retry alternatives. Pure joint caps are redundant for
+δ(T)≥4; conditional two-root source forecast only 1.5×. Do not
+scale either. `ROUND9_REPLAY.md` and `scratch/A/strip9/round9.freeze.sha256`.
+All jobs retired. No candidate or distribution closure.
+
 ## Round 8 (history)
 
 Independent terminal source and CNF joins for both-path/leaf c1/δ2

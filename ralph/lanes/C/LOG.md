@@ -189,3 +189,10 @@ Exact costs and proof/replay scopes are in `ROUND4_REPLAY.md`.
 ## Round 8 (November 22)
 - Independently rebuilt scout boundaries, replayed the missing-blocker control, and bound exactly 90 row IDs. Zero-compatible capacities excluded 34 of 105 multiset keys including every q=0 branch, but no row beyond those two layouts. Exact binding and proofs: `ROUND8_REPLAY.md`.
 - Held-out two-site bitmap index rejected 97.6% of 4,910,040 mapped requests early and matched the direct test, but construction and request filling cut net gain to 1.51×. Not a scalable broad join. No jobs.
+
+## Round 9 (November 22)
+- Diagonal-four 8/8 P3: independently audited 105 zero keys, with 34 contradictions and 47/24 live split by at-most-one triple. Unique-zero named layouts give 18 singles, three doubles and budgets two/one. Evidence `proofs/p3_rounded_incidence.md`, `ROUND9_REPLAY.md`.
+- Held-out e62 indexed wing join 320.175→115.566 CPU-s and 28,720,249,242→971,463 partial tuples; all 336 placements survive. Tag DP reduced covers 455,546→300,018 but all 84 positions survived, with no speedup. The two 45-s CPU-hard-limit SAT pilots exited 137, neither UNSAT nor TIMEOUT.
+
+## Round 10 (November 22)
+- Reciprocal 22/21 cap five: all 395 planted matched controls; 4,882 direct/indexed/independent exact bounded keys. Cap-five 22/22 reproduction has zero mates. 8,192 new right hosts: 70,229 checked maps, no undecided, all exact map IDs reproduced. 48 dense and thin dual-LRAT map proofs; 29.63→7.54 whole-process CPU-s. No census, no closure of either R(5) or Case R. See `ROUND10_REPLAY.md`.

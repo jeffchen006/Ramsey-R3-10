@@ -1,17 +1,32 @@
-# Lane G state — round 9, November 22, 2026
+# Lane G state — round 10, November 22, 2026
 
 **278 near-regular distributions plus R remain open.** No order-40
 candidate. The exact baseline (`round6_baseline.csv`), ten U88 keys
 (`round6_u88.csv`), twenty e168 d6 keys (`round6_e168_d6.csv`), six
 missing e120/e121 classes, and eleven single-root zero-addition cases
 are unchanged. No new class-LP or Farkas elimination this round.
-Two mixed e168 marked subcases terminated with complete LRAT bundles;
-neither closes the parent distribution `(2,7,4,27)`.
+Two further mixed e168 marked subcases terminated with complete LRAT
+bundles; a hand degree bound excludes the isolate/leaf strata. None
+closes the parent distribution `(2,7,4,27)`.
 
 ## Jobs
 
-No active G jobs as of 01:59:45 CET; flow counter 0 and both detached
-masters retired. Round 9 jobs in `scratch/G/round9` (CET):
+Round 10 (CET), cwd `scratch/G/round10`. Only PID 3097303 remains
+active. At 03:41:49 it had 12,192/21,236 CERT receipts, zero other
+statuses; estimated end 03:53–04:05 (hard limit below). Do not count
+the incomplete batch as an exclusion. Check the exact master log and
+then run the binder with `--batch r25.d8.middle.keys r25.d8.middle 12
+r25.d8.middle`; only add the claim after binding all 21,236 keys.
+
+| PID | Command | Log | Slots | Start | End / hard limit |
+|---|---|---|---:|---|---|
+| 3020265 | `bash ../../../ralph/lanes/G/run_mixed_residual.sh r26.d9.production 4 225s 100000 18` | `r26.d9.production.master.log` | 4 | 03:22:11 | retired 03:22:49, 187/187 |
+| 3020266 | `bash ../../../ralph/lanes/G/run_mixed_residual.sh r25.d9.pilot 3 225s 100000 18` | `r25.d9.pilot.master.log` | 3 | 03:22:11 | retired 03:22:39, 48/48 |
+| 3020267 | `bash ../../../ralph/lanes/G/run_mixed_residual.sh r25.d8.pilot 3 225s 100000 18` | `r25.d8.pilot.master.log` | 3 | 03:22:11 | retired 03:22:35, 48/48 |
+| 3044396 | `bash ../../../ralph/lanes/G/run_mixed_residual.sh r25.d9.production 8 1470s 100000 18` | `r25.d9.production.master.log` | 8 | 03:23:12 | retired 03:37:41, 6,083/6,083 |
+| 3097303 | `bash ../../../ralph/lanes/G/run_mixed_residual.sh r25.d8.middle 12 3150s 100000 18` | `r25.d8.middle.master.log` | 12 | 03:25:03 | 04:19:23 |
+
+Round 9 jobs, both retired, in `scratch/G/round9` (CET):
 
 | PID | Command | Log | Slots | Start | End / hard limit |
 |---|---|---|---:|---|---|
@@ -28,6 +43,20 @@ Round 8 jobs confirmed retired by `ps` in round 9:
 | 710384 | `bash ../../../ralph/lanes/G/run_mixed_strip.sh` in `scratch/G/round7` | `scratch/G/round7/proof-mixed.master.log` | 2 | 00:12:22 CET | 01:06:51 CET, 5,155 certs, all remaining keys |
 
 ## Results and claims
+
+Round 10, see `ROUND10_REPLAY.md` and `rows/residual_mixed_windows.md`.
+Proof variants use `--mixed --residual --eager 10000` only; the
+budget, structural and joint pilots are not producer sources.
+
+| Label | Result | Evidence | CPU-h |
+|---|---|---|---:|
+| hand + enum + cert | Mixed `(2,7,4,27)` only, noncross d9 j4, δ(T)=3. 50 matching +165 middle, 215/215 dual LRAT and source-bound, independently replayed A. | `scratch/G/round10/r26.d9.bound/certificates.tsv`, `ralph/lanes/A/ROUND10_REPLAY.md` | 0.023 |
+| hand + enum + cert, pending independent proof audit | Same mixed scope, noncross d9 j3, δ(T)=2. 2,134 matching +3,997 middle, 6,131/6,131 dual LRAT and bound, independent A source/role match; 16 G fresh proof replays. No higher minimum. | `scratch/G/round10/r25.d9.bound/certificates.tsv`, `scratch/G/round10/r25.d9.{pilot,production}.replay.log` | 0.980 |
+| hand; enum cross-check | Any noncross retained anchor in a weak paired `(3,8)` window has degree ≥`|T|−22`; saturated 3+4 cut would force degree seven in an α≤6 core. Mixed d9 j1 excludes isolate; d8 j1 and d9 j2 exclude leaf. Computation unneeded; 191 isolates and 513,438 rooted leaf glues independently give no weak marks. | `rows/residual_mixed_windows.md`, `scratch/G/round10/{leaf_window_core,r23.plain,r24.plain,r24.rooted}.log` | <0.03 |
+| enum + estimate, open | Equality root leaves order21, 6,160 marked cores on 6,056/1,118,436 parents; exact unpruned agreement, 42/42 smaller controls. Raw order24 graft capped 100 wall s after 1,194,099 weak marks from 256-parent pilot. Direction is partial-window pinned completion, not raw gluing or full higher-minimum scope. | `scratch/G/round10/short-anchor.{full,unpruned,graft24.sample}.log` | 0.002 core scan; graft capped |
+| hand + measured enum | Joint support test retains 215/215 and 639/640 sampled lower-minimum roles; planted support witness and independent 210-placement incompatible oracle pass. Joint/budget variants do not reduce proof time on the 48-role sample; no further matching or high-minimum launch. | `scratch/G/round10/{r26.d9.joint,r25.project,joint.control}.log`, `ROUND10_REPLAY.md` | 0.04 |
+
+Previous rounds:
 
 Use `ROUND9_REPLAY.md` and `ROUND8_REPLAY.md` for exact scope. Indexes retain
 each key, regenerated-CNF digest from the proof receipt, stored proof
@@ -49,11 +78,12 @@ the final sets. Claims await the flow's ledger/critic review.
 
 ## Handoff
 
-- Mixed pending: d8 codegrees 1/2, d8 codegree 3 with δ(T)>3,
-  d9 codegrees <5, and crossed pivots are not covered. No new group
-  claim from combining the two terminal marked subcases. Ask A/H to
-  audit semantics and 162-role cover; compare switch points before
-  any new catalogue census.
+- Mixed pending: d8 j1 δ≥2, j2 δ≥2 (middle δ2 active, matching δ2
+  unlaunched), j3 δ≥4; d9 j1 δ≥1, j2 δ≥2, j3 δ≥3, j4 δ≥4; and
+  all crossed pivots. No group claim by combining scopes. Ask A/H
+  to independently audit d9 j3/δ2 and the hand degree bound. Price
+  a direct partial-window CNF with fixed 3+4 anchors on the order-21
+  queue before considering any scale; not a guarantee of savings.
 - No high-minimum pure batch: the joint caps are automatic at δ≥4,
   and the independent-set capacity projection has no sample attrition.
   Seek a different selector rather than increasing the conflict cap

@@ -1,0 +1,25 @@
+diff --git a/ralph/lanes/D/long_filter.cpp b/ralph/lanes/D/long_filter.cpp
+index bff5394..2f54cbd 100644
+--- a/ralph/lanes/D/long_filter.cpp
++++ b/ralph/lanes/D/long_filter.cpp
+@@ -9,7 +9,7 @@
+ 
+ using Mask = std::uint64_t;
+ using Graph = std::array<Mask,40>;
+-#if defined(OCTAGON_ROOT)
++#if defined(OCTAGON_ROOT) || defined(INDUCED_EIGHT)
+ static constexpr int anchors=10;
+ #elif defined(CYCLE_ROOT)
+ static constexpr int anchors=8;
+@@ -225,7 +225,10 @@ static int prune(Graph& graph,int order,int degree,int path_cap,int& before,int&
+ 
+ static Graph parse(const std::string& line,int order,int degree) {
+         Graph graph{};
+-#if defined(OCTAGON_ROOT)
++#if defined(INDUCED_EIGHT)
++        link(graph,0,1);
++        for(int point=2;point<10;++point){link(graph,point%2,point);if(point<9)link(graph,point,point+1);}
++#elif defined(OCTAGON_ROOT)
+         link(graph,0,1);
+         for(int point=2;point<10;++point){link(graph,point%2,point);link(graph,point,2+(point-1)%8);}
+ #elif defined(CYCLE_ROOT)

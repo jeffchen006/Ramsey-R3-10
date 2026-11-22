@@ -210,3 +210,27 @@ refetches in round 8. The public evidence cited above still supports
 dense order-30 or order-39 files. For the current mixed pilot use the
 existing 191-class order-22 source via rooted gluing, not an assumed
 published full order-26 census; see `ROUND9_REVIEW.md`.
+
+## Round 10: November 22, 2026 refresh
+
+- Refetched Radziszowski DS1 (`10.37236/21`, displayed revision April 24,
+  2026) and Angeltveit EJC 32(4) #P4.30 (`10.37236/12936`, November 3,
+  2025); bibliographic fields unchanged. The arXiv:2401.00392 landing page
+  is byte-identical to the round-8 snapshot (v2 April 8, 2024). Targeted
+  bound and census searches returned no usable newer primary result; a
+  limited Crossref title lookup since April 24 yielded no superseding
+  exact R(3,10) result. The evidence still supports **40–41**. The
+  TCSExam author task likewise has unchanged bytes; matching its
+  order-39 reference is not progress at order 40.
+- McKay's and House of Graphs' indexes are byte-identical to round 8.
+  Still no public bulk file located for Angeltveit §7's partial census
+  of at least 43,225,483 order-39 classes, and no new exact public count
+  located for `R(3,9;30,e)` at `88 ≤ e ≤ 99`. These are limited dated
+  searches, not a claim that the data cannot exist. Primary source
+  snapshots and request outcomes: `scratch/H/lit/r10-*.data`,
+  `scratch/H/round10-literature.log`.
+- No lane changes its published input: A/G retain the marked gluing
+  sources, C/D the calibrated small classes, E its explicit E-021
+  premise, F its individually verified seeds. B's reduction from 124
+  to 63 missing uses local order-32/e108 keys against GR Table 14, not
+  a published order-30 enumeration or a new residue floor.

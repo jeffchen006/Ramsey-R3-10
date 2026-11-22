@@ -42,7 +42,8 @@ def solve_key(row, args):
             from mixed_strip_completion import instance
             case, hole_first, hole_second, hole_peer, *peer_right = roles
             problem = instance(line, int(first), int(second), case, int(hole_first), int(hole_second),
-                               int(hole_peer), args.eager, *map(int, peer_right))
+                               int(hole_peer), args.eager, *map(int, peer_right),
+                               residual=args.residual, joint=args.joint, cut_budget=args.cut_budget)
         else:
             problem = window(line, int(first), int(second), args.eager, True, args.cut_budget, args.overlays)
         if args.overlays:
@@ -93,6 +94,8 @@ def main():
     parser.add_argument('--cut-budget', action='store_true')
     parser.add_argument('--overlays', action='store_true')
     parser.add_argument('--mixed', action='store_true')
+    parser.add_argument('--residual', action='store_true')
+    parser.add_argument('--joint', action='store_true')
     parser.add_argument('--overlay-counts', type=FileType('w'))
     parser.add_argument('--seed', type=int, default=0)
     parser.add_argument('--cuts', type=Path)

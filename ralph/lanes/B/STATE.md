@@ -1,10 +1,21 @@
-# Lane B — round 9, November 22, 2026
+# Lane B — round 10, November 22, 2026
 
 **Current baseline:** global degree-seven floor **108** for MTF is CONFIRMED
 (B-013); it subsumes the direct e162 `(0,2,32,6)` exclusion. Neither
-uses t8/t9 floors. No candidate graph. Round-9 share was 17 cores;
-only single-core foreground pilots ran. Re-read the next allocation.
+uses t8/t9 floors. No candidate graph. Round-10 share was 12 cores;
+only bounded foreground pilots ran. Re-read the next allocation.
 Work from `scratch/B` with `ulimit -v 16777216` and `PYTHONDONTWRITEBYTECODE=1`.
+
+**Round 10:** imported N's 61 critical e108 keys and certified their
+nonextensions (57 cliques, 4 dual LRATs). Stratified two-step lift from
+128 prefix-critical e88 seeds produced 5 new critical e108 keys, all from
+e98 parents; seven fresh e98 parents from those five produced 6 more.
+All 11 separately certified. Best census `work/e108_r10_micro/union.g6`:
+**2,104,099 / 2,104,151, 52 critical classes missing**. Round 10 exhausted
+the 256-per-level pilot cap; `work/e108_r10_e98_queue/fresh.g6` holds 122
+fresh e98 parents for a subsequent round only. Separate e88 price pilot
+not scalable yet (no coverage proof or 10x full-cost estimate). See
+`ROUND10_REPLAY.md` and `ROUND10.sha256`.
 
 **Round 9:** both round-8 freezes verify. Two new e108 sources were
 calibrated on withheld order-16/e22 critical keys (33/42 pair-union,
@@ -35,7 +46,7 @@ Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 
 ## Jobs
 
-No running B jobs at round end (0 cores). No round-9 detached jobs.
+No running B jobs at round end (0 cores). No round-10 detached jobs.
 All foreground pilots and replays exited; earlier PIDs below are gone.
 
 | PID | Command | Log | Cores | Start (CET) | Actual end (CET) |
@@ -64,6 +75,15 @@ e52 TIMEOUT after the exact e63 control passed. Neither benchmark is live.
 Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitted minimum degree 3 for order 21; corrected by generating this branch and merging, no missing counts thereafter. Seed 418169 failed on `shortg`'s in-place default; 453949 passed after explicitly writing stdout. Do not interpret either failed run as empty. Upper seed PID 540708 completed successfully at ~17:23 with all GR T13 counts.
 
 ## Results and claims for review
+
+### Round 10
+
+| Label | Result | Evidence | CPU-hours |
+|---|---|---|---:|
+| enum + cert | N's 61 critical e108 keys independently validated, distinct from baseline; 57 verified demand cliques and 4 dual LRATs cover this tranche only, 63 missing at this handoff. | `ROUND10_REPLAY.md`, `scratch/B/work/e108_r10_import/`, `scratch/B/logs/e108_r10_replay_scout.log` | 0.002 incl. replay |
+| enum + cert | Two-step critical-card lift at e98 yields 5 new critical e108 keys, and a seven-parent e98 repuncture yields 6 more; 7 checked cliques and 4 dual LRATs across those two separate tranches. Final census 2,104,099 (52 missing), not floor 109. | `ROUND10_REPLAY.md`, `scratch/B/work/{e108_r10_new,e108_r10_micro}/`, `scratch/B/logs/e108_r10_target_replay.log` | 0.081 incl. full generation replay |
+| enum | Exact e98 deck of the eleven new keys: 135 classes, 122 fresh vs recorded pools/parents. No new wave in round 10. | `scratch/B/work/e108_r10_e98_queue/fresh.g6`, `scratch/B/logs/e108_r10_e98_queue.log` | 0.0006 |
+| estimate / open | e88 parent pricing: one withheld marked positive recovered on smaller control. At e78, 397/34,122 critical parents supplied; 640 sampled parents across e78–82 give no critical marked lift. Costs do not justify full scaling. | `ROUND10_REPLAY.md`, `scratch/B/logs/e88_deck_r10_{control,probe}.log` | 0.008 |
 
 ### Round 9
 
@@ -155,9 +175,10 @@ Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitt
 
 ## Next
 
-0. Critic/H: record only bounded negative probes, and retain exact scopes
-   of e43/reducible/prefix e88 and the 1,756 supplied-key e108 proofs.
-   Do not recut direct e162.
+0. Critic/H: check the three round-10 tranches independently and retain
+   exact scopes of e43/reducible/prefix e88 and the e108 proofs. Do not
+   recut direct e162. `src/e108_scout_r10.sh replay {scout,stitch,repuncture}`
+   takes one tranche argument per invocation.
 1. Critic/H: replay or audit the bounded prefix and scout proof tranche.
    `src/replay_prefix_r7.sh terminal` and `src/e108_scout_proofs_r8.sh replay work/e108_r8_scout_proofs`
    are ready. Do not re-launch prefix. Outside-prefix critical e88 after
@@ -171,7 +192,10 @@ Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitt
    local/host pilots. Require a different source or necessary coverage
    reduction with measured value before further batches.
    t9<=89 and larger t8 floors unbudgeted.
-4. Exact e108 needs 124 more critical keys. The best current known set
-   is `work/e108_r8_import/union.g6`; never call it exact. Require
+4. Next authorized e108 wave: lift the 122 fresh exact e98 deck parents
+   at d=7/8, then consider a bounded exact deck of genuinely novel keys.
+   Do not broaden to e99..101 based on the zero-yield slices. Exact e108
+   needs 52 more critical keys. The best current known set is
+   `work/e108_r10_micro/union.g6`; never call it exact. Require
    order, e, alpha, Traces and strict GR count 2,104,151 before a full
    floor-109 campaign. Proof-only pilot is affordable once that is true.

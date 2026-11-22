@@ -230,3 +230,23 @@ definition `R310.KernelP6` uses no axioms, and the theorem
 and `Quot.sound`. It assumes a universal profile condition for the
 marked edge. See `ROUND9_REVIEW.md` for the independent four-row property
 and the mathematical/executable boundary.
+
+## Round 10: reciprocal window and rounded-incidence interfaces
+
+Pinned Lean/Mathlib v4.35.0, using the existing cache and the same launcher:
+
+```sh
+bash ralph/lanes/H/build_private_signature.sh build --old R310 > scratch/H/round10-integrated3.log 2>&1
+bash ralph/lanes/H/build_private_signature.sh env lean -j1 -s8192 ../ralph/lanes/H/AxiomsRound10.lean > scratch/H/round10-targeted.log 2>&1
+bash ralph/lanes/H/build_private_signature.sh env lean -j1 -s8192 scripts/Axioms.lean > scratch/H/round10-project.log 2>&1
+python3 -SB ralph/lanes/H/check_axioms.py ralph/lanes/H/AxiomsRound10.lean scratch/H/round10-targeted.log
+python3 -SB ralph/lanes/H/check_axioms.py lean/scripts/Axioms.lean scratch/H/round10-project.log
+python3 -SB ralph/lanes/H/check_round10_controls.py
+```
+
+No Mathlib source build. `R310.ReciprocalWindow` wraps the induced
+degree cardinality and gives the cover identity and order-22 square
+specialization. `R310.RoundedIncidence` double-counts the incidence
+matrix and proves the floor and exact threshold implications with
+capacity premises. See `ROUND10_REVIEW.md` for the theorem boundary.
+All 14 targeted and 300 integrated axiom reports pass with only standard axioms.

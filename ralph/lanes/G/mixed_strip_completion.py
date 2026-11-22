@@ -14,15 +14,19 @@ from root_glue import independent
 from strip_completion import Completion, solve
 
 
-def instance(line, path_mask, mixed_mask, case, hole_left, hole_right, hole_peer, eager, peer_right=None):
+def instance(line, path_mask, mixed_mask, case, hole_left, hole_right, hole_peer, eager, peer_right=None,
+             *, residual=False, attachment=None, joint=False, cut_budget=False):
     adj = graph.parse_graph6(line)
     order = len(adj)
-    assert order in (26, 27)
     full = peer_right is not None
-    assert not full or order == 27
-    shared = 5 if full else order - 23
-    if order == 26:
-        assert min(neighbors.bit_count() for neighbors in adj) == 3
+    if residual:
+        assert (23 if full else 24) <= order <= 27
+        shared = order - (22 if full else 23)
+    else:
+        assert order in (26, 27) and (not full or order == 27)
+        shared = 5 if full else order - 23
+        if order == 26:
+            assert min(neighbors.bit_count() for neighbors in adj) == 3
     survived = validate(adj, min(path_mask, mixed_mask), max(path_mask, mixed_mask))
     roots = (order, order+1)
     pivots = (order+2, order+3)
@@ -72,8 +76,9 @@ def instance(line, path_mask, mixed_mask, case, hole_left, hole_right, hole_peer
             fixed[left, right] = False
 
     problem = Completion(40, fixed)
-    problem.triangles()
-    problem.maximal()
+    if attachment is None:
+        problem.triangles()
+        problem.maximal()
     doubles_by_vertex = {vertex: [] for vertex in exterior}
     for index, side in enumerate(sides):
         supports = {vertex: {anchor: problem.edgeof(vertex, anchor) for anchor in side} for vertex in exterior}
@@ -99,13 +104,22 @@ def instance(line, path_mask, mixed_mask, case, hole_left, hole_right, hole_peer
                 problem.bound(doubles, count, count)
         if not index:
             problem.bound(path_options, 2, 2)
-    low_degrees = []
+    if attachment is not None or joint:
+        from residual_mixed_joint import constraints
+        constraints(problem, sides, stars, pivots, exterior, (*common, *exclusive[0]), mixed_holes,
+                    both=(attachment == 'joint' or joint))
+    if attachment is not None:
+        return problem, (sides, stars, pivots, exterior, (*common, *exclusive[0]), mixed_holes)
+    low_degrees = {}
     for vertex in exterior:
         selector = problem.exact_degree(vertex, (7, 9))[7]
         for double in doubles_by_vertex[vertex]:
             problem.add((-selector, -double))
-        low_degrees.append(selector)
-    problem.bound(low_degrees, 6, 6)
+        low_degrees[vertex] = selector
+    problem.bound(low_degrees.values(), 6, 6)
+    if cut_budget:
+        from residual_mixed_joint import budget
+        budget(problem, adj, deleted_x, exclusive, low_degrees, shared, 9 if full else 8)
     if eager:
         for count in (7, 6):
             for chosen in islice(independent(adj, (1 << len(adj)) - 1, count, count), eager):
