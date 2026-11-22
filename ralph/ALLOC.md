@@ -1,14 +1,14 @@
-# Round 18 core ceilings — 69 assigned, 11 unassigned (global limit 80)
+# Round 19 core ceilings — 79 assigned, 1 unassigned (global limit 80)
 
-| Lane | Cores | Reason relative to round 17 |
+| Lane | Cores | Reason relative to round 18 |
 |---|---:|---|
-| A | 6 | +1. Both physical weight streams replayed; bind just the two small survivor lists for C. |
-| B | 2 | Unchanged at minimum. The archive is verified; there is no new input for the five missing classes. |
-| C | 5 | +1. The 15-billion-header quotient produced a real zero stratum; 70 surviving physical joins are now affordable to test. |
-| D | 28 | +2 reserve for the completed 15,282-profile exclusion. The next triple-support census is authorized, **not** another proof campaign. |
-| E | 16 | +4. A second-stage proof run finished core 15 under budget; price one of the four remaining cores. |
-| F | 2 | Unchanged by request. The prism argument worked, but the next test is shared across footprints and does not need more workers. |
-| G | 8 | +4. Full sampled proof rebinds and a scheme stabilizer give a priced path to cover the largest aligned scheme; work in checkpoints. |
-| H | 2 | Unchanged. Ledger and a graph implication, not a parallel search. |
+| A | 7 | +1. Literal physical coverage on all 60,641 IDs; prepare a lossless rooted-card index for the fifth-pole test. |
+| B | 2 | Unchanged at minimum. Five missing critical keys, no new source. Stay parked. |
+| C | 6 | +1. Two complete marked slice exclusions; price the fifth-row restoration on one held-out bin. |
+| D | 29 | +1. The independent 162-support census enables a count-only wing join; no proof or pair production. |
+| E | 17 | +1. Exact mixed core-1 cover and checked pilot give a priced path to the full terminal roster. |
+| F | 3 | +1. About 22-fold fewer unsigned headers after verified parity cuts; test a dispersed one-double pilot only. |
+| G | 13 | +5, largest increase. Complete aligned scheme and scout's shared-grid proof suggest a second many-ID receipt. |
+| H | 2 | Unchanged. Verified Lean interface and ledger work need few cores. |
 
-Ceilings are not permission to fill slots. The CPU, disk and simultaneous-worker limits in `ralph/critic/LATEST.md` apply first. Keep unneeded slots idle.
+These are ceilings, not launch orders. The much smaller simultaneous-worker, CPU and disk limits in `ralph/critic/LATEST.md` apply first; leave the rest idle.

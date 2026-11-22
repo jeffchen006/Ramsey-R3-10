@@ -296,3 +296,14 @@ projections, 716,045 lifts. Exact queue: 142 open IDs, 110 projections,
 Main 327.66 CPU-s (0.09102 core-h), total 349.09 (0.09697 core-h).
 All 41 wrappers collected, one recovered setup error. See
 `shared74_round16.md`, `scratch/E/r16_shared/freeze.15.sha256` and E-040.
+
+## Round 17 archive (2026-11-22)
+
+Core 15 `GCQf?{` only under the same mixed f32/t4 hypotheses, including
+the all-graph E-021 premise. Round-16 ordered cover and unchanged
+receipts bind the 142 distinct terminal IDs. All 142 received freshly
+rebound width-three CakeLRATs, no fallback. Round 17 cost 182.49 CPU-s;
+combined 0.14766 core-h and ~254 MB. All 18 wrappers collected, one
+recovered helper syntax error. `shared74_round17.md`,
+`scratch/E/r17_shared/freeze.15.sha256`, and confirmed E-041 in
+`ralph/critic/round_017.md`. Four conditional cores remain.

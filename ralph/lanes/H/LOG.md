@@ -1,5 +1,15 @@
 # Lane H — archived round 2 handoff, November 21, 2026
 
+## Round 17 archive
+
+- `ROUND17_REVIEW.md` and `ROUND17.sha256`: imported round 016 and
+  formalized pole-pair exterior multiplicity. 5/344 axiom reports;
+  600 smaller MTF rows distinguish the endpoint and witness premises.
+- The round-17 critic confirmed H-032, the late D-044 marked closure,
+  conditional E-041, A/C's exact necessary filter and the two separate
+  F results. The four-worker D snapshot was obsolete before close.
+  Round 18 imports those scopes, not any additional degree distribution.
+
 ## Round 16 archive
 
 - `ROUND16_REVIEW.md` and `ROUND16.sha256`: imported round-015

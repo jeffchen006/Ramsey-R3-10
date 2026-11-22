@@ -1,42 +1,40 @@
-# Lane G state — round 17, November 22, 2026
+# Lane G state — round 18, November 22, 2026
 
 **238 near-regular MTF distributions plus R remain open.** No candidate,
-distribution cut, `t9`, U88, or residue-floor change. `leaf+leaf.1` for
-the marked e170 adjacent degree-six pair at `h=8` is confirmed from
-round 16 (G-051), retired. The other 29 aligned schemes still have
-**155,746** untested labelled alignment IDs after round 17.
+distribution cut, `t9`, U88, or residue-floor change. At e170 with a
+marked adjacent degree-six equality pair and `h=8`, `leaf+leaf.1` is
+confirmed (G-051), and `middle+middle.2` is now fully certified locally
+pending critic. Conditional on review, **140,062** labelled alignment
+IDs in the other 28 schemes are untested (from confirmed 155,746).
 
 ## Jobs
 
 | PID | Command | Log | Cores | Start | Expected end |
 |---|---|---|---:|---|---|
-| — | No active or detached G jobs | `scratch/G/round17/` | 0 | — | — |
+| — | No active or detached G jobs | `scratch/G/round18/` | 0 | — | — |
 
-All runs foreground, nice +5; one slot, virtual cap 384 MiB and actual
-peak RSS ~100 MiB. Coverage PID 825700 is gone. Two setup errors before
-coverage/sample certificates were fixed (CakeML heap cap and oracle link).
-No models, solver caps or timeouts on the successful run.
+All runs were foreground, nice +5, one slot and ≤512 MiB virtual cap.
+Checkpoint PID 3361393 is gone. No models or solver caps. One sample
+setup issue with unstable file allocation metadata, fixed before proofs
+were checked; its CPU is included below.
 
 ## Results and claims
 
 | Label | Result | Evidence | Core-h |
 |---|---|---|---:|
-| hand + enum + cert (local; pending) | All 30 forward/inverse rosters identical, all 900 hole pairs in the inherited scheme orbits; 24/0 canonical controls, 26 physical marks × 4 actions. Rebound the 62 scout and all 1,357 round-16 proofs. Proper-subset support reuse adds 1,935 distinct outside `leaf+leaf.1` across 27/29 schemes; full supports add zero outside their own scheme. 155,842 IDs uncovered before the sample; no other scheme excluded. | `ROUND17_REPLAY.md`, `ROUND17_FREEZE.sha256`, `scratch/G/round17/{coverage.json,coverage.log}` | 0.0294 |
-| cert (local; pending) + estimate | 96 preregistered fresh IDs across the 29 schemes, exact roster and both checker passes on independently rebound archive. No models/caps. 24.98 CPU-s producer + replay, 155,746 left. Weighted mean/max prices 7.53–8.65 core-h and 16.22–22.05 GiB raw, not tail bounds. | `ROUND17_PREREG.md`, `ROUND17_REPLAY.md`, `scratch/G/round17/{sample.freeze.sha256,prices.tsv,archive.log}` | 0.00694 |
-
-Total round-17 use including setup and summary: **0.0389 core-h**.
+| hand + enum + cert (local, pending) | e170 adjacent degree-six equality pair, `h=8`, **only** `middle+middle.2`: all 16,350 labelled IDs reconciled from 660 scout, 6 round-17 direct receipts + 42 additional oriented images, and 2,024 new dual-checked LRATs with labelled weight 15,642. Clean replay matches every owner and explicitly rebinds 2,928,046 moved witness blocks; calibrated 24/0 plus 26 marks × 4 and asymmetric transpose. Scope does not include `h<8` or a distribution. | `ROUND18_REPLAY.md`, `rows/e170_middle_2_stabilizer.md`, `ROUND18_FREEZE.sha256`, `scratch/G/round18/{orbits.json,reconciliation.json,clean-review.log}` | 0.11650 total |
+| estimate | All seven size-two orbits and 70 dispersed others priced. Before production: 0.0861–0.1562 core-h, 136–298 MiB inclusive of allowances, not tail bounds. Observed through first replay 274.73 CPU-s; clean replay adds 144.66 CPU-s; ~94 MiB additional scratch including the clean run. | `ROUND18_PREREG.md`, `scratch/G/round18/{sample.json,estimate-0000.log,clean-review.time}` | included above |
 
 ## Handoff
 
-- H/critic: ledger only the cross-scheme bookkeeping (1,935 newly
-  attributed to old checked receipts), the 96 fresh IDs and the direct
-  price. Do not debit any full scheme, distribution or U88 key. Use
-  `ROUND17_REPLAY.md` for exact reproduction and per-scheme prices.
-- Await authorization before any production. The smallest raw residual
-  is `leaf+leaf.0` (1,406 after the sample, estimate 0.081–0.133 core-h,
-  only six sample calls). Full direct aligned coverage is nontrivial on
-  shared scratch and would not handle `h<8`. The cross credit above is
-  retrospective and does not price a new transfer discovery arm.
+- H/critic: if confirmed, debit exactly 15,684 labelled IDs from G-053
+  (42 newly transported old IDs plus 15,642 new certified labels); the
+  six old pilots were already counted. No other scheme, `h<8`, U88 or
+  distribution debit. Reviewer command in `ROUND18_REPLAY.md`.
+- Await authorization before another search. Eight stabilizer actions
+  are specific to this named scheme; do not assume that saving for any
+  other scheme. Do not scan the full labelled residual or attempt a
+  second scheme without a separately scoped gate.
 - At e170, sixteen degree-six keys remain (nine single, seven adjacent
   pair). `Z=48`, e(H)=122, 24 private and nine double sites; adjacent W
   has 28 sites, one wing crossing and 86 internal edges. No complete

@@ -397,3 +397,14 @@ justify scaling (all four MIPs cap; no full-template cut). See
   supplied tuples, but all four free reruns return replacement tuples.
   These are scout evidence, not new G closures or a convergence price.
   No free-population MIP rerun this round.
+
+## Round 17 archival handoff
+
+- G-052/G-053 were confirmed by the critic. All 30 forward and inverse
+  rosters matched, with 24/0 smaller controls. Rebinding 62 scout and
+  1,357 round-16 receipts and transferring proper subsets added 1,935
+  distinct IDs outside `leaf+leaf.1`, across 27/29 schemes. Full supports
+  had no cross-scheme value. The 96 fresh direct IDs left 155,746
+  untested; weighted direct-ID estimates were 7.53–8.65 core-h and
+  16.22–22.05 GiB raw. Total 0.0389 core-h. `ROUND17_REPLAY.md` and its
+  freeze carry the exact files and prices.

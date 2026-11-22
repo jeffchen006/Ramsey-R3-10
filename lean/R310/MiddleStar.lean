@@ -142,6 +142,19 @@ theorem mem_pathUntouched {left right middle vertex : V} :
     mem_union, mem_erase, mem_neighborFinset, ne_eq]
   tauto
 
+theorem codegree_ge_two_of_not_deficient {first second witness : V}
+    (hNe : first ≠ second) (hNo : ¬ G.Adj first second)
+    (hFirst : G.Adj first witness) (hSecond : G.Adj second witness)
+    (hNotDeficient : ¬ HasDeficientWitness G first second witness) :
+    2 ≤ #(G.neighborFinset first ∩ G.neighborFinset second) := by
+  by_contra! hSmall
+  have hOne : #(G.neighborFinset first ∩ G.neighborFinset second) ≤ 1 := by omega
+  apply hNotDeficient
+  refine ⟨hNe, hNo, hFirst, hSecond, ?_⟩
+  intro other hFirstOther hSecondOther
+  exact card_le_one.mp hOne other (by simp [hFirstOther, hSecondOther]) witness
+    (by simp [hFirst, hSecond])
+
 /-- Maximality supplies one common neighbour; if the middle is not a deficient
 endpoint, every untouched site has at least two. The endpoint premise is separate
 from the absence of another pair *witnessed* by the middle. -/
@@ -152,12 +165,7 @@ theorem pathUntouched_codegree_ge_two_of_mtf {left right middle : V} (hMTF : IsM
   intro vertex hVertex
   obtain ⟨_, _, hNe, _, _, hNo⟩ := (mem_pathUntouched G).mp hVertex
   obtain ⟨witness, hMid, hAdj⟩ := hMTF.exists_common hNe.symm hNo
-  by_contra! hSmall
-  have hOne : #(G.neighborFinset middle ∩ G.neighborFinset vertex) ≤ 1 := by omega
-  apply hNoDef vertex witness
-  refine ⟨hNe.symm, hNo, hMid, hAdj, ?_⟩
-  intro other hMidOther hAdjOther
-  exact card_le_one.mp hOne other (by simp [hMidOther, hAdjOther]) witness (by simp [hMid, hAdj])
+  exact codegree_ge_two_of_not_deficient G hNe.symm hNo hMid hAdj (hNoDef vertex witness)
 
 omit [Fintype V] [DecidableRel G.Adj] in
 private theorem triangle_free_no_common (hTriangle : G.CliqueFree 3) {first second other : V}
@@ -192,25 +200,29 @@ private theorem pathWing_neighborFinset {endpoint middle : V} (hEdge : G.Adj end
     insert middle (pathWing G endpoint middle) = G.neighborFinset endpoint :=
   insert_erase (mem_neighborFinset _ _ _ |>.mpr hEdge)
 
-/-- The maximal-residue slice of D's marked path. A positive codegree lower bound
-is only needed between the middle and each untouched site; the rest of the K=2
-argument and the support roster are not premises or conclusions of this theorem. -/
-theorem middle_star_at_seventeen_sixteen {left right middle : V}
+/-- The regular cut identity before any lower bounds on codegrees. -/
+structure MiddleStarBalance (left right middle : V) : Prop where
+  poleCount : #(pathStar G left right middle) = 7
+  untouchedCount : #(pathUntouched G left right middle) = 14
+  row : ∀ pole ∈ pathStar G left right middle,
+    starContacts G pole (pathWing G left middle) + starContacts G pole (pathWing G right middle) +
+      starContacts G pole (pathUntouched G left right middle) = 8
+  nonedges : ∀ pole ∈ pathStar G left right middle,
+    pole ≠ left ∧ pole ≠ right ∧ ¬ G.Adj pole left ∧ ¬ G.Adj pole right
+  leftCodegree : ∀ pole ∈ pathStar G left right middle,
+    #(G.neighborFinset pole ∩ G.neighborFinset left) = starContacts G pole (pathWing G left middle) + 1
+  rightCodegree : ∀ pole ∈ pathStar G left right middle,
+    #(G.neighborFinset pole ∩ G.neighborFinset right) = starContacts G pole (pathWing G right middle) + 1
+  middleCodegree : ∀ vertex ∈ pathUntouched G left right middle,
+    #(G.neighborFinset middle ∩ G.neighborFinset vertex) = starContacts G vertex (pathStar G left right middle)
+  mass : starMass G (pathStar G left right middle) (pathUntouched G left right middle) +
+    #((G.induce (pathUntouched G left right middle : Set V)).edgeFinset) =
+      starMass G (pathWing G left middle) (pathWing G right middle) + 27
+
+theorem middle_star_balance {left right middle : V}
     (hOrder : Fintype.card V = 40) (hRegular : ∀ vertex, G.degree vertex = 9)
-    (hTriangle : G.CliqueFree 3) (hPath : HasDeficientWitness G left right middle)
-    (hCap : ∀ first second, first ≠ second → ¬ G.Adj first second →
-      #(G.neighborFinset first ∩ G.neighborFinset second) ≤ 3)
-    (hMiddle : ∀ vertex ∈ pathUntouched G left right middle,
-      2 ≤ #(G.neighborFinset middle ∩ G.neighborFinset vertex))
-    (hPetals : starMass G (pathWing G left middle) (pathWing G right middle) = 17)
-    (hResidue : #((G.induce (pathUntouched G left right middle : Set V)).edgeFinset) = 16) :
-    #(pathStar G left right middle) = 7 ∧ #(pathUntouched G left right middle) = 14 ∧
-    (∀ vertex ∈ pathStar G left right middle,
-      starContacts G vertex (pathWing G left middle) = 2 ∧
-      starContacts G vertex (pathWing G right middle) = 2 ∧
-      starContacts G vertex (pathUntouched G left right middle) = 4) ∧
-    (∀ vertex ∈ pathUntouched G left right middle,
-      starContacts G vertex (pathStar G left right middle) = 2) := by
+    (hTriangle : G.CliqueFree 3) (hPath : HasDeficientWitness G left right middle) :
+    MiddleStarBalance G left right middle := by
   let wingLeft := pathWing G left middle
   let wingRight := pathWing G right middle
   let wings := wingLeft ∪ wingRight
@@ -344,17 +356,16 @@ theorem middle_star_at_seventeen_sixteen {left right middle : V}
       starContacts_insert_nonadj G _ (fun h => hNoMid h.symm)]
     change starContacts G vertex (wingLeft ∪ wingRight) + 1 = _
     rw [starContacts_union G _ hWings, hZero, add_zero]
-  have hBookMass : starMass G book book = 70 := by
-    change (∑ v ∈ insert left (insert right (insert middle wings)), starContacts G v book) = 70
+  have hBookMass : starMass G book book = 2 * starMass G wingLeft wingRight + 36 := by
+    change (∑ v ∈ insert left (insert right (insert middle wings)), starContacts G v book) = _
     rw [sum_insert hLeftNew, sum_insert hRightNew, sum_insert hMidOut,
       hLeftContacts, hRightContacts, hMiddleContacts]
-    change 9 + (9 + (2 + ∑ v ∈ wingLeft ∪ wingRight, starContacts G v book)) = 70
+    change 9 + (9 + (2 + ∑ v ∈ wingLeft ∪ wingRight, starContacts G v book)) = _
     rw [sum_union hWings, sum_congr rfl hBookLeft, sum_congr rfl hBookRight,
       sum_add_distrib, sum_add_distrib, sum_const, sum_const, smul_eq_mul, smul_eq_mul]
     change 9 + (9 + (2 + (starMass G wingLeft wingRight + #wingLeft * 1 +
-      (starMass G wingRight wingLeft + #wingRight * 1)))) = 70
+      (starMass G wingRight wingLeft + #wingRight * 1)))) = _
     rw [starMass_comm G wingRight wingLeft, hLeftWingCount, hRightWingCount]
-    change starMass G wingLeft wingRight = 17 at hPetals
     omega
   have hCut := starMass_cut_balance G hRegular (disjoint_compl_right : Disjoint book bookᶜ)
     (union_compl book)
@@ -364,16 +375,14 @@ theorem middle_star_at_seventeen_sixteen {left right middle : V}
     refine sum_eq_zero fun vertex hVertex => starContacts_eq_zero G fun other hOther hEdge => ?_
     exact triangle_free_no_common G hTriangle ((hStar vertex).mp hVertex).2.2
       ((hStar other).mp hOther).2.2 hEdge
-  have hUntouchedMass : starMass G untouched untouched = 32 := by
-    change #((G.induce (untouched : Set V)).edgeFinset) = 16 at hResidue
-    rw [starMass_self, hResidue]
-  have hBetween : starMass G middleSites untouched = 28 := by
+  have hBetween : starMass G middleSites untouched + #((G.induce (untouched : Set V)).edgeFinset) =
+      starMass G wingLeft wingRight + 27 := by
     have hExpand := starMass_union G bookᶜ hRestDisjoint
     rw [hRestCut] at hExpand
     have hStarPart := starMass_union G middleSites hRestDisjoint
     rw [hRestCut, hStarIndependent, zero_add, starMass_comm G middleSites bookᶜ] at hStarPart
     have hUntouchedPart := starMass_union G untouched hRestDisjoint
-    rw [hRestCut, hUntouchedMass, starMass_comm G untouched bookᶜ,
+    rw [hRestCut, starMass_self G untouched, starMass_comm G untouched bookᶜ,
       starMass_comm G untouched middleSites] at hUntouchedPart
     omega
   have hStarNotAdj (vertex : V) (hVertex : vertex ∈ middleSites) :
@@ -398,31 +407,66 @@ theorem middle_star_at_seventeen_sixteen {left right middle : V}
       (0 + starContacts G vertex untouched) at hTotal
     rw [starContacts_union G _ hWings] at hTotal
     omega
-  have hLeftCap : ∀ vertex ∈ middleSites, starContacts G vertex wingLeft ≤ 2 := by
-    intro vertex hVertex
-    have h := hCap vertex left ((hStar vertex).mp hVertex).2.1 (hStarNotAdj vertex hVertex).1
-    change starContacts G vertex (G.neighborFinset left) ≤ 3 at h
-    rw [hLeftSet, starContacts_insert_adj G ((hStar vertex).mp hVertex).2.2.symm
-      (by simp [hWingLeft])] at h
-    omega
-  have hRightCap : ∀ vertex ∈ middleSites, starContacts G vertex wingRight ≤ 2 := by
-    intro vertex hVertex
-    have h := hCap vertex right ((hStar vertex).mp hVertex).1 (hStarNotAdj vertex hVertex).2
-    change starContacts G vertex (G.neighborFinset right) ≤ 3 at h
-    rw [hRightSet, starContacts_insert_adj G ((hStar vertex).mp hVertex).2.2.symm
-      (by simp [hWingRight])] at h
-    omega
-  have hColumn : ∀ vertex ∈ untouched, 2 ≤ starContacts G vertex middleSites := by
-    intro vertex hVertex
+  refine ⟨hStarCount, hUntouchedCount, hRow, ?_, ?_, ?_, ?_, hBetween⟩
+  · intro pole hPole
+    obtain ⟨hRight, hLeft, _⟩ := (hStar pole).mp hPole
+    exact ⟨hLeft, hRight, hStarNotAdj pole hPole⟩
+  · intro pole hPole
+    change starContacts G pole (G.neighborFinset left) = starContacts G pole wingLeft + 1
+    rw [hLeftSet, starContacts_insert_adj G ((hStar pole).mp hPole).2.2.symm (by simp [hWingLeft])]
+  · intro pole hPole
+    change starContacts G pole (G.neighborFinset right) = starContacts G pole wingRight + 1
+    rw [hRightSet, starContacts_insert_adj G ((hStar pole).mp hPole).2.2.symm (by simp [hWingRight])]
+  · intro vertex hVertex
     obtain ⟨_, _, _, hNoLeft, hNoRight, _⟩ := (mem_pathUntouched G).mp hVertex
-    have h := hMiddle vertex hVertex
-    rw [inter_comm] at h
-    change 2 ≤ starContacts G vertex (G.neighborFinset middle) at h
-    rwa [hMiddleSet, starContacts_insert_nonadj G _ (fun h => hNoLeft h.symm),
-      starContacts_insert_nonadj G _ (fun h => hNoRight h.symm)] at h
-  refine ⟨hStarCount, hUntouchedCount, middle_star_of_tight_mass G (cap := 2)
-    (outsideDegree := 4) (untouchedFloor := 2) hRow hLeftCap hRightCap ?_ hColumn ?_⟩
-  · rw [hBetween, hStarCount]
-  · rw [hStarCount, hUntouchedCount]
+    rw [inter_comm]
+    change starContacts G vertex (G.neighborFinset middle) = starContacts G vertex middleSites
+    rw [hMiddleSet, starContacts_insert_nonadj G _ (fun h => hNoLeft h.symm),
+      starContacts_insert_nonadj G _ (fun h => hNoRight h.symm)]
+
+theorem MiddleStarBalance.tipCaps {left right middle : V} (balance : MiddleStarBalance G left right middle)
+    (hCap : ∀ first second, first ≠ second → ¬ G.Adj first second →
+      #(G.neighborFinset first ∩ G.neighborFinset second) ≤ 3) :
+    ∀ pole ∈ pathStar G left right middle,
+      starContacts G pole (pathWing G left middle) ≤ 2 ∧
+      starContacts G pole (pathWing G right middle) ≤ 2 := by
+  intro pole hPole
+  obtain ⟨hLeft, hRight, hNoLeft, hNoRight⟩ := balance.nonedges pole hPole
+  have hFirst := hCap pole left hLeft hNoLeft
+  have hSecond := hCap pole right hRight hNoRight
+  rw [balance.leftCodegree pole hPole] at hFirst
+  rw [balance.rightCodegree pole hPole] at hSecond
+  omega
+
+/-- The maximal-residue slice of D's marked path. A positive codegree lower bound
+is only needed between the middle and each untouched site; the rest of the K=2
+argument and the support roster are not premises or conclusions of this theorem. -/
+theorem middle_star_at_seventeen_sixteen {left right middle : V}
+    (hOrder : Fintype.card V = 40) (hRegular : ∀ vertex, G.degree vertex = 9)
+    (hTriangle : G.CliqueFree 3) (hPath : HasDeficientWitness G left right middle)
+    (hCap : ∀ first second, first ≠ second → ¬ G.Adj first second →
+      #(G.neighborFinset first ∩ G.neighborFinset second) ≤ 3)
+    (hMiddle : ∀ vertex ∈ pathUntouched G left right middle,
+      2 ≤ #(G.neighborFinset middle ∩ G.neighborFinset vertex))
+    (hPetals : starMass G (pathWing G left middle) (pathWing G right middle) = 17)
+    (hResidue : #((G.induce (pathUntouched G left right middle : Set V)).edgeFinset) = 16) :
+    #(pathStar G left right middle) = 7 ∧ #(pathUntouched G left right middle) = 14 ∧
+    (∀ vertex ∈ pathStar G left right middle,
+      starContacts G vertex (pathWing G left middle) = 2 ∧
+      starContacts G vertex (pathWing G right middle) = 2 ∧
+      starContacts G vertex (pathUntouched G left right middle) = 4) ∧
+    (∀ vertex ∈ pathUntouched G left right middle,
+      starContacts G vertex (pathStar G left right middle) = 2) := by
+  have balance := middle_star_balance G hOrder hRegular hTriangle hPath
+  have hCaps := balance.tipCaps G hCap
+  have hMass := balance.mass
+  rw [hPetals, hResidue] at hMass
+  refine ⟨balance.poleCount, balance.untouchedCount, middle_star_of_tight_mass G (cap := 2)
+    (outsideDegree := 4) (untouchedFloor := 2) balance.row
+    (fun pole hPole => (hCaps pole hPole).1) (fun pole hPole => (hCaps pole hPole).2) ?_ ?_ ?_⟩
+  · rw [balance.poleCount]; omega
+  · intro vertex hVertex
+    simpa only [balance.middleCodegree vertex hVertex] using hMiddle vertex hVertex
+  · rw [balance.poleCount, balance.untouchedCount]
 
 end R310

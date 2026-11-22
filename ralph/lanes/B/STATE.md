@@ -1,4 +1,8 @@
-# Lane B — round 17, November 22, 2026
+# Lane B — round 18, November 22, 2026
+
+**Round 18 (open, 0 solver core-h):** parked per critic. No independent
+key or priced coverage argument supplied; five critical 32/e108 keys
+remain absent. No jobs, archive replay, source rescreen, or scope change.
 
 **Round 17:** froze the CONFIRMED B-036/B-037 **2,104,146 named blocked**
 32/e108 keys (2,017,637 cliques and 86,509 dual LRATs), **five criticals

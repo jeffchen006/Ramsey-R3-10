@@ -50,3 +50,4 @@ import R310.IntersectingPairs
 import R310.DeficientWitness
 import R310.MiddleStar
 import R310.PoleMultiplicity
+import R310.MiddleDeficit

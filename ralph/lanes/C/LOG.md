@@ -212,3 +212,6 @@ Exact costs and proof/replay scopes are in `ROUND4_REPLAY.md`.
 
 ## Round 16 (November 22)
 - One-neutral cap-five K4,4 16/17: hand cover and group-key proof. A bound 15,051,526,031 labelled headers. Of 544 pilot IDs, 497 had an empty group and 47 passed individual groups but no joint assignment. Both C++ literal/filtered and independent Python audit; eight literal probe caps not counted as rejections. 153 smaller plants and 1,596 matched keyed terminal assignments. Exact pilot-only frontier 15,051,525,487; this is superseded by round 17's weighted first filter. No production; warm estimates 11,400 core-h literal all-domain/4,348 core-h preflight model (not bounds), Python replay 1.84M core-h estimated. `ROUND16_REPLAY.md`, `ROUND16_FREEZE.sha256`.
+
+## Round 17 (November 22)
+- Physical host/neutral and source group-demand profiles give an exact first filter: 15,051,526,031 raw and 2,542,514,492 both-pass; 47 old joint failures leave 2,542,514,445 untested at the start of round 18. No production header expansion. Critic confirmed both the filter and the separately independently audited `(71,5)` zero-forward stratum of 35,458,804. All 582,982 host products, 440 sampled target predicates, all 544 pilot flags, and all 34,504 small IDs checked; 0.21802 core-h. `ROUND17_REPLAY.md`, `ROUND17_FREEZE.sha256`, `ralph/critic/round_017.md`.
