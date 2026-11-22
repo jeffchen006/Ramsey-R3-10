@@ -331,3 +331,12 @@ All 3,385 old pilot projections / 12,814 receipts matched. Total
 jobs at handoff. Round 20 verified all ten historical wrapper PIDs
 were gone. A 16-ID matched proof pilot was frozen, not run.
 `shared74_round19.md`, `scratch/E/r19_shared/freeze.1.sha256`.
+
+## Round 20 archive (2026-11-22)
+
+The frozen 16-ID paired proof pilot closed 16 fresh physical lifts on
+conditional core 1, each at both widths and checked twice, counted
+once. No fallbacks. With 16 inherited checked IDs, 32/147 were
+closed and 115 remained. Width three 11.669 vs width eight 15.898
+CPU-s within the route comparison; entire round 32.11 CPU-s. No active
+jobs. `shared74_round20.md`, `scratch/E/r20_shared/freeze.1.sha256`.

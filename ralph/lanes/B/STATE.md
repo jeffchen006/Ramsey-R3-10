@@ -1,4 +1,10 @@
-# Lane B — round 20, November 22, 2026
+# Lane B — round 21, November 22, 2026
+
+**Round 21 (hand, pending; 0 solver core-h):** parked. If a saturated
+32/e108 graph has all d6 punctures at e70, it has at least four d8
+vertices. At exactly four, the induced 12-vertex d6 layer is forced and
+there are no d6–d8 edges. Four smaller controls and one fixed layer check
+pass. Five criticals still absent. `ROUND21_TIGHT_LAYER.md`.
 
 **Round 20 (hand, pending; 0 solver core-h):** stayed parked. Private
 columns imply all 32/e108 graphs of minimum degree at most five are
@@ -7,10 +13,7 @@ puncture in `R(3,8;25,65..70)`. Three literal smaller controls, no target
 rescan or source acquisition. Five critical keys still absent; floor
 108 unchanged. `ROUND20_SATURATION.md`.
 
-**Rounds 18–19 (open, 0 solver core-h):** parked per critic. Still five
-absent critical 32/e108 keys, no independent input or priced exact cover.
-Round-18 scouts R/N concern A/C/G; no T report. No rescans, proof or
-archive replay, manifest changes, or scope change.
+**Rounds 18–19:** parked; five absent critical 32/e108 keys, no source or price.
 
 **Round 17:** froze the CONFIRMED B-036/B-037 **2,104,146 named blocked**
 32/e108 keys (2,017,637 cliques and 86,509 dual LRATs), **five criticals
@@ -57,10 +60,13 @@ Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 
 ## Jobs
 
-No live PIDs (0 cores); no Lane B jobs launched in round 20. The 2-core
-allocation is a ceiling, not a launch order. Old job transitions: `LOG.md`.
+No live PIDs (0 cores) or solver launches in round 21. Old jobs: `LOG.md`.
 
 ## Results and claims for review
+
+| Label | Round 21 result | Evidence | Core-h |
+|---|---|---|---:|
+| hand (pending) / open | In the saturated slice with ≤3 d8 vertices, some d6 puncture has ≤69 edges. If all d6 punctures are e70 and n8=4, the d6 layer and its codegree-one pairs are forced; explicit d7 attachment bounds. No new coverage or pricing. | `ROUND21_TIGHT_LAYER.md`, `scratch/B/logs/r21_tight_controls.log` | 0 solver; 0.02 CPU-s controls |
 
 ### Round 20
 
@@ -219,8 +225,9 @@ allocation is a ceiling, not a launch order. Old job transitions: `LOG.md`.
 0. Stay parked. Reopen only on an independently supplied new 32/e108 key
    or an exact coverage argument calibrated by recovering a deliberately
    withheld known key and priced for the full slice. e109 descent would miss
-   saturated keys, now narrowed by hand to min degree six; neither arm is
-   priced. No second e109 screen or known-key ascent/descent.
+   saturated keys. The round-21 narrowing for n8<=3 is not a price; D-C8c's
+   full e<=70 source has 2,120,846,970 keys. No second e109 screen or
+   known-key ascent/descent.
 1. Critic/H: replay or audit the bounded prefix and scout proof tranche.
    `src/replay_prefix_r7.sh terminal` and `src/e108_scout_proofs_r8.sh replay work/e108_r8_scout_proofs`
    are ready. Do not re-launch prefix. Outside-prefix critical e88 after

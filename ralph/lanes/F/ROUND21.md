@@ -1,0 +1,29 @@
+# Round 21 — marked two-double pilot: 0/14 cuts
+
+**Hand + enum, pending critic review.** All 14 authorized marked footprints stayed open (23 labelled orientations, 5 reversal fixes). The same rows are a subset of the 412 two-double exterior rows, not 14 additional tests. The 398 exterior-only rows were not tested. Both full inventories are byte-identical to round 20. Unsigned joint headers under simultaneous reversal: **1,979,210 → 1,979,210**. There was no signing search, candidate, new nearness measurement or global case debit.
+
+## Physical receipt
+
+The 17 ordinary pairs have one matching between sites at absolute difference 6..12 and no other inter-site edges. Let p denote a single physical vertex in either role. Swapping endpoints within singly contacted sites normalizes its neighbor to bit 0. Where p meets both ends of a site, the vertical must be absent (else a triangle with p). Moreover all four endpoints at the two doubled sites are neighbors of p; they form an independent set in every triangle-free realization. In particular the two sites cannot have a matching between them. This reasoning does not assume that p is adjacent to its mate or that the graph has a reflection symmetry.
+
+For a padded endpoint pair at a doubled site d, neither d itself nor any site matched to d may supply a transversal vertex: every endpoint of the latter site has a neighbor among the padding. For a pair of doubled sites apply this exclusion to both. At all remaining support sites either endpoint is allowed in a padding step. The older steps use p with nine singleton sites outside its double contacts (at singly contacted sites only bit 1 is admissible), or ten singleton sites without p or any pins. Single-pair padding requires eight outside singleton sites; two-pair padding needs six. Ordinary verticals outside the padding never matter when only one endpoint is used. Thus padding plus a permitted transversal really gives ten distinct pairwise independent vertices.
+
+`two_double.cpp` tries all 80,444 size-6/8/9/10 masks; eight-pass cap. Each trace header binds the low and high physical neighborhood of p and the forced absent verticals. Each step identifies the padding mode and actual padded sites, singleton support, permitted low and high endpoint masks, and a residual affine form in unmatched-edge coordinates. `two_double_check.py` derives those masks from physical adjacencies; it rejects padded site reuse, an unjustified vertical, illegal contacts, a missing step field, and mismatched endpoint choices. It independently eliminates the physical endpoint variables from `x_i XOR x_j = s_ij` on induced matchings, instead of using the producer's component paths. If all these projected equations follow, a ten is forced; if every nonzero remainder is the same modulo earlier equations, avoiding a ten forces its opposite. A trace ending `open` is not a model.
+
+## Calibration before target use
+
+All eight labelled three-site quotients at target five, all placements of exactly two doubled sites, all contact orientations, signs and physical vertical choices were classified directly by testing the actual adjacency masks for triangles and every five-vertex subset. For the exterior role 48/1,944 configurations were positive; for the mirrored marked role 48/3,888 were positive. No positive footprint was cut, and the surviving rows on each small quotient were exactly the union of the physically positive rows. Explicit order-7 and order-8 examples passed the small flow gate. In the empty quotient with `occupied=doubled=3`, the older modes alone stay open; four padded ends plus one end of the third site force a five. An additional six-site pin control and six deliberately invalid receipts, including a flipped permitted endpoint, altered missing vertical, reused site and unbound step, were checked. See `scratch/F/r21/{literal,mutations}.stdout`, `positive{7,8}.gate` and `old.trace` vs `s0.trace`.
+
+## Why it stopped
+
+The 170 checked target deductions used one doubled pair (168) or p (2), none the new four-endpoint rule. There is a geometric reason **independent of any signing**: after both doubled sites and their neighbors are removed, *no size-six support exists* on these 14 rows. With zero-based sites, the complete list is:
+
+| Doubled mask | Rows | Eligible outside sites |
+|---:|---:|---|
+| 544 | 4 | 4, 6, 7, 8, 10 |
+| 1056 | 2 | 6, 7, 8, 9 |
+| 1088 | 8 | 5, 7, 8, 9, 11 |
+
+`scratch/F/r21/geometry.stdout` checks the geometry from the actual quotient; `pilot.open` lists all 14 exact `(occupied,doubled,weight)` rows. `two-double-exterior.untested` lists the other 398; `mark.left` and `pole.left` contain all 668 and 1,137 open role reps, respectively. The unchanged multiplicity-0/1/2 orbit counts are 1,460,216 / 444,801 / 74,193; the marked-hit, exterior-hit and intersection counts are all zero. `joint.tsv` carries label/fix/orbit counts, checked with the opposite orientation of the join. These are unsigned compatibility counts, not counts of graphs.
+
+**Cost / decision:** `scratch/F/r21/forecast.txt` predates launch. All 20 foreground stages exited zero: 2.96 CPU-s (0.00082 core-h), peak RSS 170,408 KiB at build. No stopped, killed or detached job. Stop four-endpoint tests on this marked roster; do not spend cores on a wider exterior sweep. If the critic wants a different marginal, first test on small boards only whether the two *exceptional* endpoints lift the older forest-only pair test (`marked_price.cpp`, stage 2): both share an ordinary neighbor when there is a double and thus are nonadjacent. They may pad eight ordinary sites outside the **whole** occupied footprint. Any such new cut would initially be **marked only**, not reusable for an exterior pole. Require a smaller positive and a negative missed by the old test before requesting any target run.

@@ -358,3 +358,6 @@ import R310
 #print axioms R310.bipartite_matching_of_indep_bound
 #print axioms R310.private_cell_matching_four
 #print axioms R310.private_grid_row_bound_of_indep
+#print axioms R310.mem_rootContact
+#print axioms R310.root_two_anchor_padding
+#print axioms R310.private_grid_row_bound_of_root_contacts

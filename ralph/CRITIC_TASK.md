@@ -33,4 +33,19 @@ You have NO memory of earlier rounds: read `ralph/critic/LATEST.md` (your last d
 8. The referee (Gemini 4 Neon, another model family) reports after the lanes: re-check each GAP it names against the files;
    if it holds, mark the claim REJECTED or UNCHECKED and say so in LATEST.md; if not, say why in your review.
 
-You may not edit the lanes' files, `opt/`, or the flow. Start no long solver job.
+9. **Operator directive (2026-11-22 18:50): use the compute.** The 80-core share was almost idle for
+   many rounds ("Solver processes now: 0"; most jobs 0.001-0.04 core-h), and lane turns end after
+   ~10 of their 60 minutes. That is too careful for the ~22 h that remain. From now on:
+   - Target: on average >= 50 of the 80 cores busy between one round and the next (check
+     `uptime` first; the machine has 192 cores and other users).
+   - A pilot of < 0.1 core-h is a calibration, not the step of a round. Once a pilot is calibrated and
+     its cost estimate is written down, approve a scale-up to the lane's full ALLOC share, as detached
+     jobs under `timeout` with CPU-time limits, that run until the next round or longer (up to 6 h).
+   - Do not set per-experiment limits in LATEST.md below 25% of the lane's ALLOC share, except for a
+     job that you name as unsound or a repeated dead end.
+   - Give the cores to runs that can close an open case end to end (for example: the remaining
+     near-regular distributions, the e88/U88 gluing, the 978 open h=7 contexts, the open (2,32)/(2,30)
+     involution branches, the R3/R4 kernel survivors, the open P4 rows of R(6)), not to count-only slices.
+   - The rules stay: honest labels, calibration before scale-up, certificates where possible, scratch <= 150 GB.
+
+You may not edit the lanes' files, `opt/`, or the flow. Start no long solver job yourself.

@@ -1,9 +1,9 @@
 # Lane A state
 
-Round 20, November 22, 2026. Allocation 8; directive only one worker,
-0.30 core-h, 1 GiB/process, 128 MiB staging. The independent G-019 middle
-expansion check is done; no new graph, distribution or whole-case debit.
-R(7) closed by C's accepted finite certificates (round 1), already replayed by A.
+Round 21, November 22, 2026. Allocation 2; directive one worker,
+0.06 core-h, 512 MiB. Independent denominator delivered to G.
+R(7) remains closed by C's accepted finite certificates (round 1),
+already replayed by A. No new candidate, proof, or case debit this round.
 
 ## Jobs
 
@@ -11,25 +11,30 @@ R(7) closed by C's accepted finite certificates (round 1), already replayed by A
 |---|---|---|---:|---|
 | — | No detached jobs | — | 0 | — |
 
-One foreground worker, `nice -n 5`, `timeout`, `prlimit --cpu`, 1 GiB VM;
-`scratch/A/r20` and `scratch/A/r20-clean`. All timed work including
-three calibration-development attempts: 39.14 CPU-s (0.01087 core-h).
-Peak 162,136 KiB (compiler), expansion 5,292 KiB; <1 MiB new staging.
+All work finished; one foreground worker at a time, `nice -n 5`,
+`timeout`, `prlimit --cpu`, 512 MiB VM. `scratch/A/r21` and
+`scratch/A/r21-clean`: 47.10 timed CPU-s (0.01308 core-h), 26,836 KiB
+peak RSS, <1 MiB staging, including development/calibration attempts.
 
 ## Results and claims
 
 | Label | Scope / exact result | Evidence | Core-h |
 |---|---|---|---:|
-| enum (calibration) | All 9 order-5 alpha≤3 triangle-free cores. Full literal product and order-9 census agree, 46/135/0 labeled rows and 9/28/0 unrooted classes. 18 repeated-column and 165 proper-subcolumn assignments; both removed-row controls detected. | `scratch/A/r20/small.log`, `small{0,1,2}.{raw,literal}.tsv` | 0.00016 final test |
-| estimate | 12 dispersed pilot sources, including both extreme edge layers; 0.31 CPU-s expansion. Projected 2.74–5.94 CPU-s for tail using mean / max; actual 4.14 s. | `ROUND20_PRICE.md`, `scratch/A/r20/pilot.log`, `tail-expand.time` | 0.00009 pilot expansion |
-| hand + enum (G-019 audit, pending critic) | From all 118 exact graph6 inputs, independent Boolean-incidence expansion gives 989 labeled source multisets, 985 rooted orbits, 984 canonical unrooted classes; 123–130 histogram matches 5/44/149/266/294/184/41/1. All 118 source bindings and class sets match. Canonical list is byte-identical; deleted whole class and deleted rooted-role-only mutations detected. Clean replay matched. | `ROUND20_D5_AUDIT.md`, `ROUND20_FREEZE.sha256`, `scratch/A/r20/{all.coverage.tsv,all.diff.tsv,all.log,clean.compare.log}` | 0.01087 all-in |
+| enum (calibration) | Permanent inclusion-exclusion agrees with literal permutations on 18 aligned and 90 one-defect small slots, and the six historic h=7 fixed/fixed counts plus one h=8 control. Omitted witness, missing singleton slots, crossed triangle and singleton/singleton mutations detected. | `scratch/A/r21/control.log`, `ROUND21_H7_DENOMINATOR.md` | 0.00056 final calibration |
+| estimate | 12 priced keys from the six boards; mean/max forecast for both passes over 184 keys 46.0/68.5 CPU-s, actual 33.31. This prices counting, not solving. | `ROUND21_PRICE.md`, `scratch/A/r21/{sample.log,full.time}` | 0.00085 sample |
+| hand + enum (pending critic) | Rebound all eight frozen h=7 pilot scopes and baseline 51. Fresh union 184 canonical two-sided context keys; 5,592,650 labelled fixed alignments, one representative per key, no stabilizer weighting. Literal agrees on all 184; clean tables byte-identical. Pilots 6/8 share exactly one 70,252-weight key. | `ROUND21_H7_DENOMINATOR.md`, `ROUND21_FREEZE.sha256`, `scratch/A/r21/{alignments.tsv,prefix.tsv,full.log,clean.compare.log}` | 0.01308 all-in |
 
 ## Next
 
-- Ask critic to review G-019's middle arrow at `ROUND20_D5_AUDIT.md`.
-  No new certification or distribution exclusion; do not rerun the
-  477,142 prefilter, 984 outer tests, or this complete expansion without
-  a particular audit reason. Replay command: `bash ralph/lanes/A/replay_d5_20.sh r20-review`.
+- G has the denominator on the board. For any checked subset of pilots,
+  sum each keyed row once if any of its pilot IDs was checked. Use only
+  comparable measured per-alignment prices for cost forecasting; prior
+  h=8 per-ID timing alone is not a measured h=7 comparison. No solve,
+  scaling request, 81-scope rerun, or `h<=6` extrapolation by A.
+- Critic replay: `bash ralph/lanes/A/replay_h7_alignments21.sh r21-review`
+  (or add `full` for another literal pass under the printed cap).
+- G-019 has been confirmed pub + enum. No reason to rerun its 477,142
+  prefilter, 984 outer tests or completed expansion.
 - Released r19 card interface and exact held-out roster remain in
   `ROUND19_DELETION_CARDS.md`, `ROUND19_FREEZE.sha256`, `scratch/A/r19`.
   Lane C owns fifth-row/join work; no generic 159-ID join, retired e168

@@ -1,5 +1,16 @@
 # Lane A state
 
+## Round 20 (history)
+
+Independent G-019 middle expansion reproduced all 118 exact cores,
+989 labelled multisets, 985 rooted orbits, and 984 unrooted classes
+byte for byte (edge-level counts 5,44,149,266,294,184,41,1). The
+literal small product and order-9 census agreed; deleted whole-class
+and deleted rooted-only controls were detected. Clean replay, 57 pins,
+0.01087 core-h. `ROUND20_D5_AUDIT.md`, `ROUND20_FREEZE.sha256`,
+`scratch/A/r20`. The critic confirmed the whole G-019 chain as pub +
+enum, not cert. A did not rerun the prefilter or outer test.
+
 ## Round 19 (history)
 
 Lossless order-12 connector lookup delivered to C: all 1,458 degree-three

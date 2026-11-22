@@ -1,39 +1,40 @@
-# Lane H — round 20 handoff, November 22, 2026
+# Lane H — round 21 handoff, November 22, 2026
 
-Two-core ceiling; used one pinned foreground worker, no solver jobs,
-no detached/stopped PIDs, no candidate. Checked through round 019:
-**238 near-regular MTF distributions plus Case R**, **ten conditional
-U88 keys**, **four conditional mixed cores** (`1,6,9,18`) remain.
-Floor 108: 2,104,146 named order-32/e108 d7 roots blocked, five
-missing criticals; distinct order-33 through-e121 census 14,395/14,395.
+Two-core ceiling; one pinned foreground worker, no SAT, candidate,
+live/detached/stopped PID. Checked through round 020: **238 near-regular
+MTF distributions plus Case R**, **ten conditional U88 keys**, **four
+conditional mixed cores** (`1,6,9,18`). No distribution debit or flow
+graph. Pending round 021: E proposes closing core 1 only; G at `h=7`
+proposes 184 fresh scopes → 235/1,213, leaving 978. Checked `h=8` is
+closed only for the marked aligned slice, with no parent-case debit.
 
 ## Jobs
 
-| PID | Command | Log | Cores | Start / end CET |
+| PID | Command | Log | Cores | Start / actual end CET |
 |---|---|---|---:|---|
-| — | No live, detached or stopped H job | — | 0 | — |
-| foreground, finished | `build_private_signature.sh` (two elaborations, `--old build R310`, targeted/project axioms and version) | `scratch/H/round20-{dev1,dev2,build,axioms-targeted,axioms-project,toolchain,strict}.log` | 1 pinned CPU | ~17:24–17:28 |
-| foreground, finished | `python3 -SB check_private_matching.py` under wall/VM cap | `scratch/H/round20-controls.log` | 1 pinned CPU | ~17:26 |
+| — | No live, detached or stopped job | — | 0 | — |
+| foreground, finished | `build_private_signature.sh` (2 development elaborations, `--old build R310`, both axiom scripts, version) | `scratch/H/round21-{dev1,dev2,build,axioms-targeted,axioms-project,toolchain,strict}.log` | 1 pinned CPU | ~17:59–18:03 |
+| foreground, finished | `python3 -SB check_private_padding.py` (wall/VM caps) | `scratch/H/round21-controls.log` | 1 pinned CPU | ~18:00–18:01 |
+| foreground, finished | Primary-source re-fetch and text checks | `scratch/H/round21-literature.log` | negligible | ~18:02 |
 
 ## Results and claims
 
 | Label | Result | Evidence | Core-h |
 |---|---|---|---:|
-| Lean H-035 (pending) | On two disjoint independent physical shores plus an isolated set, a local independence cap implies a Hall deficiency bound. A partial matching exists at the desired lower size; four-plus-four at cap 5 yields `3+[cross]`, producing H-034's margin without assuming a matching. Local graph inputs, not global graph reduction or target SAT. | `lean/R310/PrivateMatching.lean`, `ROUND20_REVIEW.md`, `ROUND20.sha256` | 0.02196 all |
-| enum (controls) | 170 literal small graphs; tight small and target-size toy matches; isolated-cap adverse case and cloned physical-site mutation. Lean/Mathlib pinned 4.35.0, cached `R310` build and strict 3/359 axiom reports pass. | `check_private_matching.py`, `scratch/H/round20-{controls,build,strict,toolchain}.log` | included |
-| ledger (confirmed r019) | C-045 hand necessity/shortcut, C-046 zero fifth-row cuts, C-047 twelve *signed* fresh exclusions. 2,542,514,364 signed-untested, 2,542,514,308 untouched after separate R vetoes. G-055: 57,947 fresh leaves 21,125 marked h=8 ranks; h=7 is 51/1,213. F unsigned, E old proofs, D counts, H-034 conditional. Referee process failed but left report; no GAP and D=7 **0/220 survived**, all rejected. | `ralph/CLAIMS.md`, `ralph/critic/round_019.md`, `ralph/referee/round_019.md` | — |
-| ledger (pending r020) | A-033 independently matches G-019 middle 118→984 (985 rooted); not prefilter or outer. G-056 reports 21,125→0 *marked aligned h=8 only*. E-044: 16 then-fresh local proofs → 115/147 unresolved; E-045 timing/forecast. D-048 cuts 3/162 supports, 1,334,977 marked orbits remain; D-049 proposed filter only. C-048/049 factored gate leaves all 116 right keys live, no debit. F-037/038 exact 435 scoped one-double opens and distinct 1,979,210 unsigned joints. B-040 saturation restriction cannot classify five missing keys. | `ralph/CLAIMS.md`, A–G round-20 `STATE.md` | — |
-| open (literature) | No fresh screen per critic. `LIT.md` remains a dated search, not a completeness claim. | `LIT.md` | — |
+| Lean H-036 (pending) | Actual degree-six root contacts identify four disjoint unused neighbours, independent and anticomplete to the two physical cells and optional double site. Adding all four rules out an independent six at global alpha≤9. Composition with H-035/H-034 gives the noncross margin, no local-cap or matching premise. Equality populations, exterior membership, exact contacts and crossed-column exclusion still supplied by the graph application. | `lean/R310/PrivatePadding.lean`, `ROUND21_REVIEW.md`, `ROUND21.sha256` | 0.04021 timed all |
+| enum (controls) | C13(1,5) 78/78 tight pairs; both margins tight on degree-4 and degree-6 crossed/off-cross toy graphs. Extra anchor contact leaves global alpha nine but gives putative local alpha six, correctly violating contact support. Lean/Mathlib v4.35.0 build and strict 3/362 axiom checks pass. | `check_private_padding.py`, `scratch/H/round21-{controls,build,strict,toolchain}.log` | included |
+| ledger (confirmed r020) | Imported 12 verdicts. Full G-019 replay 477,142→118→984→0, not referee's r019 samples, and not a label upgrade. A-033 covers middle only (985 rooted); G-056 closes marked aligned `h=8` from 21,125. E 32/147 (16 fresh), D three marked support zeros, F 435 marginal vs 1,979,210 unsigned joint, C zero new fifth-key cuts. Five B criticals remain absent at floor 108; order-33 through-e121 census distinct. | `ralph/CLAIMS.md`, `ralph/critic/round_020.md` | — |
+| ledger (pending r021) | Copied A-034, B-041, C-050/051, D-050/051, E-046/047, F-039, G-057/058 and H-036. A 5,592,650 fixed alignments, not a speedup; G 8 receipts yield 184 fresh `h=7` keys only; E 115 new physical cert IDs for conditional core 1; D nine marked supports, 266,500 orbits left; B all-tight layer only, C toy only, F no new cut. | `ralph/CLAIMS.md`, A–G round-21 `STATE.md` | — |
+| pub / open (literature screen) | DS1 rev. 18 still lists 40–41; actual Angeltveit journal §7 has partial lower count 43,225,483. McKay index unchanged. No usable broad-search response, so no claim of comprehensive new screening or new artifact. | `LIT.md`, `scratch/H/round21-literature.log`, `scratch/H/lit/r21-*` | negligible |
 
 ## Next steps
 
-- Import critic's round-20 scope decisions; do not debit the pending
-  G, D or E counts until accepted. For G, a zero `h=8` ledger is only
-  marked aligned equality, not the whole equality case; preserve
-  `h=7` 51/1,213 separately. Verify the scope of the G-019 deep audit.
-- Request independent critic build and axiom checks for H-035. If
-  asked, bind its local cap to actual graph padding or formalize
-  C-048's three-four-set finite exhaustion; no rerun of the fifth gate.
-- G's one-receipt many-ID transfer has the strongest cost evidence;
-  E's 115 residual physical IDs are a separate, exactly sized target
-  if accepted. B remains parked without an independent source.
+- Import the round-21 critic's decisions without upgrading labels.
+  Independently review H-036 using the pinned sources and axiom logs.
+- E provides strongest conditional closure evidence; check its scope
+  before replacing four mixed cores with three. G provides strongest
+  evidence for sharing proofs, but a matched fixed-alignment comparator
+  and proof-size tail check are needed before a bulk `h=7` batch.
+- If asked, formalize C-050's disjoint physical edge-count inequality
+  (toy evidence only) or bind more of the equality geometry. Do not
+  duplicate G's binding or C's fifth gate, and do not re-run G-019.

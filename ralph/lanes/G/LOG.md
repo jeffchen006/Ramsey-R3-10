@@ -434,3 +434,17 @@ justify scaling (all four MIPs cap; no full-template cut). See
   eight `h=7` pilots on six boards with an exact potential union of
   184 extra **two-sided context orbits**. Baseline 51/1,213, not
   51/81. No pilot was solved.
+
+## Rounds 20–21 — matching receipt and one-defect pilot
+
+- G-056 (critic confirmed round 20): the single fixed-left matching,
+  any-right receipt removed all 21,125 remaining labelled `h=8` ranks
+  across six matching+matching schemes. Scope 80,054 minus 58,929
+  previous credits; not the entire equality case. 37.48 CPU-s,
+  `ROUND20_REPLAY.md` and its freeze.
+- Round 21 (pending critic): all eight previously frozen `h=7`
+  pilots produce dual-checked LRATs. The exact fresh union is 184
+  two-sided keys beyond 51, for 235/1,213. Lane A independently
+  counts 5,592,650 fixed alignments represented by the new keys;
+  no matched timing comparison. 71.94 CPU-s all-in, 138,364,893
+  LRAT bytes. `ROUND21_REPLAY.md` and its freeze.

@@ -24,6 +24,14 @@ Solver jobs run detached and outlive your turn.
 7. End with a short report (at most 25 lines): what you did, what you found (with labels), what runs
    now (PIDs, cores), what is next, and what you need from other lanes or the critic.
 
+## Operator directive (2026-11-22 18:50): use your core share
+The 80 cores were almost idle for many rounds, and turns ended after ~10 of their 60 minutes.
+Use your `ralph/ALLOC.md` share: after a calibrated pilot (< 0.1 core-h), launch detached jobs under
+`timeout` with CPU-time limits that fill your share until the next round or longer (up to 6 h). Write
+each job (PID, cores, log, expected end) in STATE.md at once, and collect the results next round. A
+lane with a share of 6 or more cores and 0 busy jobs at the end of its turn must say why in its report.
+Use your turn time: if a job finishes during your turn, read it and launch the next step.
+
 ## Spirit
 The aim of the team is to settle R(3,10). The known routes cost far more than this machine has, so
 the high-value work is a new idea that cuts a case by orders of magnitude, tested cheaply first.

@@ -172,3 +172,12 @@ critic confirmed the capacity implication in round 019; the lower
 matching implication is the separate, new H-035. The round-18 checked
 G balance 79,072 and C balance 2,542,514,376 are historical after
 round-19 review. No H jobs carried forward.
+
+## Round 20 archive
+
+H-035 derived a physical partial matching from the two independent
+shores, isolated site and local cap via Hall. Used 170 controls,
+3/359 axiom reports and 0.02196 core-h. See `ROUND20_REVIEW.md` and
+`ROUND20.sha256` at the round-20 snapshot; the critic confirmed it in
+round 020. H-036 supplies the cap and cell geometry from graph
+contacts. The open 21,125 `h=8` count was then historical after G-056.

@@ -1,44 +1,45 @@
-# Lane E state — round 20 complete
+# Lane E state — round 21 complete
 
-2026-11-22 CET. Ceiling 19; critic authorized the frozen 16-ID
-matched proof pilot only. Used one serial worker, 0.00892 total
-core-h and ~36.4 MiB new staging, below 0.08 core-h / 96 MiB.
-Peak RSS 186,460 KiB under 1 GiB hard address-space cap.
+2026-11-22 CET. Round-21 authorization was only the exact 115-ID
+queue, one worker, ≤234 CPU-s all-in, ≤1 GiB VM and ≤224 MiB new
+staging. Measured about 0.024 core-h and 132 MiB new staging.
 
 ## Jobs
 
-None active, detached, stopped or killed. All wrappers exited 0.
-Full commands and caps in `scratch/E/r20_shared/{jobs,exits}.tsv`.
+None active, stopped, killed or detached. The main wrapper exited 0;
+reaped Python PID 3642344 and timeout PID 3642343 are also gone.
+Proof and resource evidence paths here are relative to `scratch/E/r21_shared/`.
 
-| Wrapper PID | Command / log stem | Cores | Start / actual end CET |
+| Wrapper PID | Command / log | Cores | Start / actual end / wall cap (CET) |
 |---|---|---:|---|
-| 2981483 | inherited hashes and controls / `preflight` | 1 | 17:24:54 / 17:24:56 |
-| 2989989 | `paired_core1_74.py target` / `target` | 1 | 17:25:21 / 17:25:50 |
-| 3020250 | `paired_core1_74.py audit` / `audit` | 1 | 17:26:41 / 17:26:42 |
-| 3021229 | `reprice_core1_74.py` / `pricing` | 1 | 17:26:42 / 17:26:43 |
-| 3030352 | independent set and marker cross-check / `crosscheck` | 1 | 17:27:11 / 17:27:11 |
+| 3642341 | `nice -n 5 timeout -k 2s 223s taskset -c 30 ... residual_core1_74.py` / `target.log`, `usage.log`, `jobs.tsv` | 1 | 17:57:32 / 17:58:55 / 18:01:17 |
+
+The short foreground, no-solver artifact pass is in `audit.log` and
+`audit.usage`; it completed with exit 0. No solver job followed it.
 
 ## Claims for H / critic
 
-Core 1 `G?bFbo` only under E-021 and E-042/043 premises: mixed
-`(2,32,4)`, `δ(W)≥2`, `e(W)=11`, profile `(10,10,11,11)`, universal
-`δ(G)≥5` and the sole-missing all-graph order-26/e74 class. All graph
-scope, no MTF. See `shared74_round20.md`; evidence names in the table
-are relative to `scratch/E/r20_shared/`.
+Zero-based conditional mixed core 1 `G?bFbo` only under E-021/
+E-042/E-043: `(p,f,t)=(2,32,4)`, `δ(W)≥2`, `e(W)=11`, profile
+`(10,10,11,11)`, universal `δ(G)≥5`, all four windows are copies
+of the sole missing all-graph order-26/e74 class. All four omission
+roles and `K=6,7,8`; no MTF assumption. See `shared74_round21.md`.
 
-| Item | Label | Evidence |
-|---|---|---|
-| Exactly 16 fresh physical IDs certified once each: width three and original width eight each freshly rebound and both checkers verified all 16/16; no fallbacks. Old 16 disjoint; 32 of 147 now certified and 115 unresolved. | cert (conditional local IDs only), open (core) | `paired.jsonl`, `target/`, `audit.log`, `crosscheck.log`, `residual.jsonl`, `freeze.1.sha256` |
-| Narrow 11.669 CPU-s vs wide 15.898 CPU-s route totals, ~26.6% less; target wrapper 28.79 CPU-s inclusive of driver. Total round 32.11 CPU-s. | enum (measurement) | `target.log`, `preflight.log`, `pricing.log` |
-| 115-ID narrow first estimate 88.00 CPU-s / 129.98 MiB no fallback; 142.95 CPU-s / 185.66 MiB for six stress fallbacks. Wide-only baseline 115.28 CPU-s / 126.59 MiB. Rates for 83 third / 25 branch / 7 global. | estimate | `reprice.strata.tsv`, `pricing.log` |
+| Result | Label | Core-h | Evidence |
+|---|---|---:|---|
+| 115/115 fresh frozen IDs passed fresh physical binding, width-three subset verification, and both LRAT checkers; zero fallback, 0 IDs left. | cert (conditional local IDs) | 0.0230 inclusive | `checked.1.jsonl`, `accepted.1.jsonl`, `remaining.1.jsonl`, `target/`, `target.log` |
+| Close **only conditional mixed core 1**, pending critic: 565,384 inherited replayed negative lifts + 16 R18 checked + 16 R20 checked + 115 fresh checked = 565,531 lifts, 68,323 projections and 24 branches, zero outstanding. Independent artifact check: 115 actual omitted groups, 115 raw clause submultisets, 230 markers. | hand + enum + cert (conditional) | 0.00054 additional audit | `target.log`, `audit.log`, `freeze.1.sha256`, inherited R18/R19/R20 freezes |
+| 66.788 s formula binding, 2.641 s solve, 8.805 s proof checking across 115 targets, no original-width solver call; main wrapper 82.72 s inclusive. | enum (measurement) | included above | `timing.tsv`, `usage.log` |
 
 ## Next
 
-- Request critic authority for `residual.jsonl` only: one worker,
-  ≤0.065 core-h / ≤1 GiB per process / ≤224 MiB new staging. Narrow
-  first with fresh binding/dual check; width eight only on narrow
-  SAT/cap. Stop on budget, binding or checker failure, or wide SAT;
-  no partial proof counts as UNSAT. Not started.
-- Core 1 and the other three conditional mixed cores `{6,9,18}` remain
-  open; `(5,5)` remains certified. No candidate, full involution case,
-  rigidity, or Ramsey verdict.
+- Three conditional mixed cores remain: 6 `G?bav_`, 9 ``G?q`v_``,
+  18 ``GCpb`o``. Ask critic for a bounded ordered-cover census and
+  front/interior/tail price-only pilot on core 6, with independent
+  binding and repeat controls before scaling. Suggested ceiling one
+  worker, 180 CPU-s, 1 GiB VM, 96 MiB new staging; no full scan,
+  SAT or proof batch. Unlaunched. See the legacy R10 sampled counts
+  in `scratch/E/r10_shared/rank/summary.tsv`; not a ranking between
+  current open cores.
+- `(5,5)` remains certified. No new entire involution/rigidity
+  exclusion, MTF-distribution debit, flow candidate or Ramsey verdict.

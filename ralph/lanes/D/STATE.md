@@ -1,22 +1,22 @@
-# Lane D — round 20, 2026-11-22 (final)
+# Lane D — round 21, 2026-11-22 (final)
 
-**Marked R(3), `K=2,t=17,m=15`: 3 of 162 Y supports excluded (hand + enum, pending critic).** The 159 remaining supports have 2,296,202 ordered wing assignments on fixed representatives / 1,334,977 marked orbits satisfying the tested conditions. These are not graphs. No original kernel or whole marked layer closed. Prior D-046 and D-047 critic-confirmed (`ralph/critic/round_019.md`); round 19 handoff archived in `LOG.md`. `S=scratch/D/wing20`.
+**Marked R(3), `K=2,t=17,m=15`: 9 of the 159 D-048 survivors excluded, leaving 150 of the original 162 supports.** Hand + enum pending critic. Every new zero still has nonempty individual margins. These are exclusions of marked supports, not edge kernels. Prior D-048 and D-049 confirmed in `ralph/critic/round_020.md`; round 20 handoff archived in `LOG.md`. `S=scratch/D/wing21`.
 
 ## Jobs
 
 | PID | Command / log | Cores now | Start | Actual end |
 |---|---|---:|---|---|
-| None | Sequential bounded foreground `wing20.py`, `wing20_audit.py`, `wing20_nextprice.py`; `S/*.log`. No detached, live or stopped jobs. | 0 | ~17:23 | 17:28 |
+| None | Sequential, bounded foreground `wing21.py`, `wing21_audit.py`, `wing21_nextprice.py`; `S/*.log`. No detached, live or stopped jobs. | 0 | ~17:56 | ~18:01 |
 
 ## Results and claims
 
 | Label | Result | Evidence | Core-h |
 |---|---|---|---:|
-| hand + enum | On lines 255, 345, 350 of the frozen support roster, both individual margins are nonempty but there is no compatible ordered pair. All 3 are `e∈T`. All 162 identity counts decrease; 2,521,579 ordered assignments and 1,793,497 marked orbits removed. `e∈T` 96 hosts, 1,168,799 / 652,035 remain; `e∉T` 63 hosts, 1,127,403 / 682,942. | `WING20.md`, `S/{counts.tsv,target.log,audit.log,audit_stream.log}`, `ROUND20_FREEZE.sha256` | 0.000442 production; 0.004017 independent checks combined |
-| enum | All 267 old/new/delta fixed counts, per-host margins and orbit totals independently recovered. 672 generic literal pair tests with 243 positives; equal-mask multiplicity controls, 250 planted shores survive. | `S/{controls,toy,audit}.log`, `wing20_audit.py` | included; all round work **0.00496** |
-| hand + estimate | Arbitrary-size one-shore independent witness: for intersecting F, U containing its union, compatible shore count must be ≤ `1+|U|−|F|`. Strict three-site toy, 210 literal profiles. Synthetic filter only ~5.5–7.4 CPU-s projected to 159 hosts; **no target run**. | `WING20.md`, `wing20_nextprice.py`, `S/nextprice.log` | 0.00017 |
+| hand + enum | All nine new zeros require the pole-pair join: roster lines **128, 140, 232, 299, 488, 614, 1009, 1011, 1068**. Ordered assignments on fixed representatives 2,296,202 → **443,384**, marked orbits 1,334,977 → **266,500**. All 159 decrease, 150 remain positive. No original kernel, `m=15`, or R(3) closure. | `WING21.md`, `S/{counts.tsv,target.log,audit.log}`, `ROUND21_FREEZE.sha256` | 0.00206 production; 0.00114 independent audit |
+| enum | All 250 planted shores and 210 small literal profiles agree; exact independent recovery of every old/new margin, all 264 old/new/delta fixed counts, all per-host Burnside sums and join reasons. | `S/{controls.log,auditprice.log,audit.log}`, `wing21_literal.cc`, `wing21_audit.py` | included; entire round **0.00386** |
+| hand + enum + estimate | Hypothesizing a missing disjoint Y edge reduces one-shore witnesses to bridge sites, with no strict supersets needed. Four-pole positive and deletion control; 27 forced occurrences on 250 planted shores, all present. Synthetic 2.54 CPU-s for mandatory-edge compilation and marginal calls alone; no target tests of this extension. | `WING21.md`, `S/nextprice.log`, `wing21_nextprice.py` | 0.00010 |
 
 ## Next
 
-1. Critic/H: `bash ralph/lanes/D/round20_replay.sh scratch/critic/D20-audit` in a fresh audit directory. Scope is exactly three marked supports; not SAT, candidate or certificate.
-2. Request the arbitrary-size one-shore count on the remaining 159, one worker, ≤30 CPU-s / 64 MiB; first reproduce the 250 planted shores for this stronger rule, then per-host actions/deltas, independent ≤60 CPU-s check if feasible. No target test or proof campaign unless authorized. R(4) not reached.
+1. Critic/H: `bash ralph/lanes/D/round21_replay.sh scratch/critic/D21-audit` (fresh directory). No candidate, SAT, proof or debit against an unrestricted case. R(4) not reached.
+2. Request a marginal-only forced-Y-edge scan of the 150 surviving hosts: reject a shore if its mandatory Y edges contain a triangle, number >15 or exceed the site's degree cap (ordinary 3, triple 2). Preserve all fixed counts, no paired edge lists. Calibrate first with literal missing-edge/deletion tests and C22. Proposed limits one worker, 64 MiB, 30 CPU-s target + separate 60 CPU-s audit. No target run of this follow-up before authorization.

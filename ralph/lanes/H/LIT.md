@@ -426,3 +426,22 @@ published full order-26 census; see `ROUND9_REVIEW.md`.
   a second B e108/e109 source audit or a new frame/calibration census.
   Live responses and hashes: `scratch/H/lit/r17-*.data` and
   `scratch/H/round17-literature.log`.
+
+## Round 21 primary-source recheck — November 22, 2026
+
+- Radziszowski, *Small Ramsey Numbers*, EJC DS1 rev. 18 (April 24,
+  2026), DOI `10.37236/21`, Table Ia: byte-identical publisher PDF
+  to round 17 and still **40–41**. The arXiv record for Angeltveit
+  remains v2 (April 8, 2024); I fetched the actual EJC **32**(4),
+  #P4.30 PDF (November 3, 2025), DOI `10.37236/12936`, whose §7
+  and Table 1 still give the **partial** lower count 43,225,483.
+- McKay's Ramsey index is byte-identical to round 17 (only the known
+  smaller Ramsey class downloads, no GR–Angeltveit bulk order-39
+  file). HoG again returned a JavaScript shell, not an independent
+  recheck of the expanded catalog. Broad searches did not return
+  usable results this round (including HTTP 400 on arXiv's search
+  form). No newer decision, public bulk order-39 deposit, or exact
+  30/88–99 count was located; the unchanged primary sources verify
+  the last located published bounds, not completeness of a new
+  search. No new input for A–G. HTTP observations, hashes, and text:
+  `scratch/H/round21-literature.log`, `scratch/H/lit/r21-*`.
