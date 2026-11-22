@@ -383,3 +383,25 @@ published full order-26 census; see `ROUND9_REVIEW.md`.
   theorem. No new input for A–G. The marked 17/17 proof uses the
   published upper bound `R(3,6) ≤ 18` explicitly; that is not a new
   enumeration or a Lean proof of the published Ramsey number.
+
+## Round 16 status — November 22, 2026
+
+- Re-fetched Radziszowski, *Small Ramsey Numbers*, EJC DS1, DOI
+  `10.37236/21`, revision 18 (April 24, 2026). Table Ia cites
+  Ex5/Ang1 at `(3,10)`; the `K10` row in the graph-Ramsey table
+  explicitly prints 40–41 under `K3`. The publisher PDF hash matches
+  round 15. The arXiv record remains Angeltveit, arXiv:2401.00392v2
+  (April 8, 2024); the journal version is EJC **32**(4), #P4.30,
+  DOI `10.37236/12936` (November 3, 2025). Targeted 2025–26 title,
+  classical-result, exact-count and graph6 searches supplied no later
+  classical decision, no public bulk GR/Angeltveit order-39 deposit,
+  and no new exact count for `R(3,9;30,e)` at `88≤e≤99` in the
+  sources checked. This does not prove that no such artifact exists.
+- McKay's data page still explicitly lists the smaller 191, 477,142
+  and singleton calibration classes. A independently binds the public
+  order-16/17 `(3,6)` frames for C; H did not repeat that census.
+  The current HoG fetch is a client-rendered shell and is not a
+  fresh check of the expanded catalogue. The previous published
+  counts and artifact distinctions above stand. No new literature
+  premise for A–G. Logs: `scratch/H/round16-literature.log`,
+  `scratch/H/lit/r16-survey.txt`.

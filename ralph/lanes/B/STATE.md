@@ -1,27 +1,24 @@
-# Lane B — round 15, November 22, 2026
+# Lane B — round 16, November 22, 2026
 
-**Round 15 passed:** all **2,102,271 supplied deletion-reducible**
-32/e108 keys are covered at MTF degree-seven roots (cert, pending critic).
-2,016,206 checked demand cliques and 86,065 dual LRATs, including 36,800
-adopted ranks and no duplicates. Ordered merge and independent streaming
-audit passed, zero gaps; ~1.99 core-h, 240 MiB, no live jobs. The 1,875
-supplied criticals and five missing criticals are separate. No floor
-109, e88/U88 or profile change. `ROUND15_REPLAY.md`, `ROUND15.sha256`.
+**Round 16:** exactly **1,875 critical** 32/e108 keys bind to prior
+MTF d7-root receipts (1,431 cliques, 444 dual LRATs, zero unbound). The
+accepted reducibles join by disjoint key to **2,104,146** named keys
+(2,017,637 cliques, 86,509 dual LRATs); five criticals remain absent.
+All named criticals are addable (35–48 candidate nonedges each), but no
+independent e109 source found after scoped inventory. Descent passed
+13/13 smaller withheld addables and the saturated C5 control. No new
+proof search, e109 generation, floor 109, e88/U88, or profile change.
+`ROUND16_REPLAY.md`, `ROUND16.sha256`, `work/e108_r16/critical-crosswalk.tsv`.
 
 **Current baseline:** global degree-seven floor **108** for MTF is CONFIRMED
 (B-013); it subsumes the direct e162 `(0,2,32,6)` exclusion. Neither
-uses t8/t9 floors. No candidate graph. Round 15 used eight slots of
-the authorized 14, after one-slot calibration. Re-read the allocation.
+uses t8/t9 floors. No candidate graph. Re-read the allocation.
 Work from `scratch/B` with `ulimit -v 16777216` and `PYTHONDONTWRITEBYTECODE=1`.
 
-**Round 14:** bound the named **2,102,271** deletion-reducible 32/e108
-keys and excluded a deterministic **32,768** at d7 MTF roots by **31,407**
-checked demand cliques plus **1,361** independently rebuilt, dual-checked
-LRATs (64 overlap old 4,096 pilot). **159.74 CPU-s** plus 1.14 for controls
-and Traces. Whole reducible list estimates 2.85 core-h, not authorized;
-16 rank groups vary 49–186 in proof count. No discovery work. Census stays
-**2,104,146 / 2,104,151** (five missing), no floor 109, e88/U88 or profile
-change. `ROUND14_REPLAY.md` and `ROUND14.sha256`; no jobs.
+**Round 15 (CONFIRMED):** all **2,102,271 supplied deletion-reducible**
+32/e108 keys blocked at MTF d7 roots, 2,016,206 cliques and 86,065 dual
+LRATs, including 36,800 adopted ranks. ~1.99 core-h, 240 MiB; archived
+jobs in `LOG.md`. See `ROUND15_REPLAY.md` and `ROUND15.sha256`.
 
 **Round 13:** all **545** authorized set-aside e98 parents tested at d7/d8;
 477 distinct critical e108 outputs, **zero novel** (22.23 CPU-s incl. audit).
@@ -73,24 +70,23 @@ Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 
 ## Jobs
 
-No running jobs (0 cores). Both detached jobs exited normally; the final
-merge and ordered audit were foreground. Cwd was `scratch/B`, nice +5,
-16 GiB per process, with wall and aggregate CPU caps.
-
-| PID | Command | Log | Cores | Start (CET) | Actual end (CET) |
-|---|---|---|---:|---|---|
-| 905617 (outer timeout), 905620 (driver) | `timeout 42m e108_r15.py campaign work/e108_r15 9 257 8 13900` | `scratch/B/logs/e108_r15_main.log` | 8 | Nov 22 10:33:28 | ~10:50:28, status 0 |
-| 865356 (outer timeout), 865361 (driver) | `timeout 6m e108_r15.py campaign work/e108_r15 1 9 8 1200` | `scratch/B/logs/e108_r15_wave1.log` | 8 | Nov 22 10:32:38 | 10:33:11, status 0 |
-
-Rounds 1–14 have no live PIDs. Older job transitions are in `LOG.md`.
+No live PIDs (0 cores). Round 16 used foreground only, at most one core;
+round-15 PIDs were absent. Older job transitions are in `LOG.md`.
 
 ## Results and claims for review
+
+### Round 16
+
+| Label | Result | Evidence | Core-h |
+|---|---|---|---:|
+| cert inventory, pending critic | Key-indexed 1,875 critical d7 MTF receipts, 1,431 cliques + 444 dual LRATs; no new proofs or unbound key. Exact disjoint union with accepted reducibles: 2,104,146 named keys; five criticals still missing. | `ROUND16_REPLAY.md`, `ROUND16.sha256`, `scratch/B/work/e108_r16/critical-crosswalk.tsv` | 0.0023 |
+| hand + enum (control) / open (source) | Legal one-edge descent recovers the addable subfamily only; smaller complete controls 13/13 addable, 0/1 saturated. All supplied criticals have 35–48 legal single-edge additions. No independent order-32/e109 source found in scope, so stopped without target descent. | `ROUND16_REPLAY.md`, `scratch/B/logs/e108_r16_{descent,local_source,public_source}.log` | 0.0007 |
 
 ### Round 15
 
 | Label | Result | Evidence | CPU-hours |
 |---|---|---|---:|
-| cert (named reducible list, pending critic) | All 2,102,271 supplied reducible 32/e108 keys blocked at MTF d7 roots; 2,016,206 demand cliques plus 86,065 dual LRATs. New: 1,980,937 + 84,534; exact merge with 36,800 adopted positions, zero gaps. | `ROUND15_REPLAY.md`, `ROUND15.sha256`, `scratch/B/work/e108_r15/summary.json`, `scratch/B/logs/e108_r15_rank_audit.log` | ~1.99 incl. setup/replay/merge |
+| cert (named reducible list, confirmed) | All 2,102,271 supplied reducible 32/e108 keys blocked at MTF d7 roots; 2,016,206 demand cliques plus 86,065 dual LRATs. New: 1,980,937 + 84,534; exact merge with 36,800 adopted positions, zero gaps. | `ROUND15_REPLAY.md`, `ROUND15.sha256`, `scratch/B/work/e108_r15/summary.json`, `scratch/B/logs/e108_r15_rank_audit.log`, `ralph/critic/round_015.md` | ~1.99 incl. setup/replay/merge |
 
 ### Round 14
 
@@ -220,10 +216,11 @@ Rounds 1–14 have no live PIDs. Older job transitions are in `LOG.md`.
 
 ## Next
 
-0. Critic/H: audit the full named reducible result (`ROUND15_REPLAY.md`).
-   Use `ROUND15.sha256`, the exact rank merge, and targeted no-solve replay
-   (e.g. shards 0 and 141) if helpful. Do not rerun production. No new
-   discovery wave without a different coverage argument/source.
+0. Critic/H: review the critical receipt crosswalk and disjoint named
+   union in `ROUND16_REPLAY.md`; no production rerun. Reopen one-edge
+   descent only with an independent e109 input; it does not cover
+   saturated missing keys. No new discovery wave without a distinct
+   source or coverage argument.
 1. Critic/H: replay or audit the bounded prefix and scout proof tranche.
    `src/replay_prefix_r7.sh terminal` and `src/e108_scout_proofs_r8.sh replay work/e108_r8_scout_proofs`
    are ready. Do not re-launch prefix. Outside-prefix critical e88 after

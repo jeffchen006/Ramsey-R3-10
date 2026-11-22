@@ -360,9 +360,29 @@ shared-edge point with 22 W triangles. Free-population jobs do not
 justify scaling (all four MIPs cap; no full-template cut). See
 `ROUND14_REPLAY.md` and its freeze. No active jobs handed forward.
 
-## Round 15 handoff
+## Round 15: stop old e170 population pilots
 
-Occupancy-only rows reproduce the three named tuple cuts, but
-all four templates have new exact integer relaxation points.
-Adding rows is cheap; matched solving is slower (11.93 → 18.80
-CPU-s). Stop this pilot; see `ROUND15_REPLAY.md` and its freeze.
+- MTF forced-contact occupancy inequalities checked on 26 C13 pairs,
+  another 26 physical presentations and all edges of C35/Exoo39. They
+  rejected the same three historical pinned populations as round 14.
+  Four strengthened free-template points still have 6–9 oversubscribed
+  old edge cells; none gives a genuine embedding or rules out a key.
+  Adding rows is cheap; matched solving is slower (11.93 → 18.80
+  CPU-s). Eight matched solves and fixed control cost 0.0182 core-h.
+  `ROUND15_REPLAY.md` and `ROUND15_FREEZE.sha256`.
+
+## Round 16 fallback archive (do not launch)
+
+- Scout N's opposite-wing size-four non-star majority rows apply to
+  sites with joint support `S⊆M` and `|S∩K|≥2` for `K⊆M` of size three.
+  Pairwise intersecting supports give an independent family, and those
+  sites miss the independent wing subset of size
+  `10−|M|−[both cross ends outside M]`; the population bound is
+  `|M|−1+[both cross ends outside M]`. Nonlinear projected motifs forbid
+  a submultiset (after intersecting each support with a common retained
+  wing set), not just the old degree tuple. See `review/ideas/r015_N.md`
+  §2 and `scratch/ideas/r015_N/{trirows.log,motifs.jsonl,strengthened.jsonl}`.
+  Scout samples: size-four rows reject 28/30 round-13 and 4/4 round-15
+  supplied tuples, but all four free reruns return replacement tuples.
+  These are scout evidence, not new G closures or a convergence price.
+  No free-population MIP rerun this round.

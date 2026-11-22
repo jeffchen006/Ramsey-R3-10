@@ -388,6 +388,14 @@ Fit estimates: prefix upper bound roughly (364,384 × ~1 s + 132,817 × ~0.2–0
 
 ## Other experiments
 
+- Round 15 detached history (CET): PID 865356 (driver 865361),
+  `timeout 6m e108_r15.py campaign work/e108_r15 1 9 8 1200`, eight
+  slots, `scratch/B/logs/e108_r15_wave1.log`, 10:32:38–10:33:11, exit 0.
+  PID 905617 (driver 905620), `timeout 42m e108_r15.py campaign
+  work/e108_r15 9 257 8 13900`, eight slots,
+  `scratch/B/logs/e108_r15_main.log`, 10:33:28–~10:50:28, exit 0.
+  Round 16 found all four absent; its audits used no detached jobs.
+
 - `gluecut`: a witness independent set for one failed candidate must be hit by all future siblings. Correct pruning but witness construction and bitset application offset the node savings in both samples.
 - `gluewin -J`: uses the degree-dependent upper GR z-cap on neighbour-degree sums. Around 2% fewer nodes in the sampled case, but no CPU win. `glueres` tightens singleton/pair/higher compatibility by a necessary minimum edge condition on the residual H plus unused attachments. Costs slightly more in the dominant sample. `gluelast` changes condition order and batches the final hitting constraint; does not improve on `gluetrans` at e52.
 - `edgeup`: triangle-free one-edge extension of order-16 e21 gives 159/201 of the e22 graphs; at (24,e57) it gives 118069/129347 at e58. `irreducible` independently identifies 11278 non-deletable graphs at e58, exactly the complement count. The sampled n23,e52 had 1/36 irreducible; this is too small a sample to extrapolate. One-edge extension alone is not complete.

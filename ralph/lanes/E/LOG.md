@@ -273,3 +273,16 @@ all 167 original-width CNFs freshly rebound and CakeLRAT checked.
 Main path 0.34909 core-h, all 75 workers 0.37297 core-h. Pilot 14/14
 width-three proofs, not used in that production. No jobs survived.
 `shared74_round14.md`, `scratch/E/r14_shared/freeze.5.sha256`.
+
+## Round 15 archive (2026-11-22)
+
+Critic confirmed E-038/E-039: conditional mixed core 8 only, in
+`(2,32,4)`, `δ(W)≥2`, `e(W)=11`, `(10,10,11,11)`, universal
+`δ(G)≥5`, E-021 all-graph premise, all omission roles and `K=6,7,8`.
+Exact cover: 41 first branches (two empty), 132,986 projections,
+832,295 lifts. Complete original ordered replay; all 85 width-three
+proofs separately rebound to the original and CakeLRAT rechecked,
+no fallbacks. Main 0.15664 core-h, total 0.17446 core-h. All 51
+wrappers were collected at the start of round 16, no live PIDs.
+`shared74_round15.md`, `scratch/E/r15_shared/freeze.8.sha256`,
+`ralph/critic/round_015.md`.

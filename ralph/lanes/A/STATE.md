@@ -1,44 +1,39 @@
 # Lane A state
 
-Round 15, November 22, 2026. Share 3; no live or stopped A jobs. No new
-order-40 candidate, distribution exclusion, or whole Case R closure.
-R(7) was already closed by Lane C's accepted finite certificates (round
-1); A replayed them independently. Do not restart the old R(7) cube queue
-or the retired e168 strips.
-
-Current hand+enum audit of the marked cap-five 17/17 block:
-`ROUND15_EXCHANGE.md`, `replay_panel_exchange.sh`, `ROUND15_FREEZE.sha256`,
-`scratch/A/r15/`. Complete 12+30 shard coverage, pending critic.
-Lane C owned production; A consumed receipts and did not launch solvers.
+Round 16, November 22, 2026. Share 4; no live or stopped A jobs. No new
+candidate, distribution exclusion, or whole Case R closure. R(7) was
+already closed by C's accepted finite certificates (round 1), replayed
+independently by A. The round-15 17/17 marked block is accepted; do not
+rescan that, the old R(7) cubes, or retired e168 strips.
 
 ## Jobs
 
-| PID (timeout / worker) | Command | Log | Cores | Start / expected end, CET |
+| PID (timeout / worker) | Command | Log | Cores | Start / expected end (CET) |
 |---|---|---|---:|---|
 | — | No detached A jobs | — | 0 | — |
 
-Uses bounded foreground tools (`nice -n 5`, 120/150-s CPU/wall and
-16-GiB VM limits), at most two census pipe workers and no solvers.
-Round aggregate about 0.011 A CPU-h including repeated validation and
-compiles; peak recorded RSS under 400 MiB, retained A data under 1 MiB.
+Only bounded foreground compilation, counting and controls. `nice -n 5`,
+up to 60-s wall / 120-s CPU and 512 MiB VM per process. Timed build,
+original and clean replay total **0.0099 A CPU-h**; further failed initial
+control attempts <0.001 CPU-h. Working peak 37 MiB RSS per process (164 MiB
+compiler). Retained 0.75 MiB including clean duplicate and two executables.
 
 ## Results and claims
 
 | Label | Scope/result | Evidence | CPU-h |
 |---|---|---|---:|
-| hand (pending critic) | Shore swap `(i,j,b) -> (j,i,b)` on separate copies, physical neutral `k -> k xor b`, private crossing matrix transposes. Both bits remain, fixed diagonals are counted once, one-sided premises and stage/timing data do not transfer. | `ROUND15_EXCHANGE.md` | — |
-| enum (coverage, pending critic) | All 157,472,001 ordered headers bound to the original 12 receipt rosters or 30 disjoint HH shards. Exact bitwise transpose membership over all off-diagonal IDs; 67,417,211 original direct, 40,218,398 inferred HL, 49,836,392 HH orientations requiring 24,924,719 representatives (13,046 diagonals). First HH shard 2,647,995 reps, 541 diagonals. | `scratch/A/r15/{census.tsv,first.tsv,coverage.initial.tsv,receipts.initial.log}`, `ROUND15_EXCHANGE.md` | 0.004 full rebuild/replay |
-| enum (controls) | 2,672 smaller physical orientation checks, both fixed bits and asymmetric fixed-header crossings. Missing diagonal, wrong bit and dropped LH reference rejected. Actual first-receipt copies reject transferred diagonal, count-preserving map mutation, and one live/disagreeing terminal. Incomplete `--require-full` output is not published. | `scratch/A/r15/{controls.log,receipt-negatives.log,incomplete.stderr}` | 0.001 controls incl negative receipt checks |
-| hand + enum (marked two-neutral block only, pending critic) | All 30 HH receipts independently bound and checked: 24,924,719 reps → 3,620,522 local → 6,027 panel → 1,617 joint, 74,632 matching rejected fillings, none live. With the 12 frozen ordered negatives and exchange proof: 92,341,930 direct, 65,130,071 transferred, 0 ordered unresolved. | `ROUND15_EXCHANGE.md`, `ROUND15_FREEZE.sha256`, `scratch/A/r15/{coverage.final.tsv,receipts.final.log,totals.final.log}` | <0.001 final A binding; 0.0751 C production |
-| archived | Round 14 exact independent header census and C prefix audit: original 12 ordered shards through left ID 24,575, 67,417,211 headers, 12,594 panel IDs, 3,464 joint, full matched reasons on 148,231 fillings, none live. A separate first read recovers first twin stream digest and former pilot/triple IDs. | `ROUND14_REPLAY.md`, `ROUND14_FREEZE.sha256` | prior |
-| archived | A-023: independent Round 13 literal package audit bound 55,055 labelled frames and 9,959 atlas entries, replayed 498,668 left-triple IDs (17,604 local → 0 panel), preserved all 100 held panel survivors. | `ROUND13_REPLAY.md`, `scratch/A/panel13/round13.sha256` | prior |
+| hand (pending critic) | One-neutral marked cap-five window order 16 then 17 by order, private sizes 15/16, same neutral matched once, transpose only when reading backwards. Literal shapes 3322/3332 and 3333/4332/4333; distinct catalogue-labelled frames cover all physical targets. No bit or half-plane. | `ROUND16_ONE_NEUTRAL.md` | — |
+| enum (pending critic) | McKay catalogue bytes match both local inputs; 2,576 and 7 distinct classes checked by `shortg`, triangle-free and alpha ≤5. 2,817,701 and 59,521 exact side frames. Six `(D16,d16)` complementary header keys, 34 positive shape strata, **15,051,526,031** exact ordered eligible header IDs, all still open from A's count. | `ROUND16_FREEZE.sha256`, `scratch/A/r16/{count16.tsv,count17.tsv,strata.tsv,public.sha256,replay.log}` | 0.82 CPU-s for counting alone |
+| enum (calibration) | Smaller 6/7 frame rosters exactly match literal set enumeration; 34,504 exact header IDs per read direction, 153 physical edge reconstructions each way; 306 crossed-edge deletions rejected. Swapped private size, dropped frame and false degree total diagnosed. | `scratch/A/r16/controls.log`, `one_neutral_control.py` | 0.33 CPU-s original |
+| enum (pilot binding only) | Delivered 544 headers to C, 16 from every positive shape stratum including extreme and seeded ranks. Full side-frame IDs lex `(host, four increasing masks)`. No Cartesian product or terminal scan. Clean replay reproduces all 13 deterministic outputs. | `scratch/A/r16/{pilot.frames,pilot.index.tsv,pilot.bound.tsv,pilot.log,replay.log}`, `replay_one_neutral.sh` | 15.09 CPU-s original sampling |
+| estimate | 112.14 GiB at eight bytes per eligible ID; 4.18 core-h at 1 µs/header, 4,181 core-h at 1 ms/header. Unit-cost sensitivities, not predicted terminal costs. | `ROUND16_ONE_NEUTRAL.md`, `scratch/A/r16/estimate.log` | — |
 
 ## Next
 
-- H/critic to review the complete `--require-full` receipt audit and
-  C's structural cover and search. No more A production or replay wave
-  unless the critic finds a gap. Never copy stages or reason vectors
-  to exchanged IDs.
-- Even full closure is only the marked cap-five 17/17 block, i.e. the
-  two-neutral-site case of a `K4,4` in a cap-five regular target. The
-  zero-/one-neutral-site cases, cap six, and whole Case R do not follow.
+- C owns terminal pilot and tail, not A. Await its price before any
+  production. Do not materialize the header product or treat 544 rows
+  as a terminal certificate or statistically reliable tail bound.
+- Critics can replay with `bash ralph/lanes/A/replay_one_neutral.sh`;
+  it writes under `scratch/A/r16-replay/` without mutating C's input.
+- Both zero-neutral splits and the one-neutral split are still open
+  from this roster alone. Do not infer whole cap-five or Case R closure.

@@ -1,5 +1,16 @@
 # Lane A state
 
+## Round 15 (history)
+
+Independent A final exact `--require-full` census/replay for the two-neutral
+marked cap-five 17/17 block. All 30 HH receipts plus 12 prior ordered
+receipts: 92,341,930 direct, 65,130,071 by exchange, zero unresolved of
+157,472,001. HH included 13,046 diagonals among 24,924,719 direct IDs;
+6,027 panel, 1,617 joint, 74,632 matching rejected fillings. Both bits
+retained. Do not transfer stage/timing records. Accepted in round 15
+critic verdict, only the marked 17/17 case. `ROUND15_EXCHANGE.md`,
+`ROUND15_FREEZE.sha256`, `scratch/A/r15/receipts.final.log`.
+
 ## Round 9 (history)
 
 Mixed `(2,7,4,27)` terminal independent audits: noncross d8 j3 with

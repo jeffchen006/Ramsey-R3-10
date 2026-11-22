@@ -331,3 +331,10 @@ import R310
 #print axioms R310.card_rootsWindow_lt_of_ramsey
 #print axioms R310.reciprocal_windows_card_add
 #print axioms R310.biclique_four_neutral_iff_windows_seventeen
+#print axioms R310.starMass_comm
+#print axioms R310.starMass_self
+#print axioms R310.starMass_cut_balance
+#print axioms R310.middle_star_of_tight_mass
+#print axioms R310.mem_pathUntouched
+#print axioms R310.pathUntouched_codegree_ge_two_of_mtf
+#print axioms R310.middle_star_at_seventeen_sixteen

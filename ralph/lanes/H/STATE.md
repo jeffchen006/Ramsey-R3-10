@@ -1,43 +1,43 @@
-# Lane H — round 15 handoff, November 22, 2026
+# Lane H — round 16 handoff, November 22, 2026
 
-Two-core ceiling, no H solver, detached or stopped jobs; no candidate.
-Confirmed through round 014: **238 near-regular MTF distributions plus
-Case R**, ten conditional U88 keys. **Six** conditional E mixed cores
-remain (`1,6,8,9,15,18`); five only if pending E-038 is accepted.
-The order-32/e108 supply is **2,104,146/2,104,151** (five missing);
-36,800 distinct reducibles accepted through round 014. Do not conflate
-that supply with the **14,395** complete order-33 through-e121 census.
+Two-core ceiling; no solver, detached or stopped H job; no candidate.
+Confirmed through round 015: **238 near-regular MTF distributions plus
+Case R**, ten conditional U88 keys, five conditional mixed E cores
+(`1,6,9,15,18`), d7 floor 108. **All 2,102,271 supplied reducibles** of
+order-32/e108 are covered. The supply remains **2,104,146/2,104,151**,
+five missing criticals; the separate order-33 through-e121 denominator
+is **14,395/14,395**. See `ROUND16_REVIEW.md` for scope and replay.
 
 ## Jobs
 
 | PID | Command | Log | Cores | Start/end CET |
 |---|---|---|---:|---|
 | — | None live, detached or stopped | — | 0 | — |
-| foreground, finished | `build_private_signature.sh --old build R310`; targeted/project `env lean -j 1 -DElab.async=false` | `scratch/H/round15-{biclique-dev,build,targeted,project}.log` | 1 slot | ~10:29–10:32 |
-| foreground, finished | `python3 -SB check_biclique_neutral.py` (CPU/VM caps) | `scratch/H/round15-controls.log` | 1 | 10:32, 1.12 s |
+| foreground, finished | `build_private_signature.sh --old build R310`; `env lean -j 1 -DElab.async=false` source and two axiom suites | `scratch/H/round16-{build,middle-dev*,targeted,project}.log` | 1 slot | 11:57–12:07 |
+| foreground, finished | `python3 -SB check_middle_star.py` (wall/VM cap) | `scratch/H/round16-controls.log` | 1 | 12:08, 0.02 s |
 
 ## Results and claims
 
-| Label | Result | Evidence | H core-h |
+| Label | Result | Evidence | Core-h |
 |---|---|---|---:|
-| Lean H-030 pending | Explicit `Ramsey3Le 6 18`; the two antineighborhoods of a marked induced `K4,4` in a triangle-free order-40 graph with α≤9 cover the 32 exterior sites, intersect in the neutral sites, each have size ≤17, and exactly two neutral sites iff orders 17/17. Regularity/cap unused in this implication. No catalogue, exchange, scan or case closure formalized. | `lean/R310/BicliqueNeutral.lean`, `scratch/H/round15-{build,targeted,project}.log`, `ROUND15.sha256` | 0.03158 incl. one dev error, Mathlib not rebuilt |
-| enum controls | Smaller `R(3,3)` threshold: 12 labelled order-5 and zero order-6 survivors; 1,494 smaller cap-valid planted squares; order-9 tight/asymmetric and mixed triangle mutation. Targeted 5 and integrated 332 axiom reports passed. | `check_biclique_neutral.py`, `scratch/H/round15-controls.log` | 0.00031 controls |
-| ledger | Imported all round-014 verdicts including both D quantifiers (nine local CNFs), F's old-card ≥36 bounds, G's three fixed populations, 36,800 B reducibles and six E cores. New round-015 producer reports recorded pending. | `ralph/CLAIMS.md`, `ROUND15_REVIEW.md` | — |
-| open (dated check) | Current EJC DS1 PDF (rev. 18, Apr 24, 2026) gives classical 40–41. No superseding decision found; no second catalogue census ordered or attempted. Prior no-new-data findings remain qualified. | `LIT.md`, `scratch/H/round15-literature.log` | — |
+| Lean H-031, pending | Actual marked-path partition at t=17,m=16 gives row contacts 2/2/4 at each of 7 middle neighbors and column size 2 at each of 14 untouched sites. Explicit ambient 9-regularity, triangle-free, cap 3, and local floor 2; MTF and no deficient pair incident to the middle imply that floor. K=2 structural existence, the roster and exclusion not formalized. | `lean/R310/MiddleStar.lean`, `ROUND16.sha256`, `scratch/H/round16-{build,targeted,project}.log` | 0.06930 including dev and controls |
+| enum controls | Petersen (3,5,10) degree/α and 60 oriented marks, 60 contact deletions, 19-site MTF blow-up, 36 tight row arrays. Targeted 7 and integrated 339 axiom reports pass strict checker. | `check_middle_star.py`, `scratch/H/round16-controls.log` | included |
+| ledger | Imported r015 A/C once, B full reducibles, D each-path theorem, E core 8, F all-vertical-pattern ID21, G/H and R/N scouts. New r016 lane receipts pending, not debited. | `ralph/CLAIMS.md`, `ROUND16_REVIEW.md` | — |
+| open (dated literature) | DS1 rev. 18 clearly lists 40–41. No later classical result, bulk GR/Angeltveit order-39 release or new dense order-30 exact count located; no second catalogue run. Current HoG HTML is a shell, not a fresh catalogue assertion. | `LIT.md`, `scratch/H/round16-literature.log` | — |
 
 ## Next steps
 
-- Import round-015 critic outcomes, checking late lane submissions: B
-  campaign still live at H snapshot; D had not submitted a new result.
-  F's all-vertical restriction on ID21 is not a profile exclusion.
-- A/C's matched full receipts (92,341,930 direct, 65,130,071 exchanged,
-  zero unresolved; hand + enum pending) are the best bounded regular
-  evidence. Closure if accepted is only the two-neutral cap-five mark,
-  not that such a biclique exists, all R(5), or all R. Per-ID reason
-  vectors must not be treated as per-filling keys or transferred depths.
-- E's new core 8 has fresh bound width-three proofs; resolution of
-  `(2,32,4)` or of the full IV class does not follow. G's cheap support
-  rows reject three old fixed tuples, not templates; no U88 debit.
-- If the critic wants a next formal bridge, C requested the physical
-  exchange implication. First bind which graph invariant and mapping
-  genuinely remain unproved; no second terminal/census run by H.
+- Import round-016 critic verdicts including any final F handoff
+  after the snapshot. Preliminary ID8 hole restoration is not an
+  exclusion and has no full receipt yet. Preserve B's 1,875-critical crosswalk as a
+  named inventory; five missing are not established addable or saturated.
+- D's `K=2,t=17,m=16` pilot, not the 15,282-fold whole run, is the best
+  measured regular continuation. Distinguish column-floor/no-deficient
+  endpoint (Lean) from the no-other-witness premise in the pole-pair
+  lower row (not Lean). Do not repeat D's generator or price.
+- A/C round-15 marked exclusion is confirmed; C-041 is the 544-ID
+  one-neutral pilot with 15,051,525,487 untested, not a case closure.
+  Zero-neutral and broader cap-five are still open. G's result is the h=8 `leaf+leaf.1`
+  scheme only. E core 15 has 142 exact open IDs, not 142 UNSATs.
+- Request a bounded formal bridge only after identifying the remaining
+  mathematical premise; no second inventory or terminal run by H.
