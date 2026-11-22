@@ -338,3 +338,8 @@ import R310
 #print axioms R310.mem_pathUntouched
 #print axioms R310.pathUntouched_codegree_ge_two_of_mtf
 #print axioms R310.middle_star_at_seventeen_sixteen
+#print axioms R310.mem_polePairSites
+#print axioms R310.polePairSites_subset_exterior
+#print axioms R310.polePairSites_card_add_one
+#print axioms R310.polePairSites_pos_iff
+#print axioms R310.polePair_multiplicity

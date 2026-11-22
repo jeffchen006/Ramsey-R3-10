@@ -1,5 +1,16 @@
 # Lane H — archived round 2 handoff, November 21, 2026
 
+## Round 16 archive
+
+- `ROUND16_REVIEW.md` and `ROUND16.sha256`: imported round-015
+  verdicts; H-031 Lean middle-star at marked t=17,m=16 gives 2/2/4
+  row contacts and two-contact columns under the explicit local floor.
+  7 targeted and 339 project axiom reports, Petersen plus blow-up
+  and incidence controls pass. ~0.0693 core-h, no solver jobs.
+- Round-16 critic later confirmed H-031, the F family scope chain,
+  and the existing 238-key balance. See `ROUND17_REVIEW.md` for the
+  imported ledger and the separate H-032 middle-as-witness premise.
+
 ## Round 14 archive
 
 - `ROUND14_REVIEW.md` and `ROUND14.sha256`: ledger through round 013;

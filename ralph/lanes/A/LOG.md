@@ -1,5 +1,16 @@
 # Lane A state
 
+## Round 16 (history)
+
+Independently rebuilt one-neutral marked cap-five 16/17 labelled roster
+(2,817,701/59,521 frames, six complementary keys and 34 shape strata,
+15,051,526,031 header IDs). No exchange factor; same physical neutral
+identified once. Both 6/7 control directions: 34,504 literal IDs each,
+153 reconstructed plants and 306 rejected crossing mutations. Delivered
+544 deterministic target pilot rows to C; no A terminal checks. Clean
+replay matched all artifacts (~0.010 core-h). See `ROUND16_ONE_NEUTRAL.md`,
+`ROUND16_FREEZE.sha256`, and `scratch/A/r16/replay.log`.
+
 ## Round 15 (history)
 
 Independent A final exact `--require-full` census/replay for the two-neutral

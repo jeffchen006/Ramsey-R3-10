@@ -209,3 +209,6 @@ Exact costs and proof/replay scopes are in `ROUND4_REPLAY.md`.
 
 ## Round 15 (November 22)
 - Calibrated exact Python witness reuse, retained unchanged C++ terminal, and scanned all 30 independent HH representative shards under the new gate. Coverage including the old prefix: 92,341,930 direct, 65,130,071 by shore exchange, zero unresolved. Marked cap-five 17/17 excluded, pending critic (`hand + enum`); no broader closure. 270.204 CPU-s production, 390.415 with charged setup. `ROUND15_REPLAY.md`.
+
+## Round 16 (November 22)
+- One-neutral cap-five K4,4 16/17: hand cover and group-key proof. A bound 15,051,526,031 labelled headers. Of 544 pilot IDs, 497 had an empty group and 47 passed individual groups but no joint assignment. Both C++ literal/filtered and independent Python audit; eight literal probe caps not counted as rejections. 153 smaller plants and 1,596 matched keyed terminal assignments. Exact pilot-only frontier 15,051,525,487; this is superseded by round 17's weighted first filter. No production; warm estimates 11,400 core-h literal all-domain/4,348 core-h preflight model (not bounds), Python replay 1.84M core-h estimated. `ROUND16_REPLAY.md`, `ROUND16_FREEZE.sha256`.

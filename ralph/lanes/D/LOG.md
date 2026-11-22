@@ -1,3 +1,7 @@
+## Round 16 archive (2026-11-22)
+
+D-042 confirmed for the 157 specific pilot profiles, not the whole slice. Six supports, 320,878 joined ordered positions on the fixed supports, 15,282 orbits. 155 fresh + two old LRATs, both checked in two passes, plus the 48 older enumeration holdouts. Reproducible pilot and interpretation: `MIDDLE16.md`, `round16_replay.sh`, `scratch/D/middle16/clean/summary.log`. Core-h 0.0303; no surviving r16 jobs. Full pilot handoff in `scratch/D/middle17/state_round16.md`.
+
 ## Round 14 archive (2026-11-22)
 
 D-035–039 accepted: every deficient path admits ≥13 distinct C5 closures, some ≥16; the three pairwise 2-regular seven-fibers lemma; the 8×4 half-wing and the square cuts. See `WING_RIDGE.md` and `BOOK14_PANEL.md` for all proofs, timings and limitations. Final rosters `scratch/D/book14/clique-all.tsv` 41,486, `clique-rich.tsv` 39,356 (overlapping oriented marks, not a whole-graph partition). No R(3) or original kernel closure. Original 84-panel LP excluded 57/65 beyond elementary gates; no full type pair eliminated by sampling. At K=2 the only three possible t=16 shapes all passed the old fractional relaxation, leading to round 15. No round-14 jobs remain.

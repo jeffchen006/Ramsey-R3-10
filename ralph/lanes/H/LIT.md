@@ -405,3 +405,24 @@ published full order-26 census; see `ROUND9_REVIEW.md`.
   counts and artifact distinctions above stand. No new literature
   premise for A–G. Logs: `scratch/H/round16-literature.log`,
   `scratch/H/lit/r16-survey.txt`.
+
+## Round 17 status — November 22, 2026
+
+- Re-fetched Radziszowski, *Small Ramsey Numbers*, EJC DS1 revision 18
+  (April 24, 2026), DOI `10.37236/21`: same publisher PDF hash, with
+  Table Ia still at **40–41**. Vigleik Angeltveit's *R(3,10) ≤ 41*, EJC
+  **32**(4), #P4.30 (November 3, 2025), DOI `10.37236/12936`, still
+  pairs with [arXiv:2401.00392v2](https://arxiv.org/abs/2401.00392v2)
+  (April 8, 2024). November 22 exact-value/title searches did not
+  identify a later classical decision.
+- Exact-count, graph6, and modern SAT/CAS/enumeration searches did not
+  surface a public bulk GR–Angeltveit order-39 file or dense order-30
+  exact count (`88≤e≤99`). McKay's public small-calibration index is
+  unchanged; Exoo's primary site still serves the single 39-vertex
+  witness. Harris, Hefty, Horn, King and Pfender, *A short proof that
+  R(3,k)=Θ(k²/log k)* ([arXiv:2609.01782v1](https://arxiv.org/abs/2609.01782v1),
+  September 1, 2026), has no finite `(3,10)` decision or reusable census. No change to
+  the A–G source recommendations above. This was a source screen, not
+  a second B e108/e109 source audit or a new frame/calibration census.
+  Live responses and hashes: `scratch/H/lit/r17-*.data` and
+  `scratch/H/round17-literature.log`.

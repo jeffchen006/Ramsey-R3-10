@@ -1,67 +1,54 @@
 # Lane F state
 
-Round 16 complete. **3-core ceiling; no live or stopped jobs; no candidate.** Strongest new result (hand + cert, submitted to critic): the final ID8 36-card cannot acquire **even one** arbitrary vertex in a triangle-free graph with alpha≤9. With the reviewed prior reductions this excludes the entire *four-deletion cyclic unsigned free-involution 36-card family* of targets (hand + inherited enum/cert). Does not exclude the old 36-card alone, an unrestricted automorphism case or a global edge distribution. No change to best empirical score: 24 tens at e178 and e179. `ROUND16.md`, `round16_nearness.tsv`.
+Round 17 complete. **2-core ceiling; zero running or stopped jobs; no candidate.** R16 accepted and retired: F-032 seven-window bridge, F-030 ID8 to 37, F-031 cyclic four-deletion consequence. New task was a **price**, not joint production. Score unchanged: 24 independent tens at e178/e179; `round17_nearness.tsv`.
 
-| Label | Result and evidence | Core-h |
+| Label | Result, scope, evidence | Core-h |
 |---|---|---:|
-| hand + enum | Named hole: exactly one of 64 local cycle roles survives all 45 eight-singleton supports; independently reproduced from physical endpoint matchings. Singleton-only test by itself leaves 40 roles, and some four-hole cuts and polynomial multiples remain open. `scratch/F/r16/{full,contacts,restored,splitfull,multipilot}.stdout`. | 0.00467 |
-| hand + cert | Seven-site bridge: no pole may take a full site, verticals restore **with the pole attached**, and the pole must meet every cyclic seven-window. `ROUND16.md`; `scratch/F/r16/{no_blind_pole.cnf,no_blind_pole.lrat,sataudit.stdout}`. | 0.00007 |
-| hand + enum | Each of 89,445 first-column footprints, 2,623 D18 reps of sizes 3..8, terminates on a ten. Original-edge replay of all 23,428 deductions. `scratch/F/r16/{rosteraudit,eightaudit}.stdout`, `feet.trace`, `eight.trace`. | 0.00375 |
-| hand + cert | ID8 is **not extendible to 37**, any verticals and any crossing signs. One ordinary CNF, 2,624 disjuncts, 320,371 vars / 768,865 clauses; both proof checkers plus frozen support rebinding PASS. `scratch/F/r16/id8_strong.{cnf,lrat}`, `strongbind.stdout`, `id8_frozen.py strong`, `ROUND16_FREEZE.sha256`. | 0.07530 |
+| hand + cert | An interval of 14 untouched sites (28 vertices) of the marked ID8-derived core necessarily has an independent nine, even with arbitrary signs and verticals under triangle-freeness. Two triangles, three squares, three supports. 48-variable/76-clause CNF, 774-byte dual-checked LRAT. `ROUND17.md`, `scratch/F/r17/{local9.txt,marked9.cnf,marked9.lrat,cert2.stdout}`. | 0.00016 incl. controls, failed limit setup and extraction |
+| hand + enum | Independent labelled and marked-symmetry rosters, exact for the specified relaxation. The 17 untouched sites have only the identity and reversal. Before prism price 13,084 exceptional rows (includes the unchanged one), 17,474 external columns. Three-face reusable cuts eliminate 5,831 of those exterior columns. `scratch/F/r17/{geometry,replay,prismfull}.stdout`, `prism.rejects`. | included below |
+| hand + enum (pilot) | 96/105 row-independent first-pole contradictions, nine open; 48 deductions beyond the shared prism cuts. No sign enumeration, no extrapolated exclusions. `scratch/F/r17/{rankpilot.stdout,pilot.results}`. | 0.00043 target pilot |
+| hand + enum (count, NOT a closure) | **353,474,849** unsigned changed-row/first-external-pole headers after all priced cuts, from 847,881,702 after the grounded floors. Distinct actual marginals: 8,511 marked-row and 11,595 exterior-footprint representatives. Two counting directions and labelled fixed points agree. `scratch/F/r17/{finish.stdout,finalmark.rows,finalpole.rows}`, `ROUND17_FREEZE.sha256`. | 0.01267 total all stages incl. 0.00581 clean replay |
 
-**Next:** critic/H please replay `id8_frozen.py strong` and review the seven-window reduction, especially its mate-hit argument, before ledgering the conditional family closure. If accepted, retire the whole cyclic four-deletion family. A genuinely different follow-up would price a *single exceptional site* in an otherwise cyclic unsigned card (first check exactly which old filters fail without translation); require small controls and a priced one-pole gate, do not relaunch ID8 or old anneal searches. No extra cores requested. R15 ID21 confirmed as F-029. Earlier state is in `LOG.md`.
+**Next:** Do not scan those 353 million pairs; do not reopen the cyclic family. If authorized, price a single shared parity-mask bank on the remaining 7,448 exterior representatives with no full contact on 1..17. The 33/33 singleton-only pilot contradicts these *named* columns, not the untested population. Positive/adverse controls and original-edge or conventional local proof rebind required before any scaling. Request no extra cores. H/critic: review the interval-nine lemma and table as a scoped marked construction result; no distribution or unrestricted symmetry debit.
 
-**Jobs:** all 50 foreground supervisors have exited (49 success; `onecycles` had a missing diagnostic import and was corrected in `cyclefixed`). All ran with nice 5, timeout, CPU and 4-GiB address-space caps. Total 301.63 CPU-s = 0.08379 core-h. No detached processes. Full unabridged commands and deadlines in `scratch/F/r16/jobs.tsv`; sample forecasts in `price.txt`, log paths below relative to `scratch/F/r16/`. Times are the host offsets recorded in `jobs.tsv` (+01:00).
+**Jobs:** all 37 foreground supervisors below exited; 35 success, `certctl` and `cert` could not raise a nested hard CPU limit and were rerun successfully as `certctl2` and `cert2`. No timeouts or kills. No jobs inherited from round 16. All commands under nice/timeout/CPU limit and 4-GiB virtual-memory cap. Measured 45.60 CPU-s = 0.01267 core-h, below 0.05 core-h. Commands/logs/start/deadlines are preserved in `scratch/F/r17/jobs.tsv`; log names below relative to that directory. Times are the host offsets in the TSV (+01:00). `round17_replay.sh` rebuilt the checks from a clean directory. Prior detail in `LOG.md`.
 
-| PID | Command (prefixes elided) | Log | Cores | Start | Deadline |
+| PID | Command (see jobs.tsv for arguments) | Log | Cores | Start | Deadline |
 |---:|---|---|---:|---|---|
-| 3357830 | `id8_local.py control` | `ctl.stdout` | 1 | 11:53:28 | 11:54:08 |
-| 3357839 | `hole_lrat.py control` | `ctlcnf.stdout` | 1 | 11:53:28 | 11:54:08 |
-| 3357876 | `id8_local.py pilot` | `pilot.stdout` | 1 | 11:53:28 | 11:54:08 |
-| 3365659 | `id8_local.py full` | `full.stdout` | 1 | 11:53:52 | 11:54:32 |
-| 3368878 | `id8_roles.py control` | `ctlrole.stdout` | 1 | 11:54:06 | 11:54:46 |
-| 3369001 | `id8_roles.py 4 63 0 9 18 27 36 45 54` | `rank4price.stdout` | 1 | 11:54:07 | 11:54:57 |
-| 3382156 | `id8_roles.py 6 63` | `rank6price.stdout` | 1 | 11:54:44 | 11:55:29 |
-| 3405541 | `id8_regions.py control` | `ctlregion.stdout` | 1 | 11:56:15 | 11:56:55 |
-| 3405584 | `id8_regions.py 2 pilot` | `regionpilot.stdout` | 1 | 11:56:15 | 11:56:55 |
-| 3417057 | `id8_contacts.py control` | `ctlcontact.stdout` | 1 | 11:56:56 | 11:57:36 |
-| 3417088 | `id8_contacts.py contacts` | `contacts.stdout` | 1 | 11:56:56 | 11:57:36 |
-| 3441307 | `id8_pairs.py 4 7 9` | `pairpilot.stdout` | 1 | 11:58:04 | 11:58:44 |
-| 3461980 | `id8_marks.py 0,4,8,12 0,4,9,13` | `fourpilot.stdout` | 1 | 11:58:56 | 11:59:41 |
-| 3476550 | `id8_marks.py 0 0,4,8,12 0,4,8,13 0,4,9,13` | `condpilot.stdout` | 1 | 11:59:26 | 12:00:26 |
-| 3488103 | `python -c (see jobs.tsv)` | `packpilot.stdout` | 1 | 12:00:02 | 12:00:42 |
-| 3509946 | `id8_split.py 0,4,8,12 6 pilot` | `splitpilot.stdout` | 1 | 12:00:46 | 12:01:36 |
-| 3512384 | `id8_split.py 0,4,8,12 6 full` | `splitfull.stdout` | 1 | 12:00:54 | 12:01:49 |
-| 3554785 | `id8_lowdegree.py control` | `ctlmulti.stdout` | 1 | 12:03:02 | 12:03:42 |
-| 3554793 | `id8_lowdegree.py 0,4,8,12 3 pilot` | `multipilot.stdout` | 1 | 12:03:02 | 12:03:52 |
-| 3580134 | `python -c (see jobs.tsv)` | `onecycles.stdout` | 1 | 12:04:19 | 12:04:49 |
-| 3592434 | `python -c (see jobs.tsv)` | `cyclefixed.stdout` | 1 | 12:04:59 | 12:05:29 |
-| 3599727 | `id8_roles.py 6 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 2… (jobs.tsv)` | `restored.stdout` | 1 | 12:05:33 | 12:06:23 |
-| 3616373 | `id8_pack.py` | `pack24.stdout` | 1 | 12:06:35 | 12:07:15 |
-| 3717544 | `id8_saturation.py control` | `satctl.stdout` | 1 | 12:12:05 | 12:12:45 |
-| 3717566 | `id8_saturation.py target` | `satproof.stdout` | 1 | 12:12:05 | 12:12:45 |
-| 3717589 | `id8_saturation_check.py` | `sataudit.stdout` | 1 | 12:12:05 | 12:12:45 |
-| 3766935 | `id8_baskets.py control` | `basketctl.stdout` | 1 | 12:14:21 | 12:14:51 |
-| 3766992 | `id8_baskets.py 13` | `basketprice.stdout` | 1 | 12:14:21 | 12:14:51 |
-| 3770567 | `id8_baskets.py 1` | `baskets.stdout` | 1 | 12:14:31 | 12:15:11 |
-| 3770583 | `../r14/join2 ../r14/control.q 4 ../r14/control.request controls.trace 12` | `joinctl.stdout` | 1 | 12:14:32 | 12:15:12 |
-| 3770589 | `../r14/join2 id8.q 10 footpilot.request footpilot.trace 12` | `footpilot.stdout` | 1 | 12:14:32 | 12:15:22 |
-| 3772127 | `../r14/join2 id8.q 10 feet.request feet.trace 12` | `allfeet.stdout` | 1 | 12:14:41 | 12:15:56 |
-| 3784427 | `id8_roster.py` | `rosteraudit.stdout` | 1 | 12:15:17 | 12:17:02 |
-| 3802160 | `id8_cnf_bank.py pilot 109` | `certpilot.stdout` | 1 | 12:16:21 | 12:18:06 |
-| 3817620 | `id8_cnf_bank.py bank 1` | `certbank.stdout` | 1 | 12:17:00 | 12:21:10 |
-| 3832197 | `id8_merge.py pilot` | `mergepilot.stdout` | 1 | 12:17:53 | 12:18:33 |
-| 3844066 | `id8_frozen.py export` | `export.stdout` | 1 | 12:18:37 | 12:19:07 |
-| 3844083 | `id8_merge.py pilot` | `mergepilot2.stdout` | 1 | 12:18:37 | 12:19:17 |
-| 3844101 | `id8_frozen.py pilot` | `bindpilot.stdout` | 1 | 12:18:37 | 12:19:17 |
-| 3850023 | `id8_eight.py` | `add8.stdout` | 1 | 12:18:59 | 12:19:29 |
-| 3850114 | `../r14/join2 id8.q 10 eightpilot.request eightpilot.trace 12` | `eightpilot.stdout` | 1 | 12:18:59 | 12:19:39 |
-| 3854042 | `../r14/join2 id8.q 10 eight.request eight.trace 12` | `all8.stdout` | 1 | 12:19:09 | 12:19:59 |
-| 3868733 | `id8_frozen.py export8` | `export8.stdout` | 1 | 12:19:42 | 12:20:12 |
-| 3868749 | `id8_cnf_bank.py eight 113` | `cert8pilot.stdout` | 1 | 12:19:42 | 12:20:37 |
-| 3872381 | `id8_cnf_bank.py eight 1` | `cert8bank.stdout` | 1 | 12:19:54 | 12:23:59 |
-| 3916340 | `id8_shadow.py` | `shadowctl.stdout` | 1 | 12:21:12 | 12:21:42 |
-| 3926567 | `python -c (see jobs.tsv)` | `eightaudit.stdout` | 1 | 12:21:26 | 12:22:41 |
-| 3940898 | `bash -c cd freshpilot && exec ../../../../opt/venv/bin/python -B ../../.… (jobs.tsv)` | `freshpilotrun.stdout` | 1 | 12:21:57 | 12:22:52 |
-| 3949374 | `id8_merge.py strong` | `strongmerge.stdout` | 1 | 12:22:16 | 12:24:06 |
-| 3950891 | `id8_frozen.py strong` | `strongbind.stdout` | 1 | 12:22:24 | 12:24:14 |
+| 823106 | `g++ -std=c++17 -O3 -mbmi2 -mpopcnt marked_price.cpp -o price` | `build.stdout` | 1 | 13:18:21 | 13:18:43 |
+| 823243 | `./price control 1 small` | `ctl.stdout` | 1 | 13:18:22 | 13:18:40 |
+| 843293 | `marked_audit.py control` | `literal.stdout` | 1 | 13:19:11 | 13:19:31 |
+| 843348 | `marked_audit.py geometry` | `geometry.stdout` | 1 | 13:19:12 | 13:19:34 |
+| 843380 | `./price price 64 pilot` | `pilot.stdout` | 1 | 13:19:12 | 13:19:34 |
+| 847750 | `./price price 1 full` | `census.stdout` | 1 | 13:19:23 | 13:19:56 |
+| 957881 | `g++ -std=c++17 -O3 -mbmi2 -mpopcnt marked_price.cpp -o price` | `build2.stdout` | 1 | 13:23:20 | 13:23:42 |
+| 957998 | `./price control 1 small` | `ctl2.stdout` | 1 | 13:23:21 | 13:23:39 |
+| 958006 | `./price price 1 full` | `census2.stdout` | 1 | 13:23:21 | 13:23:51 |
+| 958117 | `marked_windows.py control small wsmall 1` | `ctlwindow.stdout` | 1 | 13:23:22 | 13:23:37 |
+| 969214 | `marked_audit.py control` | `literal2.stdout` | 1 | 13:23:53 | 13:24:12 |
+| 969310 | `marked_windows.py price full wsample 64` | `windowpilot.stdout` | 1 | 13:23:53 | 13:24:11 |
+| 1006929 | `g++ -std=c++17 -O3 -mbmi2 -mpopcnt marked_price.cpp -o price` | `build3.stdout` | 1 | 13:25:13 | 13:25:35 |
+| 1008276 | `./price smallpole 1 smallpole` | `ctlpole.stdout` | 1 | 13:25:14 | 13:25:32 |
+| 1008294 | `marked_windows.py smallpole smallpole wspole 1` | `ctlpolewin.stdout` | 1 | 13:25:14 | 13:25:32 |
+| 1008355 | `./price pole 1 pole` | `polecensus.stdout` | 1 | 13:25:15 | 13:25:37 |
+| 1009297 | `marked_windows.py price full wmark 1` | `windowfull.stdout` | 1 | 13:25:16 | 13:25:41 |
+| 1012104 | `marked_windows.py pole pole wpole 1` | `windowext.stdout` | 1 | 13:25:18 | 13:25:48 |
+| 1051164 | `marked_joint.py control` | `jointctl.stdout` | 1 | 13:26:42 | 13:27:00 |
+| 1051179 | `marked_joint.py pilot` | `jointpilot.stdout` | 1 | 13:26:42 | 13:27:04 |
+| 1057110 | `marked_joint.py price` | `jointexact.stdout` | 1 | 13:26:55 | 13:27:53 |
+| 1095331 | `marked_replay.py control` | `replayctl.stdout` | 1 | 13:28:23 | 13:28:41 |
+| 1095348 | `marked_replay.py target` | `replay.stdout` | 1 | 13:28:23 | 13:29:08 |
+| 1121580 | `g++ -std=c++20 -O3 -march=native column_join.cpp -o join` | `joinbuild.stdout` | 1 | 13:29:36 | 13:29:56 |
+| 1122735 | `marked_sample.py control` | `rankctl.stdout` | 1 | 13:29:38 | 13:29:58 |
+| 1122795 | `marked_sample.py target` | `rankpilot.stdout` | 1 | 13:29:38 | 13:30:23 |
+| 1161387 | `marked_nine.py extract` | `extract.stdout` | 1 | 13:31:08 | 13:31:25 |
+| 1161414 | `hole_lrat.py control` | `certctl.stdout` | 1 | 13:31:08 | 13:31:25 |
+| 1161438 | `marked_nine.py cert` | `cert.stdout` | 1 | 13:31:08 | 13:31:26 |
+| 1168942 | `hole_lrat.py control` | `certctl2.stdout` | 1 | 13:31:20 | 13:32:00 |
+| 1169110 | `marked_nine.py cert` | `cert2.stdout` | 1 | 13:31:21 | 13:32:01 |
+| 1230782 | `marked_prism.py control` | `prismctl.stdout` | 1 | 13:33:18 | 13:33:36 |
+| 1230873 | `marked_prism.py bank` | `prismbank.stdout` | 1 | 13:33:18 | 13:33:40 |
+| 1232122 | `marked_prism.py pilot` | `prismpilot.stdout` | 1 | 13:33:19 | 13:33:39 |
+| 1263258 | `marked_prism.py price` | `prismfull.stdout` | 1 | 13:34:03 | 13:34:23 |
+| 1285335 | `marked_finish.py` | `finish.stdout` | 1 | 13:34:40 | 13:35:08 |
+| 1305714 | `cd ../r17clean; bash round17_replay.sh` | `clean.stdout` | 1 | 13:35:21 | 13:37:01 |

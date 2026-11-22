@@ -1,5 +1,16 @@
 # Lane G experiment log
 
+## Rounds 16–17: aligned e170 grid
+
+- At `h=8` only, common double sites leave a fixed 20-site private
+  grid. G-051 confirms exactly the `leaf+leaf.1` local scheme; round 16
+  proved all 1,828 IDs with inherited support proofs, a matched pilot
+  and a direct tail. See `ROUND16_REPLAY.md`; no distribution debit.
+- Round 17 rebinds all aligned proofs and finds 1,935 cross-scheme IDs
+  from the old shrunk receipts, then 96 fresh exact direct receipts.
+  All other schemes and `h<8` remain open; `ROUND17_REPLAY.md` records
+  weighted estimates and the 155,746 residual aligned IDs.
+
 ## Round 6: matched private cells and marked halves
 
 - Forced perfect matchings along signatures give 20 fixed edges on a

@@ -1,14 +1,11 @@
-# Lane B — round 16, November 22, 2026
+# Lane B — round 17, November 22, 2026
 
-**Round 16:** exactly **1,875 critical** 32/e108 keys bind to prior
-MTF d7-root receipts (1,431 cliques, 444 dual LRATs, zero unbound). The
-accepted reducibles join by disjoint key to **2,104,146** named keys
-(2,017,637 cliques, 86,509 dual LRATs); five criticals remain absent.
-All named criticals are addable (35–48 candidate nonedges each), but no
-independent e109 source found after scoped inventory. Descent passed
-13/13 smaller withheld addables and the saturated C5 control. No new
-proof search, e109 generation, floor 109, e88/U88, or profile change.
-`ROUND16_REPLAY.md`, `ROUND16.sha256`, `work/e108_r16/critical-crosswalk.tsv`.
+**Round 17:** froze the CONFIRMED B-036/B-037 **2,104,146 named blocked**
+32/e108 keys (2,017,637 cliques and 86,509 dual LRATs), **five criticals
+absent**. Floor remains 108. Python + GNU SHA256 checked 3,066 archive
+files (~0.0019 core-h); 430 critical LRATs pinned, 14 unpinned. No proof
+replay/search, source screen, e88 generation, U88 or profile change.
+`ROUND17_REPLAY.md`, `ROUND17.sha256`, `work/e108_r17/archive.sha256`.
 
 **Current baseline:** global degree-seven floor **108** for MTF is CONFIRMED
 (B-013); it subsumes the direct e162 `(0,2,32,6)` exclusion. Neither
@@ -70,16 +67,22 @@ Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 
 ## Jobs
 
-No live PIDs (0 cores). Round 16 used foreground only, at most one core;
-round-15 PIDs were absent. Older job transitions are in `LOG.md`.
+No live PIDs (0 cores). Rounds 16–17 used bounded foreground work only,
+at most one core. Round-15 and older job transitions are in `LOG.md`.
 
 ## Results and claims for review
+
+### Round 17
+
+| Label | Result | Evidence | Core-h |
+|---|---|---|---:|
+| enum (archive integrity only) / open (five absent keys) | Preserved all active labelled graph, rank and receipt paths; 3,066 data hashes matched and the manifest rebuilt byte for byte. No new mathematical claim. Need independent 32/e108 input or exact priced coverage argument; generation parked. | `ROUND17_REPLAY.md`, `ROUND17.sha256`, `scratch/B/logs/e108_r17_archive.log` | 0.0019 |
 
 ### Round 16
 
 | Label | Result | Evidence | Core-h |
 |---|---|---|---:|
-| cert inventory, pending critic | Key-indexed 1,875 critical d7 MTF receipts, 1,431 cliques + 444 dual LRATs; no new proofs or unbound key. Exact disjoint union with accepted reducibles: 2,104,146 named keys; five criticals still missing. | `ROUND16_REPLAY.md`, `ROUND16.sha256`, `scratch/B/work/e108_r16/critical-crosswalk.tsv` | 0.0023 |
+| cert inventory, CONFIRMED B-037 | Key-indexed 1,875 critical d7 MTF receipts, 1,431 cliques + 444 dual LRATs; no new proofs or unbound key. Exact disjoint union with accepted reducibles: 2,104,146 named keys; five criticals still missing. | `ROUND16_REPLAY.md`, `ROUND16.sha256`, `scratch/B/work/e108_r16/critical-crosswalk.tsv` | 0.0023 |
 | hand + enum (control) / open (source) | Legal one-edge descent recovers the addable subfamily only; smaller complete controls 13/13 addable, 0/1 saturated. All supplied criticals have 35–48 legal single-edge additions. No independent order-32/e109 source found in scope, so stopped without target descent. | `ROUND16_REPLAY.md`, `scratch/B/logs/e108_r16_{descent,local_source,public_source}.log` | 0.0007 |
 
 ### Round 15
@@ -216,11 +219,11 @@ round-15 PIDs were absent. Older job transitions are in `LOG.md`.
 
 ## Next
 
-0. Critic/H: review the critical receipt crosswalk and disjoint named
-   union in `ROUND16_REPLAY.md`; no production rerun. Reopen one-edge
-   descent only with an independent e109 input; it does not cover
-   saturated missing keys. No new discovery wave without a distinct
-   source or coverage argument.
+0. Park target generation. Missing input is independently supplied
+   32/e108 classes containing the five absent criticals. Reopen only
+   on actual independent supply or exact coverage with smaller withheld
+   recovery and full-slice pricing. Independent e109 descent would miss
+   saturated keys. No second e109 screen or known-key ascent/descent.
 1. Critic/H: replay or audit the bounded prefix and scout proof tranche.
    `src/replay_prefix_r7.sh terminal` and `src/e108_scout_proofs_r8.sh replay work/e108_r8_scout_proofs`
    are ready. Do not re-launch prefix. Outside-prefix critical e88 after

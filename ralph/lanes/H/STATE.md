@@ -1,43 +1,44 @@
-# Lane H — round 16 handoff, November 22, 2026
+# Lane H — round 17 handoff, November 22, 2026
 
 Two-core ceiling; no solver, detached or stopped H job; no candidate.
-Confirmed through round 015: **238 near-regular MTF distributions plus
-Case R**, ten conditional U88 keys, five conditional mixed E cores
-(`1,6,9,15,18`), d7 floor 108. **All 2,102,271 supplied reducibles** of
-order-32/e108 are covered. The supply remains **2,104,146/2,104,151**,
-five missing criticals; the separate order-33 through-e121 denominator
-is **14,395/14,395**. See `ROUND16_REVIEW.md` for scope and replay.
+Confirmed through 016: **238 near-regular MTF distributions plus Case R**,
+ten conditional U88 keys, five conditional mixed E cores (`1,6,9,15,18`),
+d7 floor 108. The critic's fourth-round depth audit confirms the same
+forty-key debit, not another debit. For 32/e108, **2,104,146 named keys**
+are blocked and five critical keys are absent; the separate order-33
+through-e121 denominator is **14,395/14,395**. See `ROUND17_REVIEW.md`.
 
 ## Jobs
 
 | PID | Command | Log | Cores | Start/end CET |
 |---|---|---|---:|---|
 | — | None live, detached or stopped | — | 0 | — |
-| foreground, finished | `build_private_signature.sh --old build R310`; `env lean -j 1 -DElab.async=false` source and two axiom suites | `scratch/H/round16-{build,middle-dev*,targeted,project}.log` | 1 slot | 11:57–12:07 |
-| foreground, finished | `python3 -SB check_middle_star.py` (wall/VM cap) | `scratch/H/round16-controls.log` | 1 | 12:08, 0.02 s |
+| foreground, finished | `build_private_signature.sh` for source, `--old build R310`, two axiom suites | `scratch/H/round17-verified-{build,targeted,project}.log` and earlier dev/build logs | 1 slot | 13:17–13:28 |
+| foreground, finished | `python3 -SB check_pole_multiplicity.py` (wall/VM cap) | `scratch/H/round17-controls.log` | 1 | 13:19, 0.02 s CPU |
 
 ## Results and claims
 
 | Label | Result | Evidence | Core-h |
 |---|---|---|---:|
-| Lean H-031, pending | Actual marked-path partition at t=17,m=16 gives row contacts 2/2/4 at each of 7 middle neighbors and column size 2 at each of 14 untouched sites. Explicit ambient 9-regularity, triangle-free, cap 3, and local floor 2; MTF and no deficient pair incident to the middle imply that floor. K=2 structural existence, the roster and exclusion not formalized. | `lean/R310/MiddleStar.lean`, `ROUND16.sha256`, `scratch/H/round16-{build,targeted,project}.log` | 0.06930 including dev and controls |
-| enum controls | Petersen (3,5,10) degree/α and 60 oriented marks, 60 contact deletions, 19-site MTF blow-up, 36 tight row arrays. Targeted 7 and integrated 339 axiom reports pass strict checker. | `check_middle_star.py`, `scratch/H/round16-controls.log` | included |
-| ledger | Imported r015 A/C once, B full reducibles, D each-path theorem, E core 8, F all-vertical-pattern ID21, G/H and R/N scouts. New r016 lane receipts pending, not debited. | `ralph/CLAIMS.md`, `ROUND16_REVIEW.md` | — |
-| open (dated literature) | DS1 rev. 18 clearly lists 40–41. No later classical result, bulk GR/Angeltveit order-39 release or new dense order-30 exact count located; no second catalogue run. Current HoG HTML is a shell, not a fresh catalogue assertion. | `LIT.md`, `scratch/H/round16-literature.log` | — |
+| Lean H-032, pending | Distinct pole pair shares the middle. Other common physical sites partition exactly into private left/right wings and untouched sites. Sum ≤2 under cap 3; sum ≥1 iff the middle is not this pair's unique witness. No-deficient-endpoint is not a substitute. No K=2 existence, roster or SAT theorem. | `lean/R310/PoleMultiplicity.lean`, `ROUND17.sha256`, `scratch/H/round17-verified-{build,targeted,project}.log` | 0.09149 including dev/controls |
+| enum controls | Petersen α=4, 10 MTF cap-three blow-ups, 600 zero rows despite no deficient endpoint at the middle, 120 cap-tight rows, nine positive location controls. Pinned v4.35.0 and 5 targeted / 344 project axiom reports pass strict checker. | `check_pole_multiplicity.py`, `scratch/H/round17-controls.log` | included |
+| ledger | Imported 016, including distinct F-032 bridge / F-030 ID8 non-extension / F-031 conditional cyclic four-deletion family. A/C counts 497 empty + 47 no-join, D 155 fresh + two old tails, G one named aligned scheme, B crosswalk counted once. No referee report. | `ralph/CLAIMS.md`, `ROUND17_REVIEW.md` | — |
+| open (dated source screen) | DS1 rev. 18 unchanged at 40–41. No later classical decision, public bulk GR–Angeltveit order-39 file, or new dense order-30 exact count located. No second B source or frame census. | `LIT.md`, `scratch/H/round17-literature.log` | — |
 
 ## Next steps
 
-- Import round-016 critic verdicts including any final F handoff
-  after the snapshot. Preliminary ID8 hole restoration is not an
-  exclusion and has no full receipt yet. Preserve B's 1,875-critical crosswalk as a
-  named inventory; five missing are not established addable or saturated.
-- D's `K=2,t=17,m=16` pilot, not the 15,282-fold whole run, is the best
-  measured regular continuation. Distinguish column-floor/no-deficient
-  endpoint (Lean) from the no-other-witness premise in the pole-pair
-  lower row (not Lean). Do not repeat D's generator or price.
-- A/C round-15 marked exclusion is confirmed; C-041 is the 544-ID
-  one-neutral pilot with 15,051,525,487 untested, not a case closure.
-  Zero-neutral and broader cap-five are still open. G's result is the h=8 `leaf+leaf.1`
-  scheme only. E core 15 has 142 exact open IDs, not 142 UNSATs.
-- Request a bounded formal bridge only after identifying the remaining
-  mathematical premise; no second inventory or terminal run by H.
+- Import round-017 critic verdicts; compare any final A/C/F/D reports
+  after this snapshot. E-041 is the full 142-ID exact queue for core 15
+  only, **pending**; do not reduce the accepted balance of five before
+  review. B-039 archive audit is not semantic proof replay or a new floor.
+- D's canonical campaign is the best bounded regular path. Check final
+  roster/weights and rebind, not overlap with old pilot counts. Even a
+  success at K=2,t=17,m=16 leaves all other slices unaffected.
+- One-neutral A/C weighted existence reduces 15,051,526,031 headers
+  to 2,542,514,492 both-pass pending review. The zero `(71,5)` key is
+  included in those rejects, not another debit. Nonempty package
+  domains cannot establish terminal viability.
+  G's 1,935 transferred and 96 tested h=8 IDs close no additional
+  scheme; 155,746 remain. Do not repeat their searches in H.
+- Ask C/G for a short usable implication if they have one next round;
+  otherwise keep Lean focused on the next critic-designated seam.

@@ -1,41 +1,44 @@
-# Lane G state — round 16, November 22, 2026
+# Lane G state — round 17, November 22, 2026
 
-**238 near-regular MTF distributions plus R remain open.** No graph
-candidate, no distribution cut, and no change to any t9 bound, U88 key,
-or residue floor. Local exclusion only: e170 adjacent d6 equality roots,
-`h=8` (all eight double sites coincide), with relative hole scheme
-`leaf+leaf.1`, pending critic review.
+**238 near-regular MTF distributions plus R remain open.** No candidate,
+distribution cut, `t9`, U88, or residue-floor change. `leaf+leaf.1` for
+the marked e170 adjacent degree-six pair at `h=8` is confirmed from
+round 16 (G-051), retired. The other 29 aligned schemes still have
+**155,746** untested labelled alignment IDs after round 17.
 
 ## Jobs
 
 | PID | Command | Log | Cores | Start | Expected end |
 |---|---|---|---:|---|---|
-| — | No active or detached G jobs | `scratch/G/round16/` | 0 | — | — |
+| — | No active or detached G jobs | `scratch/G/round17/` | 0 | — | — |
 
-All round-16 runs completed in the foreground; production PID 3435791
-and replay PID 3497702 are gone. One core at a time, nice +5, 16 GiB
-virtual cap, measured peak RSS about 100 MiB. No timeouts or models.
+All runs foreground, nice +5; one slot, virtual cap 384 MiB and actual
+peak RSS ~100 MiB. Coverage PID 825700 is gone. Two setup errors before
+coverage/sample certificates were fixed (CakeML heap cap and oracle link).
+No models, solver caps or timeouts on the successful run.
 
 ## Results and claims
 
-| Label | Result | Evidence | CPU-h |
+| Label | Result | Evidence | Core-h |
 |---|---|---|---:|
-| hand + enum + cert (local; pending) | Coincident doubles force the 20-site off-diagonal incidence grid. Expanding scout schemes covers all 900 ordered hole pairs in 30 orbits; the 62 old dual-checked LRATs cover exactly 10,386 distinct out of 169,635 IDs (69 hits in both batches count once). Smaller canonical classes replay 24/0. | `rows/e170_aligned_grid.md`, `ROUND16_REPLAY.md`, `scratch/G/round16/{prior,replay}.log` | 0.00337 first audit, replay below |
-| enum + estimate | Matched 48 uncovered IDs: direct 5.56 CPU-s, 48 new; transfer 22.33 CPU-s, 211 new covering all 48 direct IDs. Transfer adds 4.40 IDs/proof and 3.71 in the latter 24 (per-new-ID cost effectively tied with direct there). Switched to direct on the tail. | `ROUND16_REPLAY.md`, `scratch/G/round16/{direct,transfer}/price.jsonl` | 0.00778 |
-| hand + enum + cert (local; pending) | Exclude the named marked `leaf+leaf.1` scheme only. 356 prior + 211 pilot + 1,261 tail = all 1,828; both checkers verify every bound receipt, exact forward/inverse rosters agree. No new h<8 work, no result for the other 29 schemes beyond the old cover. | `rows/e170_aligned_grid.md`, `ROUND16_REPLAY.md`, `ROUND16_FREEZE.sha256`, `scratch/G/round16/replay.log` | 0.06843 production + replay |
+| hand + enum + cert (local; pending) | All 30 forward/inverse rosters identical, all 900 hole pairs in the inherited scheme orbits; 24/0 canonical controls, 26 physical marks × 4 actions. Rebound the 62 scout and all 1,357 round-16 proofs. Proper-subset support reuse adds 1,935 distinct outside `leaf+leaf.1` across 27/29 schemes; full supports add zero outside their own scheme. 155,842 IDs uncovered before the sample; no other scheme excluded. | `ROUND17_REPLAY.md`, `ROUND17_FREEZE.sha256`, `scratch/G/round17/{coverage.json,coverage.log}` | 0.0294 |
+| cert (local; pending) + estimate | 96 preregistered fresh IDs across the 29 schemes, exact roster and both checker passes on independently rebound archive. No models/caps. 24.98 CPU-s producer + replay, 155,746 left. Weighted mean/max prices 7.53–8.65 core-h and 16.22–22.05 GiB raw, not tail bounds. | `ROUND17_PREREG.md`, `ROUND17_REPLAY.md`, `scratch/G/round17/{sample.freeze.sha256,prices.tsv,archive.log}` | 0.00694 |
+
+Total round-17 use including setup and summary: **0.0389 core-h**.
 
 ## Handoff
 
-- Critic/H: replay and ledger only the named local result. Use
-  `ROUND16_REPLAY.md`; note that `h=8` is an extra hypothesis and no
-  distribution debit follows. The one wing has holes `04,34`, the
-  other `04,24` in common grid coordinates, modulo the indicated actions.
-- Wait for new directives before any new scheme wave. Do not project
-  this tail price to untested schemes or assume the private incidence
-  grid for `h≤7`. No further free-population MIP runs; N's size-four
-  and nonlinear cuts are archived in `LOG.md`, not a launch plan.
+- H/critic: ledger only the cross-scheme bookkeeping (1,935 newly
+  attributed to old checked receipts), the 96 fresh IDs and the direct
+  price. Do not debit any full scheme, distribution or U88 key. Use
+  `ROUND17_REPLAY.md` for exact reproduction and per-scheme prices.
+- Await authorization before any production. The smallest raw residual
+  is `leaf+leaf.0` (1,406 after the sample, estimate 0.081–0.133 core-h,
+  only six sample calls). Full direct aligned coverage is nontrivial on
+  shared scratch and would not handle `h<8`. The cross credit above is
+  retrospective and does not price a new transfer discovery arm.
 - At e170, sixteen degree-six keys remain (nine single, seven adjacent
-  pair). `Z=48`, e(H)=122, 24 private and nine double sites; adjacent
-  W has 28 sites, one wing crossing and 86 internal edges. No complete
+  pair). `Z=48`, e(H)=122, 24 private and nine double sites; adjacent W
+  has 28 sites, one wing crossing and 86 internal edges. No complete
   order-33/122 cover. Round-13 exact t9 thresholds and membership remain
   in `ROUND13_REPLAY.md` and its freeze. The 32/e108 project is lane B's.

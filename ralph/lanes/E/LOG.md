@@ -286,3 +286,13 @@ no fallbacks. Main 0.15664 core-h, total 0.17446 core-h. All 51
 wrappers were collected at the start of round 16, no live PIDs.
 `shared74_round15.md`, `scratch/E/r15_shared/freeze.8.sha256`,
 `ralph/critic/round_015.md`.
+
+## Round 16 archive (2026-11-22)
+
+Core 15 `GCQf?{` only. Independently regenerated the ordered cover
+and replayed all eight shards. 34 first branches (no empties), 94,738
+projections, 716,045 lifts. Exact queue: 142 open IDs, 110 projections,
+12 first branches. Stopped at the 100-ID gate without target proof work.
+Main 327.66 CPU-s (0.09102 core-h), total 349.09 (0.09697 core-h).
+All 41 wrappers collected, one recovered setup error. See
+`shared74_round16.md`, `scratch/E/r16_shared/freeze.15.sha256` and E-040.
