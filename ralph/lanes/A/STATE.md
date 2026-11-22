@@ -1,38 +1,38 @@
 # Lane A state
 
-Round 10, November 22, 2026. Share 5; no live or stopped A jobs.
-No order-40 candidate, whole-distribution exclusion, or Case R closure.
-Current evidence: `ROUND10_REPLAY.md`, `scratch/A/strip10/round10.freeze.sha256`.
-Rounds 1–9 history: `LOG.md` and the round replay files.
+Round 11, November 22, 2026. Share 4; no live or stopped A jobs. No order-40 candidate,
+whole-distribution exclusion, or Case R closure.
+Current replay: `ROUND11_REPLAY.md` and `scratch/A/strip11/round11.sha256`.
+Round 10 replay: `ROUND10_REPLAY.md`; earlier work in `LOG.md` and prior replay files.
 
 ## Jobs
 
-| PID | Command | Log | Cores | Start / expected end |
+| PID (timeout / worker) | Command | Log | Cores | Start / expected end, CET |
 |---|---|---|---:|---|
 | — | No detached A jobs | — | 0 | — |
 
-All one-core foreground scans, controls and hash binding complete.
-Round-9 detached PIDs `634622/634629`, `634623/634630`, and
-`634624/634631` are gone; their logs remain under `scratch/A/strip9`.
-No A solver or proof-checker run. G owns the separate proof jobs.
+Finished: 790867/790884, 790868/790880, 790869/790883, slices 0/1/2
+of `audit_middle25_binding.py` in `scratch/A/strip11`; all gone.
+Started 04:41:13 CET and finished by 04:59:28 CET, one core each.
+Pilot 96/96: 14.71 CPU-s, projected ~0.9 CPU-h total; actual 0.864 CPU-h.
+No A LRAT production or replay; only bounded SAT for addback controls.
 
 ## Results and claims
 
 | Label | Scope/result | Evidence | A CPU-h |
 |---|---|---|---:|
-| hand + enum, no closure | At mixed e168 `(2,7,4,27)` only, table for **noncross** B pivots, both shapes/orientations. Exact B anchor identity and simultaneous anchor selector. C13 52 windows; 264 geometric positives and occupied-hole negatives; literal addback control has 30 vs zero joint assignments. On 260 sampled high-minimum marks, d8 j3 retains 966/1,096 roles but every one of 223 eligible marks; d9 j4 retains 125/125 roles. Exact low-min d9 j4 also retains 215/215. No scale recommendation. | `mixed_selector.py`, `ROUND10_REPLAY.md`, `scratch/A/strip10/{table.log,c13.control.log,direct.log,heldout.log,heldout.markcounts.log,exact26.9.log}` | ~0.002 |
-| hand + enum | Inherited complete weak sources and independent labelled roles: n25 δ2/d8 j2 90,514; n25 δ2/d9 j3 6,131; n26 δ3/d9 j4 215. All 96,860 IDs exactly match G; also reproduce old 7,166, 5,179 and 162. Scope neither all δ nor all degree distributions. | `scratch/A/strip10/{source.agreement.log,roles.25.8.edge.keys,roles.25.9.edge.keys,roles.26.9.edge.keys}` | ~0.014 |
-| hand + enum + cert, pending critic | G's new scoped terminal result: same mixed pin, **noncross d9 B pivot at j=4 and δ(T)=3** only. 215 unique dual-LRAT receipts (50 matching, 165 middle); A independently binds all IDs, pin maps, eager tails, CNF and trace hashes. No A proof replay. | `audit_residual_binding.py`, `scratch/A/strip10/binding26.log`, `scratch/G/round10/r26.d9.bound/certificates.tsv` | 0.007 |
+| hand + enum + cert, pending critic | d8 j2 δ(T)=2 mixed **middle-only**: 21,236 source rows (13,413 raw graph rows) and exactly 21,236 G dual-LRAT receipts agree with independent roles, ordered 12-shard schedule, fixed pins, eager rows, DIMACS and compressed trace SHA256. Final manifest is byte-identical, zero failed/missing/nonterminal/orphan IDs. Matching 69,278 outside tranche. This is G's proof run; A independently binds but does not replay it. | `audit_middle25_binding.py`, `scratch/A/strip11/{middle.independent.tsv,middle.manifest.diff,middle.[012].log}`, `scratch/G/round10/r25.d8.middle.bound/certificates.tsv` | pilot 0.004, full 0.864 |
+| enum | Independently re-enumerated exact 3+4 marks from directed cross edge; 42/42 smaller-control labels match. Full order21 catalogue 1,118,436 → 6,160 marks on 6,056 graphs, exact labels match G. Every deficit is the cross singleton; no double deficit. Parent catalogue completeness is inherited, not rerun. | `replay_short_anchor.cpp`, `scratch/A/strip11/short.crossfirst.full.{keys,log}` | 0.005 |
+| hand + enum, pending review | Mixed e168, noncross B pivot `b` of d9: every retained noncross B anchor `s` has `d_T(s) ≥ |T|−21`. For d8 pivot the same holds for retained noncross B anchors of original degree nine. At equality to the weaker floor all three old B doubles occur; remaining hole(s) must touch `s`. At d9 two holes would have to touch noncross `s`, impossible for either shape. At d8 one hole would make `s` degree eight. Applies regardless of δ(T); neither crossed anchors, short A, nor distribution closure. | `ROUND11_REPLAY.md`, `scratch/A/strip11/short.crossfirst.full.log` | same census |
+| hand + enum, coverage only | G's direct `|T|=24` CNF includes all lifts of a marked equality parent with both orientations and permitted holes. All 51,395 role IDs and fixed shells match independent oracle. Real size-24 addback SAT when planted with either extra ordering; physical double-deficit mutants accepted as geometry at relaxed cap, fail the Ramsey premise at strict cap, and test hole consumption and nonconsumption. Real size-25 graft 179581, parent orbit 290424, has `d_T(s)=3 > δ(T)=2`, so do not use global minimum in a generalization. | `audit_short_anchor.py`, `audit_pinned_anchor_cnf.py`, `scratch/A/strip11/{short.controls.json,short.cnf.final.log}` | ~0.026 incl. rerun |
 
 ## Next
 
-- Critic/H: record the new 215-role exclusion only at the named scope.
-  In particular, d9 j4 with δ(T)≥4 and all crossed pivots remain open.
-- G owns lower-minimum proof production. Join and audit its terminal
-  d9 j3/δ2 or d8 j2/δ2 **middle-only** scope if available; do not infer
-  anything for a capped or unattempted role or the matching d8 branch.
-- No scale-up of A's anchor-only screen or the high-minimum sample.
-  It removes roles but no marks in the sample, and doesn't force any
-  pivot of high codegree. Leave the pure caps at δ≥4 and two-root
-  census stopped. Need a new structural filter for full high minima.
-- R(7) was not reopened under the critic's mixed-strip directive.
+- Critic/H: judge the narrow middle tranche with the completed manifest
+  comparison, and review the new short-B floor dependent on order-21 census.
+- G owns SAT production; A limited to independent proof/coverage binding.
+  Do not reinterpret the direct-instance pilot as a closure or extrapolate
+  order24 to larger windows or from equality to all marked anchors.
+- No scale-up of all-pivot selector (removed zero marks); keep high-minimum
+  pure caps and two-root census stopped absent a material new filter.
+- R(7) remains untouched under the critic's mixed-strip directives.

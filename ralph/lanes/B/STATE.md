@@ -1,10 +1,19 @@
-# Lane B — round 10, November 22, 2026
+# Lane B — round 11, November 22, 2026
 
 **Current baseline:** global degree-seven floor **108** for MTF is CONFIRMED
 (B-013); it subsumes the direct e162 `(0,2,32,6)` exclusion. Neither
-uses t8/t9 floors. No candidate graph. Round-10 share was 12 cores;
+uses t8/t9 floors. No candidate graph. Round-11 share was 14 cores;
 only bounded foreground pilots ran. Re-read the next allocation.
 Work from `scratch/B` with `ulimit -v 16777216` and `PYTHONDONTWRITEBYTECODE=1`.
+
+**Round 11:** lifted the 122 e98 parents (34 novel e108), then 255 more
+exact e98 deck parents (13 more). Stopped at two disjoint zero-yield
+batches. All 47 independently checked and blocked at MTF d7 roots (37
+cliques, 10 dual LRATs; critic review pending). Best census
+`work/e108_r11/union.g6`: **2,104,146 / 2,104,151, five missing**. The
+older-cohort complement gives 7,954 fresh exact e98 parents, not lifted.
+e95 d4/d5 terminal zero on all 560, completing the e95 source scope with
+N-001. e88/U88 and floor 108 unchanged. See `ROUND11_REPLAY.md`.
 
 **Round 10:** imported N's 61 critical e108 keys and certified their
 nonextensions (57 cliques, 4 dual LRATs). Stratified two-step lift from
@@ -46,7 +55,7 @@ Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 
 ## Jobs
 
-No running B jobs at round end (0 cores). No round-10 detached jobs.
+No running B jobs at round end (0 cores). No round-11 detached jobs.
 All foreground pilots and replays exited; earlier PIDs below are gone.
 
 | PID | Command | Log | Cores | Start (CET) | Actual end (CET) |
@@ -75,6 +84,14 @@ e52 TIMEOUT after the exact e63 control passed. Neither benchmark is live.
 Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitted minimum degree 3 for order 21; corrected by generating this branch and merging, no missing counts thereafter. Seed 418169 failed on `shortg`'s in-place default; 453949 passed after explicitly writing stdout. Do not interpret either failed run as empty. Upper seed PID 540708 completed successfully at ~17:23 with all GR T13 counts.
 
 ## Results and claims for review
+
+### Round 11
+
+| Label | Result | Evidence | CPU-hours |
+|---|---|---|---:|
+| enum + scoped cert | 377 d7/d8 e98 parent lifts supply 47 novel validated critical e108 keys; 37 demand cliques and 10 regenerated dual LRATs cover these keys only. 2,104,146 supplied, five absent. Fresh generation replay byte-identical. | `ROUND11_REPLAY.md`, `ROUND11.sha256`, `scratch/B/work/e108_r11/` | 0.021 incl. both replays |
+| enum / estimate | Four-origin exact e98 deck inventory: 9,170 known-target parents with 7,954 fresh outside old records. Estimated ~310 CPU-s lift-only (no yield forecast); not lifted. e96: 33,312 reducible and only 24 of 1,842 critical supplied. | `scratch/B/work/e108_r11_complement/`, `scratch/B/logs/e108_r11_complement_replay.log` | 0.020 incl. inventory replay |
+| enum | All 560 critical 31/e95 parents lifted at d4/d5: zero critical 32/e108 outputs. Together with N-001's d6–8 results, none of the missing targets has a legal e95-thinned puncture. | `ROUND11_REPLAY.md`, `scratch/B/logs/e108_r11_e95_low.log` | 0.024 |
 
 ### Round 10
 
@@ -175,10 +192,9 @@ Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitt
 
 ## Next
 
-0. Critic/H: check the three round-10 tranches independently and retain
-   exact scopes of e43/reducible/prefix e88 and the e108 proofs. Do not
-   recut direct e162. `src/e108_scout_r10.sh replay {scout,stitch,repuncture}`
-   takes one tranche argument per invocation.
+0. Critic/H: check the 47-key scoped B tranche and retain exact scopes of
+   e43/reducible/prefix e88 and all e108 proofs; do not recut direct e162.
+   `src/e108_e98_r11.sh replay work/e108_r11` is the no-solve replay.
 1. Critic/H: replay or audit the bounded prefix and scout proof tranche.
    `src/replay_prefix_r7.sh terminal` and `src/e108_scout_proofs_r8.sh replay work/e108_r8_scout_proofs`
    are ready. Do not re-launch prefix. Outside-prefix critical e88 after
@@ -192,10 +208,13 @@ Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitt
    local/host pilots. Require a different source or necessary coverage
    reduction with measured value before further batches.
    t9<=89 and larger t8 floors unbudgeted.
-4. Next authorized e108 wave: lift the 122 fresh exact e98 deck parents
-   at d=7/8, then consider a bounded exact deck of genuinely novel keys.
-   Do not broaden to e99..101 based on the zero-yield slices. Exact e108
-   needs 52 more critical keys. The best current known set is
-   `work/e108_r10_micro/union.g6`; never call it exact. Require
-   order, e, alpha, Traces and strict GR count 2,104,151 before a full
-   floor-109 campaign. Proof-only pilot is affordable once that is true.
+4. Ask critic to authorize **new-origin e98** only: `work/e108_r11_complement/total.98.fresh`
+   has 7,954 parents predominantly from the old 1,142-key scout tranche.
+   Price disjoint origin shards, stratifying overlaps; do not resume the
+   stopped frontier or broaden to e99..101. Another 745 deck parents are
+   conservatively denied but not bound to an r10/11 tested row; resolve
+   old provenance separately if needed. The e95 source is exhausted;
+   e96 acquisition lacks 1,818 critical parents and is not priced by
+   deck speed. Keep five missing, no floor-109 or distribution claim.
+   At exact 2,104,151 require full order/e/alpha/distinctness audit and
+   terminal checked proof cover including reducibles before floor 109.

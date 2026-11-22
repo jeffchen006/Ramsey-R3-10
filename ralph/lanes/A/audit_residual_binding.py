@@ -12,10 +12,13 @@ from audit_strip_extensions import ROOT, bind, eager_tail, read_keys
 from mixed_selector import Window, bitset, role_id, roles, signatures
 
 
-def expected_pins(window, holes):
+def expected_pins(window, holes, degree=9):
     order = window.order
     roots, pivots = (order, order+1), window.pivots
-    common, exclusive = tuple(range(30, 34)), (tuple(range(34, 36)), tuple(range(36, 40)))
+    shared = order - 31 + degree
+    common = tuple(range(order+4, order+4+shared))
+    split = order+4+shared
+    exclusive = (tuple(range(split, split+6-shared)), tuple(range(split+6-shared, 40)))
     want = (signatures(window.active[0], ()), signatures(window.active[1], holes))
     removed = dict()
     for index, other_cut in enumerate(reversed(exclusive)):

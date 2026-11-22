@@ -214,3 +214,13 @@ Mixed core 4 only: 17,840 projections / 110,716 lifts. Graph-only
 fresh-CNF CakeLRATs. The critic confirmed the scoped exclusion in
 `ralph/critic/round_009.md`. Terminal 88.55 CPU-s; no running jobs.
 See `shared74_round9.md` and `scratch/E/r9_shared/freeze.4.sha256`.
+
+## Round 10 archive (2026-11-22)
+
+Critic confirmed (round 010) mixed cores 12, 14, 10 and 11 only,
+at `(2,32,t=4,δ(W)≥2,e(W)=11)`, `(10,10,11,11)`, universal
+`δ(G)≥5` and all-graph E-021. 73,627 projections/341,854 lifts,
+20 fresh CNF/CakeLRATs, 314.99 CPU-s; see `shared74_round10.md`
+and `scratch/E/r10_shared/freeze.{12,14,10,11}.sha256`. Exact
+labelled query-cache pilots on cores 9/18 produced byte-identical
+receipts but only 2.8% scanner CPU reduction. No surviving jobs.

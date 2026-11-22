@@ -234,3 +234,44 @@ published full order-26 census; see `ROUND9_REVIEW.md`.
   premise, F its individually verified seeds. B's reduction from 124
   to 63 missing uses local order-32/e108 keys against GR Table 14, not
   a published order-30 enumeration or a new residue floor.
+
+## Round 11: November 22, 2026 verification and two adjacent methods
+
+- The current established interval is still **40–41** in the sources
+  found: Radziszowski DS1.18 (April 24, 2026), Table Ia and §2.1, DOI
+  `10.37236/21`; Angeltveit EJC 32(4) #P4.30 (November 3, 2025),
+  Theorem 1, DOI `10.37236/12936`; public arXiv copy `2401.00392v2`
+  (April 8, 2024). Exact-title/count searches and dated discovery
+  queries (arXiv November titles and Crossref/OpenAlex since April 24)
+  yielded no superseding decision. These queries are not exhaustive.
+- No public bulk file located for the **partial** order-39 journal §7
+  count ≥43,225,483. McKay's index is unchanged. HoG's public page was
+  refetched, but its byte match alone only authenticates the JS shell;
+  the previously audited links and the targeted e88–99 queries did not
+  identify any new exact `R(3,9;30,e)` count. GR Table 14 still has
+  1,800 at 86, 147,335 at 87, question marks at 88–94; the relevant
+  **2,104,151** is at **32/108**, not order 30. B supplies 2,104,146
+  local rows pending critic; that is not an external data release or
+  a residue-floor change. Raw sources: `scratch/H/lit/r11-*.data`;
+  request outcomes: `scratch/H/round11-literature.log`.
+- Hanxin Jiang and Zehui Shao, *An 8+9 gluing computation for the Ramsey
+  number R(F₃,F₄)*, [arXiv:2610.26109v1](https://arxiv.org/abs/2610.26109v1),
+  October 19, 2026, §2.5, §4 and Appendix A.9–A.12; artifact DOI
+  `10.5281/zenodo.23119016`. Reports `R(F₃,F₄)=17`; the maximum-red-cut
+  swap rows and joint support profiles give 88,294,674 ordered pairs.
+  Bulk UNSAT decisions for 88,294,634 are separated from 34 counting
+  exclusions and six independently checked finite-domain tail cases.
+  Useful for A/B/G's manifest and tail-proof architecture; a max-cut
+  selector cannot replace a prescribed pivot cut without a rerooting
+  cover. No `(3,k)` census or end-to-end bulk propositional certificate.
+- Milos Tatarevic, *An upper bound of 60 for the Ramsey number
+  R(3,3,3,3)*, [arXiv:2610.36648v2](https://arxiv.org/abs/2610.36648v2),
+  November 6, 2026 (v1 on October 27 had 61), §§2–6, Thm. 1.1.
+  Directed incidence counting forces a rooted marked violation or
+  global equalities; compatibility views share physical edge variables.
+  Relevant to C/D/G's joint-versus-marginal root tests and A/H's exact
+  CNF interface: Lean checks 55 classification certificates and the
+  mathematical reduction; the 296,081 large-formula UNSAT results
+  from two solvers remain a premise of the final Lean theorem. Neither
+  this nor the fan result changes any A–G premise, order-39 seed or
+  involution scope. No artifact campaign was launched.

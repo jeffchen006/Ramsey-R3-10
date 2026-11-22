@@ -1,12 +1,12 @@
-# Round 11 core ceilings — 80 total; count active checkers and drivers
+# Round 12 core ceilings — 80 total, not launch targets
 
-| Lane | Cores | Reason for change from round 10 |
+| Lane | Cores | Reason for change from round 11 |
 |---|---:|---|
-| A | 4 | −1: the joint selector removed no mark; retain proof-binding and independent coverage capacity, not a second production queue. |
-| B | 14 | +2: eleven recovered e108 classes beyond the scout handoff and a distinct 122-parent queue; expand only while fresh yield is measured. |
-| C | 6 | +2: full catalogue provenance now matches, the 8,192-host pilot passed and the same-key proof cost fell 3.93×; staged census with a 20 CPU-hour stop. |
-| D | 9 | +1: the disjoint-pair reduction leaves 117 general roots; headroom for independent controls and a priced witness-star pilot, not a general P8 join. |
-| E | 22 | −2: four further exact cores closed at ten or fewer nominal worker slots; ample room for cores 7 and 13, release surplus pending tail prices. |
-| F | 4 | Unchanged: complete weighted quotient and threshold bound; four slots suffice for the new card pilot, no more requested. |
-| G | 19 | −2: d9 queues are terminal and d8 middle has returned; bind before new work and price pinned cores rather than launching the 69,278 matching arm. |
-| H | 2 | Unchanged: Lean interfaces and ledger maintenance. |
+| A | 4 | Unchanged: independent source/pin and reroot coverage checks, not proof production. |
+| B | 18 | +4: 47 checked recoveries, only five missing; give priority to the bounded 7,954-parent wave and reserve parallel checking capacity if coverage becomes complete. |
+| C | 5 | −1: both reciprocal censuses have finished; a single-catalogue structural pilot costs less than a new join. |
+| D | 11 | +2: single-witness exhaustion cuts 117 sufficient roots to 111; use headroom for disjoint small controls and the nine-root contrary-case pilot, not a general path join. |
+| E | 23 | +1: two further conditional core closures; reserve for core 16 only after pricing the complete branch coverage and proof tail. |
+| F | 3 | −1: the uniform card is finished; the distinct free-vertical price test needs few slots. |
+| G | 14 | −5: middle bundle is terminal and direct d8/d9 pilots mostly capped; price a structural cut rather than scale either matching or direct proof production. |
+| H | 2 | Unchanged: ledger, small independent checks and Lean. |

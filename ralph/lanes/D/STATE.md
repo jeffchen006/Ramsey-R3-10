@@ -1,53 +1,30 @@
-# Lane D — round 10, November 22, 2026
+# Lane D — round 11, November 22, 2026
 
-**R(3), R(4), R(3,10) open; no candidate.** Submitted for review: every
-R(3) graph has **two vertex-disjoint nonedge pairs of codegree one**.
-In particular it does not belong to the formerly open max-square-12
-stratum. Two independent ways to root remain available: the previously
-confirmed induced kernel P8 (D-019), or a new four-star cover with 117
-generally live keys. The marked roots are not a disjoint partition of
-unmarked graphs. No Section 7 end-to-end certificate or general C6/C8 ban.
-Round-9 state moved to `LOG.md`; D-015 through D-019 were confirmed by
-the critic. The new theorem uses D-015 but not the R9 L=6/7 closures.
+**R(3), R(4), R(3,10) open; no candidate.** Submitted: every R(3) graph has two disjoint codegree-one nonedges whose unique witnesses are **different**. Result is hand + enum, *not* Sec. 7 certification. The four-star cover can therefore use 111 rather than 117 generally live representatives. Shared witnesses may still occur at other markings of the same graph. D-019, D-020 and D-021 were confirmed last round. R10 details archived in `LOG.md`.
 
 ## Jobs
 
-| PID | Command | Log | Cores | Start | Expected end |
+|PID|Command|Log|Cores|Start|Expected end|
 |---|---|---|---:|---|---|
-| none | All bounded foreground producers/checkers finished. | `scratch/D/ind10/` | 0 | — | — |
+|none|All bounded foreground producers and checkers finished.|`scratch/D/wit11/`|0|—|—|
 
-Share 8; no detached/stopped jobs. No increase requested.
+Share 9; no detached or stopped D jobs, no extra cores requested.
 
-## Results and evidence
+## Results and claims
 
-`S=scratch/D/ind10`; CPU-h are measured for the specified main stages,
-not a claim that pipeline overhead or every pilot was included.
+`S=scratch/D/wit11`. CPU hours below refer to measured engine time, not complete pipeline cost.
 
-| Label | Result / scope | Evidence | Core-h |
+|Label|Result / claim|Evidence|CPU-h|
 |---|---|---|---:|
-| estimate / open | General induced-P8 join, two seeds in all 1,829 fingerprints: 21,948 and 43,896 actual parent pairs, estimated 20.00M and 20.29M canonical children (~16.2M after basic screen). Estimated 2.37–2.40 GB emitted. 44/70 held-out live roots hit 150 nodes. No full unrestricted join. | `JOIN_ROUND10.md`; `S/{pilot-summary.log,held/search.out,model-check.log}` | 0.0073 |
-| hand + enum | Deficient-pair graph cannot be a star: 27,289 marked hub positions → 1,917 → 622 → 137 → 6 → 0. All capped rows carried forward; last six also fail **independently** by induced-P8 end deletions: 14 marked P7s, one matched parent pair, one unmarked P8, zero common hub placements. No hypothesis that the hub has only one partner. | `DEFECT_MATCHING.md`; `S/{bindings.log,terminal.tsv,hub4/join8.log,match-cal.log}` | 0.1126 graph search |
-| hand + enum | If all deficient pairs intersect but lack a common hub, their entire graph is a triangle. Six frozen stars have 136 labelled profiles / 44 S3 orbits by two exhaustive constructions. All 44 terminal (30+14), without library. Together these two alternatives prove the disjoint-pair reduction. | `DEFECT_MATCHING.md`; `S/{tri.log,tri-all.out,tri-tail.out,bindings.log}` | 0.0090 |
-| hand + enum; two checked local CNFs | Redundant no-defect test (also excludes max12): two exact graph searches on 2,434 P6 roots, one with AH=HA and no flat quota, one graph-only / 28,005 nodes. Redundant exactly-one check: 4,741 → 533 → 6 → 0 two-mark P6s, after the first 1,917 single-hub library. No need for either result as a premise of the disjoint-pair theorem. | `S/{audit6.out,bindings.log,proofs/binding.log,jointpair-cal.log}` | 0.0059 no-defect + 0.0267 exact-one; LRAT pilot 0.0093 solver |
-| hand + enum; cert for 78 local formulas | Unrestricted marked four-star source: 1,164 labelled / 195 orbits. **78** have an explicit independent ten with a frozen witness for every free nonedge; **78/78** local LRATs accepted by both checkers. **117 generally live**. Two independent source constructors agree exactly. Full C22 control recovers all 349 individually coloured classes across 54 occupied / 172 possible profiles, 2,264 physical marks. | `FOUR_DEFECT_STARS.md`; `S/{four-direct.log,four-check.log,four-certs/witnesses.tsv,four-certs/certificates.tsv,four-open-live.in}` | 0.0024 target graph pilot; 0.0028 complete control |
-| estimate / open | Exactly two deficient pairs in the entire graph: 134/195 terminal at 5,000; 61 node-capped. Of nine tails, one closes by 32,756 nodes and eight cap at 40,000. Signed `AH−HA=AL−LA` on same tails at 5,000 closes only the same one. **60 remaining** in this subcase; cannot apply its bounds to the 117 general roots. | `S/{four2.out,four2-tail-sample.out,four2signed.out,signed-cal.log}` | 0.0147 |
+|hand|Defect count K is even: `2 C4=1080+K`. Thus the former exactly-one and intersecting-triangle alternatives need no enumeration. Nonnegative square excess at min q≥12 lives only on positive-defect endpoints. At K=2 with that minimum, exactly two disjoint cross edges have q=14 and all others q=12. Five marked roots after checking remaining codegrees.|`DEFECT_EXCESS.md`; `S/excess-source.log`|—|
+|hand + enum; cert local only|117 generally live roots → 13,078 raw completed witness-star leaves. Exactly 1,351 have direct I10 witnesses and **1,351 dual LRATs**, leaving 11,727. No further original root terminates in the four matched 500-node arms; simultaneous domination of four independent nines does not further reduce the frontier. Full C22 control: 54 occupied roots, all 349 coloured classes.|`WITNESS_STARS.md`; `S/{frontier.tsv,front.log,cal-check.log,branch-audit.log,branch-cert/witnesses.tsv,branch-cert/certs-0-2-0.tsv,branch-cert/certs-1-2-0.tsv}`|0.0111 four target arms; 0.0197 proof processes; 0.0154 three C22 arms|
+|hand + enum|All deficient pairs cannot have the same witness. Under that assumption they are a matching of at most four inside N(z). Dense-root search: P7 168,540→14,494→9,803. Conditional P8 join 560,069→20,149→9,241→3,458. Separate global path cap 8: 9,241→59→0, so an induced kernel P9 exists *in this branch*. P9 join 62,307→382→0. All 382 separately graph-only without a library (808,279 nodes, max 7,417/root). This is not an unconditional P9 or C6/C8 assertion.|`MONO_WITNESS.md`; `S/{join-check.log,mono9/coverage.log,limit8b/bind.log,mono9plain/bind.log,mono9a/bind.log,mono9b/bind.log}`; every stage's `receipt.tsv`|1.72 including both redundant terminal replays|
+|hand bridge + enum|Together with D-020 the preceding theorem gives some two disjoint deficient pairs with distinct witnesses; if a differently witnessed edge hit both original pairs with shared witness z, it too would have witness z. **111** generally sufficient roots (102/6/3 by number of external witnesses 2/1/0), **55** remaining old K=2 tails, not global exclusions of the six shared configurations.|`MONO_WITNESS.md`; `S/distinct111.in`; `S/exact-sources.log`|included|
+|estimate/open|Row-multiplicity moment LP: no separated target among 10 original +20 witness-frozen samples; every planted occupied C22 input verified. K=2/min-q≥12 all five still have integral projected counts (witnesses), and all five full signed searches cap at 12,000. Not a reason to scale. If no two marked P3s are vertex-disjoint, one can root at nine internal cases; all nine cap at 4,000 nodes.|`WITNESS_STARS.md`, `DEFECT_EXCESS.md`; `S/{moment-children.jsonl,excess-int.jsonl,excess.out,nextflags/pilot.out}`|0.0097 signed, 0.0008 flag pilot|
 
-## Next round
+## Next steps / cautions
 
-1. H/critic: audit star-cover scope and both marks in the matching lookup
-   (`DEFECT_MATCHING.md`); independent terminal shortcut in
-   `JOIN_ROUND10.md`. Triangle does not use a P6 or P8 library. Check the
-   direct witness-first four-root census and 78 I10 certificates separately.
-   Do not label the global matching theorem `cert`.
-2. Focus on the **117 generally live four-star keys**. Freeze the one or
-   two unique common witnesses before choosing an arbitrary free row;
-   witnesses can coincide, or be among the four anchors. Stratify by
-   cross shape (66/36/6/6/3 live). Price actual additional-star counts
-   and use the coloured C22 census first. Consider reusing the four-star
-   deck only on a pair whose codegree is proved one, not one with a single
-   *current* common neighbor and additional possible witnesses.
-3. Do not launch a general 20M P8 materialization, a 238-kernel batch, the
-   old max12 SAT jobs, or uniform deeper K=2 search. The signed nine-tail
-   pilot is a measured negative, not evidence that the tail is empty.
-4. Source, logs, per-root terminal bindings and local proofs indexed by
-   `scratch/D/round10_evidence.sha256`; disk for this round is modest.
+1. H/critic: review `MONO_WITNESS.md`, especially the cap-eight vs unrestricted-library distinction, both deleted endpoints and the elementary different-colour bridge. Inspect `S/{mono7,mono7b,mono8,mono8b,mono8c,limit8,limit8b,mono9,mono9plain}/receipt.tsv`. Source and bindings in `scratch/D/round11_evidence.sha256`. The remaining 111 are a cover, not disjoint unrooted parts.
+2. New target: prove there are two **vertex-disjoint marked P3s** (including witnesses). If not, all such triples intersect, not necessarily at one common site. By this round's theorem choose a distinct-witness marking among only 9 internal roots. For fixed intersecting triples T1,T2, all others meet both. Test bounds/mark projections relative to these two before materializing another join; the 4,000-node pilot rejects naive restarts. Mode 32768 enforces pairwise intersection among forced triples; do not reuse the mono-only deck. C5 is a positive intersecting-flags example and a negative monochrome example.
+3. Reusable path-deck tactic: supplement existence of a library match with common forced/forbidden arcs across matched slots, then test paths with one hypothetical edge. In 72 conditional P8 tails this changed 13→31→35 exhausted at 300 nodes; repriced before full use. Strong results obtained only with substantially restricted parents; unrestricted 20M P8 and the unchanged K=2 signed pilot remain frozen.
+4. If revisiting full certification, distinguish the 1,351 atomic formulas from the graph-search/cover theorem. No end-to-end LRAT chain for the latter. No full R(3) closure.

@@ -1,5 +1,16 @@
 # Lane H — archived round 2 handoff, November 21, 2026
 
+## Round 9–10 archive pointers
+
+- `ROUND9_REVIEW.md` and `ROUND10_REVIEW.md` contain the replay/binding
+  notes for the kernel reroot, reciprocal coverage, incidence rounding,
+  and B/G receipts. `LEAN_REPRO.md` has the pinned-cache commands and
+  earlier axiom totals. No detached H job survived those rounds.
+- Round 10 supplied H-020/021 (critic confirmed), 334 equal and 395
+  asymmetric controls and 50,625 small matrices. B's 61 and G's 215
+  round-10 H checks were receipt identity only; use the separate
+  critic reports for fresh proof replay.
+
 ## Round 8 archive
 
 No detached H jobs. `CompletionBridge.lean` proved arc-shrink and

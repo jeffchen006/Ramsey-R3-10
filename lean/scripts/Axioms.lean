@@ -299,3 +299,9 @@ import R310
 #print axioms R310.rounded_capacity_floor
 #print axioms R310.p3_incidence_rounding
 #print axioms R310.p3_one_zero_tight
+#print axioms R310.card_add_card_le_indepNum_of_common_neighbor
+#print axioms R310.three_anchor_nonneighbor_bound
+#print axioms R310.three_anchor_exterior_bound
+#print axioms R310.three_anchor_exterior_card_le_fourteen
+#print axioms R310.noncross_anchor_order_le_degree_add_twenty_two
+#print axioms R310.intersecting_pairs_empty_or_star_or_triangle
