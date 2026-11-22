@@ -57,6 +57,7 @@ LANES = {
     'H': 'Literature scout, claim ledger, Lean',
 }
 LIMIT = 6000  # characters of each lane's report that go into the critic's prompt and the round file
+AGY_MODELS = ('gemini-', 'claude-')  # models that run through Antigravity (agy) via agentlink: ralph/bin/turn_agy.sh
 # Idea scouts: a fresh session beside the lanes every few rounds; it reads only, then writes one idea file.
 SCOUT_FOCUS = {
     'R': 'Case R (9-regular): the max-codegree sub-cases that are still open (read the latest ralph/rounds file '
@@ -143,8 +144,8 @@ class Params(FlowParams):
     scouts: str = Field(default='R,N,T', description=f'Scout focuses, letters of {sorted(SCOUT_FOCUS)}.')
     scout_model: str = Field(default='gpt-6.2-astra', description="Model of the scouts ('exec' engine).")
     scout_models: str = Field(default='T:gemini-4-neon-xhigh',
-                              description="Model per scout focus, as F:MODEL,...; 'gemini-*' runs through agy/agentlink.")
-    referee_model: str = Field(default='gemini-4-neon-xhigh',
+                              description="Model per scout focus, as F:MODEL,...; 'gemini-*'/'claude-*' run through agy/agentlink.")
+    referee_model: str = Field(default='claude-opus-5-5-high',
                                description="Model of the referee beside the lanes every round ('' = no referee).")
     referee_minutes: int = Field(default=45, ge=2, le=240, description='Minutes a referee turn should take; cut 10 min later.')
     scout_effort: str = Field(default='xhigh', description="Reasoning effort of the scouts ('exec' engine).")
@@ -207,8 +208,9 @@ async def r310_ralph(task: str, *, agents: Agents, envs: Envs, params: Params, c
         base = f'scratch/flow/turns/r{state.get("round", 0) + 1:03d}_{name}'
         await ws.write(f'{base}.prompt', prompt.encode())
         minutes_ = max(1, int(limit.total_seconds() // 60))
-        script = ['turn_agy.sh'] if model.startswith('gemini') else ['turn.sh']
-        extra = [name] if model.startswith('gemini') else []
+        via_agy = model.startswith(AGY_MODELS)
+        script = ['turn_agy.sh'] if via_agy else ['turn.sh']
+        extra = [name] if via_agy else []
         code, _, err = await ws.exec(['bash', f'{R}/bin/{script[0]}', model, effort, str(minutes_),
                                       f'{base}.prompt', f'{base}.last', f'{base}.log', *extra],
                                      timeout=limit.total_seconds() + 300)

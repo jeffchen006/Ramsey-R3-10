@@ -262,3 +262,14 @@ CakeLRATs. Both ordered replays checked. Cost 0.36433 core-h main,
 `shared74_round13.md`, `scratch/E/r13_shared/freeze.17.sha256`.
 Native validator price reduced 3,530→1,508 CPU-s; width-three pilot
 129/129 checked but not used for closure. Seven mixed cores remained.
+
+## Round 14 archive (2026-11-22)
+
+The critic accepted core 5 in `ralph/critic/LATEST.md` round 15.
+Same f32/t4/eW11, δ(W)≥2, all-graph E-021 and universal δ(G)≥5,
+mixed (10,10,11,11), all four omissions, K=6,7,8. 37 first
+branches (none empty), 194,552 projections and 2,204,013 lifts;
+all 167 original-width CNFs freshly rebound and CakeLRAT checked.
+Main path 0.34909 core-h, all 75 workers 0.37297 core-h. Pilot 14/14
+width-three proofs, not used in that production. No jobs survived.
+`shared74_round14.md`, `scratch/E/r14_shared/freeze.5.sha256`.

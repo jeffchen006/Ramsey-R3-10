@@ -1,12 +1,15 @@
 # Lane A state
 
-Round 14, November 22, 2026. Share 3; no live or stopped A jobs. No new
-order-40 candidate, whole-distribution exclusion, or Case R closure.
-Current coverage audit: `ROUND14_REPLAY.md`, `ROUND14_INPUTS.sha256`, and
-`ROUND14_FREEZE.sha256` binding `scratch/A/r14/` and C's 12 completed receipts.
-Rounds 10–13: `ROUND10_REPLAY.md`–`ROUND13_REPLAY.md`;
-earlier work in `LOG.md`. R(7) was already closed by Lane C's accepted
-finite certificates (round 1); A replayed them independently.
+Round 15, November 22, 2026. Share 3; no live or stopped A jobs. No new
+order-40 candidate, distribution exclusion, or whole Case R closure.
+R(7) was already closed by Lane C's accepted finite certificates (round
+1); A replayed them independently. Do not restart the old R(7) cube queue
+or the retired e168 strips.
+
+Current hand+enum audit of the marked cap-five 17/17 block:
+`ROUND15_EXCHANGE.md`, `replay_panel_exchange.sh`, `ROUND15_FREEZE.sha256`,
+`scratch/A/r15/`. Complete 12+30 shard coverage, pending critic.
+Lane C owned production; A consumed receipts and did not launch solvers.
 
 ## Jobs
 
@@ -14,34 +17,28 @@ finite certificates (round 1); A replayed them independently.
 |---|---|---|---:|---|
 | — | No detached A jobs | — | 0 | — |
 
-Old round-11 PIDs 790867/790884, 790868/790880, 790869/790883 rechecked gone.
-Round 14 only used bounded foreground tools (`nice -n 5`, CPU/wall/VM
-limits), no A production scan. One bounded first-only replay of C's
-scanner recovered the byte stream against the frozen twin-merge digest.
-Total about 0.029 CPU-h, including both text and packed censuses, repeated
-first checks, compiles and calibration. Retained A growth about 9 MiB.
+Uses bounded foreground tools (`nice -n 5`, 120/150-s CPU/wall and
+16-GiB VM limits), at most two census pipe workers and no solvers.
+Round aggregate about 0.011 A CPU-h including repeated validation and
+compiles; peak recorded RSS under 400 MiB, retained A data under 1 MiB.
 
 ## Results and claims
 
 | Label | Scope/result | Evidence | CPU-h |
 |---|---|---|---:|
-| hand + enum (coverage, pending critic) | Independently bound 157,472,001 ordered headers in 27 half-open shards (40,301,322 / 117,170,679 by map); first is 4,322,749. No exchange or diagonal quotient; each shard binds its ordered packed-ID SHA-256. Smaller 10/10 control: 334 nonempty plants, four map relabelings each, grouped/direct 399,584 IDs exactly equal. | `ROUND14_REPLAY.md`, `scratch/A/r14/{headers.packed.shards.tsv,headers.packed.full.tsv,controls.log,input-negatives.log}` | 0.00699 packed census incl. build/controls; 0.01263 text variant |
-| enum (first merge and receipt audit, pending critic) | `[0,2048)`: independently matched header roster and C's frozen twin stage digest by first-only replay; 23,100 former triple and 42,709 former pilot IDs retained at exact recorded stage. All 785 panel IDs bind equal C/scout terminal vectors, including nine old pilot vectors; 174 joint, 3,086 fillings, zero open. Missing inputs, dropped map row, count-preserving map overwrite, shared boundary are rejected. | `ROUND14_REPLAY.md`, `scratch/A/r14/{first.depths.gz,receipts.first.log}` | 0.00573 initially incl. first stream |
-| hand + enum (coverage/receipt audit of completed prefix, pending critic) | All 12 C shards in `[0,24576)` exactly match independent header census hashes and per-map counts: 67,417,211 headers → 8,076,698 local → 12,594 panel → 3,464 joint → zero unresolved; all 148,231 fillings rejected. Independent terminal stream hash matches canonical vectors. `[24576,55055)` contains 90,054,790 headers, still open. | `ROUND14_REPLAY.md`, `scratch/A/r14/{receipts.final.log,tail-witness.tsv,incomplete.stderr}`, `ROUND14_FREEZE.sha256` | 0.00233 final receipt replay |
-| archived | A-023: independent Round 13 literal package audit bound all 55,055 labelled frames and 9,959 atlas entries, replayed 498,668 left-triple headers with exact per-ID stages (17,604 local → 0 panel), and preserved 100 held panel survivors. | `ROUND13_REPLAY.md`, `scratch/A/panel13/round13.sha256` | prior |
-| archived | A-021 and A-022 were confirmed on the named windows, now obsolete as strip work: the verified d6 floor kills every old e168/d6 parent. No more e168 reroot, ID maps, matching or proof binding. | `ralph/critic/round_012.md`, `ROUND12_REPLAY.md` | prior |
+| hand (pending critic) | Shore swap `(i,j,b) -> (j,i,b)` on separate copies, physical neutral `k -> k xor b`, private crossing matrix transposes. Both bits remain, fixed diagonals are counted once, one-sided premises and stage/timing data do not transfer. | `ROUND15_EXCHANGE.md` | — |
+| enum (coverage, pending critic) | All 157,472,001 ordered headers bound to the original 12 receipt rosters or 30 disjoint HH shards. Exact bitwise transpose membership over all off-diagonal IDs; 67,417,211 original direct, 40,218,398 inferred HL, 49,836,392 HH orientations requiring 24,924,719 representatives (13,046 diagonals). First HH shard 2,647,995 reps, 541 diagonals. | `scratch/A/r15/{census.tsv,first.tsv,coverage.initial.tsv,receipts.initial.log}`, `ROUND15_EXCHANGE.md` | 0.004 full rebuild/replay |
+| enum (controls) | 2,672 smaller physical orientation checks, both fixed bits and asymmetric fixed-header crossings. Missing diagonal, wrong bit and dropped LH reference rejected. Actual first-receipt copies reject transferred diagonal, count-preserving map mutation, and one live/disagreeing terminal. Incomplete `--require-full` output is not published. | `scratch/A/r15/{controls.log,receipt-negatives.log,incomplete.stderr}` | 0.001 controls incl negative receipt checks |
+| hand + enum (marked two-neutral block only, pending critic) | All 30 HH receipts independently bound and checked: 24,924,719 reps → 3,620,522 local → 6,027 panel → 1,617 joint, 74,632 matching rejected fillings, none live. With the 12 frozen ordered negatives and exchange proof: 92,341,930 direct, 65,130,071 transferred, 0 ordered unresolved. | `ROUND15_EXCHANGE.md`, `ROUND15_FREEZE.sha256`, `scratch/A/r15/{coverage.final.tsv,receipts.final.log,totals.final.log}` | <0.001 final A binding; 0.0751 C production |
+| archived | Round 14 exact independent header census and C prefix audit: original 12 ordered shards through left ID 24,575, 67,417,211 headers, 12,594 panel IDs, 3,464 joint, full matched reasons on 148,231 fillings, none live. A separate first read recovers first twin stream digest and former pilot/triple IDs. | `ROUND14_REPLAY.md`, `ROUND14_FREEZE.sha256` | prior |
+| archived | A-023: independent Round 13 literal package audit bound 55,055 labelled frames and 9,959 atlas entries, replayed 498,668 left-triple IDs (17,604 local → 0 panel), preserved all 100 held panel survivors. | `ROUND13_REPLAY.md`, `scratch/A/panel13/round13.sha256` | prior |
 
 ## Next
 
-- C owns production; A consumes the published `result.json` intervals and
-  audits only coverage/receipts. The verifier can audit a completed prefix
-  or demand a full tiling with `--require-full`. A's first-stream replay
-  does not recalculate terminal search.
-- C stopped after completing `[22528,24576)` per the scout's tail gate
-  (ID `(23155,26938,1)`, 7,059 rejected fillings, 3.859940 CPU-s). This is
-  neither an unresolved terminal nor an invitation to resume without the
-  critic. If asked to follow up, provision all remaining coverage hashes
-  already in `headers.packed.shards.tsv`, and test any terminal optimization
-  against the bound complete reason vectors before new production.
-- Do not generalize the marked 17/17 result to every `K4,4` or Case R.
-  Do not restart the retired e168 work or the old R(7) cube queue.
+- H/critic to review the complete `--require-full` receipt audit and
+  C's structural cover and search. No more A production or replay wave
+  unless the critic finds a gap. Never copy stages or reason vectors
+  to exchanged IDs.
+- Even full closure is only the marked cap-five 17/17 block, i.e. the
+  two-neutral-site case of a `K4,4` in a cap-five regular target. The
+  zero-/one-neutral-site cases, cap six, and whole Case R do not follow.

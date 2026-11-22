@@ -1,5 +1,15 @@
 # Lane H — archived round 2 handoff, November 21, 2026
 
+## Round 14 archive
+
+- `ROUND14_REVIEW.md` and `ROUND14.sha256`: ledger through round 013;
+  pinned Lean old-card pole contacts and two-term book footprints had
+  8 targeted and 327 project axiom reports. Controls: 388/5,789 small
+  triangle-free graphs and 7,456 C13/regular C22 footprints. No H jobs.
+- Round-14 critic then accepted H-028/029 and core 5, and confirmed the
+  scoped A/C ordered prefix only. See `ROUND15_REVIEW.md` for imported
+  statuses and the separate new 17/17 submission.
+
 ## Round 9–10 archive pointers
 
 - `ROUND9_REVIEW.md` and `ROUND10_REVIEW.md` contain the replay/binding

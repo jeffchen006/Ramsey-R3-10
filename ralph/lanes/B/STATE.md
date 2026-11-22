@@ -1,9 +1,17 @@
-# Lane B — round 14, November 22, 2026
+# Lane B — round 15, November 22, 2026
+
+**Round 15 passed:** all **2,102,271 supplied deletion-reducible**
+32/e108 keys are covered at MTF degree-seven roots (cert, pending critic).
+2,016,206 checked demand cliques and 86,065 dual LRATs, including 36,800
+adopted ranks and no duplicates. Ordered merge and independent streaming
+audit passed, zero gaps; ~1.99 core-h, 240 MiB, no live jobs. The 1,875
+supplied criticals and five missing criticals are separate. No floor
+109, e88/U88 or profile change. `ROUND15_REPLAY.md`, `ROUND15.sha256`.
 
 **Current baseline:** global degree-seven floor **108** for MTF is CONFIRMED
 (B-013); it subsumes the direct e162 `(0,2,32,6)` exclusion. Neither
-uses t8/t9 floors. No candidate graph. Round-14 share was 8 cores;
-only bounded foreground work (one solver at a time). Re-read the next allocation.
+uses t8/t9 floors. No candidate graph. Round 15 used eight slots of
+the authorized 14, after one-slot calibration. Re-read the allocation.
 Work from `scratch/B` with `ulimit -v 16777216` and `PYTHONDONTWRITEBYTECODE=1`.
 
 **Round 14:** bound the named **2,102,271** deletion-reducible 32/e108
@@ -65,36 +73,24 @@ Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 
 ## Jobs
 
-No running B jobs at round end (0 cores); no new detached jobs.
-All foreground lifts and replays exited; earlier PIDs below are gone.
+No running jobs (0 cores). Both detached jobs exited normally; the final
+merge and ordered audit were foreground. Cwd was `scratch/B`, nice +5,
+16 GiB per process, with wall and aggregate CPU caps.
 
 | PID | Command | Log | Cores | Start (CET) | Actual end (CET) |
-|---|---|---|---|---|---|
-| 2981850 | `e108_r14.py tranche work/e108_r14 work/e108_r14_replay` (foreground, `timeout 520s`) | `scratch/B/logs/e108_r14.log` | 1 | Nov 22 09:02:05 | Nov 22 ~09:04:47, status 0 |
-| 1180084 | `timeout 18h prefix_pipeline.sh 16` | `scratch/B/logs/prefix_pipeline.log` | 16 | Nov 21 17:10:35 | Nov 22 ~01:06, status 0 |
+|---|---|---|---:|---|---|
+| 905617 (outer timeout), 905620 (driver) | `timeout 42m e108_r15.py campaign work/e108_r15 9 257 8 13900` | `scratch/B/logs/e108_r15_main.log` | 8 | Nov 22 10:33:28 | ~10:50:28, status 0 |
+| 865356 (outer timeout), 865361 (driver) | `timeout 6m e108_r15.py campaign work/e108_r15 1 9 8 1200` | `scratch/B/logs/e108_r15_wave1.log` | 8 | Nov 22 10:32:38 | 10:33:11, status 0 |
 
-Generation finished around Nov 22 00:57 CET (3,886 legacy chunks); the
-outer MTF scan ran ~00:58–01:06 CET with 5,736 digest-bound chunks.
-
-PID 3921182 finished at 22:30 CET, all 48 chunks bound, zero e88 outputs.
-PID 2576750 (tail87, active 22:30:40–22:52 CET) finished with zero MTF
-outputs and all 945 ordered chunks bound; the independent terminal audit
-passed. At 22:53 CET prefix d6 has 2,021 completed chunks and 826 left.
-Round-6 e108 PID 1105184 (four-way swap, 22:19–22:25) passed all 2,102,271
-parents, adding 479 keys. PID 1276908 (following deltas, 22:26) intentionally
-exited at an incomplete fixed point after adding 128 more; no e108 PID
-remains. The unoptimized 512-parent 2→3 pilot's `shortg` timed out, not an
-empty result; the calibrated critical-only version completed on the same
-parents. All other round-6 foreground pilots and audits have finished.
-
-Round 4: PID 3047886 (`edgeup_pipeline.sh 86 … up86`) ended successfully before 19:42. 392466 was retired at 20:40 while still waiting (no compute lost); checkpoint input is ready, so 2576750 queues behind e43 for core headroom instead of waiting for the entire prefix. All foreground benchmarks finished. Full e88 remains open. Round 3 completed: PID 1367119 (`starlift_stage.sh`, one worker, queued
-Nov 21 18:57:38, ran ~18:59–19:03 CET), with terminal count audit and SAT
-sample recheck. Foreground `bench_anchor` passed; `bench_order` ended on an
-e52 TIMEOUT after the exact e63 control passed. Neither benchmark is live.
-
-Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitted minimum degree 3 for order 21; corrected by generating this branch and merging, no missing counts thereafter. Seed 418169 failed on `shortg`'s in-place default; 453949 passed after explicitly writing stdout. Do not interpret either failed run as empty. Upper seed PID 540708 completed successfully at ~17:23 with all GR T13 counts.
+Rounds 1–14 have no live PIDs. Older job transitions are in `LOG.md`.
 
 ## Results and claims for review
+
+### Round 15
+
+| Label | Result | Evidence | CPU-hours |
+|---|---|---|---:|
+| cert (named reducible list, pending critic) | All 2,102,271 supplied reducible 32/e108 keys blocked at MTF d7 roots; 2,016,206 demand cliques plus 86,065 dual LRATs. New: 1,980,937 + 84,534; exact merge with 36,800 adopted positions, zero gaps. | `ROUND15_REPLAY.md`, `ROUND15.sha256`, `scratch/B/work/e108_r15/summary.json`, `scratch/B/logs/e108_r15_rank_audit.log` | ~1.99 incl. setup/replay/merge |
 
 ### Round 14
 
@@ -224,10 +220,10 @@ Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitt
 
 ## Next
 
-0. Critic/H: check the round-14 tranche (`ROUND14_REPLAY.md`). Only after
-   review, consider completing the named reducible partition: use exact
-   disjoint residual source IDs, interleave across rank and cap jobs. The
-   sample is not a tail bound. Retain exact e88 and e108 scopes.
+0. Critic/H: audit the full named reducible result (`ROUND15_REPLAY.md`).
+   Use `ROUND15.sha256`, the exact rank merge, and targeted no-solve replay
+   (e.g. shards 0 and 141) if helpful. Do not rerun production. No new
+   discovery wave without a different coverage argument/source.
 1. Critic/H: replay or audit the bounded prefix and scout proof tranche.
    `src/replay_prefix_r7.sh terminal` and `src/e108_scout_proofs_r8.sh replay work/e108_r8_scout_proofs`
    are ready. Do not re-launch prefix. Outside-prefix critical e88 after

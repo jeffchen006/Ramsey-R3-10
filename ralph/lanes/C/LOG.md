@@ -206,3 +206,6 @@ Exact costs and proof/replay scopes are in `ROUND4_REPLAY.md`.
 
 ## Round 14 (November 22)
 - Calibrated and took two independent streamed stage/terminal readouts of the cap-five 17/17 ordered alignment roster. Complete prefix `[0,24576)`: 12 shards, 67,417,211 headers, 12,594 panel, 3,464 joint IDs, zero unresolved. All stage bytes, independent header digests and terminal reason vectors agree. Stopped at expensive-tail gate; 90,054,790 headers still unscanned. `ROUND14_REPLAY.md`.
+
+## Round 15 (November 22)
+- Calibrated exact Python witness reuse, retained unchanged C++ terminal, and scanned all 30 independent HH representative shards under the new gate. Coverage including the old prefix: 92,341,930 direct, 65,130,071 by shore exchange, zero unresolved. Marked cap-five 17/17 excluded, pending critic (`hand + enum`); no broader closure. 270.204 CPU-s production, 390.415 with charged setup. `ROUND15_REPLAY.md`.

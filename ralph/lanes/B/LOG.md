@@ -362,6 +362,30 @@ All times below are CPU seconds on this machine, using the same selected inputs 
 
 Fit estimates: prefix upper bound roughly (364,384 × ~1 s + 132,817 × ~0.2–0.4 s) / 16, about 7–10 hours with overhead. Full e52 stage alone at 0.511 s/input costs ~1,465 CPU-hours, or ~73 hours at 20 busy cores. A complete scan of 5.9M estimated e88 outputs at the e86/pilot e88 rates would cost roughly 2 CPU-hours, but resample the prefix before trusting this extrapolation. Long-mode budget needs <=0.27 CPU s/e52 input (or substantial validated sharing/reallocation). No justified t9<=89 or t8 launch.
 
+## Archived job transitions (rounds 1–14)
+
+- Round 14 PID 2981850 (`e108_r14.py tranche`, 520s wall) finished
+  Nov 22 ~09:04:47 CET, status 0; `scratch/B/logs/e108_r14.log`.
+- Prefix PID 1180084 (`timeout 18h prefix_pipeline.sh 16`) started Nov 21
+  17:10:35, ended Nov 22 ~01:06 CET, status 0. Generation finished ~00:57
+  (3,886 chunks); the MTF scan used 5,736 ordered digest-bound chunks.
+- PID 3921182 finished at 22:30 CET, all 48 chunks bound, zero e88 outputs.
+  PID 2576750 (tail87, 22:30:40–22:52 CET) finished with zero MTF outputs,
+  all 945 chunks bound and the independent terminal audit passed.
+- Round 6 PID 1105184 (four-way swap, 22:19–22:25) passed all 2,102,271
+  parents, adding 479 keys. PID 1276908 added 128 and stopped at a fixed
+  point. The unoptimized 512-parent 2→3 pilot `shortg` timed out; the
+  calibrated critical-only version completed on the same parents.
+- PID 3047886 (`edgeup_pipeline.sh 86 … up86`) finished by 19:42 CET.
+  PID 392466 was retired at 20:40 before compute. PID 1367119
+  (`starlift_stage.sh`, run ~18:59–19:03) completed with count audit and
+  SAT sample replay. `bench_anchor` passed; `bench_order` passed e63 then
+  timed out on e52.
+- Bootstrap 136395 and seed jobs 418169/453949 exited. The n21 union
+  originally omitted degree-three inputs, then generated and restored that
+  branch. PID 418169 failed on `shortg`'s in-place default; PID 453949
+  passed with explicit stdout. PID 540708 passed all GR T13 counts.
+
 ## Other experiments
 
 - `gluecut`: a witness independent set for one failed candidate must be hit by all future siblings. Correct pruning but witness construction and bitset application offset the node savings in both samples.

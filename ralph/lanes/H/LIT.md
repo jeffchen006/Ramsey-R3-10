@@ -366,3 +366,20 @@ published full order-26 census; see `ROUND9_REVIEW.md`.
   header census and B's reducible extensions are team computations,
   not public Ramsey catalogues; F's necessary words are not new
   order-39 constructions. No evidence changed lane scope.
+
+## Round 15 status check — November 22, 2026
+
+- The current EJC PDF re-fetch at DS1's publisher page is revision
+  18, **April 24, 2026**, Table Ia, explicitly **40–41** in the
+  `K10` row and `K3` column (Exoo/Angeltveit), Radziszowski,
+  *Small Ramsey Numbers*, DOI `10.37236/21`. Angeltveit's EJC
+  **32**(4) #P4.30 (November 3, 2025), DOI `10.37236/12936`, and
+  arXiv:2401.00392v2 (April 8, 2024) are unchanged. No newer
+  exact classical result was located. Evidence: `scratch/H/round15-literature.log`
+  and `scratch/H/lit/r15-ds1.{pdf,txt}`.
+- Per the critic, no independent catalogue census or frame regeneration
+  this round. The order-39 bulk and order-30 dense exact-count answers
+  remain “not located in the sources checked above,” not a nonavailability
+  theorem. No new input for A–G. The marked 17/17 proof uses the
+  published upper bound `R(3,6) ≤ 18` explicitly; that is not a new
+  enumeration or a Lean proof of the published Ramsey number.

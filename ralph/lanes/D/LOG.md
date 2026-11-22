@@ -1,3 +1,7 @@
+## Round 14 archive (2026-11-22)
+
+D-035–039 accepted: every deficient path admits ≥13 distinct C5 closures, some ≥16; the three pairwise 2-regular seven-fibers lemma; the 8×4 half-wing and the square cuts. See `WING_RIDGE.md` and `BOOK14_PANEL.md` for all proofs, timings and limitations. Final rosters `scratch/D/book14/clique-all.tsv` 41,486, `clique-rich.tsv` 39,356 (overlapping oriented marks, not a whole-graph partition). No R(3) or original kernel closure. Original 84-panel LP excluded 57/65 beyond elementary gates; no full type pair eliminated by sampling. At K=2 the only three possible t=16 shapes all passed the old fractional relaxation, leading to round 15. No round-14 jobs remain.
+
 # Lane D — round 3, 2026-11-21
 
 # Lane D — round 12, November 22, 2026

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# One fresh Gemini turn (Antigravity `agy`, driven by agentlink) under the same Landlock write fence as turn.sh.
+# One fresh Gemini or Claude turn (Antigravity `agy`, driven by agentlink) under the same Landlock write fence as turn.sh.
 #   turn_agy.sh MODEL EFFORT MINUTES PROMPT_FILE LAST_MESSAGE_FILE LOG_FILE NAME
 # Exit: 0 done, 124 cut off at MINUTES, 2 failed turn (agentlink), other = failed (see LOG_FILE).
 # The agentlink agent r310-NAME is made on first use and reset before every turn (a fresh context each
-# round, as in a Ralph loop). It runs on the user's Google AI subscription; keep the use moderate.
+# round, as in a Ralph loop). It runs on the user's Google AI subscription (quota shared with other jobs); keep the use moderate.
 set -u
 MODEL=$1 EFFORT=$2 MIN=$3 PROMPT=$4 OUT=$5 LOG=$6 NAME=r310-$(echo "${7:-turn}" | tr -c 'A-Za-z0-9_\n-' '-')
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)

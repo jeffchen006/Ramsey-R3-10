@@ -351,3 +351,18 @@ points; the paired masks were joined on W vertices but not on its
 edges. Scout N mode 0 rejects all 512 disjoint fixed-source e122
 samples; bundling costs more and rejects nothing further. See
 `ROUND13_REPLAY.md`. No active jobs were handed to round 14.
+
+## Round 14 handoff (historical)
+
+Three exact Farkas contradictions on four named old population
+tuples, with both edge tables free; fourth has an exact integer
+shared-edge point with 22 W triangles. Free-population jobs do not
+justify scaling (all four MIPs cap; no full-template cut). See
+`ROUND14_REPLAY.md` and its freeze. No active jobs handed forward.
+
+## Round 15 handoff
+
+Occupancy-only rows reproduce the three named tuple cuts, but
+all four templates have new exact integer relaxation points.
+Adding rows is cheap; matched solving is slower (11.93 → 18.80
+CPU-s). Stop this pilot; see `ROUND15_REPLAY.md` and its freeze.

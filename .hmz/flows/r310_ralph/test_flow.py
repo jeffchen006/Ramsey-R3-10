@@ -111,7 +111,8 @@ async def test_models_per_lane_and_scouts_beside_the_lanes():
                                     'r002_referee.prompt', 'r002_A.prompt', 'r002_D.prompt', 'r002_critic.prompt'])
     agy = {c[5].rsplit('/', 1)[1]: c for c in TURNS if c[1] == 'ralph/bin/turn_agy.sh'}
     assert sorted(agy) == ['r001_referee.prompt', 'r001_scout_T.prompt', 'r002_referee.prompt']
-    assert agy['r001_referee.prompt'][2] == 'gemini-4-neon-xhigh' and agy['r001_scout_T.prompt'][8] == 'scout_T'
+    assert agy['r001_referee.prompt'][2] == 'claude-opus-5-5-high' and agy['r001_scout_T.prompt'][2] == 'gemini-4-neon-xhigh'
+    assert agy['r001_scout_T.prompt'][8] == 'scout_T'
     assert 'REFEREE TASK' in ws.text('scratch/flow/turns/r001_referee.prompt')
     assert 'ralph/referee/round_001.md' in ws.text('scratch/flow/turns/r001_critic.prompt')
     assert names.index('r001_critic.prompt') > max(names.index(f'r001_{n}.prompt') for n in ('A', 'D', 'scout_R'))
