@@ -275,3 +275,38 @@ published full order-26 census; see `ROUND9_REVIEW.md`.
   from two solvers remain a premise of the final Lean theorem. Neither
   this nor the fan result changes any A–G premise, order-39 seed or
   involution scope. No artifact campaign was launched.
+
+## Round 12: November 22, 2026 primary-source refresh
+
+- Radziszowski, *Small Ramsey Numbers*, EJC DS1.18 (April 24, 2026),
+  Table Ia and §2.1, DOI `10.37236/21`, and Angeltveit, EJC **32**(4)
+  #P4.30 (November 3, 2025), Theorem 1 and §7, DOI `10.37236/12936`,
+  still support **40–41**. Journal metadata is unchanged, and the
+  `2401.00392` arXiv landing page (v2 April 8, 2024) is byte-identical
+  to round 11. IJCAI `10.24963/IJCAI.2025/292` and Springer
+  `10.1007/978-3-032-32589-1_8` primary pages were refreshed: their
+  SAT+CAS and Lean/SMS applications are as scoped in the table above.
+  The limited Crossref result set had no exact decision or census;
+  arXiv keyword HTTP 400 and Zenodo HTTP 403 are **failed requests**,
+  not negative search results. See `scratch/H/round12-literature.log`.
+- Benjamin Przybocki, John Mackey, Marijn J. H. Heule and Bernardo
+  Subercaseaux, *Doubly Saturated Ramsey Graphs: A Case Study in
+  Computer-Assisted Mathematical Discovery*,
+  [arXiv:2604.21187v1](https://arxiv.org/abs/2604.21187v1), April 23,
+  2026, §§1.2, 2, 4.1. Section 4.1 reports **over 100** doubly
+  saturated order-39 `(3,10)` examples, not a new bound or the
+  Angeltveit/GR census. The linked author artifact at tree
+  `389d344cce15b594710c03496eafb069a3646a1e` has 18 paths (complete
+  tree) and no releases; it contains Lean and SAT code, no example
+  graph list. Useful for B's edge-private plus nonedge-witness
+  constraints and F's diversity-of-seeds question, but double
+  saturation cannot be assumed for all B residues or all full targets.
+  A/C/D/E/G have no replacement catalogue or stronger closure premise.
+- McKay and HoG index bytes match round 11 (HoG's match is for the
+  shell only). I found neither a public bulk file for the journal
+  §7 partial census of at least **43,225,483** order-39 graphs nor a
+  new public exact count at order 30 / `88≤e≤99`. The exact
+  `2,104,151` denominator is still GR Table 14 at **32/108**. B's
+  new local search yielded zero novel keys on the named 7,954-parent
+  list; neither that result nor the literature supplies the last five.
+  These are dated findings, not claims of exhaustive nonavailability.

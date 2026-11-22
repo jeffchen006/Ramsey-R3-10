@@ -62,6 +62,21 @@ is **stopped**, not a timeout or an UNSAT answer.
   then measure a small sample before seeking cores. `t=2,3,4` open.
 - `(2,28,4)` and `(2,30,{4,5})` have the same crown layout but remain
   open. Cases with few fixed points and `(5,0)` still open.
+# Round 11 archive
+
+Round-12 critic confirmed E-029/E-030 and E-031 in
+`ralph/critic/round_011.md`. Cores 7 and 13 (only) closed under the
+f32/t4/eW11 mixed scope and all-graph E-021 premise. Respectively
+50,065/90,117 projections, 278,029/547,674 lifts, 11/29 original
+CakeLRATs, 231.72/484.21 terminal CPU-s. Evidence `shared74_round11.md`
+and `scratch/E/r11_shared/freeze.{7,13}.sha256`. Every order-26/e≤74
+(3,8) graph has minimum degree at least four (191 all-graph order-22
+parent CNFs freshly bound and CakeLRAT-checked; exact-e74 d3 census
+also found no lift); this is independent of E-021 and does not recover
+the missing class. `window74_d3.md`, `scratch/E/r11_shared/freeze.d3.sha256`.
+Degree floor pruned 0/42 archived heavy-core IDs. All 61 wrappers
+in `scratch/E/r11_shared/jobs.tsv` collected; no live jobs from r11.
+
 # Round 3 handoff (2026-11-21)
 
 - Completed `(2,28,a=4)` with 42 checked DRAT/LRAT proofs; see

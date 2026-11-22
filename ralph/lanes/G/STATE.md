@@ -1,18 +1,31 @@
-# Lane G state — round 11, November 22, 2026
+# Lane G state — round 12, November 22, 2026
 
 **278 near-regular distributions plus R remain open.** No order-40
 candidate. The exact baseline (`round6_baseline.csv`), ten U88 keys
 (`round6_u88.csv`), twenty e168 d6 keys (`round6_e168_d6.csv`), six
 missing e120/e121 classes, and eleven single-root zero-addition cases
 are unchanged. No new class-LP or Farkas elimination this round.
-The d8 j2 middle minimum-degree-two bundle is now terminal and bound;
-this does not close the parent distribution `(2,7,4,27)`. This round's
-direct order-21 addback pilot is summarized below.
+G-037 (d8 j2 middle minimum-degree-two only) is confirmed and archived;
+do not regenerate or rebind it. Round 12 joins two equality reroots
+inside one antineighbourhood. Neither result closes the parent
+distribution `(2,7,4,27)`.
 
 ## Jobs
 
-No active or detached jobs after round 11. Foreground proof pilots
-and dual replays have terminated; no production sweep launched.
+**No active G jobs.** Round 12 batches from `scratch/G/round12`. B-middle only,
+11,376 selected positive shell roles; `b.middle.price` was written
+before launch. Proof binaries under per-role 16 CPU-s + wall cap,
+per job 16 GB, ten serial worker streams, nice +5.
+
+| PID | Command | Log | Slots | Start | Expected end / hard limit |
+|---|---|---|---:|---|---|
+| 3268364 | `timeout 2250s bash ../../../ralph/lanes/G/run_reroot_middle.sh 10` | `b.middle.master.log`, `b.middle.<rank>.log` | 10 | Nov 22 06:24:01 CET | retired 06:37:09; 11,369 CERT + 7 repaired |
+| 3475785 | `timeout 780s bash ../../../ralph/lanes/G/run_reroot_middle_static.sh 3` | `b.middle.static.master.log`, `b.middle.static.<rank>.log` | 3 | Nov 22 06:30:06 CET | retired 06:33:29; 944 CERT |
+
+The second batch targets the 944 static rejections with the same
+mathematical CNF, so the static enumerator is no longer an exclusion
+dependency for those rows if checkers accept. Price from 17/17 in
+`scratch/G/round12/b.middle.static.price`.
 
 Round 10 (CET), cwd `scratch/G/round10`: all jobs retired. PID 3097303
 was absent at round-11 collection; terminal master status at 04:00:44
@@ -44,6 +57,16 @@ Round 8 jobs confirmed retired by `ps` in round 9:
 | 710384 | `bash ../../../ralph/lanes/G/run_mixed_strip.sh` in `scratch/G/round7` | `scratch/G/round7/proof-mixed.master.log` | 2 | 00:12:22 CET | 01:06:51 CET, 5,155 certs, all remaining keys |
 
 ## Results and claims
+
+Round 12, mathematical proof in `rows/equality_reroot_join.md` and
+the per-variant map and replay in `ROUND12_REPLAY.md`:
+
+| Label | Result | Evidence | CPU-h |
+|---|---|---|---:|
+| hand + enum + cert, pending critic | **B-side equality impossible for the noncross d8 B pivot, path/middle shape only**, at mixed `(2,7,4,27)` and the named strips. 6,160 + 6,160 roles bound on an independent hole-pair roster; 11,369 main, 944 formerly static, 7 repaired with one dominating column and explicit I9 cuts. All traces dual checked, 28 baseline + 7 repair fresh producer replays. No matching or distribution closure. | `scratch/G/round12/b.middle.final.tsv`, `scratch/G/round12/b.middle.bind.log`, `ROUND12_REPLAY.md` | 2.314 |
+| hand + enum | The 21-core is unchanged on either swap; both windows lie in `P=G−N[f]` with exact edge floors/parity 108/99/90. The unique missing small crossed singleton yields a size-6/8 dominating column in `P`. 14 literal shell controls, rooted Exoo39/C35 join controls, 676 positive/adverse MTF column pairs pass. | `rows/equality_reroot_join.md`, `scratch/G/round12/{controls4,mini.control3,column.control2}.log` | <0.003 passing controls |
+| enum and pilot cert/open | A's exact bounded maps price the order27 and old low-min orders25/26; the static joined map alone loses 0/18,797 original d8 and 0/1,798 d9 IDs. On the same 32 sampled d8 A-small original IDs, 31 have both full/τ0 leaf variants refuted and no order27 lift even in A's wider bound map. 63 dual proofs freshly replayed; 1 role variant admits the projection. The 31 are disjoint from the three round-11 direct A-small certificates (four other direct certs B-small). No A-scale production. | `scratch/G/round12/{a8.no27.two.variant.keys,a8.sibling.replay.log,a8.repair.replay.log,a8.direct.keys}`, `scratch/A/strip12/map27.tsv` | ~0.020 A8 detailed solve/replay |
+| open with measured pilot cert | d9 full/τ0 remains SAT at order30 in 10/12 mini joins, leaf and full/τ1 1/12 each; one dominating column and stronger inherited minima do not improve. B matching separate order25/26 pilot 64/64 dual proofs at 6.5k; no matching production. | `scratch/G/round12/{mini.parity,extra.floors,mini.proof}.log` | ~0.044 joint pilot + prices |
 
 Round 11:
 
@@ -87,11 +110,19 @@ the final sets. Claims await the flow's ledger/critic review.
 
 ## Handoff
 
+- New round-12 path: exact union of the two windows in the
+  single-pivot antineighbourhood, not another 40-vertex direct
+  proof sweep. For B equality, label by τ and hole shape; the B
+  matching price and G-037 matching arms are different questions.
+  See `ROUND12_REPLAY.md` for cover assumptions and the bound map.
+  For A8, do not scale until the remaining projections and order27
+  arm are priced; A9 order25/δ3 still has projected witnesses.
 - Mixed pending: d8 j1 δ≥2 **except B-side equality**, j2 δ≥2
-  (middle δ2 terminal, matching δ2 unlaunched), j3 δ≥4; d9 j1 δ≥1,
+  (middle δ2 terminal, matching δ2 unlaunched), j3 δ≥4 other than
+  B-side middle equality if this round's proofs are accepted; d9 j1 δ≥1,
   j2 δ≥2, j3 δ≥3, j4 δ≥4; and crossed pivots. Lane A's separate d9
   B-side equality exclusion also uses the singleton-deficit census.
-  Reduce any surviving d8 B-side equality to j3/δ4 via pivot swap.
+  Reduce any surviving d8 B-side matching equality to j3/δ4 via pivot swap.
   Do not scale direct order24: best measured A-small d8 proofs 3/7,
   d9 0/12 at 50k. Try a new cut or price the alternative A pivot
   identity, not raw grafting, a higher cap alone, or matching sweeps.

@@ -3,6 +3,7 @@
 
 import argparse
 from collections import Counter, defaultdict
+import csv
 from itertools import combinations, combinations_with_replacement, permutations, product
 from pathlib import Path
 import subprocess
@@ -18,7 +19,7 @@ def apply_permutation(support, permutation):
     return sum(1 << destination for source, destination in enumerate(permutation) if support >> source & 1)
 
 
-def support_cover(key):
+def support_cover(key, first_branches=None):
     core = tuple(from_graph6(key))
     order = len(core)
     cap = tuple(4-row.bit_count() for row in core)
@@ -38,6 +39,8 @@ def support_cover(key):
     all_groups = small | large
     transformed = {group: tuple(tuple(sorted(apply_permutation(mask, perm) for mask in group)) for perm in autos)
                    for group in all_groups}
+    if first_branches is not None:
+        first_branches.update(first for first in small if first == min(transformed[first]))
 
     problematic = [(left, right) for left, right in combinations(range(order), 2)
                    if not (core[left] >> right & 1 or core[left] & core[right])]
@@ -81,9 +84,11 @@ def support_cover(key):
     return dict(cover)
 
 
-def verify_cover(cover_path, key):
-    direct = support_cover(key)
+def verify_cover(cover_path, key, branches_path=None):
+    first_branches = set() if branches_path else None
+    direct = support_cover(key, first_branches)
     stats = Counter()
+    branch_projections, branch_lifts = Counter(), Counter()
     for this_key, profile, parts, omitted in read(cover_path):
         assert this_key == key and profile == [10, 10, 11, 11]
         parts = tuple(map(tuple, parts))
@@ -91,8 +96,20 @@ def verify_cover(cover_path, key):
         assert len(omitted) == len(set(omitted)) and direct.pop(parts) == set(omitted)
         stats['projection orbits'] += 1
         stats['full support orbits'] += len(omitted)
+        if branches_path:
+            branch_projections[parts[0]] += 1
+            branch_lifts[parts[0]] += len(omitted)
     assert not direct
     print('independent exact cover:', dict(stats), flush=True)
+    if branches_path:
+        with branches_path.open(encoding='ascii') as source:
+            rows = [(tuple(map(int, row['branch'].split(','))), int(row['projections']), int(row['lifts']))
+                    for row in csv.DictReader(source, delimiter='\t')]
+        expected = [(branch, branch_projections[branch], branch_lifts[branch]) for branch in sorted(first_branches)]
+        assert rows == expected
+        assert branch_projections.keys() <= first_branches
+        print('independent first-branch table:', len(rows), 'including',
+              sum(projections == 0 for _, projections, _ in rows), 'empty', flush=True)
 
 
 def verify_lrat(cover_path, trace_path, folder, fastcuts):
@@ -127,12 +144,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('cover', type=Path)
     parser.add_argument('--key')
+    parser.add_argument('--branches', type=Path)
     parser.add_argument('--trace', type=Path)
     parser.add_argument('--proofs', type=Path)
     parser.add_argument('--fastcuts', type=Path, default=Path('../r6_e11/m11_fastcuts.so'))
     args = parser.parse_args()
     assert args.key or args.proofs
+    assert not args.branches or args.key
     if args.key:
-        verify_cover(args.cover, args.key)
+        verify_cover(args.cover, args.key, args.branches)
     if args.proofs:
         verify_lrat(args.cover, args.trace, args.proofs, args.fastcuts)

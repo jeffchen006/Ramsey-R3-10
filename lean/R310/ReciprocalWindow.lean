@@ -135,4 +135,86 @@ theorem reciprocal_square_opposite_degree (hTriangle : G.CliqueFree 3)
     (card_pos.mp (by omega : 0 < #left)) (card_pos.mp (by omega : 0 < #right)) hCross hShared
   omega
 
+/-- Inclusion–exclusion for the closed neighbourhood of three independent roots. -/
+theorem rootsWindow_triple_count {first second third : V}
+    (hFirstSecond : first ≠ second) (hFirstThird : first ≠ third) (hSecondThird : second ≠ third)
+    (hNoFirstSecond : ¬G.Adj first second) (hNoFirstThird : ¬G.Adj first third)
+    (hNoSecondThird : ¬G.Adj second third) :
+    #(rootsWindow G {first, second, third}) + 3 + G.degree first + G.degree second +
+        G.degree third + #((G.neighborFinset first ∩ G.neighborFinset second) ∩
+          G.neighborFinset third) =
+      Fintype.card V + #(G.neighborFinset first ∩ G.neighborFinset second) +
+        #(G.neighborFinset first ∩ G.neighborFinset third) +
+        #(G.neighborFinset second ∩ G.neighborFinset third) := by
+  have hNoSecondFirst : ¬G.Adj second first := fun hAdj => hNoFirstSecond hAdj.symm
+  have hNoThirdFirst : ¬G.Adj third first := fun hAdj => hNoFirstThird hAdj.symm
+  have hNoThirdSecond : ¬G.Adj third second := fun hAdj => hNoSecondThird hAdj.symm
+  have hRoots : #({first, second, third} : Finset V) = 3 := by
+    simp [hFirstSecond, hFirstThird, hSecondThird]
+  have hDisjoint : Disjoint ({first, second, third} : Finset V)
+      (G.neighborFinset first ∪ (G.neighborFinset second ∪ G.neighborFinset third)) := by
+    refine disjoint_left.mpr ?_
+    intro vertex hRoot hNbr
+    simp only [mem_insert, mem_singleton] at hRoot
+    rcases hRoot with rfl | rfl | rfl <;>
+      simp [hNoFirstSecond, hNoFirstThird, hNoSecondThird,
+        hNoSecondFirst, hNoThirdFirst, hNoThirdSecond] at hNbr
+  have hPair := card_union_add_card_inter (G.neighborFinset second) (G.neighborFinset third)
+  have hUnion := card_union_add_card_inter (G.neighborFinset first)
+    (G.neighborFinset second ∪ G.neighborFinset third)
+  rw [inter_union_distrib_left] at hUnion
+  have hCross := card_union_add_card_inter (G.neighborFinset first ∩ G.neighborFinset second)
+    (G.neighborFinset first ∩ G.neighborFinset third)
+  have hInter : (G.neighborFinset first ∩ G.neighborFinset second) ∩
+      (G.neighborFinset first ∩ G.neighborFinset third) =
+      (G.neighborFinset first ∩ G.neighborFinset second) ∩ G.neighborFinset third := by
+    ext vertex
+    simp only [mem_inter]
+    tauto
+  rw [hInter] at hCross
+  simp only [card_neighborFinset_eq_degree] at hPair hUnion
+  let near := G.neighborFinset first ∪ (G.neighborFinset second ∪ G.neighborFinset third)
+  have hCount := card_sdiff_add_card_eq_card (subset_univ ({first, second, third} ∪ near))
+  rw [card_union_of_disjoint hDisjoint, hRoots, card_univ] at hCount
+  rw [rootsWindow, biUnion_insert, biUnion_insert, singleton_biUnion]
+  dsimp only [near] at hCount
+  omega
+
+/-- With degree nine and the cap-five mark, order 22 is the extreme, and an
+external order-20 bound forces five triple neighbours if all codegrees are five. -/
+theorem rootsWindow_triple_cap_five {first second third : V} {opposite : Finset V}
+    (hOrder : Fintype.card V = 40)
+    (hFirstSecond : first ≠ second) (hFirstThird : first ≠ third) (hSecondThird : second ≠ third)
+    (hNoFirstSecond : ¬G.Adj first second) (hNoFirstThird : ¬G.Adj first third)
+    (hNoSecondThird : ¬G.Adj second third)
+    (hFirst : G.degree first = 9) (hSecond : G.degree second = 9) (hThird : G.degree third = 9)
+    (hOpposite : #opposite = 3)
+    (hCross : ∀ vertex ∈ opposite, G.Adj first vertex ∧ G.Adj second vertex ∧ G.Adj third vertex) :
+    let window := #(rootsWindow G {first, second, third})
+    let firstSecond := #(G.neighborFinset first ∩ G.neighborFinset second)
+    let firstThird := #(G.neighborFinset first ∩ G.neighborFinset third)
+    let secondThird := #(G.neighborFinset second ∩ G.neighborFinset third)
+    let triple := #((G.neighborFinset first ∩ G.neighborFinset second) ∩ G.neighborFinset third)
+    firstSecond ≤ 5 → firstThird ≤ 5 → secondThird ≤ 5 →
+      window = 10 + firstSecond + firstThird + secondThird - triple ∧ window ≤ 22 ∧
+        (window = 22 ↔ firstSecond = 5 ∧ firstThird = 5 ∧ secondThird = 5 ∧ triple = 3) ∧
+        (window ≤ 20 → firstSecond = 5 → firstThird = 5 → secondThird = 5 →
+          window = 20 ∧ triple = 5) := by
+  dsimp only
+  intro hCapFirstSecond hCapFirstThird hCapSecondThird
+  have hCount := rootsWindow_triple_count hFirstSecond hFirstThird hSecondThird
+    hNoFirstSecond hNoFirstThird hNoSecondThird
+  rw [hOrder, hFirst, hSecond, hThird] at hCount
+  have hTripleLower : 3 ≤ #((G.neighborFinset first ∩ G.neighborFinset second) ∩
+      G.neighborFinset third) := by
+    rw [← hOpposite]
+    apply card_le_card
+    intro vertex hVertex
+    obtain ⟨hAdjFirst, hAdjSecond, hAdjThird⟩ := hCross vertex hVertex
+    simp [hAdjFirst, hAdjSecond, hAdjThird]
+  have hTripleUpper := card_le_card (inter_subset_left :
+    (G.neighborFinset first ∩ G.neighborFinset second) ∩ G.neighborFinset third ⊆
+      G.neighborFinset first ∩ G.neighborFinset second)
+  exact ⟨by omega, by omega, by omega, by omega⟩
+
 end R310

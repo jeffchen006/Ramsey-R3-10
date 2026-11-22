@@ -305,3 +305,7 @@ import R310
 #print axioms R310.three_anchor_exterior_card_le_fourteen
 #print axioms R310.noncross_anchor_order_le_degree_add_twenty_two
 #print axioms R310.intersecting_pairs_empty_or_star_or_triangle
+#print axioms R310.deficient_other_witness_disjoint
+#print axioms R310.exists_disjoint_distinct_deficient_witnesses
+#print axioms R310.rootsWindow_triple_count
+#print axioms R310.rootsWindow_triple_cap_five

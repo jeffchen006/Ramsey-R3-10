@@ -1,12 +1,12 @@
-# Round 12 core ceilings — 80 total, not launch targets
+# Round 13 core ceilings — 80 total, not launch targets
 
-| Lane | Cores | Reason for change from round 11 |
+| Lane | Cores | Reason for change from round 12 |
 |---|---:|---|
-| A | 4 | Unchanged: independent source/pin and reroot coverage checks, not proof production. |
-| B | 18 | +4: 47 checked recoveries, only five missing; give priority to the bounded 7,954-parent wave and reserve parallel checking capacity if coverage becomes complete. |
-| C | 5 | −1: both reciprocal censuses have finished; a single-catalogue structural pilot costs less than a new join. |
-| D | 11 | +2: single-witness exhaustion cuts 117 sufficient roots to 111; use headroom for disjoint small controls and the nine-root contrary-case pilot, not a general path join. |
-| E | 23 | +1: two further conditional core closures; reserve for core 16 only after pricing the complete branch coverage and proof tail. |
-| F | 3 | −1: the uniform card is finished; the distinct free-vertical price test needs few slots. |
-| G | 14 | −5: middle bundle is terminal and direct d8/d9 pilots mostly capped; price a structural cut rather than scale either matching or direct proof production. |
-| H | 2 | Unchanged: ledger, small independent checks and Lean. |
+| A | 3 | −1: the reroot map is verified but its parent is closed; only independent small panel checks are needed. |
+| B | 12 | −6: 7,954 parents returned zero new classes; fund the very short named complement and a different source pilot, not a standing large wave. |
+| C | 6 | +1: the 324-case tight-window proof and the scout's measured reciprocal panel cut justify a bounded 17/17 pilot. |
+| D | 13 | +2: 111→102 necessary roots and a disjoint-pentagon theorem justify compatibility pilots, not indiscriminate graph search. |
+| E | 26 | +3: another complete mixed-core exclusion with priced tail and replay; reserved for core 17 after its own price gate. |
+| F | 2 | −1: the 19-pair family is terminal; first-principles four-pole pricing needs no proof wave. |
+| G | 16 | +2: the verified d6 floor changes 40 baseline keys; prioritize exact threshold propagation and new equality signatures, not old strip solves. |
+| H | 2 | Unchanged: ledger, independent small checks and Lean. |

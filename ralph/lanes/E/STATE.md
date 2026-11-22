@@ -1,49 +1,50 @@
-# Lane E state — round 11 complete
+# Lane E state — round 12 complete
 
-2026-11-22, CET. Allocation 22; foreground peak nine worker slots,
-no detached jobs. No candidate or Ramsey verdict. Symmetry work uses
-all graphs, not MTF. Round-10 cores 12/14/10/11 confirmed by critic.
+2026-11-22; timestamps below are machine time (CET, UTC+01:00).
+Allocation 23; peak 11 capped foreground worker slots. No detached
+jobs launched and no candidate submitted. Symmetry uses all graphs,
+not MTF. Critic confirmed round-11 E-029/E-030/E-031; see `LOG.md`.
 
 ## Jobs
 
-No live, stopped or detached lane E jobs at collection. Prior wrappers
-absent; all 61 listed round-11 wrappers absent after completion. Full
-per-process table (PID, start, wall deadline offset, log, exact command,
-one worker slot/row) is `scratch/E/r11_shared/jobs.tsv`. `r11_worker.sh`
-uses `nice -n 5`, `timeout`, CPU caps, and 16 GiB per worker.
+Exact per-worker PID, command, log, start and wall-cap offset (one
+slot per row): `scratch/E/r12_shared/jobs.tsv`. Wrapper applies
+`nice -n 5`, `timeout`, CPU limits and 16 GiB address space; grace
+8 s. Proof workers also capped individual files at 2 MiB.
 
-| Recorded wrapper PIDs (listed rows only) | Phase / logs | Peak slots | Start range / last possible wall end (CET) |
+| Wrapper PIDs (only listed rows) | Logs / work | Peak slots | Start / latest possible finish (CET) |
 |---|---|---:|---|
-| 820801–843877 | Core census, independent cover, stratified sampling and calibration, `census.*`, `bind.*`, `pilot.*`, `calibrate.*` logs | 9 | 04:42:05–04:43:09 / 04:47:58 |
-| 857829–869946 | Two waves, 16 full cover shard scans in `parts.{7,13}/` | 8 | 04:43:53–04:44:22 / 04:51:20 |
-| 896724–919858 | Whole receipt replays, 40 proofs and fresh binding, `replay.*`, `proof.*`, `rebind.proof.*` logs | 8 | 04:45:33–04:46:14 / 05:02:42 |
-| 970667–1085315 | d3 calibration, census and certificate replay, archived degree-floor pilot, `d3.*.log` | 4 | 04:47:51–04:51:48 / 04:58:04 |
+| 2741845–2780110 | `calibrate.*`, `census.16`, `bind.cover.16`, `sample.16`, `bind.pilot.16`, `pilot.16.*` | 5 | 06:03:50–06:05:13 / 06:11:18 |
+| 2796667–2841286 | `split.16`, `parts.16/*.scan`, `merge.16` | 8 | 06:05:49–06:07:34 / 06:12:32 |
+| 2850367–2852604 | `replay.16`, `reprice.{proof,rebind}.16` | 2 | 06:08:00–06:08:09 / 06:33:08 |
+| 2873982–2898603 | `calibrate.roster`, `proof.16.*`, `rebind.proof.16`, `bind.branches.16`, `roster.*` | 10 plus replay | 06:08:52–06:09:57 / 06:13:25 |
+| 2923684–2923798 | `calibrate.roster.v2`, `prefilter.*` | 4 plus replay | 06:10:56 / 06:12:44 |
+
+Independent whole receipt replay (foreground PID 2850370, wrapper
+2850367) finished at 06:14:24. All 52 round-12 wrappers collected;
+no live or stopped workers.
 
 ## Results and claims (for H / critic)
 
-First two rows: `(p,f,t)=(2,32,4)`, `δ(W)≥2`, `e(W)=11`,
-`(10,10,11,11)`, universal `δ(G)≥5` and all-graph E-021 sole-missing
-e74 premise. Each row excludes that core only; indices zero-based in
-`scratch/E/r5_saturated/e11.g6`. Complete independent covers and ordered
-replays; every residual proof matched to a fresh original four-window
-formula, no optional fusion or rooted conditions in those formulas.
+Scope of core 16: `(p,f,t)=(2,32,4)`, `δ(W)≥2`, `e(W)=11`,
+mixed `(10,10,11,11)`, universal `δ(G)≥5`, and E-021's all-graph
+sole-missing `e=74` class premise; all four omitted-group roles and
+`K=6,7,8` kept. Core numbers zero-based in `scratch/E/r5_saturated/e11.g6`.
 
-| Claim | Label | Evidence | Core-hours |
-|---|---|---|---:|
-| Core 7 ``G?`vBo`` excluded: 50,065 projections / 278,029 lifts; 11 terminal LRATs. | hand + enum + cert, pending | `shared74_round11.md`, `scratch/E/r11_shared/freeze.7.sha256` | 0.06437 |
-| Core 13 `G?qrf?` excluded: 90,117 projections / 547,674 lifts; 29 terminal LRATs. | hand + enum + cert, pending | `shared74_round11.md`, `scratch/E/r11_shared/freeze.13.sha256` | 0.13450 |
-| Every `(3,8;26)` graph with `e≤74` has `δ≥4`; 191 published order-22 parent CNFs, all regenerated and CakeLRAT-checked. Does not use E-021. Exact 74-edge independent census also has zero d3 lifts. | hand + cert, pending; separate enum | `window74_d3.md`, `scratch/E/r11_shared/freeze.d3.sha256` | 0.03217 |
-| Enforcing the new floor in fusion adds no edges and rejects 0/42 final archived heavy-core pilot IDs. | enum | `window74_d3.md`, `scratch/E/r11_shared/d3.floor.*.log` | pilot <0.001 |
+| Item | Label | Evidence / cost |
+|---|---|---|
+| Core 16 ``GCR`v?`` excluded under the stated scope: all 25 first branches independently bound (2 empty); 98,448 projections / 834,106 lifts and 107 freshly regenerated original CNFs + CakeLRATs; full ordered receipt replay passed. | hand + enum + cert, pending critic | `shared74_round12.md`, `scratch/E/r12_shared/freeze.16.sha256`; 0.31636 core-h terminal |
+| Roster cut filters 31/107 final core-16 IDs and 6/42 final IDs in four archived heavy-core samples; no production use. On 581 fused-open sample IDs, 5.15 vs 1.96 CPU-s for marking if used as prefilter. | hand + enum pilot | `shared74_round12.md`, `scratch/E/r12_shared/freeze.roster.sha256`; ≈0.005 core-h across pilots |
 
-## Next steps
+## Handoff
 
-- H/critic: audit proof scopes and artefacts above. Run time: 715.93
-  terminal CPU-s for the two exclusions, 115.82 CPU-s for exact d3.
-- Nine mixed cores remain if accepted: 1,5,6,8,9,15,16,17,18. Price
-  16 next (round-10 front two residual IDs, tail zero), then 17;
-  sample all canonical first branches at both ends and interior, not
-  only the apparently cheap end. Do not infer proof counts from empty
-  pilot bands. Use the uncached scanner; no new full scan on 9/18.
-- The new d3 result is a structural property, not recovery of the
-  1,625th e74 class. No change to other profiles, `(5,5)` already
-  certified. No full `(2,32)` closure, rigidity or Ramsey verdict.
+- Ask critic to independently replay core 16. Exact queue hit
+  the initial 100-ID stop (107); a dispersed
+  12-ID tail reprice checked before production. The 2/0/0 pilot
+  residuals are not the terminal counts. Scratch ≈237 MiB logical.
+- Price 17 next; eight mixed cores would remain if 16 is accepted:
+  1,5,6,8,9,15,17,18. Preserve all first-branch counts and stratified
+  pricing. No new full scans on heavy cores 9/18. Try the roster only
+  after marking on final IDs; it slowed the marked phase as a prefilter.
+- No change to other f32 profiles, (5,5) already certified, and no
+  full `(2,32)` closure, rigidity or Ramsey verdict.

@@ -1,10 +1,18 @@
-# Lane B — round 11, November 22, 2026
+# Lane B — round 12, November 22, 2026
 
 **Current baseline:** global degree-seven floor **108** for MTF is CONFIRMED
 (B-013); it subsumes the direct e162 `(0,2,32,6)` exclusion. Neither
-uses t8/t9 floors. No candidate graph. Round-11 share was 14 cores;
-only bounded foreground pilots ran. Re-read the next allocation.
+uses t8/t9 floors. No candidate graph. Round-12 share was 18 cores;
+only bounded foreground work (one lift at a time). Re-read the next allocation.
 Work from `scratch/B` with `ulimit -v 16777216` and `PYTHONDONTWRITEBYTECODE=1`.
+
+**Round 12:** all **7,954** fresh e98 deck parents tested at d7/d8;
+1,724 distinct critical e108 outputs, **zero novel** by canonical merge
+and Traces. Five still missing; best census remains `work/e108_r11/union.g6`.
+No adaptive generation. The earlier 471 and separate 745 are untouched;
+an archived N replay binds 200 of the 745, leaving 545 without that
+replay binding (~21 CPU-s plus audit). No floor 109, no change to e88/U88.
+See `ROUND12_REPLAY.md` and `ROUND12.sha256`.
 
 **Round 11:** lifted the 122 e98 parents (34 novel e108), then 255 more
 exact e98 deck parents (13 more). Stopped at two disjoint zero-yield
@@ -55,8 +63,8 @@ Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 
 ## Jobs
 
-No running B jobs at round end (0 cores). No round-11 detached jobs.
-All foreground pilots and replays exited; earlier PIDs below are gone.
+No running B jobs at round end (0 cores). No round-12 detached jobs.
+All foreground lifts and replays exited; earlier PIDs below are gone.
 
 | PID | Command | Log | Cores | Start (CET) | Actual end (CET) |
 |---|---|---|---|---|---|
@@ -84,6 +92,13 @@ e52 TIMEOUT after the exact e63 control passed. Neither benchmark is live.
 Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitted minimum degree 3 for order 21; corrected by generating this branch and merging, no missing counts thereafter. Seed 418169 failed on `shortg`'s in-place default; 453949 passed after explicitly writing stdout. Do not interpret either failed run as empty. Upper seed PID 540708 completed successfully at ~17:23 with all GR T13 counts.
 
 ## Results and claims for review
+
+### Round 12
+
+| Label | Result | Evidence | CPU-hours |
+|---|---|---|---:|
+| enum | Exact 7,954 order-31/e98 parents, d7/d8: 15,204 raw leaves, 1,724 distinct critical e108 outputs, zero novel. Five missing; no floor or profile subtraction. | `ROUND12_REPLAY.md`, `ROUND12.sha256`, `scratch/B/logs/e108_r12_terminal.log`, `scratch/B/work/e108_r12/{plan,done}.tsv` | 0.093 incl. controls and audit |
+| enum / estimate | Among 745 set-aside parents, 200 match the archived N d7/d8 replay source; 545 to fresh-bind. Project ~21 CPU-s for 545, ~29 CPU-s for all 745, before audit. No new set-aside lifts. | `scratch/B/logs/e108_r12_provenance.log`, `scratch/B/work/e108_r12_provenance/not_deck_bound.g6` | <0.001 |
 
 ### Round 11
 
@@ -192,9 +207,9 @@ Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitt
 
 ## Next
 
-0. Critic/H: check the 47-key scoped B tranche and retain exact scopes of
-   e43/reducible/prefix e88 and all e108 proofs; do not recut direct e162.
-   `src/e108_e98_r11.sh replay work/e108_r11` is the no-solve replay.
+0. Critic/H: audit the round-12 finite zero (`src/e108_r12.sh terminal
+   work/e108_r12`); retain exact scopes of e43/reducible/prefix e88 and
+   existing e108 proofs (round 11 confirmed); do not recut direct e162.
 1. Critic/H: replay or audit the bounded prefix and scout proof tranche.
    `src/replay_prefix_r7.sh terminal` and `src/e108_scout_proofs_r8.sh replay work/e108_r8_scout_proofs`
    are ready. Do not re-launch prefix. Outside-prefix critical e88 after
@@ -208,13 +223,11 @@ Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitt
    local/host pilots. Require a different source or necessary coverage
    reduction with measured value before further batches.
    t9<=89 and larger t8 floors unbudgeted.
-4. Ask critic to authorize **new-origin e98** only: `work/e108_r11_complement/total.98.fresh`
-   has 7,954 parents predominantly from the old 1,142-key scout tranche.
-   Price disjoint origin shards, stratifying overlaps; do not resume the
-   stopped frontier or broaden to e99..101. Another 745 deck parents are
-   conservatively denied but not bound to an r10/11 tested row; resolve
-   old provenance separately if needed. The e95 source is exhausted;
-   e96 acquisition lacks 1,818 critical parents and is not priced by
-   deck speed. Keep five missing, no floor-109 or distribution claim.
+4. Ask critic to authorize the **545 not-deck-bound e98 parents** only
+   (40 CPU-s cap including audit; all 745 cost ~29 CPU-s before audit).
+   Do not relaunch the completed 7,954 or reopen broad e99..101. The e95
+   source is exhausted; e96 acquisition lacks 1,818 critical parents
+   and is not priced by deck speed. Keep five missing, no floor-109 or
+   distribution claim.
    At exact 2,104,151 require full order/e/alpha/distinctness audit and
    terminal checked proof cover including reducibles before floor 109.
