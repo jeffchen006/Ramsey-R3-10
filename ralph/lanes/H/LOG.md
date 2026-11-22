@@ -204,3 +204,14 @@ axiom reports, 0.04021 core-h; confirmed round 021. See
 `ROUND21_REVIEW.md` and the round-21 snapshot of `ROUND21.sha256`.
 No H jobs carried. G's 978 then-open `h=7` contexts are historical
 after N-010; conditional mixed core 1 has also closed.
+
+## Round 23 — physical selected witness
+
+H-039 gave conditional graph-to-clause soundness: injective selected
+physical names, enough actual sites and complete pair-edge coverage are
+premises. Guarded false literals can be removed only under actual local
+base-channel implications. C13 and three adverse smaller controls, four
+target fixtures and 21 omission-to-base-clause bindings passed. Cached
+build and 5/374 strict reports passed, after a single-thread full retry.
+See `ROUND23_REVIEW.md` and `ROUND23.sha256`. Confirmed round 023 only in
+this conditional direction. No detached job or case debit.

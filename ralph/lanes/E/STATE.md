@@ -1,65 +1,74 @@
-# Lane E — round 23 handoff (2026-11-22 CET)
+# Lane E — round 24 handoff (2026-11-22 CET)
 
-Scope of new work: involution `(2,32)`, crown `t=4`, `δ(W)≥2`,
-universal `δ(G)≥5`, no maximality assumption. See `ROUND23.md`.
-No flow candidate or Ramsey verdict. `(5,5)` remains certified.
+All new work is for `(p,f,t)=(2,32,4)`, `δ(W)≥2`, `e(W)=8`,
+`P=0`, universal `δ(G)≥5`, **without maximality**. Inherited r22/r23
+known-card exclusions and the E-021 all-graph catalogue premise force
+all four fixed deletion cards into the same single missing class.
+No flow candidate; `(5,5)` remains certified from the earlier run.
+See `ROUND24.md`, `ROUND23.md` and `LOG.md` for math and prior work.
 
-## Jobs
+## Jobs and exact state
 
-All round-22 wrappers absent at first check. Completed round-23 groups
-are frozen in `scratch/E/r23_deck/{jobs.closed.tsv,exits.closed.tsv}`;
-`jobs.tsv` records every detached wrapper and exact command, start,
-deadline, one core and log; `exits.tsv` records real exit statuses.
-Live at 21:22:48 CET (all `SNs`, verified PIDs):
+Round-23 wrappers all gone at start. Round-24 repair wrappers
+3745738/3745750/3745764/3745778 (one core each, 22:27:07 start) all
+finished with 959/959 `CHECKED`, in `scratch/E/r24_deck/repair.*.log`.
+Their exact commands, wall/CPU caps, and exit statuses are in
+`scratch/E/r23_deck/{jobs,exits}.tsv`. No retry credit for old IDs.
+Seven early replay wrappers reached their wall boundary before the
+ledger was complete; 14,409 valid distinct rows retained, exact 941
+anti-join then given a dedicated lease. No claim based on wall exit.
 
-| Real timeout wrappers | Command / log | Cores | Start / wall deadline |
+Round-24 work directory `scratch/E/r24_deck`. Every solver, census,
+replay and heavy audit only runs while holding one of 22 file-lock
+leases, released on actual child exit. `jobs.tsv` logs real one-core
+timeout PIDs/commands/starts/deadlines and lease numbers; `exits.tsv`
+logs completed statuses. The stopped initial dispatcher PID 3906844
+had no solver child in its session (worker jobs have own sessions);
+actual producer wrappers were not stopped. Stage wrapper 262414
+exited cleanly, as did all cover/census, pilot and disk measurement.
+
+| Real timeout PIDs | Command / log | Cores | Start / outer deadline (CET) |
 |---|---|---:|---|
-| 1519023, 1519047, 1519076, 1519150, 1519174, 1519191, 1519228, 1519358, 1519384, 1519413, 1519443, 1519486, 1519515, 1519561, 1519592, 1519610 | `project_deck23.py run e8ext.first.plan e8ext.final --offset SLOT --stride 16 --lazy 8 --proof 14 --skip 0 225 5115 7355 9922 15349`; slot 0 first regenerates independent cover; `e8ext.SLOT.log` | 16 × 1 | 21:21:10–11 / 21:57:55–56 |
+| 3906881/3906904/3906927/3906961/3906995/3907038/3907074/3907122/3907162/3907213/3907277/3907301/3907359/3907418/3907680 | `compact_deck24.py run --plan C8.plan --indexes C8.prod/SLOT.ids --output C8.prod/SLOT --archive-limit 125829120`; slots 0–13,21; `C8.SLOT.log` | 15×1 | 22:31:01–02 / Nov 23 02:24:26–27 |
+| 291549/263797/263923/264113/264204/264275 | Same, slots 14–19 | 6×1 | 22:44:23–22:45:01 / Nov 23 02:37:48–02:38:26 |
+| 774191 | Same, slot 20, started after complete 2C4 replay | 1 | 22:55:09 / Nov 23 02:48:34 |
 
-This is only the `2C4` core (graph6 ``G?r@`_``), both `b_max=16`
-profiles. 15,350 IDs total, six dual-checked pilot IDs are skipped by
-production. At 21:22:48 there were 4,263 new CHECKED, zero open in
-processed prefix; not terminal coverage. Expected ~0.60 core-h,
-~200 MiB typical archive, 32 MiB per-worker archive gate. 2 GiB VM,
-CPU and wall caps and bounded proof files; cap/open is not UNSAT.
-Whole e8 extreme roster 258,512; second (`C8`) core's 243,162 IDs
-are **not assigned**. Initial naive census terminated by signal 9
-at its CPU limit; use completed indexed census, not its partial file.
+Replay-tail wrapper 264350 exited 0 at 22:55:08; reserved dispatcher
+91355 finished dispatch without an extra work slot. At 22:55:28
+all 22 listed C8 wrappers were alive and not stopped. Expected most
+shards end Nov 23 ~01:00–02:00 at the observed throughput (estimate;
+upper bounds above); monitor the late shards and resource exits.
 
-## Claims for H and critic
+C8 baseline: 224 pilots + 242,938 assigned distinct nonpilot IDs.
+Weighted pilot ~10.24 core-h, ~1.883 GB compressed proofs. Capacity:
+<3.65 GB simultaneous reservation, 120 MiB archive + 32 MiB scratch
+proof per worker, 2 GiB VM and child time limits; no cap is UNSAT.
+Estimated elapsed varies with observed contention. `snapshots.tsv`
+reports completed CPU deltas (does not count a lease as a busy core).
 
-Evidence `ralph/lanes/E/ROUND23.md` and `scratch/E/r23_deck/`.
-All labels are pending new critic review.
+## Claims for H/critic (pending)
 
-| Result | Label | Measured core-h | Evidence |
-|---|---|---:|---|
-| e8/P0, any omitted b=13..18, known-card arm excluded: 351,794 masks, 134 unordered marks on 49 cards, all 134 addbacks byte-rebound and dual-checked twice. Combined with confirmed r22 b≤12 fact, all four H_i must be the single E-021 missing class. **Not an e8/P0 closure.** | hand + enum + cert | ≈0.16 | `known8.plan.jsonl`, `audit.8.*`, `rebind8/` |
-| e10, `(10,10,10,14)`, large omission known-card arm excluded: 420,492 masks, 126 marks on 86 cards, 126 bound addbacks dual-checked twice; each small omission already forces missing by six d7 W sites. | hand + enum + cert | ≈0.17 | `known.plan.jsonl`, `audit.10.*`, `rebind10/` |
-| e10 **entire profile `(10,10,10,14)`** excluded under the E-021 all-graph catalogue premise, by preceding known-card closure and conditional all-missing projection. 20 cores (7,740 normalized labelled); exact 8,157 rows, K=6:3,390 / K=7:4,767. 13 mapped pilots + 8,144 production, 8,157 independent byte/CakeLRAT/lrat-check replays, 13,247 valid lazy cuts, zero remaining. **No other e10 profile excluded.** | hand + enum + cert | ≈0.54 beyond known-card arm | `projected.plan.jsonl`, `projected.pilots.tsv`, `projection.rebind/`, `freeze.e10_known.sha256` |
-| e8/P0 with bmax=17 or 18 excluded conditional on all-missing: K≥6 by a b10 omission, but K≤10−ceil((bmax−8)/2)≤5. bmax=16 forces K=6 and four triple rows, only `(10,10,12,16)` or `(10,11,11,16)`; ongoing. | hand conditional | negligible for inequality | `ROUND23.md`, `e8.extreme.index.log` |
-
-Measured 3,293.81 completed CPU-s = **0.91495 core-h** at checkpoint,
-including census/replay, bounded failed attempts and calibration, not
-active e8ext workers. Brief initial audit dispatch overlapped up to
-three finishing known8 wrappers; every later dispatch verified slots
-free first. ~159 MB logical staging including in-flight e8 receipts.
-Freeze contains 25,617 digests and passes `sha256sum --quiet -c`.
+| Result | Label | Evidence |
+|---|---|---|
+| Exact independent column-first bmax=16 cover agrees with the prior row-first cover: 15,350 2C4 and 243,162 C8 keys. Originally missing 959 2C4 IDs repaired, no duplicates. | hand + enum cover; local certs | `ROUND24.md`, `scratch/E/r24_deck/{stage15.log,2c4.old.json,2c4.repair.ids}` |
+| **Entire `2C4` core sector for bmax=16**, both profiles, excluded conditional on E-021. Role-specific physical CNFs and LRATs freshly rebound and dual-checked **15,350/15,350**: 14,409 initial replay + exact 941 tail. No open, no lazy masks. Round-24 solve/replay 0.540 core-h excluding census. | hand + enum + cert (conditional) | `ROUND24.md`, `scratch/E/r24_deck/{2c4.final.log,replay-tail.log,freeze.2c4.sha256}` |
+| C8 29,578 distinct dual CHECKED at 22:55:17 (224 pilots over seven strata + 29,354 prod), zero other completed statuses, 213,584 unprocessed; independent bytes bound. Whole C8 production still open. | cert (local) + estimate + open | `price.log`, `snapshots.tsv`, `pilot/`, live `C8.prod/`, `jobs.tsv` |
+| Two b15/min10 successor profiles factorized on both cores. `2C4 (10,10,13,15)` is smallest: 82 row packs, 80,896 ordered raw product upper. On 256 distinct sampled b15 rows, C-058 primary and independent literal gate agree on all stage counts and retained pair/support lists; 234/256 vetoed. Shape-only E-031 component screen separately calibrated on 13 C13 deletions and 2,163 labelled max-degree-two graphs. **No b15 closure.** | hand + enum (sample) + estimate | `ROUND24.md`, `stage15.log`, `profile15.*.gate.jsonl` and `.sample.jsonl` |
 
 ## Next
 
-- Reconcile e8ext slots exactly: zero discarded/capped IDs, six pilot
-  IDs plus modulo shards, independent `cmp` in slot 0, and rebind
-  formulas with group-specific zero-contact budgets. The e10 binder
-  hardcodes `K−6`; generalize to `K−#singleton_rows(role)` before e8
-  replay, checking old e10 pilot hashes retain exact bytes.
-- Price front/interior/tail on the disjoint C8 core before committing
-  the 243,162 IDs. Try a cheap witnessed upper-graph propagation gate
-  to shrink that tranche, or use the C-055/056 physical overlap and
-  matching necessities. Never claim capped leaves. Other e8/P0
-  profiles and `(2,32)` overall remain open.
-- No concrete missing-card source yet. The two-copy physical deck
-  join is calibrated on all six smaller omission pairs (and adverse
-  mutations), but has no priced target producer. Do not assume a
-  marked isomorphism or treat known cards as a complete catalogue.
-- Bank prior round: e8/P2 closed and e11 subcase closed, confirmed
-  in `ralph/critic/round_022.md`. Do not repeat those jobs.
+- Retire the 2C4 bmax=16 solver/replay arm; critic to check scoped
+  closure from exact cover, `2c4.final.log` and `freeze.2c4.sha256`.
+- Collect C8 receipts using `audit_deck24.py --prefix PREFIX`; an
+  absent, capped or model row stays open. Keep pilot and modulo shards
+  disjoint and verify packed LRAT members with `compact_deck24.py replay`.
+  The C8 cover is complete but proof coverage is not.
+- On released leases, start with `2C4 (10,10,13,15)`: exact independent
+  row-pack and column cover, C's physically pinned primary/inverse
+  trace gate, then calibrate b15 formulas with actual checked survivors
+  before long production. 0.76 core-h structural-gate extrapolation;
+  the additional ~0.43 core-h at b16 unit cost is uncalibrated for
+  b15. The larger products and `(11,11,11,15)` remain unstaged for solve.
+- Retire confirmed r23 e10 `(10,10,10,14)`, e8 known-card arms and
+  old e11/P2 results. No concrete new missing-class source, no assumed
+  marked isomorphism, and no whole `(2,32)` or unrestricted Ramsey claim.

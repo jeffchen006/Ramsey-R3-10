@@ -1,41 +1,38 @@
-# Lane H — round 23 handoff, November 22, 2026
+# Lane H — round 24 handoff, November 22, 2026
 
-**No candidate and no active, stopped or detached lane-H PIDs.** Two-core
-ceiling; work was foreground only, no production solver. Ledger checked
-through r022: **238 near-regular MTF distributions plus Case R**, **ten
-conditional U88 keys**, and **five missing e108 criticals**. B's floor is
-still 108. E's three former conditional mixed cores now close the entire
-11-edge stratum under its inherited premises, not the entire involution.
+Two-core ceiling; no candidate and no production solver. Round-23
+late verdicts imported. **238 near-regular MTF distributions + Case R,
+ten conditional U88 keys, and five missing e108 criticals** remain.
 
 ## Jobs
 
 | PID | Command | Log | Cores | Start / end CET |
 |---|---|---|---:|---|
-| — | No live, stopped or detached job | — | 0 | — |
-| foreground, finished | Pinned `env lean`, cached `--old build R310`, 5 targeted and 374 project axioms | `scratch/H/round23-{dev,dev2,build,axioms-targeted,axioms-project,axioms-project-retry,strict,toolchain}.log` | 1 per task, at most 2 | ~20:52–20:58 |
-| foreground, finished | `check_selected_witness.py` (bounded), freeze/ledger checks and focused source reading | `scratch/H/round23-{controls,a-freeze-check,ledger-audit}.log` | 1 for control | ~20:56–21:01 |
+| — | No active, detached or stopped job | — | 0 | — |
+| foreground, finished | Bounded physical alias checker and controls | `scratch/H/round24-alias.log` | 1 | ~22:29–22:34 |
+| foreground, finished | Pinned Lean builds and axiom reports, bounded | `scratch/H/round24-{dev,build,build-retry,axioms-targeted}.log`, `scratch/H/r24-lean/` | ≤2 concurrent | ~22:29–22:46 |
 
 ## Results and claims
 
 | Label | Result | Evidence | Core-h |
 |---|---|---|---:|
-| Lean H-039 (pending) | Graph-to-clause soundness for an explicit physical witness of size at least the bound (10): selected identities injective, all unordered pairs represented, a real edge must give a true positive literal. Compact vs full equivalent if omitted literals are guarded false; each such condition can follow from a base channel containing only guards in the outer row. No SAT-to-graph converse/general target binder. | `lean/R310/SelectedWitness.lean`, `ROUND23_REVIEW.md`, `ROUND23.sha256` | ~0.0451 metered incl. failed retries and controls |
-| enum (controls, included in H-039) | C13 α=4, all 39 independent fours, 5,148 valuations, 78 failures when the sole live edge is omitted. Three width-three α=6 adverse plants. Four frozen h5 relaxation I10s, 180 literal physical pairs, 87,000 base clauses and 21 precise deletion-channel bindings. Cached Lean/Mathlib v4.35.0 build; strict 5 targeted and 374 project axiom reports pass. Single-threaded retry fixed a thread creation failure; failed invocation does not count. | `check_selected_witness.py`, `scratch/H/round23-{controls,strict,build}.log` | included |
-| ledger through 022 | 18 scoped confirmed entries and two separate rejected recipes, D's mixed 2,686 tally and G's stale reversed reader. D m15 149/149 rebinding, all 539 same-pole m14 keys including five split keys (589 proof leaves), S/O open at cutoff. E-048 superseded by 5,779,378 lifts / 1,162 terminal IDs; E e8/P=2 closed and e8/P=0 only narrowed. F-040 superseded by 668 restricted rows, includes 405. G h6 confirmed all 49 / 51 proofs; h5 224 includes 211. No kernel, distribution, or flow graph debit. No referee-022 or scout-022 artifact. | `ralph/CLAIMS.md`, `ralph/critic/round_022.md`, `scratch/H/round23-ledger-audit.log` | negligible |
-| ledger pending 023 (concurrent cutoff) | Staged A's transport regression and compact witness controls, H-039, and separately G's board 52 and 271/0 pilot receipts; 271/1 resource signal is open. No new baseline count. C's 20:58 six-edge equality is a preliminary board message, not yet a staged claim; check its final evidence together with E's interaction. B–F were still writing new state at ledger cutoff. | A `ROUND23_BLOCKERS.md` and freezes; `scratch/G/round23/work/{z052_bm,z271_0,z271_1}`; `ralph/BOARD.md` | — |
-| pub / open (limited search) | DS1 rev. 18 is 40–41; Angeltveit's journal §7 partial lower count 43,225,483; no newer classical decision or public bulk order-39 / exact dense order-30 count located. New primary arXiv:2611.08375 concerns cyclic/ordered, no classical improvement. | `LIT.md` (§ Round 23 focused check) | negligible |
+| Lean H-040 (pending) | Four local wing projection lemmas: common-neighbor partition, lost-neighbor allowance weakens only the lower bound, exactness with no hidden cycle neighbors, and retention of the unique off-cycle endpoint gives no hidden cycle neighbors. Target build and four strict axiom reports pass. Full rebuild hit wall caps (two Lake, one direct); no fresh full-project report. Does not formalize the two-deficient-path lemma, full CNF binder or exclusions. | `lean/R310/WingProjection.lean`, `ROUND24_REVIEW.md`, `ROUND24.sha256`, `scratch/H/r24-lean/{wing,targeted,strict,aggregate}.log` | ~0.03 metered CPU-h incl. failures/retries |
+| enum (H-040 controls) | C22 α=6, 125 marks, 15 one-flap and 37 two-flap induced hexes; three adverse checks. Independently recovered slack-0 and slack-1 alphabets and the 1/4 hub cells (5,672/5,413 actual seven-subsets). All 62 physical aliases join to 26 distinct retained archives, 73,877,286 bytes hash-checked with both positive markers. Inventory joins 3,114 keys / 3,078 receipt IDs. No fresh LRAT or regenerated full-wing census. | `check_wing_alias24.py`, `scratch/H/round24-{deck-ids.json,alias.log}` | <0.001 |
+| ledger checked through r023 | D all `t≤17` (includes m14/m15), square-bearing t18 and 43 further two-flap shapes; 57 shapes remain. G h5 256/286 whole boards, 145,500/156,112 effective, including pilots; h6 unchanged. E e10 only `(10,10,10,14)` newly closed with E-021, while e8 remains open at r023. F sharp 37 on 17-pair base; 12,288 32+8 named words separate. A24-shore and C-058/059 staged pending, no extra board closure. | `ralph/CLAIMS.md`, `scratch/H/round24-{ledger-audit,A-freeze,C-freeze}.log` | negligible |
+| pub / open (bounded search) | Corrected Angeltveit journal title and Kucheriya–Petr–Yan attribution/date; four primary pages fetched. No newer primary decision, public bulk order-39 set, or exact order-30 88–99 counts located. Angeltveit §7 count 43,225,483 is a published lower count, not a whole census. | `LIT.md`, `scratch/H/round24-{lit-fetch.log,ejc.source,cyclic.source,ds1.source,arxiv.source}` | negligible |
 
 ## Next
 
-- Import final r023 verdicts with frozen rosters; include all lanes' late
-  completed records that were not available at this handoff. Never add
-  pilot leaves to whole-board totals unless complementary keys close.
-- H-039 needs independent Lean and controls. G's production checker must
-  still bind physical names, distinctness, true/false constants and all
-  actual rows. Do not turn the four controls into proof of that binder.
-- Best direct progress remains D's scoped m14 S/O frontier and G's
-  concrete h5 residual boards; E's completed stratum has unusually clean
-  terminal evidence but narrower reach, and its e8/P=0 branch is open.
-  Monitor C/E's physical-overlap condition from `crown23_two_window_factor.md`
-  if the next critic asks for a short formal bridge. No repeat of row22
-  proof production, no H solver queue.
+- Import critic-024 at the final frozen cutoff, not the concurrent board
+  messages. G's 10,612-key complement and D's four-site t18 roots are
+  premium proof frontiers, not closed until terminal joins and receipt
+  checks. E/C's 224-row selected C8 controls do not characterize the full
+  roster; no generic `K−6` bound is valid across all omitted roles.
+- Asked C/G for a short statement each: omitted-role placement or the
+  exact mate-free guards. C has suggested its C-058 trace transport;
+  `ralph/lanes/C/proofs/crown24_high_trace.md`. H-040 and H-039 remain local implications with
+  explicit premises, not end-to-end SAT proofs.
+- Re-attempt cached full Lean audit off the busiest load if needed; do
+  not rebuild Mathlib. The targeted-only reproduction is independent of
+  the aggregate import and already passes.
+- Collect any late Lane B–G r024 STATE claims not frozen at this import.

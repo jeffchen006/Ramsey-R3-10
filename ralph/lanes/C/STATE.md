@@ -1,40 +1,43 @@
-# Lane C — round 23, November 22, 2026
+# Lane C — round 24, November 22, 2026
 
-**No candidate. Case R and R(5) remain open.** The critic confirmed
-C-052/053/054. C-050's separate-coordinate minima added no veto;
-retire it. No recount of the eight round-22 signed exclusions, and
-no sweep of the 2,542,514,356 signed-untested 16/17 keys (2,542,514,300
-after the independent 56 structural vetoes).
+**No candidate; case R and R(5) remain open.** C-055/056/057 were
+confirmed by the round-23 critic. C-050 remains retired. No new
+signed-window scan; no recount of prior exclusions.
 
 ## Results / proposed claims for H and critic
 
 | Label | Scope | Evidence | Core-h |
 |---|---|---|---:|
-| C-055 `hand`, pending | Two marked induced cards with disjoint omitted independent groups: complementary degree colors on their physical overlap; after alignment the private cross pairs alone are unknown, and Hall factors exactly impose fixed degrees/triangle freedom. Full crown caps `(5,6,7,7,9)` by touched roles; scoped matching demands are exact for independence together and can fail even if individual edges are supported. No target case exclusion from the factor test alone. | `proofs/crown23_two_window_factor.md`, `crown23_factor.py` | — |
-| C-056 `hand`, pending | Saturated `(2,32),t=4,δ(W)≥2,e(W)=8,P=0`: each attachment pair has ≥6 edges; 6 only for a perfect matching; three specific seven-edge shapes excluded. Complementary pair identity `e_ij=e_kl+24−(b_i+b_j)`, hence missing-role overlap `e(X)≥62−(b_i+b_j)` with retained `6K2` at equality. Independent of the missing-class identity; not a branch closure. | `proofs/crown23_sparse_rectangle.md` | — |
-| C-057 `enum` controls, pending | Matched literal results on 177,856 tiny factor instances, 1,196 C13 alignments (364 plants, 832 failed complementary colors), 120 positive/adverse deck alignments, all 256 scoped requests on two C9 completions, 16 moved-padding scopes, sparse shapes at widths 3–6 and six width-six geometry-only decks (not Ramsey positives). No E partition scan or target throughput inference. | `ROUND23_REPLAY.md`, `ROUND23_FREEZE.sha256`, `scratch/C/r23-clean/replay.log` | 0.02498 total |
-| C-052/053/054 confirmed r022 | C-050/C-052 necessary but zero cuts on target pilot. The unchanged signed join independently excludes only eight listed `(42072,right)` keys. | `ROUND22_REPLAY.md`, `ralph/critic/round_022.md` | prior |
-| Earlier confirmed | C-049 negative right-only test, C-045/046 negative fifth gate and exactly 12 separate signed exclusions, C-044 two slices only, C-039/040 two-neutral 17/17 only, cap-five K3,3 22/21 only (1,298 tight local marks remain). | `ROUND{11,12,17,18,19,20,21,22}_REPLAY.md`; prior critic rounds | prior |
+| C-058 `hand`, pending | Conditional on all-missing e8/P0: compare the induced d7 graph against each all-W high anchor; for each high-set map subtract all-vertex W adjacency-mask trace histograms. One omitted support multiset must realize all demands; none → exact necessary veto. No-anchor branch explicitly stays open. Applies to b15/bmin10; no b15 target census. Fold in C-056's role-bound correction for the pinned-card floor, not a duplicate claim. | `proofs/crown24_high_trace.md` | — |
+| C-059 `enum`, pending | Same 224 C8/b16 E pilot rows, independent exact replay: 224→137 d7 graph→11 valid traces→4 joint supports, 14 surviving pair/support assignments. C-056 root capacity cut 0; terminal denominator 0. All 224 already E CHECKED before lazy cuts; no additional closure. 220 vetoed baselines used 33.41582 CPU-s and 1,748,501 compressed bytes; current gate 3.44606 CPU-s, same-ID potential net 29.96976 CPU-s before alternate checker (~2.30 s). | `ROUND24_REPLAY.md`, `ROUND24_FREEZE.sha256`, `scratch/C/r24-clean/replay.log` | 0.0098 incl. checks |
+| C-055/056/057 `hand` / `enum` confirmed | Physical overlaps and exact degree/triangle factors, sparse attachment rectangles, smaller controls. Do not claim Hall alone addresses joint independence. | `ROUND23_REPLAY.md`, `ralph/critic/round_023.md` | prior |
+
+The four scoped all-anchor survivors are `18822,82478,90898,207646`
+in `scratch/E/r24_deck/C8.plan`; all of them were refuted by E's
+baseline. Nothing reached a physical equality-matching, seven-edge
+shape or scoped matching test. Do not call a permitted high pair a
+planted graph, extrapolate the CPU benchmark, or post a second debit.
 
 ## Jobs
 
-**None.** All foreground checks finished; no PIDs/cores to inherit.
-Two allocated cores; no target production because no finite
-target completion docket was supplied or priced. The tests ran
-one process at a time under VM, wall and CPU limits. No C-050
-re-run or catalogue enumeration.
+**None inherited; none live.** Allocation two. All C checks ended
+in foreground, one at a time, under nice/VM/wall/CPU caps. The
+critic forbade C from sweeping E's roster; E's production already
+owns that exact queue. C started no target SAT work. Local artifacts
+are <1 MB.
 
 ## Next
 
-1. E: the full proof and filter are ready. Apply the `e(X)` lower
-   bound and retained perfect-matching test at equality before
-   costly marked alignment on a concrete forced-missing pair. Keep
-   roles and physical labels fixed; no equivalence of unrelated
-   marks on copies and no assumption other cards are missing.
-2. H/critic: audit C-055/056 separately from the controls. If a
-   concrete named row reaches E's terminal, compare same-row prices
-   before enabling Hall/matching as production gates. Unmarked pair
-   coverage and the missing e74 identity remain unresolved.
-3. Do not restart C-050 or a multi-billion-frame C sweep. For Case
-   R, a new joint obstruction needs a named signed-surviving family
+1. E: use `crown24_pinned.py --anchored` only on a marked row with
+   the applicable e8 premises; bind `K`, omitted role and all
+   retained physical supports. For a retained `A_k`, six toward
+   D means each individual deficit in `H_D` is one. When no anchor
+   exists, do not rule out the row. No priced b15 production for C;
+   request named b15 rows and same-ID baseline before throughput
+   comparison. The synthetic K=5/6 controls are not target data.
+2. H/critic: audit C-058/059 separately; formalize the simple
+   all-vertex trace transport/subtraction under a card equivalence
+   if useful. No need to redo E's baseline proofs for the C claim.
+3. Case R: do not restart C-050 or a multi-billion-frame sweep.
+   New joint obstruction work still needs a named signed survivor
    and actual completion-work comparison.

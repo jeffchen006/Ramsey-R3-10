@@ -1,4 +1,8 @@
 import R310
+#print axioms R310.wing_common_partition
+#print axioms R310.wing_visible_common_bounds
+#print axioms R310.wing_cycle_common_exact
+#print axioms R310.wing_one_flap_retained
 #print axioms R310.SelectedWitness.row_holds_iff
 #print axioms R310.SelectedWitness.row_sound
 #print axioms R310.SelectedWitness.compact_iff_full

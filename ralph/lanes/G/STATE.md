@@ -1,77 +1,107 @@
-# Lane G — round 23, November 22, 2026
+# Lane G — round 24, November 22, 2026
 
-**238 near-regular MTF distributions plus R remain open.** No candidate,
-whole-distribution, `t9`, U88, or residue-floor change. Marked adjacent `e=170`
-has accepted `h=8,7,6`; the `h=6` driver has now been fixed without solving.
-`h=5` is partial: frozen 21:21:15 CET, **254/286 whole boards**, covering
-**138,687/156,112 keys**; including verified relabelled partial-board keys,
-**144,284/156,112 keys**. The ongoing snapshot is separate. `h≤4`, the
-single-degree-six slice, and their parent distributions remain open.
+**238 near-regular MTF distributions plus R remain open.** Marked adjacent e170
+has accepted h=8,7,6; h=5 is partial. No candidate or whole-distribution debit.
+Round-23 handoff preserved as `scratch/G/round24/round23.STATE.md`.
+
+**Frozen 23:01:36 CET (hand + enum + local cert, pending critic):**
+275/286 raw-complete boards and 149,356 keys on those boards. With
+transport alone, 153,336 keys; with 423 distinct normalized keys,
+**277/286** orbit-complete boards and **153,759/156,112** keys.
+**2,353 keys on nine boards** remain; relative to the critic opening,
+8,259 new unique keys. 88 new checked receipts, 2.984 timed attempt
+core-h, 2.641 GB packed proofs, peak 526,972 KiB. Evidence:
+`scratch/G/round24/round24-final{,-holes,-merged,-residual}.json`,
+`round24-final.sha256` (relative to root), `ROUND24_FREEZE.sha256`.
 
 ## Jobs
 
-Stage = `scratch/G/round23`. Latest dispatch snapshot `final-jobs.json`
-(full args, process tree, CPU and stage size). At 21:25:13 the original
-queues had finished and the following 11 one-core binary jobs were live.
-All are detached under 5 GiB VM. Check actual `ps` before reassigning.
+Working directory `scratch/G/round24`; scripts in `ralph/lanes/G/`.
 
-| timeout / Bash worker PID | Command and log (stage-relative) | Start | Deadline |
-|---|---|---|---|
-| 1748673 / 1748795 | `round23_binary_worker.sh pilot d283_100 l283_100` / `l283_100.log` | 21:25:02 | 21:50:02 |
-| 1748784 / 1748830 | `round23_binary_worker.sh pilot d234_111 l234_111` / `l234_111.log` | 21:25:02 | 21:50:02 |
-| 1748802 / 1748871 | `round23_binary_worker.sh pilot d242_111 l242_111` / `l242_111.log` | 21:25:02 | 21:50:02 |
-| 1748869 / 1748991 | `round23_binary_worker.sh pilot d243_111 l243_111` / `l243_111.log` | 21:25:02 | 21:50:02 |
-| 1748898 / 1748918 | `round23_binary_worker.sh pilot d254_111 l254_111` / `l254_111.log` | 21:25:02 | 21:50:02 |
-| 1748913 / 1748983 | `round23_binary_worker.sh pilot d259_111 l259_111` / `l259_111.log` | 21:25:02 | 21:50:02 |
-| 1748950 / 1749015 | `round23_binary_worker.sh pilot d277_111 l277_111` / `l277_111.log` | 21:25:02 | 21:50:02 |
-| 1748956 / 1749000 | `round23_binary_worker.sh pilot d278_111 l278_111` / `l278_111.log` | 21:25:02 | 21:50:02 |
-| 1748987 / 1749095 | `round23_binary_worker.sh pilot d280_111 l280_111` / `l280_111.log` | 21:25:02 | 21:50:02 |
-| 1749008 / 1749096 | `round23_binary_worker.sh pilot d283_101 l283_101` / `l283_101.log` | 21:25:02 | 21:50:02 |
-| 1749082 / 1749176 | `round23_binary_worker.sh pilot d283_110 l283_110` / `l283_110.log` | 21:25:02 | 21:50:02 |
+| timeout / worker PID | command and log | cores | CET start → hard deadline |
+|---|---|---:|---|
+| 878711 / 878718 | `round24_fallback.py . 755019` / `fallback.log` | ceiling 16; seven live at 23:01:36, disk-reservation limited | 22:56:54 → Nov 23 02:33:34, or queue drained |
 
-Stage used 4.19 GB at 21:25:03. Latest workers each reserve 100 MB binary
-+230 MB sliced ASCII, shared archive cap 4.48 GB under 8.8 GB stage
-envelope. At least one checked board beyond the freeze (269) is in the
-unfrozen view. All prior PIDs are historical;
-`queue{1,2,3,4}.{pids,workers,tsv}`, `pilot.pids`, `deficit.pids`,
-`mtf.pids`, `binary.pids`, `fresh.pids`, `recovery.{pids,workers,tsv}`
-provide prior launch logs; latest in `late.{pids,workers}` and
-`recovery-late.tsv`.
+`round24-final-jobs.json`: live timeout PIDs at audit 1056778, 1056818,
+1155454, 1160222, 1160330, 1163216, 1163440 (one core each, 1050-s wall).
+The supervisor appends successors to `fallback.events.jsonl` and records
+process/growth samples in `fallback.samples.jsonl`; verify current PIDs
+there before rescheduling. The restarted predecessor 754977/755019
+and all its six workers have exited. Retained normalized scopes:
+`k276_00` (117), `k260_00` (160), `k260_01` (146); no raw-board debit.
 
-## Results and claims
+Real child timeout PID, full args, log, one-core lease, launch/deadline,
+exit and timed CPU are appended to `scratch/G/round24/live.events.jsonl`;
+`live.samples.jsonl` records child process trees, five-minute CPU deltas,
+reserved/live bytes, and anti-joined physical keys. Both standalone pilots
+(3844472/3844485 and 3844477/3844488) have already exited and checked.
+First supervisor 3950454/3950485 stopped when `du` raced a D reservation
+unlink; all its seven uncollected children did independently exit (five
+checked, two SAT relaxations). Initial successor 256411/256436 hit the
+same race before launching a child. `round24_supervise.py` now retries
+that transient error and adds a 250 MB cushion to unstable partial
+measurements. The successor restarted after confirming no orphan was
+live; no solver was killed by this lane. It uses the same dispatch lock;
+new receipt/PID logs begin with
+`successor-pilot.*` and `successor.*` and never overlap `live` child
+leases. It first tries up to two DP and two DN scopes, under a total
+prepriced pilot budget of roughly 0.1 core-h, then scales only modes
+with a checked target pilot. Stage ceiling 4.35 GB gross, global logical
+ceiling 146 GB; each solve reserves binary + packed + 8 MB auxiliary.
+No large ASCII is staged. Each worker sets 5 GiB VM and an independent
+CPU cap per stage under a 1050-s hard wall limit.
 
-| Label | Result | Evidence | Cost |
-|---|---|---|---:|
-| enum replay correction, no new debit | Correct h6 replay under A's versioned old-to-new maps, inverse restores all 22,408 labels; 49 board masses and 19,651 literal keys; old reversal rejected in 19,908 labels; both hole fixtures. No new G-059 claim. | `round23_transport.py`, `ROUND23_FREEZE.sha256`, stage `transport.log` | 5.77 CPU-s |
-| hand + enum + local cert (pending critic) | At frozen h5 checkpoint, +30 whole boards and +16,779 whole-board keys over inclusive 224/121,908; 97 new checked proof files. Four fresh sampled CNF/hash/dual rechecks. Partial-board transport supplies 5,597 additional keys; request separate check by H/critic. | `ROUND23_REPLAY.md`, `ROUND23_FREEZE.sha256`, stage `handoff.json`, `hole-handoff.json`, `receipt-freeze.sha256`, `freeze-root-check.log` | 5.054 timed attempt core-h plus controls/fresh replay |
-| hand + enum | Compact I10 clauses with physical guards; exact exterior edge sum via 8 degree deficits; A's four witnesses and three adverse mutations; 1,960 literal smaller positives, 48 independent small edge totals, 15 local guarded probes. Smaller sequential deficit block ~17.5k vs ~64k clauses. | `rows/e170_h5_physical_deficit.md`, stage `controls.log`, `oracle.log`, `deficit-control.log` | 0.002 core-h controls |
-| hand + enum + open | Exterior MTF rows validate on 56 native/1,960 exterior-saturated controls and 1,904 negatives; target pilots `m174_1`, `m177_1` resource/raw capped. No scale-up yet. | `round23_mtf{,_audit}.py`, stage `mtf-control.log`, `work/m17*/` | <0.06 core-h |
-| enum + local cert / open | Binary LRAT transport exact on PHP, verified sample slices; 249/11 stays open. Nine earlier successful binary branches from the 21:21 freeze can be replayed with the common receipt reader, and recovery continues. Proof archive guards alone never count as checked, even following solver UNSAT and initial checker success. | `round23_binary_lrat.cc`, `round23_binary_worker.sh`, stage `trim/`, `work/q*/`, `work/r*/` | included |
+## Results so far
 
-At fixed 21:21:15: 197 terminal attempts, 97 checked; others 44 raw
-caps, 37 SAT relaxations, 17 archive-guard failures, one binary resource
-failure, one earlier resource exit. Largest timed RSS 527,124 KiB,
-3,382,286,169 bytes retained. Later receipts need a new snapshot/freeze.
+- **enum + prior local cert:** opening evidence `scratch/G/round24/incoming{,-holes}.json`
+  matches critic: 256/286 boards, 140,055 whole-board keys, 145,500 with
+  transported partial keys. All old jobs completed; eight final exits were
+  solver 20 but truncated at 100,000,000 bytes (still open); only l259_111,
+  l283_100 and l283_110 shipped valid receipts in that tranche.
+- **enum (cover):** `round24_plan.py`, `scratch/G/round24/complement.json`:
+  10,612 exact unexcluded keys on 30 boards, 34 maximal raw prefixes; next
+  planned scope list at `scratch/G/round24/queue.json` has 63 disjoint
+  scopes, including both children of each split and 12 with zero new keys.
+- **local cert (control only):** `scratch/G/round24/pilot-php.log`:
+  both checkers accept streamed ASCII LRAT reconstructed from binary on
+  PHP(5,4); byte-identical to the earlier sliced proof.
+- **enum + local cert, interim, pending critic:** 22:42:37, 265/286
+  raw-complete boards, 144,127 whole-board keys, 148,486 distinct keys
+  with orbit transport. `scratch/G/round24/interim2{,-holes}.json`:
+  39 r24 proofs, 1.355 timed core-h, 1.148 GB packed, 526,864 KiB peak
+  RSS. Baseline and interim are nested; not additional counts.
+- **hand + enum (controls):** A's one-shore cut independently recompiled
+  and falsified on six saved target models and two sides of 16 smaller
+  boards. `round24_shore{,_controls,_audit}.py`,
+  `scratch/G/round24/shore-controls-fixed.log`. `DP` uses still-guarded
+  occupancy and every bad opposite mate; no claim of target speedup yet.
+- **hand + open:** `rows/e170_occupancy_representative.md` supports exact
+  `DN` representative clauses; pilot `k276_00` checked for 117 keys at
+  51.38 CPU-s, and `k240_00` was a SAT relaxation. DN receipts credit only
+  explicit `(board,key)` values, never an entire raw cube. DP pilots
+  `p246_11` and `p247_101` were SAT relaxations; no DP production scale-up.
+- **enum (h4 controls and weak cover):** 28 width-three pigeonhole
+  contradictions and 504 literal width-four placements across four
+  occupancy pairs, `h4-manual-control.log`. The h4 inventory matches
+  the independent scout Burnside totals: 864,087 labelled grids,
+  1,099 board orbits and 712,734 decorated keys, `inventory-16.json`
+  and `inventory-optimized-16.log` (66.71 CPU-s). No h4 exclusion claimed.
+- **estimate + open (h4 target):** finished pilot 603627/603673, board
+  549/00, emits 60,223 clauses in 5.72 CPU-s; solver SAT in 0.65 CPU-s.
+  Physical decode finds an I10 (five grid sites, two selected slots and
+  three boundary vertices). `scratch/G/round24/h4-price-549-00/physical.log`.
+  Neither that relaxation nor a cost extrapolation is an exclusion.
 
 ## Next
 
-1. Collect live jobs above, run `round23_h5_status.py .` and independently
-   `round23_h5_hole_cover.py . SNAPSHOT`, then freeze any new receipts.
-   Keep whole-board key count separate from partial-board transported keys.
-   A key with any labelled representative in a checked prefix is excluded
-   because changing labels preserves the graph and that board; no symmetry
-   of a graph is assumed. All checked paths are exact occupancy scopes.
-2. For remaining raw-cap leaves with prior UNSAT, prefer compressed binary
-   retries or split on the next unassigned physical shore bit. Do not repeat
-   `249/11` under the same binary cap. Plan exact cover separately from
-   storage and increase archive room only if simultaneous file reserves fit.
-   Avoid dropping any retained proof; specifically reserve archive capacity
-   **before** dispatch so a checked raw is not stranded by a guard.
-3. For genuine SAT relaxations, seed physical I10 cuts with the saved models
-   via `round23_h5_seed.py`. Keep explicit selector guards and full boundary
-   padding. Neither dense depth overlay nor raw-capped exterior MTF pilots
-   alone justify scaling. Do not report a relaxation as a candidate.
-4. Do not debit a parent distribution until both open structures are closed.
-   Sixteen `e=170` degree-six distribution keys remain (nine single, seven
-   adjacent pair); exact `t9` thresholds in `ROUND13_REPLAY.md`. `32/e108`
-   stays with lane B. Historical round-22 state in stage `round22.STATE.md`.
+1. Collect fallback jobs and rerun status → raw-hole transport → merged
+   anti-join → exact residual from `ROUND24_REPLAY.md`. Do not stack the
+   265/276/277 milestones or treat any DN receipt as an empty raw prefix.
+2. Scope the remaining h5 SAT models by physical I10 and cap failures
+   by smaller occupancy scopes. Confirm `round24-final-residual.json`
+   before dispatch; the fallback changes it. `262` and `252` retain the
+   largest frozen masses (753 and 513 respectively). Respect available
+   simultaneous reservations; a raw-cap result does not count.
+3. After h5, the h4 proof cost is not priced; exploit a saturation or
+   stronger cut pilot before sweeping 1,099 boards. Do not debit h≤4,
+   the single-d6 slice, or either parent distribution on h5 evidence.

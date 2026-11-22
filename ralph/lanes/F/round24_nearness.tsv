@@ -1,0 +1,33 @@
+family	r24_carried_raw_run_I10	r24_cumulative_degree_valid_I10	degree_valid_edges	r24_result
+Z10_4_blocks	30	-	-	carried; not searched
+Z8_5_blocks	40	-	-	carried; not searched
+Z5_free_8_blocks	30	67	180	carried; not searched
+order2_f0	56	24	178,179	carried; not searched
+order2_f16	85	-	-	carried; not searched
+order2_f18	66	-	-	carried; not searched
+order2_f20	58	-	-	carried; not searched
+order2_f22	101	-	-	carried; not searched
+order2_f24	97	-	-	carried; not searched
+order2_f26	108	-	-	carried; not searched
+order2_f28	33	-	-	carried; not searched
+order2_f30	42	-	-	carried; not searched
+order2_f32	87	-	-	carried; not searched
+order3_f1	58	195	180	carried; not searched
+order3_f4	101	293	180	carried; not searched
+order3_f7	76	-	-	carried; not searched
+order3_f10	30	44	180	carried; not searched
+order4_free	40	108	180	carried; not searched
+order4_mixed	49	-	-	carried; not searched
+attached_39_component	-	142	178	carried; not searched
+attached_39_clean_pair_pool	-	134	176,177	carried; not searched
+two_pole_unrestricted	-	24	178,179	carried; not searched
+cyclic_unsigned_Q20	-	240	180	carried; not searched
+dihedral_unsigned_Q20	-	80	180	carried; not searched
+two_rotating_10_fiber_blocks	-	80	180	carried; not searched
+mixed_unsigned_8_8_4	-	178	180	carried; not searched
+cyclic_unsigned_punctured_19	-	-	-	No order-40 samples: degree-eight old card alone has at least 47; no extensions run.
+cyclic_crossings_free_vertical_19	-	882	175	One triple-hole signing; all four legal addbacks modulo pole swap. No general score optimum.
+cyclic_crossings_free_vertical_18_four_poles	-	-	-	No target scored: final ID8 cannot even acquire one arbitrary pole. Scoped family obstruction; no new empirical score.
+single_exceptional_site_18_four_poles	-	-	-	No order-40 graph scored: all 668 marked rows excluded for the target; five 37-card witnesses, no candidate.
+ordinary17_signed_free_six	-	212	178	Sampled minimum; 4 fixed 34 signings, 160,000 trials, 79,420 degree-valid draws with possible repetition; 212 independently recounted in scratch/F/r23/near/6206451439.g6.
+ordinary16_signed_free_eight	728	728	175	300,000 draws over three literal bases; 146,479 degree-valid proposals (repeats possible), independent recount in scratch/F/r24/near/pilot.stdout. Other family values carried from round 23; lane best 24 unchanged.

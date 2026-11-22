@@ -711,3 +711,5 @@ Observer: PID 2841712, timeout 2841698, `T/five_minute.jsonl`, polling only and 
 3. If queue cost or storage becomes excessive, use the measured marginal filter only as preprocessing; it produced no host closure in its 24-key sample.
 
 The final corrected m14 accounting is round 23 `CLOSURE23.md`, not the historical handoff or a sum across checkpoints. Full historical round-23 process launch/lease log: PROCESS23.md.
+
+Round 24: archived the previous full handoff to `HANDOFF23.md` and this round's full launch/transition tables to `PROCESS24.md`. See `ROUND24.md` and its freeze; scoped local proof covers only, no unrestricted kernel.

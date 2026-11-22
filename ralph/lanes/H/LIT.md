@@ -486,21 +486,34 @@ published full order-26 census; see `ROUND9_REVIEW.md`.
 
 - The last located classical status is still **40–41**: Stanisław P.
   Radziszowski, *Small Ramsey Numbers*, EJC DS1 rev. 18 (April 24,
-  2026), Table Ia, DOI `10.37236/21`. Vigleik Angeltveit, *R(3,10) ≤
-  41 and R(3,11) ≤ 46*, EJC **32**(4), #P4.30 (2025), DOI
+  2026), Table Ia, DOI `10.37236/21`. Vigleik Angeltveit, *R(3,10) ≤ 41*,
+  EJC **32**(4), #P4.30 (November 3, 2025), DOI
   `10.37236/12936`, §7, still describes a **partial** lower count
   of **43,225,483** order-39 graphs. McKay's Ramsey graph index does
   not list a bulk order-39 release. Exact-title/count and dense order-30
   catalogue searches did not locate a later solution, a public bulk copy,
   or exact `R(3,9;30,e)` denominators for `88 ≤ e ≤ 99`. This is a
   search result, not a proof that no later result or deposit exists.
-- A newly indexed related primary result is Tomasz Jastrzębski,
-  Krzysztof Filip Michalik, Christian J. Olav R. Popiołek and Paweł
-  Rzążewski, *New results on cyclic and ordered Ramsey numbers*,
+- A newly indexed related primary result is Gaurav Kucheriya, Jan Petr
+  and Jun Yan, *New results on cyclic and ordered Ramsey numbers*,
   [arXiv:2611.08375v1](https://arxiv.org/abs/2611.08375v1),
-  November 6, 2026. It determines cyclic `C(3,12)` and `C(3,13)`,
-  improves other cyclic lower bounds, and computes ordered numbers
-  for small ordered graphs. It does not decide classical `R(3,10)`;
-  these cyclic families do not reopen the Cayley direction for E
-  or give F a new order-39 catalogue. A–D and G receive no new finite
-  enumeration input. Rounds 21–22 retain the pinned source hashes.
+  submitted November 5, 2026. Here “cyclic” describes embeddings
+  respecting a cyclic order, not circulant graphs. The paper does not
+  give the previously attributed `C(3,12)`/`C(3,13)` clique-number
+  determinations, decide classical `R(3,10)`, reopen the Cayley direction
+  for E, or give F a new order-39 catalogue. A–D and G receive no new
+  finite enumeration input. Corrections verified against the primary
+  records pinned by the critic in `scratch/critic/r23/H/`.
+
+## Round 24 source correction and refresh — November 22, 2026
+
+- Refetched the EJC article and DS1 pages and the two arXiv records;
+  all four returned 200 (`scratch/H/round24-lit-fetch.log`). The publisher
+  title is *R(3,10) ≤ 41*; the preprint record explicitly names v2 as
+  April 8, 2024. DS1's page number is `DS1: Apr 24, 2026`. The cyclic
+  paper's arXiv record confirms all three corrected authors and
+  November 5, 2026. Versions retained under `scratch/H/round24-*.source`.
+- Focused searches found no later primary decision, bulk order-39
+  deposit, or exact order-30 data for the missing levels `88..99`.
+  This is a limited source search. No changed public input or
+  factor-graph count for A–G; use the per-lane table above.

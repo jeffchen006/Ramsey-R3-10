@@ -1,10 +1,9 @@
 # Lane A state
 
-Round 23, November 22, 2026. Allocation 2. Both critic directives done:
-transport versioned and independent physical oracle delivered to G/H. No
-separate SAT queue by directive. R(7) remains closed by C's accepted finite
-certificates, already replayed by A. Case R remains open. No candidate, new
-target proof or case debit by A.
+Round 24, November 22, 2026. Allocation 2. Named residual h5 audits done;
+A23 transport and physical v2 untouched and hashes verified. No h5 or h6
+production SAT by critic directive. R(7) remains closed by C's accepted
+finite certificates, independently replayed by A; case R remains open.
 
 ## Jobs
 
@@ -12,25 +11,28 @@ target proof or case debit by A.
 |---|---|---|---:|---|
 | — | No detached or stopped jobs | — | 0 | — |
 
-Foreground only, one bounded Python worker at a time; `nice -n 5`,
-`timeout`, `prlimit --cpu`, 512 MiB VM. Timed development and replay used
-17.44 CPU-s (0.00484 core-h; excludes one untimed development assertion
-test). Max timed worker RSS 81,244 KiB; `scratch/A/r23` adds ~5.3 MB.
+Bounded foreground workers only, `nice -n 5`, `timeout`, `prlimit --cpu`,
+512 MiB VM. Initial unoptimized target audit hit its CPU limit at 40.03
+CPU-s; no result from that attempt. Approx. 0.023 core-h including development
+and clean replay, max timed RSS 262,044 KiB (initial attempt). Net scratch
+addition about 9.5 MB. Clean replay measured 11.27 CPU-s, 82,128 KiB peak.
 
 ## Results and claims
 
 | Label | Scope / result | Evidence | Core-h per clean replay |
 |---|---|---|---:|
-| hand + enum (regression to A-035, not a new coverage claim) | v1 raw label→representative transport: all 22,408 forward/inverse, 49 masses and 19,651 keys bound; 19,908 stale reverse uses fail. Two fixtures include a nonswap 3-cycle and a post-transpose non-involution. | `ROUND23_BLOCKERS.md`, `TRANSPORT23_V1.sha256`, `scratch/A/r23/transport.v1.json` | 0.000225 |
-| hand + enum (controls only; pending critic) | Independently decoded b201/b202 SAT relaxations, all 87,000 CNF rows satisfied, four I10s with all pair names and selector guards. Both have an I10 with equal same-shore contacts at distinct physical sites. Exact compact clauses shorten 14→9, 11→7, 13→7, 17→11; guarded-false channel rows pinned. 1,960 smaller placements decode and pass triangle-free/alpha=6; explicit short-I6, missing-option-edge and missing-selector mutations each lose a valid plant. No UNSAT. | `ROUND23_BLOCKERS.md`, `BLOCKERS23_V2.sha256`, `scratch/A/r23/physical.v2.json`, `scratch/A/r23/replay.log` | 0.000708 |
+| hand + enum (controls; submitted) | One-shore projection: a physical forbidden set can use slot activity rather than exact mates; include all possible physical edges on that shore and positive mate selectors hitting opposite boundary anchors. Both shores checked on 1,960 valid order-17 placements and 48,956 distinct one-edge seven-subsets, with four lost-positive contact/occupancy deletion fixtures. | `ROUND24_SHORE.md`, `SHORE24.sha256`, `scratch/A/r24/controls.json` | 0.00139 |
+| hand + enum (saved relaxations; submitted) | `d175_1 d185_1 d246_1 d252_1 d275_1 d281_1`: verify all 367,934 CNF rows, 12,974 physical I10s, six new mate-free seven-literal clauses with explicit alternate matchings; exact witness rows absent from formula and then-current seed inventories. Both source channels bound. Same-occupancy matching counts are local, not full SAT models or excluded keys. No new target proof, candidate or board debit. | `ROUND24_SHORE.md`, `SHORE24.sha256`, `scratch/A/r24/targets.json`, `scratch/A/r24/replay.log` | 0.00174 |
 
 ## Next
 
-- Use `physical.v2.json`; `physical.v1.json` was preview only. G owns h5 queue
-  and production proof receipts. Verify new clause inventories against
-  actual site names/channels if requested; do not launch parallel SAT.
-- Replay from root: `bash ralph/lanes/A/replay_blockers23.sh r23-review`.
-  The versioned h6 inventory is already accepted; no h6 proof rerun or h7
-  revival, no extrapolation to h4.
+- Replay: `bash ralph/lanes/A/replay_shore24.sh r24-review`. Passes both
+  frozen A23 manifests and reproduces A24 receipts byte for byte.
+- G owns the production queue. If it pilots the cut, regenerate using
+  `(side,boundary,coords)`, bind both shore channel numberings, and measure
+  same-leaf impact before expanding. Do not add parallel SAT from A. If
+  asked, audit G's precise branch cover or deltas, not solver performance.
+- Old A23 `physical.v2.json` is final, v1 preview only. Versioned h6 inventory
+  already accepted; no h6 proof rerun or h7 revival, no h4 extrapolation.
 - R19 card interface and held-out roster: `ROUND19_DELETION_CARDS.md`,
   `ROUND19_FREEZE.sha256`, `scratch/A/r19`. C owns fifth-row/join work.

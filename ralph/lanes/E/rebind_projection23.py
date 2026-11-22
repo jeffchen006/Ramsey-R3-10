@@ -69,20 +69,23 @@ def formula(projected, additions):
     cap([-var for var in marks.values()], len(marks)-exterior)
     for left, right in combinations(marks, 2):
         clauses.append((-marks[left], -marks[right], *([edge_id[left, right]] if (left, right) in edge_id else [])))
-    for wing in parts:
+    for wing, columns in zip(parts, groups, strict=True):
+        singletons = sum(sum(column >> root & 1 for column in columns) == 1 for root in range(8))
+        zero_budget = high - singletons
+        assert 0 <= zero_budget <= 2
         misses = []
         for vertex in range(8, 26):
             if vertex in wing:
                 continue
             contacts = tuple(edge_id[pair] for target in wing if (pair := tuple(sorted((vertex, target)))) in edge_id)
-            if high == 6:
+            if zero_budget == 0:
                 clauses.append(contacts)
             else:
                 variables += 1
                 misses.append(variables)
                 clauses.append((*contacts, variables))
         if misses:
-            cap(misses, high-6)
+            cap(misses, zero_budget)
     if any(not clause for clause in clauses):
         variables += 1
         clauses = [clause or (variables,) for clause in clauses]
