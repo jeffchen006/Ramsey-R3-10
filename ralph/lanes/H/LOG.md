@@ -125,3 +125,9 @@ roots, 52 doubles and 208 of 1,872 tight common-anchor family checks;
 K2,3 serves as the no-full-cell negative control. The 12/270 Lean
 axiom checks passed. Its preliminary tracking of 368+R and 12 U88
 is historical after the round-005 critic confirmed 278+R / ten U88.
+# Round 13 archive note
+
+The prior round-12 handoff is superseded for status by the critic's new
+degree-six floor and 40 exact removals. Round-12 details and scripts
+remain in `ROUND12_REVIEW.md` and `scratch/H/round12-*`; the 278 baseline
+is a historical denominator and the e168 strip work is not additive.

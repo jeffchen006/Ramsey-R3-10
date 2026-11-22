@@ -329,3 +329,14 @@ within their limits; peak eight concurrent pilot solvers, share 25.
 - Prior accepted floors: degree-six 120 (`rows/floor120.md`),
   degree-seven 108 (Lane B `FLOOR7_108.md`). No order-32 d4 expansion:
   237/520 pilot survivors, no new cap. More history in `LOG.md`.
+
+## Historical round-12 handoff (superseded by the d6 floor 122)
+
+PID 3268364 ran the 10-stream B-middle shell batch and retired at
+06:37:09 CET. PID 3475785 proved all 944 formerly static B-middle
+rejections, retiring 06:33:29 CET. Total 12,320 dual-checked LRATs:
+11,369 first-pass, 944 static replacements, seven repaired. This is
+only path/middle noncross d8 B equality at mixed e168 `(2,7,4,27)`,
+not matching; the later d6 floor closes that parent by a different
+argument. `ROUND12_REPLAY.md` gives the source/role binding and
+replays; `ralph/critic/round_012.md` confirms the named scope.

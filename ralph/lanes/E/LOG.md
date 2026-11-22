@@ -239,3 +239,14 @@ at `(2,32,t=4,δ(W)≥2,e(W)=11)`, `(10,10,11,11)`, universal
 and `scratch/E/r10_shared/freeze.{12,14,10,11}.sha256`. Exact
 labelled query-cache pilots on cores 9/18 produced byte-identical
 receipts but only 2.8% scanner CPU reduction. No surviving jobs.
+
+## Round 12 archive (2026-11-22)
+
+Critic confirmed E-032, mixed core 16 only under E-021 (all graphs)
+and universal `δ(G)≥5`. The 25 first branches (2 empty) bind 98,448
+projections and 834,106 lifts; all 107 terminal width-eight CNFs have
+fresh generation and CakeLRAT. Terminal 0.31636 core-h. Roster pilot
+rejects 31/107 and 6/42 archived heavy-core sample IDs, but was slower
+as a scan prefilter. See `shared74_round12.md` and `scratch/E/r12_shared/`
+for exact receipts, proof streams, freeze files, and `jobs.tsv`. All 52
+old wrappers were collected at start of round 13; none live or stopped.

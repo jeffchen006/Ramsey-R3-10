@@ -310,3 +310,39 @@ published full order-26 census; see `ROUND9_REVIEW.md`.
   new local search yielded zero novel keys on the named 7,954-parent
   list; neither that result nor the literature supplies the last five.
   These are dated findings, not claims of exhaustive nonavailability.
+
+## Round 13 refresh — November 22, 2026
+
+- **No superseding decision located.** The current EJC DS1 entry is
+  Radziszowski's revision 18, April 24, 2026, DOI `10.37236/21`; Table Ia
+  and §2.1 give 40–41. The Angeltveit journal article remains EJC **32**(4)
+  #P4.30, November 3, 2025, DOI `10.37236/12936`; its `2401.00392` arXiv
+  landing page still has v2 (April 8, 2024). The public November TCSExam
+  `ramsey-r3-10` page still uses Exoo's order 39 as the reference. The
+  circulated exact value 39 is *circulant* `R_C(3,10)`, not classical.
+- **Exact archival citation for the round-12 find:** Benjamin Przybocki,
+  John Mackey, Marijn J. H. Heule and Bernardo Subercaseaux, *Doubly
+  Saturated Ramsey Graphs: A Case Study in Computer-Assisted Mathematical
+  Discovery*, in Naumowicz and Seidl (eds.), *Intelligent Computer
+  Mathematics* (CICM 2026), LNAI **16907**, pp. 300–318, Springer volume
+  dated 2027, **first online September 29, 2026**, DOI
+  `10.1007/978-3-032-38214-6_18`, §4.1. The full publisher text retains
+  the report of over 100 order-39 doubly saturated examples, distinct
+  from the Angeltveit/GR collection. The publisher code link points to
+  the already checked author artifact, not a second graph deposit.
+- **Data:** no public bulk Angeltveit/GR order-39 file or exact new
+  `R(3,9;30,e)` count at `88≤e≤99` located. McKay index and the HoG shell
+  are unchanged. Targeted searches and OpenAlex/Crossref discovery
+  results (including enumerations, exact-bound titles and data queries)
+  did not yield an applicable release. The failed arXiv discovery
+  request yields no negative evidence. Provenance: `scratch/H/lit/r13-*.data`
+  and `scratch/H/round13-literature.log`.
+- **For A–G:** A/Cert and E can reuse the prior SAT-artifact references
+  as methodology, not graph coverage. B must still separate the
+  **2,104,151** `32/108` denominator from the **14,395** all-graph
+  `33/≤121` denominator used in the now-audited degree-six floor; neither
+  supplies e88, floor 109, or a complete `33/122` family. C/D have no
+  new published replacement for their rooted controls; F can price the
+  reported double saturation as a construction bias only, not assume it
+  or reproduce those seeds without an artifact. G's new d6 floor and
+  conditional thresholds are local results, not new published numbers.

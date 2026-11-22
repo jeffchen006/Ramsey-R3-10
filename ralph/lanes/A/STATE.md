@@ -1,9 +1,11 @@
 # Lane A state
 
-Round 12, November 22, 2026. Share 4; no live or stopped A jobs. No order-40 candidate,
-whole-distribution exclusion, or Case R closure.
-Current replay: `ROUND12_REPLAY.md` and `scratch/A/strip12/round12.sha256`.
-Rounds 10–11: `ROUND10_REPLAY.md`, `ROUND11_REPLAY.md`; earlier work in `LOG.md` and prior replay files.
+Round 13, November 22, 2026. Share 3; no live or stopped A jobs. No new
+order-40 candidate, whole-distribution exclusion, or Case R closure.
+Current replay: `ROUND13_REPLAY.md` and `scratch/A/panel13/round13.sha256`.
+Rounds 10–12: `ROUND10_REPLAY.md`–`ROUND12_REPLAY.md`; earlier work in
+`LOG.md` and prior replay files. R(7) was already closed by Lane C's
+accepted finite certificates (round 1); A replayed them independently.
 
 ## Jobs
 
@@ -11,29 +13,28 @@ Rounds 10–11: `ROUND10_REPLAY.md`, `ROUND11_REPLAY.md`; earlier work in `LOG.m
 |---|---|---|---:|---|
 | — | No detached A jobs | — | 0 | — |
 
-All round-12 checks ran sequentially in the foreground under per-run timeouts,
-`nice -n 5`, `ulimit -v 16777216`. Total below 0.020 CPU-h, including pilots.
 Round-11 PIDs 790867/790884, 790868/790880, 790869/790883 rechecked gone.
-No A SAT, LRAT production, or replay in round 12.
+Round 13 ran only sequential foreground checks with `nice -n 5`, per-run
+wall/CPU bounds and a 16 GiB VM limit. Final replay including compilers
+9.42 CPU-s; less than 0.004 CPU-h total with the initial control run.
 
 ## Results and claims
 
-| Label | Scope/result | Evidence | A CPU-h |
+| Label | Scope/result | Evidence | CPU-h |
 |---|---|---|---:|
-| hand | At mixed e168 original order24 A-small, alternate noncross pivot `s` preserves the same labelled order21 core and directed cross edge. The six `(d,s,τ)` types give orders d8 leaf 27 / full 26 or 27, d9 leaf 26 / full 25 or 26; restored centre has `d=|T'|−22`, not necessarily minimum. Relabelled marked C13 changes minimum without changing equality. No A-013 transfer. | `ROUND12_REPLAY.md`, `scratch/A/strip12/controls.final.log` | <0.001 |
-| hand + enum, pending critic | Exact original-ID binding of all covered A reroot scopes, then necessary cross-pair support matching: order27 d8 899→447 rooted positions, 48→22 original IDs (one full, also leaf); order26 δ3 d8 full τ0 77 IDs, d9 0 for both pivot types; order25 δ2 d9 full τ0 16 IDs. Raw and canonical projections identical for the two smaller windows; both B shapes and orientations preserved. | `audit_a_side_reroot.py`, `audit_reroot_cross.py`, `scratch/A/strip12/cross{27.A,26.canon,25.canon}.idtags` | 0.011 final runs |
-| hand + enum, scoped | Disjoint order27 and order26 δ3 surviving d8 sets give 99/18,797 old IDs with those routes. The other 18,698 require order26 δ4. d9 order26 always requires δ4; the 1,782/1,798 d9 IDs outside the order25 δ2 set need order25 δ3 or order26 δ4. These are per-route exclusions, not elimination of original IDs from all completions. | `ROUND12_REPLAY.md`, `scratch/A/strip12/{covered,needs-higher-minimum}.d[89].ids` | included above |
-| enum, negative pilot | Optimistic wing-only contact screen removes 0/768 dispersed reroot branch tests; 156 positive small controls and planted I8 negative PASS; stop the screen. | `audit_reroot_wing.py`, `scratch/A/strip12/wing.pilot.{log,tsv}` | 0.001 |
+| hand | In the cap-five marked `K4,4` 17/17 block, removing a single root from an anchor four-set admits just that root and its three private singletons (when it has three). The reverse packages restrict the same physical labelled 3×3 rectangle. Nonempty fixed point is necessary, not sufficient. | `ROUND13_REPLAY.md` | — |
+| enum (independent audit) | 366 small aligned atlas entries, 3,194 small frames, and nonempty repeated rows pass. All 10 regular order-22 hosts: 2,118 oriented squares, 8,472 individual root lifts, 3,448 planted rectangles and 31,032 single-entry negatives. All 9,959 target atlas entries byte-match both scout files; all 55,055 labelled frame keys bind. | `audit_reciprocal_panel.cpp`, `scratch/A/panel13/{controls.log,target.atlas,slice.log}` | included below |
+| hand + enum (scoped; pending critic) | For all 200 left triple-site frames, both shared identifications: 22,022,000 raw → 498,668 header → 77,498 forward → 17,604 reverse and local → 0 panel, exact per-ID/stage agreement. Also independently retained all 100 sampled held panel survivors (that check was not terminal). No conclusion about the unrestricted 17/17 complement, arbitrary bicliques, other orders or cap six. | `ROUND13_REPLAY.md`, `scratch/A/panel13/{slice.depths,ref.depths,id-disagreements.diff,held.depths,replay.log,round13.sha256}` | 0.00262 final replay |
+| archived | A-021 and A-022 were confirmed on the named windows, now obsolete as strip work: the verified d6 floor kills every old e168/d6 parent. No more e168 reroot, ID maps, matching or proof binding. | `ralph/critic/round_012.md`, `ROUND12_REPLAY.md` | prior |
 
 ## Next
 
-- Critic/H: review the A-side table, exact mapped IDs, and conditional
-  d9 no-δ3-at-order26 result. Do not extend it to non-equality windows.
-- G owns pricing and solving. The order26 δ4 and order25 δ3 branches
-  still lack complete sources here; do not pad order27 or treat the
-  99/16 supported IDs as the whole A-small queue. A can bind a new joint
-  source to the old IDs if G's separate test finds a material reduction.
-- Keep the completed G-037 middle-only proof tranche archived; its
-  21,236-row independent identity is in `ROUND11_REPLAY.md`. No duplicate
-  SAT work, and no scale-up of the wing-only optimistic screen.
-- R(7) remains untouched under the critic's mixed-strip directives.
+- C/H/critic have the exact receipts via `ralph/BOARD.md`. C owns the disjoint
+  1% pilot and any production after repricing; A did not start either.
+- If asked to cross-check the pilot later, reuse the bound atlas and frame
+  roster; the replay executable's optional input is a whitespace list of
+  zero-based `left right flip` IDs. Never infer joint filling from a panel pass.
+- Scout N's order-33 completion was already consumed by the critic (floor
+  122 at MTF d6; 238 near-regular distributions plus R at round opening).
+  No round-12 T handoff was delivered. Wait for the next lane directive;
+  do not restart the retired e168 work or the old R(7) cube queue.

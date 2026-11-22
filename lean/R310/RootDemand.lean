@@ -90,4 +90,68 @@ theorem IsMTF.total_edges_of_degree_six_residue {G : SimpleGraph (Fin 40)} [Deci
   have hSplit := card_edgeFinset_delNbhd_add_sum_degree (G := G) hmtf.1 root
   omega
 
+/-- At total e170, an external degree-six residue floor of 122 forces both
+the residue and the neighbor degree sum to be tight. -/
+theorem IsMTF.e170_degree_six_tight {G : SimpleGraph (Fin 40)} [DecidableRel G.Adj]
+    (hmtf : IsMTF G) (hAlpha : G.indepNum ≤ 9) {root : Fin 40}
+    (hDegree : G.degree root = 6) (hEdges : #G.edgeFinset = 170)
+    (hFloor : 122 ≤ #(delNbhd G root).edgeFinset) :
+    #(delNbhd G root).edgeFinset = 122 ∧ ∑ vertex ∈ G.neighborFinset root, G.degree vertex = 48 := by
+  have hPrivate := IsMTF.sum_degree_neighbor_ge G hmtf hAlpha root
+  rw [hDegree] at hPrivate
+  have hSplit := card_edgeFinset_delNbhd_add_sum_degree (G := G) hmtf.1 root
+  omega
+
+omit [Fintype V] in
+/-- A sum of odd entries has the parity of the number of entries. -/
+theorem sum_mod_two_eq_card_mod_two {sites : Finset V} {weight : V → ℕ}
+    (hOdd : ∀ vertex ∈ sites, weight vertex % 2 = 1) :
+    (∑ vertex ∈ sites, weight vertex) % 2 = #sites % 2 := by
+  induction sites using Finset.induction_on with
+  | empty => simp
+  | @insert vertex sites hNot ih =>
+    have hRest := ih fun other hOther => hOdd other (mem_insert_of_mem hOther)
+    have hFirst := hOdd vertex (mem_insert_self _ _)
+    rw [sum_insert hNot, card_insert_of_notMem hNot, Nat.add_mod, hFirst, hRest]
+    omega
+
+/-- At this equality, a degree-six neighbor cannot be the only even-degree neighbor.
+The adjacency and the residue floor are explicit inputs. -/
+theorem IsMTF.e170_degree_six_peer_requires_even_other
+    {G : SimpleGraph (Fin 40)} [DecidableRel G.Adj]
+    (hmtf : IsMTF G) (hAlpha : G.indepNum ≤ 9) {root peer : Fin 40}
+    (hDegree : G.degree root = 6) (hPeer : G.degree peer = 6) (hAdj : G.Adj root peer)
+    (hEdges : #G.edgeFinset = 170) (hFloor : 122 ≤ #(delNbhd G root).edgeFinset) :
+    ∃ vertex ∈ (G.neighborFinset root).erase peer, G.degree vertex % 2 = 0 := by
+  have hSum := (hmtf.e170_degree_six_tight hAlpha hDegree hEdges hFloor).2
+  have hMem : peer ∈ G.neighborFinset root := (mem_neighborFinset _ _ _).mpr hAdj
+  have hCount : #((G.neighborFinset root).erase peer) = 5 := by
+    simp [card_erase_of_mem hMem, hDegree]
+  have hErase := sum_erase_add (G.neighborFinset root) (fun vertex => G.degree vertex) hMem
+  by_contra! hNo
+  have hMod := sum_mod_two_eq_card_mod_two (sites := (G.neighborFinset root).erase peer)
+    (weight := fun vertex => G.degree vertex) (fun vertex hVertex => by
+      have := hNo vertex hVertex
+      omega)
+  omega
+
+/-- Form of the e170 cut: with exactly the two adjacent degree-six vertices
+and no degree-eight vertices, the five other neighbors have odd degree. -/
+theorem IsMTF.e170_degree_six_peer_forbids_no_degree_eight
+    {G : SimpleGraph (Fin 40)} [DecidableRel G.Adj]
+    (hmtf : IsMTF G) (hAlpha : G.indepNum ≤ 9) {root peer : Fin 40}
+    (hDegree : G.degree root = 6) (hPeer : G.degree peer = 6) (hAdj : G.Adj root peer)
+    (hNoOther : ∀ vertex, G.degree vertex = 6 → vertex = root ∨ vertex = peer)
+    (hNoEight : ∀ vertex, G.degree vertex ≠ 8)
+    (hEdges : #G.edgeFinset = 170) (hFloor : 122 ≤ #(delNbhd G root).edgeFinset) : False := by
+  obtain ⟨vertex, hVertex, hEven⟩ :=
+    hmtf.e170_degree_six_peer_requires_even_other hAlpha hDegree hPeer hAdj hEdges hFloor
+  have ⟨hNe, hNbr⟩ := mem_erase.mp hVertex
+  have hRoot : vertex ≠ root := ((mem_neighborFinset _ _ _).mp hNbr).ne.symm
+  have hLower := IsMTF.six_le_degree G hmtf hAlpha vertex
+  have hUpper := (degree_le_indepNum hmtf.1 vertex).trans hAlpha
+  have hNotSix : G.degree vertex ≠ 6 := fun h => (hNoOther vertex h).elim hRoot hNe
+  have hNotEight := hNoEight vertex
+  omega
+
 end R310

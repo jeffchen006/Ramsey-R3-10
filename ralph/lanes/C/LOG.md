@@ -196,3 +196,10 @@ Exact costs and proof/replay scopes are in `ROUND4_REPLAY.md`.
 
 ## Round 10 (November 22)
 - Reciprocal 22/21 cap five: all 395 planted matched controls; 4,882 direct/indexed/independent exact bounded keys. Cap-five 22/22 reproduction has zero mates. 8,192 new right hosts: 70,229 checked maps, no undecided, all exact map IDs reproduced. 48 dense and thin dual-LRAT map proofs; 29.63→7.54 whole-process CPU-s. No census, no closure of either R(5) or Case R. See `ROUND10_REPLAY.md`.
+
+## Rounds 11–12 (November 22)
+- Round 11 streamed complete cap-five K3,3 reciprocal 22/21: 1,118,436 right hosts, 11,657,178 maps, 32 local dual LRATs, C-033. C-034 pricing only. `ROUND11_REPLAY.md`.
+- Round 12 counted 89,187,336 union-≥14 local B marks at order 22 (19,397,413 cards), 1,307 tight `14/222/2` marks, and proved all 9 tight e65 marks impossible: 324 checked dual LRATs; 1,298 tight local marks remain. Upper reroot retained all 1,307 marks (54,384 live wings). Critic accepts e(F_A)≤64 only for the named all-three-B-codegree-five tight slice. No order20 catalogue or general 22/20 join. `ROUND12_REPLAY.md`, `ralph/critic/round_012.md`.
+
+## Round 13 (November 22)
+- Independently matched both 9,959-row atlases and 55,055 frames; replayed the prior triple slice and bound a disjoint 1,554,349-ID cap-five 17/17 pilot. 197,502→327 panel, 97 joint, zero open (enum only). Full scope priced, not launched. `ROUND13_REPLAY.md`.

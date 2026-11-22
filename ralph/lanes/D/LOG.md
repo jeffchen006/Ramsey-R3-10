@@ -1,5 +1,36 @@
 # Lane D — round 3, 2026-11-21
 
+# Lane D — round 12, November 22, 2026
+
+**R(3), R(4), R(3,10) open; no candidate.** Submitted: every hypothetical R(3) graph has two **vertex-disjoint deficient P3s**, and hence two vertex-disjoint induced pentagons, each with a codegree-one diagonal. Generally sufficient four-star cover shrinks **111→102**. This is hand + enum, not end-to-end Sec. 7 certification. Round 11 is archived in `LOG.md`; D-023 through D-026 confirmed.
+
+## Jobs
+
+|PID|Command|Log|Cores|Start|Expected end|
+|---|---|---|---:|---|---|
+|none|All bounded foreground searches, checkers and pilots ended.|`scratch/D/flag12/`|0|—|—|
+
+Share 11; no stopped or detached jobs. No further allocation requested.
+
+## Results and claims
+
+`S=scratch/D/flag12`. CPU-h figures are the specified foreground engine/checker stages, **not** whole-turn accounting; tiny source-generation costs not timed separately.
+
+|Label|Result|Evidence|CPU-h|
+|---|---|---|---:|
+|hand + enum|If every two deficient flags meet but they have no common vertex, the branch is empty. Ordered-arc injectivity, abstract configurations and even K give four exact K=4 shapes in this branch only. Independent marked-seed recursion without a degree or size cap agrees. Four shapes → 26 endpoint profiles, independently regenerated from the nine internal roots. Two P5 shapes: exactly 17,989 fully marked raw stars; 9,962 one-node rechecks + 8,027→612→22→0 graph search. Pendant shape: alternate C6 root, 42→1→0. Fourth shape: pentagon rule below.|`INTERSECTING_FLAGS.md`; `S/{shape-audit.log,root-audit.log,raw-terminal.log,bindings.log,dense500/bind.log,dense3500/bind.log,dense18000/bind.log,pendant/all.out,pendant/tail.out}` and stage receipts|0.0890 main exact graph passes incl. C6|
+|hand + enum|No site h can be on every deficient path, allowing h at an endpoint **or** the centre. All 28,447 marked P6 placements independently reproduced in the original coordinates. Full preceding marked decks: **28,447→3,645→1,357→332→32→0**. Thus two vertex-disjoint deficient P3s always exist. 102 general root representatives (60/36/6 by number of endpoint cross edges), 50 remaining old K=2 tails; neither ruling forbids those internal configurations at other markings of a graph. C5 all 31 mark subsets; complete C22 deck returns 880 exact coloured models across 765 inputs.|`INTERSECTING_FLAGS.md`; `S/trans/{level1,level2,level3,level4,level5}/receipt.tsv`; `S/{bindings.log,trans/deckcal.log,disjoint102.in,two/old-live.in}`|0.2777 main P6 stages|
+|hand + cert (local)|On **any** induced pentagon in R(3), four deficient diagonals imply all five: a double-contact site needs ≥2 zero-contact neighbors, and zeros=doubles. The only exactly-four profiles `00001`/`00002` have ordinary labelled LRATs checked twice with each of two checkers. No independent-ten clauses used; the all-five case remains open.|`PENTAGON.md`; `S/pent/{9-1-1,9-2-1}.{cnf,lrat,build,cake_lpr.log,lrat-check.log}`, `S/pent/{positive.log,check-1.replay,check-2.replay,cake-1.replay,cake-2.replay}`|0.00074 first producer+checker pair of pipelines|
+|hand corollary + enum|Two disjoint marked pentagons exist: 8 matched completions per flag, choose ≥5 then ≥3 disjointly. Structural interface enumeration 12,278 labelled / 1,656 orbits, **not full star profiles**. C22 direct: all 1,734 disjoint flag pairs extend; 67,189 choices occupy 1,062 interface orbits. Under K=2 only: 30 exact marginal exclusions, 1,626 **rationally feasible** occupancy witnesses, all independently replayed in arbitrary-precision integers. The anticomplete exclusion has a hand proof (needs 30 cross walks, at most 29).|`PENTAGON.md`; `S/{interfaces.tsv,interfaces.log,margins.jsonl,margins-check.log,transport.jsonl}`|under 0.03 estimate, not timed end-to-end|
+|estimate/open|Nine-root depth-eight frontier, old 33,632 vs new 33,240 (24,150 only if common site); no scale on the small cut alone. K=2 reserve on P6: 53,257 one-endpoint hypotheses; 84/161 cost 1.87 CPU-s at 330. 411,792 marked-pair hypotheses; 139/229 cost 2.36 CPU-s at 250. Forecast ~4,240 CPU-s **just for that first pair pass**, ~39% remain; not launched. More expensive aggregate-edge LP on 39 two-pentagon samples: 2 separated, 37 fractional, no additional exclusion claimed. Do not treat capped rows as solved.|`S/deep-{0,2,4}.{stats,out}`, `S/two/{sites.log,pairs-all.log,end-price.out,pair-price.out,reserve-cal.log}`, `S/transport.jsonl`|0.0012 reserve pilot engines|
+
+## Next steps / cautions
+
+1. Critic/H: review the two logically separate branches of `INTERSECTING_FLAGS.md`. First branch needs D-026 for a seed and parity for K=4. The unrestricted common-site proof does **not** assume K=4 or that D is a matching. `S/uncapped/shapes.log` is the six-load producer; `S/shape-audit.log` uses no cap. `S/trans/wrong-order` is the invalid old-coordinate pilot; use only the independently rebound `S/trans/hub.tsv` from `ind10/six.tsv`.
+2. For an orders-of-magnitude next cut, exploit that the same two marked P3s have many simultaneous disjoint pentagon completions. Try joining *compatible closures from the same graph* with exact row/endpoint identities rather than independently iterating the 1,626 K=2 boundary systems. First compare on the positive 1,734 C22 pairs where physical completions are known; do not join the general P8 catalogue.
+3. Independent conditional target: K=2/min-q≥12 now has only three of the former five rooted IDs (189–191, both witnesses external), not a closure. All 156 compatible two-pentagon interfaces tested with internal edge-square quotas, 108 planted C22 controls. Only 11 separated (just one new interface, ID 1612), 145 fractional in 0.0095 CPU-h (`S/square-full.jsonl`, `S/square-result.log`); do not scale unchanged. K=2 remains possible. Do not brute-force the raw single-pair hypotheses, the 11,727 old witness leaves, unchanged LPs or unmarked P8 joins. No full LRAT for the mixed unrooted theorem.
+4. `scratch/D/round12_evidence.sha256` binds inputs, key results, shipped source and local certificates. `S/prices.log` and `S/trans/price-stages.log` record pre-wave estimates. No extra cores requested.
+
 ## Historical round 5 handoff (jobs ended)
 
 - Max-root, not min-root: 111 kernels independently counted by genbg

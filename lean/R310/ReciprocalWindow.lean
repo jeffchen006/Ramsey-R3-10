@@ -72,6 +72,197 @@ theorem reciprocal_windows_union (hTriangle : G.CliqueFree 3) {left right : Fins
       exact hTriangle {root, other, vertex}
         (is3Clique_triple_iff.mpr ⟨hCross root hRoot other hOther, hAdj, hEdge⟩)
 
+/-- Count incidences to a window by a sum of adjacency indicators. -/
+theorem windowDegree_eq_sum (window : Finset V) (vertex : V) :
+    windowDegree G window vertex = ∑ other ∈ window, if G.Adj vertex other then 1 else 0 := by
+  rw [← Finset.sum_filter]
+  simp only [sum_const, nsmul_eq_mul, mul_one, windowDegree]
+  congr 1
+  ext other
+  simp [and_comm]
+
+/-- The two sides count the same crossing incidences. -/
+theorem sum_windowDegree_comm (left right : Finset V) :
+    (∑ vertex ∈ left, windowDegree G right vertex) = ∑ vertex ∈ right, windowDegree G left vertex := by
+  simp only [windowDegree_eq_sum]
+  rw [Finset.sum_comm]
+  refine sum_congr rfl fun other _ => sum_congr rfl fun vertex _ => ?_
+  by_cases h : G.Adj vertex other
+  · simp [h, h.symm]
+  · have hRev : ¬G.Adj other vertex := fun hAdj => h hAdj.symm
+    simp [h, hRev]
+
+/-- Restricted handshaking, expressed as a sum over the ambient vertex type. -/
+theorem sum_windowDegree_eq_double_edges (window : Finset V) :
+    (∑ vertex ∈ window, windowDegree G window vertex) = 2 * #(G.induce (window : Set V)).edgeFinset := by
+  rw [← (G.induce (window : Set V)).sum_degrees_eq_twice_card_edges]
+  rw [← Finset.sum_finset_coe]
+  exact sum_congr rfl fun vertex _ => (degree_induce_eq_windowDegree window vertex).symm
+
+private theorem windowDegree_disjoint_union {left right : Finset V} (hDisj : Disjoint left right)
+    (vertex : V) :
+    windowDegree G (left ∪ right) vertex = windowDegree G left vertex + windowDegree G right vertex := by
+  simp only [windowDegree_eq_sum]
+  exact sum_union hDisj
+
+private theorem sum_windowDegree_partition {first second third : Finset V}
+    (hDisj : Disjoint first second) (hDisjThird : Disjoint (first ∪ second) third)
+    (hCover : first ∪ second ∪ third = univ) (sites : Finset V) :
+    (∑ vertex ∈ sites, G.degree vertex) =
+      (∑ vertex ∈ sites, windowDegree G first vertex) +
+      (∑ vertex ∈ sites, windowDegree G second vertex) +
+      ∑ vertex ∈ sites, windowDegree G third vertex := by
+  have hDeg (vertex : V) : G.degree vertex = windowDegree G univ vertex := by
+    simp [windowDegree]
+  simp_rw [← sum_add_distrib, ← windowDegree_disjoint_union hDisj,
+    ← windowDegree_disjoint_union hDisjThird, hCover, ← hDeg]
+
+/-- C's degree balance across the order-22 window. The identity is independent of the
+cap-five and tight-pair hypotheses: only the regular bipartite-root marking is used. -/
+theorem rootsWindow_degree_sum_of_regular {left right : Finset V}
+    (hTriangle : G.CliqueFree 3) (hLeft : left.Nonempty) (hRight : right.Nonempty)
+    (hCross : ∀ vertex ∈ left, ∀ other ∈ right, G.Adj vertex other)
+    {degree : ℕ} (hRegular : ∀ vertex, G.degree vertex = degree) (hEqual : #left = #right) :
+    let window := rootsWindow G left
+    let privateSites := univ \ (window ∪ (left ∪ right))
+    2 * #(G.induce (window : Set V)).edgeFinset + degree * #privateSites =
+      2 * #(G.induce (privateSites : Set V)).edgeFinset + degree * #window := by
+  dsimp only
+  let window := rootsWindow G left
+  let boundary := left ∪ right
+  let privateSites := univ \ (window ∪ boundary)
+  change 2 * #(G.induce (window : Set V)).edgeFinset + degree * #privateSites =
+    2 * #(G.induce (privateSites : Set V)).edgeFinset + degree * #window
+  have hAll := reciprocal_windows_union hTriangle hLeft hRight hCross
+  have hWinBoundary : Disjoint window boundary := by
+    refine disjoint_left.mpr fun vertex hw hb => ?_
+    have hOut : vertex ∈ univ \ boundary := by
+      change vertex ∈ univ \ (left ∪ right)
+      rw [← hAll]
+      exact mem_union_left _ hw
+    exact (mem_sdiff.mp hOut).2 hb
+  have hWinPrivate : Disjoint window privateSites := disjoint_left.mpr fun vertex hw hp =>
+    (mem_sdiff.mp hp).2 (mem_union_left _ hw)
+  have hRestBoundary : Disjoint (window ∪ privateSites) boundary := by
+    refine disjoint_left.mpr fun vertex hm hb => ?_
+    rcases mem_union.mp hm with hw | hp
+    · exact disjoint_left.mp hWinBoundary hw hb
+    · exact (mem_sdiff.mp hp).2 (mem_union_right _ hb)
+  have hCover : window ∪ privateSites ∪ boundary = univ := by
+    ext vertex
+    simp [privateSites]
+    tauto
+  have hRemainder : ∀ vertex ∈ privateSites, vertex ∈ rootsWindow G right := by
+    intro vertex hp
+    have hout := (mem_sdiff.mp hp).2
+    have hin : vertex ∈ window ∪ rootsWindow G right := by
+      change vertex ∈ rootsWindow G left ∪ rootsWindow G right
+      rw [hAll]
+      exact mem_sdiff.mpr ⟨mem_univ _, fun hb => hout (mem_union_right _ hb)⟩
+    exact (mem_union.mp hin).resolve_left (fun hw => hout (mem_union_left _ hw))
+  have hSameSide {side other : Finset V} (hOther : other.Nonempty)
+      (hJoin : ∀ vertex ∈ side, ∀ anchor ∈ other, G.Adj vertex anchor) :
+      ∀ vertex ∈ side, ¬∃ anchor ∈ side, G.Adj vertex anchor := by
+    intro vertex hv ⟨anchor, ha, hAdj⟩
+    obtain ⟨outside, ho⟩ := hOther
+    exact hTriangle {vertex, anchor, outside}
+      (is3Clique_triple_iff.mpr ⟨hAdj, hJoin vertex hv outside ho, hJoin anchor ha outside ho⟩)
+  have hBL : ∀ vertex ∈ left, windowDegree G boundary vertex = #right := by
+    intro vertex hv
+    unfold windowDegree boundary
+    congr 1
+    ext other
+    simp only [mem_inter, mem_union, mem_neighborFinset]
+    exact ⟨fun ⟨hAdj, hIn⟩ => hIn.resolve_left fun ha =>
+      (hSameSide hRight hCross vertex hv) ⟨other, ha, hAdj⟩,
+      fun hr => ⟨hCross vertex hv other hr, Or.inr hr⟩⟩
+  have hCrossRev : ∀ vertex ∈ right, ∀ other ∈ left, G.Adj vertex other :=
+    fun vertex hv other ho => (hCross other ho vertex hv).symm
+  have hBR : ∀ vertex ∈ right, windowDegree G boundary vertex = #left := by
+    intro vertex hv
+    unfold windowDegree boundary
+    congr 1
+    ext other
+    simp only [mem_inter, mem_union, mem_neighborFinset]
+    exact ⟨fun ⟨hAdj, hIn⟩ => hIn.resolve_right fun ha =>
+      (hSameSide hLeft hCrossRev vertex hv) ⟨other, ha, hAdj⟩,
+      fun hl => ⟨hCrossRev vertex hv other hl, Or.inl hl⟩⟩
+  have hWindowAvoid (root : V) (roots sites : Finset V) (hr : root ∈ roots)
+      (hs : sites ⊆ rootsWindow G roots) : windowDegree G sites root = 0 := by
+    rw [windowDegree, card_eq_zero]
+    exact eq_empty_iff_forall_notMem.mpr fun vertex hv =>
+      (mem_rootsWindow.mp (hs (mem_inter.mp hv).2)).2 root hr
+        ((mem_neighborFinset _ _ _).mp (mem_inter.mp hv).1)
+  have hSum (sites : Finset V) : ∑ vertex ∈ sites, G.degree vertex = degree * #sites := by
+    simp [hRegular, Nat.mul_comm]
+  have hJoinDisj : Disjoint left right := disjoint_left.mpr fun vertex hl hr =>
+    (hCross vertex hl vertex hr).ne rfl
+  have hBWH : (∑ vertex ∈ boundary, windowDegree G window vertex) = #right * (degree - #left) := by
+    rw [show boundary = left ∪ right by rfl, sum_union hJoinDisj]
+    have hL : ∑ vertex ∈ left, windowDegree G window vertex = 0 := by
+      exact sum_eq_zero fun vertex hv => hWindowAvoid vertex left window hv (by rfl)
+    rw [hL, zero_add]
+    calc
+      _ = ∑ _vertex ∈ right, (degree - #left : ℕ) := by
+        refine sum_congr rfl fun vertex hv => ?_
+        have hPart := sum_windowDegree_partition (G := G) hWinPrivate hRestBoundary hCover {vertex}
+        simp only [sum_singleton] at hPart
+        rw [hRegular, hBR vertex hv, hWindowAvoid vertex right privateSites hv hRemainder] at hPart
+        omega
+      _ = _ := by simp only [sum_const, nsmul_eq_mul, Nat.cast_id]
+  have hBWP : (∑ vertex ∈ boundary, windowDegree G privateSites vertex) = #left * (degree - #right) := by
+    rw [show boundary = left ∪ right by rfl, sum_union hJoinDisj]
+    have hR : ∑ vertex ∈ right, windowDegree G privateSites vertex = 0 := by
+      exact sum_eq_zero fun vertex hv => hWindowAvoid vertex right privateSites hv hRemainder
+    rw [hR, add_zero]
+    calc
+      _ = ∑ _vertex ∈ left, (degree - #right : ℕ) := by
+        refine sum_congr rfl fun vertex hv => ?_
+        have hPart := sum_windowDegree_partition (G := G) hWinPrivate hRestBoundary hCover {vertex}
+        simp only [sum_singleton] at hPart
+        rw [hRegular, hBL vertex hv, hWindowAvoid vertex left window hv (by rfl)] at hPart
+        omega
+      _ = _ := by simp only [sum_const, nsmul_eq_mul, Nat.cast_id]
+  have hWindow := sum_windowDegree_partition (G := G) hWinPrivate hRestBoundary hCover window
+  have hPrivate := sum_windowDegree_partition (G := G) hWinPrivate hRestBoundary hCover privateSites
+  rw [hSum, sum_windowDegree_eq_double_edges, sum_windowDegree_comm window boundary, hBWH] at hWindow
+  rw [hSum, sum_windowDegree_eq_double_edges, sum_windowDegree_comm privateSites boundary, hBWP,
+    sum_windowDegree_comm privateSites window, hEqual] at hPrivate
+  rw [hEqual] at hWindow
+  omega
+
+/-- C's e(P)=e(F_A)−45 projection, including its non-truncating form. -/
+theorem rootsWindow_edges_sub_forty_five {left right : Finset V}
+    (hTriangle : G.CliqueFree 3) (hLeft : #left = 3) (hRight : #right = 3)
+    (hCross : ∀ vertex ∈ left, ∀ other ∈ right, G.Adj vertex other)
+    (hRegular : ∀ vertex, G.degree vertex = 9) (hWindow : #(rootsWindow G left) = 22)
+    (hOrder : Fintype.card V = 40) :
+    let window := rootsWindow G left
+    let privateSites := univ \ (window ∪ (left ∪ right))
+    (#(G.induce (privateSites : Set V)).edgeFinset + 45 = #(G.induce (window : Set V)).edgeFinset) := by
+  let window := rootsWindow G left
+  have hL := card_pos.mp (show 0 < #left by omega)
+  have hR := card_pos.mp (show 0 < #right by omega)
+  have hAll := reciprocal_windows_union hTriangle hL hR hCross
+  have hWinBoundary : Disjoint window (left ∪ right) := by
+    refine disjoint_left.mpr fun vertex hw hb => ?_
+    have hOut : vertex ∈ univ \ (left ∪ right) := by
+      rw [← hAll]
+      exact mem_union_left _ hw
+    exact (mem_sdiff.mp hOut).2 hb
+  have hLeftRight : Disjoint left right := disjoint_left.mpr fun vertex hl hr =>
+    (hCross vertex hl vertex hr).ne rfl
+  have hCount := card_sdiff_of_subset (show window ∪ (left ∪ right) ⊆ univ from subset_univ _)
+  rw [card_union_of_disjoint hWinBoundary, card_union_of_disjoint hLeftRight, card_univ, hOrder] at hCount
+  have hBalance := rootsWindow_degree_sum_of_regular hTriangle hL hR hCross hRegular (hLeft.trans hRight.symm)
+  change #window = 22 at hWindow
+  dsimp only at hBalance ⊢
+  change 2 * #(G.induce (window : Set V)).edgeFinset + 9 * #(univ \ (window ∪ (left ∪ right))) =
+    2 * #(G.induce (↑(univ \ (window ∪ (left ∪ right))) : Set V)).edgeFinset + 9 * #window at hBalance
+  change #(G.induce (↑(univ \ (window ∪ (left ∪ right))) : Set V)).edgeFinset + 45 =
+    #(G.induce (window : Set V)).edgeFinset
+  omega
+
 theorem reciprocal_window_degrees (hTriangle : G.CliqueFree 3) {left right : Finset V}
     (hLeft : left.Nonempty) (hRight : right.Nonempty)
     (hCross : ∀ vertex ∈ left, ∀ other ∈ right, G.Adj vertex other) {vertex : V}
