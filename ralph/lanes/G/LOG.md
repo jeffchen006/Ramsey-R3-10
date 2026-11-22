@@ -448,3 +448,7 @@ justify scaling (all four MIPs cap; no full-template cut). See
   counts 5,592,650 fixed alignments represented by the new keys;
   no matched timing comparison. 71.94 CPU-s all-in, 138,364,893
   LRAT bytes. `ROUND21_REPLAY.md` and its freeze.
+
+## Round 23
+
+See `ROUND23_REPLAY.md`, `ROUND23_FREEZE.sha256` and `scratch/G/round23/{handoff.json,live-handoff.json}`. Credited frozen marked h5 cover: 254 boards, 138,687 whole-board keys, 144,284 including partial-board relabellings; 97 new checked local receipts. No whole distribution debit.

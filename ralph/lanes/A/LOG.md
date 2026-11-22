@@ -1,5 +1,17 @@
 # Lane A state
 
+## Round 22 (history)
+
+Independent h6 cover: 22,408 raw labels, 49 board orbits (9 RR, 16 RS,
+24 SS) and 19,651 hole contexts; 80 oriented orbits, 18 exchange-stabilized
+reps but 16 bare-transpose fixed. Literal n16/17 strict two-defect controls
+scan 2,576/7 classes, with 788/308 physical layouts and no survivors. Relaxed
+n16 exactly 127,086 labelled placements / 8,119 classes; aliasing loses
+59,856 placements / 1,702 classes. G cross-checks and A clean replay pass.
+0.07457 measured core-h. Confirmed A-035/036 (cover/controls only) by the
+round-22 critic, not a new solve. `ROUND22_TWO_DEFECT.md`, `ROUND22_FREEZE.sha256`,
+`scratch/A/r22`. Direction-sensitive G replay was corrected separately in r23.
+
 ## Round 21 (history)
 
 Completed G's independent comparison denominator: 184 fresh canonical

@@ -1,5 +1,17 @@
 # Lane H — archived round 2 handoff, November 21, 2026
 
+## Round 22 archive
+
+- `ROUND22_REVIEW.md` and `ROUND22.sha256`: added H-037 (physical
+  selected-pair injectivity and guarded fold equivalence) and H-038
+  (disjoint degree-budget inequality); 7 targeted / 369 project
+  axiom reports, C13 and equal-mask controls, 0.07016 core-h.
+  Both confirmed independently in critic round 022 and imported in H23.
+- Round 22 H staged twelve r022 claims and imported all twelve r021 lane
+  verdicts plus six scout rows. Some late submissions were not yet final;
+  `ROUND23_REVIEW.md` documents the scoped reconciliation. T21 and
+  referee21 had no artifact. Literature recheck in `LIT.md`.
+
 ## Round 17 archive
 
 - `ROUND17_REVIEW.md` and `ROUND17.sha256`: imported round 016 and

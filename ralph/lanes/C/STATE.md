@@ -1,35 +1,40 @@
-# Lane C — round 22, November 22, 2026
+# Lane C — round 23, November 22, 2026
 
-**No candidate. Case R and R(5) remain open.** Tested C-050 first
-on a fresh pair of physical frames as directed. No C-050 improvement;
-park the gate. A separate matched comparison gives eight new signed
-exclusions pending review, not a new degree-distribution debit.
+**No candidate. Case R and R(5) remain open.** The critic confirmed
+C-052/053/054. C-050's separate-coordinate minima added no veto;
+retire it. No recount of the eight round-22 signed exclusions, and
+no sweep of the 2,542,514,356 signed-untested 16/17 keys (2,542,514,300
+after the independent 56 structural vetoes).
 
-## Results / claims for H and critic
+## Results / proposed claims for H and critic
 
-| Label | Scope | Evidence | CPU-h |
+| Label | Scope | Evidence | Core-h |
 |---|---|---|---:|
-| hand, pending | Exact extension obligation on fixed left/right windows and marks: only the private cross pairs are unknown. All legal physical `T` are covered. The card projection retains fixed labels and all outside forced incidences; a singleton must add at least `max(0,r−o)` edges into the common core if outside optional capacity is `o`. Exact alpha checks via all subsets of each physical singleton group; coordinate minima remain a necessary test only. | `proofs/panel22_fixed_label_projection.md` | — |
-| enum, negative pending | `(42072,x=1,host97,z6)` vs right IDs `27448,27790` at `(75,5)`: 96 legal rows, 34 separate-card-empty, 62 all domains live with every added-degree minimum zero. C-050 cuts 0 rows and 0 frames; focused search matches exhaustive. C13 16,384 literal masks and 148 labelled small-catalogue assignments (16 queries) match. Original signed comparison on same two was already terminal-free. | `ROUND22_REPLAY.md`, `scratch/C/r22/{sample.rows.tsv,opt-sample.rows.tsv,summary.log}` | 0.0244 for first two gate runs |
-| enum, local pending | Existing signed join (not C-050): eight fresh `(42072,right)` pairs, right IDs `27448,27790,37550,38058,38779,39167,39288,40768`. All both-marginal-positive; all arc-empty; 45,348 literal probes, zero terminals, zero caps, independent physical-domain audit 8/8. If accepted signed-untested `2,542,514,356`; net of prior 56 structural vetoes `2,542,514,300`. | `ROUND22_REPLAY.md`, `ROUND22_FREEZE.sha256`, `scratch/C/r22/{chosen.tsv,old.stats,audit.log,summary.log}` | 0.0069 for original baseline + independent audit |
-| confirmed r021 | C-050 sum of separate minima of added disjoint-group incidences is necessary; C-051 strict/C13 fixtures only, 2/18 exact-five choices and overload at 6 in strict version. | `ROUND21_REPLAY.md`, `ralph/critic/round_021.md` | prior |
-| confirmed earlier | C-049 negative right-only roster: 5,390 legal, 3,714 at threshold 3 and 5,390 at 4; same 116 keys live. C-045/046: fifth gate vetoed none on `(42679,x=0,z7)`; separate baseline signed-excluded exactly 12, leaving `2,542,514,364` before this round. C-044 two `(67,5)/(68,4)` slices closed only. C-039/040 exclude two-neutral 17/17. Cap-five K3,3 22/21 impossible, 1,298 tight `e≤64` local marks open. Prior R(7), R(6) no-P4, `f*=9`/diagonal-four in `ROUND{4,5,6,7,8,9,11,12,15}_REPLAY.md`. | `ROUND{17,18,19,20}_REPLAY.md` and critic rounds | prior |
+| C-055 `hand`, pending | Two marked induced cards with disjoint omitted independent groups: complementary degree colors on their physical overlap; after alignment the private cross pairs alone are unknown, and Hall factors exactly impose fixed degrees/triangle freedom. Full crown caps `(5,6,7,7,9)` by touched roles; scoped matching demands are exact for independence together and can fail even if individual edges are supported. No target case exclusion from the factor test alone. | `proofs/crown23_two_window_factor.md`, `crown23_factor.py` | — |
+| C-056 `hand`, pending | Saturated `(2,32),t=4,δ(W)≥2,e(W)=8,P=0`: each attachment pair has ≥6 edges; 6 only for a perfect matching; three specific seven-edge shapes excluded. Complementary pair identity `e_ij=e_kl+24−(b_i+b_j)`, hence missing-role overlap `e(X)≥62−(b_i+b_j)` with retained `6K2` at equality. Independent of the missing-class identity; not a branch closure. | `proofs/crown23_sparse_rectangle.md` | — |
+| C-057 `enum` controls, pending | Matched literal results on 177,856 tiny factor instances, 1,196 C13 alignments (364 plants, 832 failed complementary colors), 120 positive/adverse deck alignments, all 256 scoped requests on two C9 completions, 16 moved-padding scopes, sparse shapes at widths 3–6 and six width-six geometry-only decks (not Ramsey positives). No E partition scan or target throughput inference. | `ROUND23_REPLAY.md`, `ROUND23_FREEZE.sha256`, `scratch/C/r23-clean/replay.log` | 0.02498 total |
+| C-052/053/054 confirmed r022 | C-050/C-052 necessary but zero cuts on target pilot. The unchanged signed join independently excludes only eight listed `(42072,right)` keys. | `ROUND22_REPLAY.md`, `ralph/critic/round_022.md` | prior |
+| Earlier confirmed | C-049 negative right-only test, C-045/046 negative fifth gate and exactly 12 separate signed exclusions, C-044 two slices only, C-039/040 two-neutral 17/17 only, cap-five K3,3 22/21 only (1,298 tight local marks remain). | `ROUND{11,12,17,18,19,20,21,22}_REPLAY.md`; prior critic rounds | prior |
 
 ## Jobs
 
-**None.** All bounded checks were foreground, no active PIDs and no
-detached solver queue. New gate failed the critic's improvement
-condition: 23.76 CPU-s focused vs 0.01 CPU-s signed comparison on the
-same two, with no budget veto or existing terminal calls. Two-core
-share unused for production by design. Accounting in `ROUND22_REPLAY.md`.
+**None.** All foreground checks finished; no PIDs/cores to inherit.
+Two allocated cores; no target production because no finite
+target completion docket was supplied or priced. The tests ran
+one process at a time under VM, wall and CPU limits. No C-050
+re-run or catalogue enumeration.
 
 ## Next
 
-1. Critic/H: audit eight signed IDs separately from the negative
-   gate; no recount of old fifth bins and no r019 debit again.
-2. Stop C-050 transfer on this family. The four remaining fresh
-   both-margin-positive right IDs of this exact roster were not
-   tested. Do not silently generalize the zero minima to them.
-3. No rerun of the closed R(6) P4 rows, no unpriced larger batch.
-   R021_R addresses D's R(3) support queue, R021_N addresses G/B;
-   no R021_T file or new scout assertion consumed here.
+1. E: the full proof and filter are ready. Apply the `e(X)` lower
+   bound and retained perfect-matching test at equality before
+   costly marked alignment on a concrete forced-missing pair. Keep
+   roles and physical labels fixed; no equivalence of unrelated
+   marks on copies and no assumption other cards are missing.
+2. H/critic: audit C-055/056 separately from the controls. If a
+   concrete named row reaches E's terminal, compare same-row prices
+   before enabling Hall/matching as production gates. Unmarked pair
+   coverage and the missing e74 identity remain unresolved.
+3. Do not restart C-050 or a multi-billion-frame C sweep. For Case
+   R, a new joint obstruction needs a named signed-surviving family
+   and actual completion-work comparison.

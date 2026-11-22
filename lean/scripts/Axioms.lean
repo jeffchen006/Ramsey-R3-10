@@ -1,4 +1,9 @@
 import R310
+#print axioms R310.SelectedWitness.row_holds_iff
+#print axioms R310.SelectedWitness.row_sound
+#print axioms R310.SelectedWitness.compact_iff_full
+#print axioms R310.SelectedWitness.compact_iff_full_of_channels
+#print axioms R310.SelectedWitness.edge_false_of_shared_anchor
 #print axioms R310.isIndepSet_neighborFinset
 #print axioms R310.degree_le_indepNum
 #print axioms R310.degree_le_of_indepNum_le

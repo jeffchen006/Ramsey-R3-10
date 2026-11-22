@@ -215,3 +215,7 @@ Exact costs and proof/replay scopes are in `ROUND4_REPLAY.md`.
 
 ## Round 17 (November 22)
 - Physical host/neutral and source group-demand profiles give an exact first filter: 15,051,526,031 raw and 2,542,514,492 both-pass; 47 old joint failures leave 2,542,514,445 untested at the start of round 18. No production header expansion. Critic confirmed both the filter and the separately independently audited `(71,5)` zero-forward stratum of 35,458,804. All 582,982 host products, 440 sampled target predicates, all 544 pilot flags, and all 34,504 small IDs checked; 0.21802 core-h. `ROUND17_REPLAY.md`, `ROUND17_FREEZE.sha256`, `ralph/critic/round_017.md`.
+
+## Rounds 18–22 (November 22)
+- C-044 closes only the `(67,5)/(68,4)` slices. The round-19 fifth gate vetoed no physical row; the unchanged signed baseline separately removed 12. The factored right roster kept all 116 frames. C-050 sums minima of **added** edges into disjoint groups; the C13/strict tests do not demonstrate a real target gain. See `ROUND{18,19,20,21}_REPLAY.md`.
+- Round 22: `(42072,x=1,host97,z6)` vs right IDs `27448,27790` at `(75,5)` had 96 legal rows, 34 separate-card-empty, zero minima on every live coordinate; zero C-050 cuts. The **unchanged** signed join excludes eight fresh explicit pairs with 45,348 literal probes and zero terminals, independently checked. Confirmed C-052/053/054, no joint completion call, no broad debit. Full counts/evidence in `ROUND22_REPLAY.md`.

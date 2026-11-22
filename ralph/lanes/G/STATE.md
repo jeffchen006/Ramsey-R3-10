@@ -1,73 +1,77 @@
-# Lane G state — round 22, November 22, 2026
+# Lane G — round 23, November 22, 2026
 
 **238 near-regular MTF distributions plus R remain open.** No candidate,
-whole-distribution, `t9`, U88, or residue-floor change. For the marked
-`e=170` adjacent degree-six slice, `h=8` and `h=7` were accepted, and
-all **49/49 `h=6` weak boards and 19,651/19,651 weak hole-context keys**
-are now excluded by checked local proofs (pending critic). `h≤5`, the
-single degree-six slice and the parent distributions are not closed.
+whole-distribution, `t9`, U88, or residue-floor change. Marked adjacent `e=170`
+has accepted `h=8,7,6`; the `h=6` driver has now been fixed without solving.
+`h=5` is partial: frozen 21:21:15 CET, **254/286 whole boards**, covering
+**138,687/156,112 keys**; including verified relabelled partial-board keys,
+**144,284/156,112 keys**. The ongoing snapshot is separate. `h≤4`, the
+single-degree-six slice, and their parent distributions remain open.
 
 ## Jobs
 
-| PID (timeout / worker) | Command | Log | Cores | Start | Expected end |
-|---|---|---|---:|---|---|
-| 2223755 / 2223757 | Finished `round22_three_worker.sh pilot 0 p0 full` | `scratch/G/round22/h5/pilot0.log` | 0 | 19:41 | checked |
-| 2223925 / 2223927 | Finished `round22_three_worker.sh pilot 110 p110 full` | `scratch/G/round22/h5/pilot110.log` | 0 | 19:41 | checked |
-| 2224117 / 2224125 | Finished `round22_three_worker.sh pilot 285 p285 full` | `scratch/G/round22/h5/pilot285.log` | 0 | 19:41 | CPU cap, open |
-| 2331361 / 2331384 | `round22_three_worker.sh shard 0 queue1.tsv` | `scratch/G/round22/h5/queue1.0.log` | 1 | 19:43 | ≤00:43 Nov 23 |
-| 2331571 / 2331574 | `round22_three_worker.sh shard 1 queue1.tsv` | `scratch/G/round22/h5/queue1.1.log` | 1 | 19:43 | ≤00:43 |
-| 2331867 / 2331871 | `round22_three_worker.sh shard 2 queue1.tsv` | `scratch/G/round22/h5/queue1.2.log` | 1 | 19:43 | ≤00:43 |
-| 2331961 / 2331963 | `round22_three_worker.sh shard 3 queue1.tsv` | `scratch/G/round22/h5/queue1.3.log` | 1 | 19:43 | ≤00:43 |
-| 2332113 / 2332115 | `round22_three_worker.sh shard 4 queue1.tsv` | `scratch/G/round22/h5/queue1.4.log` | 1 | 19:43 | ≤00:43 |
-| 2332287 / 2332297 | `round22_three_worker.sh shard 5 queue1.tsv` | `scratch/G/round22/h5/queue1.5.log` | 1 | 19:43 | ≤00:43 |
-| 2332399 / 2332406 | `round22_three_worker.sh shard 6 queue1.tsv` | `scratch/G/round22/h5/queue1.6.log` | 1 | 19:43 | ≤00:43 |
-| 2332980 / 2332988 | `round22_three_worker.sh shard 7 queue1.tsv` | `scratch/G/round22/h5/queue1.7.log` | 1 | 19:43 | ≤00:43 |
-| 2333547 / 2333554 | `round22_three_worker.sh shard 8 queue1.tsv` | `scratch/G/round22/h5/queue1.8.log` | 1 | 19:43 | ≤00:43 |
-| 2333988 / 2334009 | `round22_three_worker.sh shard 9 queue1.tsv` | `scratch/G/round22/h5/queue1.9.log` | 1 | 19:43 | ≤00:43 |
-| 2334355 / 2334380 | `round22_three_worker.sh shard 10 queue1.tsv` | `scratch/G/round22/h5/queue1.10.log` | 1 | 19:43 | ≤00:43 |
-| 2334645 / 2334655 | `round22_three_worker.sh shard 11 queue1.tsv` | `scratch/G/round22/h5/queue1.11.log` | 1 | 19:43 | ≤00:43 |
-| 2334778 / 2334813 | `round22_three_worker.sh shard 12 queue1.tsv` | `scratch/G/round22/h5/queue1.12.log` | 1 | 19:43 | ≤00:43 |
-| 2335058 / 2335063 | `round22_three_worker.sh shard 13 queue1.tsv` | `scratch/G/round22/h5/queue1.13.log` | 1 | 19:43 | ≤00:43 |
-| 2335162 / 2335176 | `round22_three_worker.sh shard 14 queue1.tsv` | `scratch/G/round22/h5/queue1.14.log` | 1 | 19:43 | ≤00:43 |
-| 2335319 / 2335327 | `round22_three_worker.sh shard 15 queue1.tsv` | `scratch/G/round22/h5/queue1.15.log` | 1 | 19:43 | ≤00:43 |
-| 2335613 / 2335639 | `round22_three_worker.sh shard 16 queue1.tsv` | `scratch/G/round22/h5/queue1.16.log` | 1 | 19:43 | ≤00:43 |
-| 2336155 / 2336175 | `round22_three_worker.sh shard 17 queue1.tsv` | `scratch/G/round22/h5/queue1.17.log` | 1 | 19:43 | ≤00:43 |
-| 2336763 / 2336796 | `round22_three_worker.sh shard 18 queue1.tsv` | `scratch/G/round22/h5/queue1.18.log` | 1 | 19:43 | ≤00:43 |
-| 2337243 / 2337269 | `round22_three_worker.sh shard 19 queue1.tsv` | `scratch/G/round22/h5/queue1.19.log` | 1 | 19:43 | ≤00:43 |
-| 2640301 / 2640387 | Finished `round22_depth_pilot.sh 52` | `scratch/G/round22/h5/depth52.log` | 0 | 19:51 | wall timeout |
+Stage = `scratch/G/round23`. Latest dispatch snapshot `final-jobs.json`
+(full args, process tree, CPU and stage size). At 21:25:13 the original
+queues had finished and the following 11 one-core binary jobs were live.
+All are detached under 5 GiB VM. Check actual `ps` before reassigning.
 
-`h=6` pilots, 20-worker full dispatch and four split jobs are finished;
-PIDs and start times in `scratch/G/round22/queue{1,2,3}.pids`. `h=5`
-workers have a 5 h outer limit, per solve 900 CPU-s / 1,800 wall-s,
-320 MiB raw and 5 GiB VM. Evidence: `scratch/G/round22/h5/{launch.sha256,queue1.pids,queue1.tsv,work/}`.
-At the 19:53 snapshot, **14** queue supervisors were still live, one
-core apiece: `2331361,2331571,2331867,2331961,2332980,2333988,2334645,2334778,2335058,2335162,2335319,2335613,2336763,2337243`.
-All other PIDs in the table are historical at this snapshot; do not
-kill or reuse them without checking actual `ps`. See `handoff.pids`.
+| timeout / Bash worker PID | Command and log (stage-relative) | Start | Deadline |
+|---|---|---|---|
+| 1748673 / 1748795 | `round23_binary_worker.sh pilot d283_100 l283_100` / `l283_100.log` | 21:25:02 | 21:50:02 |
+| 1748784 / 1748830 | `round23_binary_worker.sh pilot d234_111 l234_111` / `l234_111.log` | 21:25:02 | 21:50:02 |
+| 1748802 / 1748871 | `round23_binary_worker.sh pilot d242_111 l242_111` / `l242_111.log` | 21:25:02 | 21:50:02 |
+| 1748869 / 1748991 | `round23_binary_worker.sh pilot d243_111 l243_111` / `l243_111.log` | 21:25:02 | 21:50:02 |
+| 1748898 / 1748918 | `round23_binary_worker.sh pilot d254_111 l254_111` / `l254_111.log` | 21:25:02 | 21:50:02 |
+| 1748913 / 1748983 | `round23_binary_worker.sh pilot d259_111 l259_111` / `l259_111.log` | 21:25:02 | 21:50:02 |
+| 1748950 / 1749015 | `round23_binary_worker.sh pilot d277_111 l277_111` / `l277_111.log` | 21:25:02 | 21:50:02 |
+| 1748956 / 1749000 | `round23_binary_worker.sh pilot d278_111 l278_111` / `l278_111.log` | 21:25:02 | 21:50:02 |
+| 1748987 / 1749095 | `round23_binary_worker.sh pilot d280_111 l280_111` / `l280_111.log` | 21:25:02 | 21:50:02 |
+| 1749008 / 1749096 | `round23_binary_worker.sh pilot d283_101 l283_101` / `l283_101.log` | 21:25:02 | 21:50:02 |
+| 1749082 / 1749176 | `round23_binary_worker.sh pilot d283_110 l283_110` / `l283_110.log` | 21:25:02 | 21:50:02 |
+
+Stage used 4.19 GB at 21:25:03. Latest workers each reserve 100 MB binary
++230 MB sliced ASCII, shared archive cap 4.48 GB under 8.8 GB stage
+envelope. At least one checked board beyond the freeze (269) is in the
+unfrozen view. All prior PIDs are historical;
+`queue{1,2,3,4}.{pids,workers,tsv}`, `pilot.pids`, `deficit.pids`,
+`mtf.pids`, `binary.pids`, `fresh.pids`, `recovery.{pids,workers,tsv}`
+provide prior launch logs; latest in `late.{pids,workers}` and
+`recovery-late.tsv`.
 
 ## Results and claims
 
-| Label | Result | Evidence | Core-h |
+| Label | Result | Evidence | Cost |
 |---|---|---|---:|
-| hand + enum + local cert (pending critic) | Full marked `h=6`: 47 unpinned whole boards + exact complementary splits of boards 45 and 46. 51 dual-checked LRATs; all 49 sets of physical padded/MTF rows audited separately. Exact 22,408 labelled boards and 19,651 hole keys corroborated by A. Whole attempts on boards 45/46 at 320 MiB failed both checkers, even with solver exit 20, and were not credited. | `ROUND22_REPLAY.md`, `ROUND22_FREEZE.sha256`, `rows/e170_folded_two_defect.md`, `scratch/G/round22/{receipts.json,split-checked.log}` | ~0.78 |
-| enum (calibration) | `h=5` successor has 286 boards / 184,488 labelled boards / 156,112 weak hole keys, matching the earlier Burnside count. Width-three `n=17`, 80 boards, strict alpha≤5 gives zero, matching the published catalogue control; relaxed alpha≤6 exact comparison gives 1,960 labelled placements and 218 classes on 16 nonempty boards. 936 board/class incidences. Hall cuts included in both modes. | `round22_three.py`, `round22_three_inventory.py`, `scratch/G/round22/h5/{manifest.json,control.log,reference.log}` | ~0.008 + pilots |
-| local cert + open (19:53 snapshot, pending critic) | `h=5`: 211/286 dual-checked boards, 117,224/156,112 weak keys. 75 boards open, including 38 SAT relaxations, 285 resource-capped and other pending attempts. The board-52 alternative hit a wall timeout. | `ROUND22_H5.md`, `scratch/G/round22/h5/{handoff.json,handoff.pids,work/}` | 1.64 finished attempt hours at snapshot; queue running |
+| enum replay correction, no new debit | Correct h6 replay under A's versioned old-to-new maps, inverse restores all 22,408 labels; 49 board masses and 19,651 literal keys; old reversal rejected in 19,908 labels; both hole fixtures. No new G-059 claim. | `round23_transport.py`, `ROUND23_FREEZE.sha256`, stage `transport.log` | 5.77 CPU-s |
+| hand + enum + local cert (pending critic) | At frozen h5 checkpoint, +30 whole boards and +16,779 whole-board keys over inclusive 224/121,908; 97 new checked proof files. Four fresh sampled CNF/hash/dual rechecks. Partial-board transport supplies 5,597 additional keys; request separate check by H/critic. | `ROUND23_REPLAY.md`, `ROUND23_FREEZE.sha256`, stage `handoff.json`, `hole-handoff.json`, `receipt-freeze.sha256`, `freeze-root-check.log` | 5.054 timed attempt core-h plus controls/fresh replay |
+| hand + enum | Compact I10 clauses with physical guards; exact exterior edge sum via 8 degree deficits; A's four witnesses and three adverse mutations; 1,960 literal smaller positives, 48 independent small edge totals, 15 local guarded probes. Smaller sequential deficit block ~17.5k vs ~64k clauses. | `rows/e170_h5_physical_deficit.md`, stage `controls.log`, `oracle.log`, `deficit-control.log` | 0.002 core-h controls |
+| hand + enum + open | Exterior MTF rows validate on 56 native/1,960 exterior-saturated controls and 1,904 negatives; target pilots `m174_1`, `m177_1` resource/raw capped. No scale-up yet. | `round23_mtf{,_audit}.py`, stage `mtf-control.log`, `work/m17*/` | <0.06 core-h |
+| enum + local cert / open | Binary LRAT transport exact on PHP, verified sample slices; 249/11 stays open. Nine earlier successful binary branches from the 21:21 freeze can be replayed with the common receipt reader, and recovery continues. Proof archive guards alone never count as checked, even following solver UNSAT and initial checker success. | `round23_binary_lrat.cc`, `round23_binary_worker.sh`, stage `trim/`, `work/q*/`, `work/r*/` | included |
 
-## Handoff
+At fixed 21:21:15: 197 terminal attempts, 97 checked; others 44 raw
+caps, 37 SAT relaxations, 17 archive-guard failures, one binary resource
+failure, one earlier resource exit. Largest timed RSS 527,124 KiB,
+3,382,286,169 bytes retained. Later receipts need a new snapshot/freeze.
 
-- H/critic: verify exact `h=6` debit only. `receipts.json`/freeze names
-  every formula and compressed proof, and `split-checked.log` binds the
-  two unit pairs against the actual full CNFs. No fixed-alignment claim.
-- `h=5` SAT models are relaxations, not candidates: all 37 decoded
-  in the audit had an `I10`; two require ≥2 selected options, so full
-  depth at option quota one is not sufficient in general. The board-52
-  pilot added 284,910 depth clauses, blocked its prior model six ways,
-  but returned no result in 95 wall-s (38.74 CPU-s). No new solver
-  batch on this overlay. Prefer compact witnessed clauses, `e(W)=86`
-  or auditable disjoint selector splits after collecting the queue.
-  `scratch/G/round22/h5/{final-model.jsonl,deep-control.log,depth52.log}`.
-- At e170, sixteen degree-six distribution keys remain (nine single,
-  seven adjacent pair). `Z=48`, e(H)=122, 24 private and nine double
-  sites; adjacent W has 28 sites, one crossing and 86 internal edges.
-  Round-13 exact `t9` thresholds and membership remain in
-  `ROUND13_REPLAY.md` and its freeze; 32/e108 remains lane B's.
+## Next
+
+1. Collect live jobs above, run `round23_h5_status.py .` and independently
+   `round23_h5_hole_cover.py . SNAPSHOT`, then freeze any new receipts.
+   Keep whole-board key count separate from partial-board transported keys.
+   A key with any labelled representative in a checked prefix is excluded
+   because changing labels preserves the graph and that board; no symmetry
+   of a graph is assumed. All checked paths are exact occupancy scopes.
+2. For remaining raw-cap leaves with prior UNSAT, prefer compressed binary
+   retries or split on the next unassigned physical shore bit. Do not repeat
+   `249/11` under the same binary cap. Plan exact cover separately from
+   storage and increase archive room only if simultaneous file reserves fit.
+   Avoid dropping any retained proof; specifically reserve archive capacity
+   **before** dispatch so a checked raw is not stranded by a guard.
+3. For genuine SAT relaxations, seed physical I10 cuts with the saved models
+   via `round23_h5_seed.py`. Keep explicit selector guards and full boundary
+   padding. Neither dense depth overlay nor raw-capped exterior MTF pilots
+   alone justify scaling. Do not report a relaxation as a candidate.
+4. Do not debit a parent distribution until both open structures are closed.
+   Sixteen `e=170` degree-six distribution keys remain (nine single, seven
+   adjacent pair); exact `t9` thresholds in `ROUND13_REPLAY.md`. `32/e108`
+   stays with lane B. Historical round-22 state in stage `round22.STATE.md`.

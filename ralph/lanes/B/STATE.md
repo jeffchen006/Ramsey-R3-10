@@ -1,6 +1,13 @@
-# Lane B — round 22, November 22, 2026
+# Lane B — round 23, November 22, 2026
 
-**Round 22 (hand, pending):** Every saturated 32/e108 graph has a d6
+**Round 23, pending critic:** In saturated 32/e108 with every d6 puncture
+≥69, no d6/d6 pair has codegree three. The e69 triple column can only
+name a d7/d8 partner. One-low 160/160 fresh dual replays, including 79
+degree-sum-redundant keys; all-high q3 906/906 fresh dual replays;
+q4 via hand + independent enumerations, q5/6 hand. No candidate,
+floor or distribution debit. `ROUND23_PAIRCUT.md`, `ROUND23.sha256`.
+
+**Round 22 (hand, CONFIRMED B-042):** Every saturated 32/e108 graph has a d6
 puncture in `R(3,8;25,65..69)`: the Hall contact inequality and the d8
 fibres exclude every all-e70 case. No assumption on the five missing
 criticals. `ROUND22_TIGHT_FIBRES.md` and `ROUND22.sha256`.
@@ -15,12 +22,8 @@ e69 price, no independently supplied new key, floor 108 unchanged.
 forced 12-site low layer; see `ROUND20_SATURATION.md` and
 `ROUND21_TIGHT_LAYER.md`. Round 22 uses both and removes the all-e70 branch.
 
-**Round 17:** froze the CONFIRMED B-036/B-037 **2,104,146 named blocked**
-32/e108 keys (2,017,637 cliques and 86,509 dual LRATs), **five criticals
-absent**. Floor remains 108. Python + GNU SHA256 checked 3,066 archive
-files (~0.0019 core-h); 430 critical LRATs pinned, 14 unpinned. No proof
-replay/search, source screen, e88 generation, U88 or profile change.
-`ROUND17_REPLAY.md`, `ROUND17.sha256`, `work/e108_r17/archive.sha256`.
+**Round 17:** CONFIRMED B-036/B-037: **2,104,146 named blocked** 32/e108
+keys; **five criticals absent**. Floor 108, `ROUND17_REPLAY.md`.
 
 **Current baseline:** global degree-seven floor **108** for MTF is CONFIRMED
 (B-013); it subsumes the direct e162 `(0,2,32,6)` exclusion. Neither
@@ -32,14 +35,8 @@ Work from `scratch/B` with `ulimit -v 16777216` and `PYTHONDONTWRITEBYTECODE=1`.
 LRATs, including 36,800 adopted ranks. ~1.99 core-h, 240 MiB; archived
 jobs in `LOG.md`. See `ROUND15_REPLAY.md` and `ROUND15.sha256`.
 
-**Round 13:** all **545** authorized set-aside e98 parents tested at d7/d8;
-477 distinct critical e108 outputs, **zero novel** (22.23 CPU-s incl. audit).
-The other **200** were separately rebound to N's archived two-arm replay.
-All **77** proposed 33/e122 child hosts were fresh against 419 actual prior
-direct hosts; descent yielded five old e108 keys, **zero novel** (0.89 CPU-s
-incl. controls); stopped. Census still **2,104,146 / 2,104,151**. No floor 109,
-no change to e88/U88 or to the 238 near-regular distributions plus Case R.
-See `ROUND13_REPLAY.md` and `ROUND13.sha256`.
+**Round 13:** exact 545 e98 + 77 higher-host pilots, zero novel keys;
+200 separately rebound to N's archive. `ROUND13_REPLAY.md` and freeze.
 
 **Rounds 10–12:** best census `work/e108_r11/union.g6` remains
 **2,104,146 / 2,104,151, five missing**. New-key tranches, exhausted and
@@ -60,13 +57,16 @@ Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 
 ## Jobs
 
-No live PIDs (0/2 cores) or solver launches. The e96 source is retired;
-no coverage-priced e69 source or e86 queue. Old jobs: `LOG.md`.
+No live jobs (0/2). Matching replay PIDs 2149678/2149684 both exited;
+each replay log matches all 453 assigned keys. Completed jobs: `LOG.md`.
+
+No complete e69 source or e86 queue. Old jobs: `LOG.md`.
 
 ## Results and claims for review
 
-| Label | Round 22 result | Evidence | Core-h |
+| Label | Recent result | Evidence | Core-h |
 |---|---|---|---:|
+| hand + enum + cert (pending) | Near-tight saturated 32/e108 has no d6/d6 codegree-three pair. ID4 closes ≥2 common lows; 160+906 fresh dual LRAT replays, q4 2P3 two independent empty joins, other boards hand. | `ROUND23_PAIRCUT.md`, `ROUND23.sha256` | ~0.5 incl. fresh replay |
 | hand (pending) + enum (controls) | All saturated 32/e108 have a d6 puncture e65..69; n8 unrestricted. At e69 the two column-size patterns are 17+8 or 18+6+1, with distinct doubles. No missing key classified. | `ROUND22_TIGHT_FIBRES.md`, `scratch/B/work/e108_r22/{low.log,low.time}` | 0 solver; <0.001 for controls |
 | pub + enum + hand (confirmed by prior critic; integrity only here) | 15 pins PASS; complete order-31/e96 source 1,842 critical + 33,312 reducible, all 23 critical inverse lifts already named. Missing-key spanning puncture floor ≥97, no new e98 run. | `ralph/critic/round_021.md`, `scratch/B/work/e108_r22/source.log` | <0.00002 this round |
 
@@ -224,10 +224,10 @@ no coverage-priced e69 source or e86 queue. Old jobs: `LOG.md`.
 
 ## Next
 
-0. Reopen on an independently supplied missing 32/e108 key, or an exact
-   coverage route with a withheld-positive calibration and measured price.
-   Saturated arm now needs only e65..69, but no complete e69 input or
-   price. e109 descent still misses saturated keys; no repeated e109 scan.
+0. Ask critic to review the near-tight pair result. High partners:
+   14 mask orbits; order-20/19 weighted ID4 bounds when A contains a
+   low row. e69 no-triple, e65..68 and addable keys remain open, with
+   no complete source/lift price. Do not reopen brute force.
 1. Critic/H: replay or audit the bounded prefix and scout proof tranche.
    `src/replay_prefix_r7.sh terminal` and `src/e108_scout_proofs_r8.sh replay work/e108_r8_scout_proofs`
    are ready. Do not re-launch prefix. Outside-prefix critical e88 after
