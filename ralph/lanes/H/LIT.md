@@ -445,3 +445,39 @@ published full order-26 census; see `ROUND9_REVIEW.md`.
   the last located published bounds, not completeness of a new
   search. No new input for A–G. HTTP observations, hashes, and text:
   `scratch/H/round21-literature.log`, `scratch/H/lit/r21-*`.
+
+## Round 22 focused update — November 22, 2026
+
+- Re-fetched Radziszowski, *Small Ramsey Numbers*, EJC DS1 rev. 18
+  (April 24, 2026), DOI `10.37236/21`. The publisher PDF is byte-identical
+  to round 21, with **40–41** in Table Ia. Angeltveit's arXiv receipt is
+  still v2 (April 8, 2024), and the publisher still lists EJC **32**(4),
+  #P4.30, DOI `10.37236/12936`; the journal's §7 count **43,225,483** is a
+  lower bound on a partial family, not a release or an exact total.
+  McKay's index is byte-identical to round 21. No newer classical
+  decision, public bulk order-39 deposit, or exact 30/88–99 count was
+  located. The check added a dated arXiv phrase query (`Ramsey graphs`,
+  11 returned records) and the top 25 of a broad Crossref discovery
+  query. These are not exhaustive searches. Logs and pinned primary
+  responses: `scratch/H/round22-{literature,extra-sources}.log`,
+  `scratch/H/lit/r22-*`.
+- Matija Kocbek, *Explicit geometric construction of Ramsey graphs*,
+  [arXiv:2507.09235v3](https://arxiv.org/abs/2507.09235v3), November 17,
+  2025, §4/Theorem 4.3, gives explicit triangle-free graphs of order
+  `n` with `α=O(n^(2/3))`, not a finite `(3,10;40)` witness. Brecht F.
+  Verbeken, *Polynomial families of incident flags and explicit
+  off-diagonal Ramsey graphs*,
+  [arXiv:2610.06081v1](https://arxiv.org/abs/2610.06081v1), October 5,
+  2026, Theorem 1.1, gives constructive fixed-`s` asymptotic lower
+  bounds (a sharpened exponent at `s=16`), not a finite decision.
+- Yong Lu, Qi Wu and Qiannan Zhou, *Triangle-free Rank–Ramsey graphs
+  from ordered incidence lifts*,
+  [arXiv:2610.22902v1](https://arxiv.org/abs/2610.22902v1), October 16,
+  2026, Theorem 1.1, treats matrix rank and gives exact independence
+  and chromatic numbers for the affine lift `G(q,t)`. For F, the only
+  full lift of order 40 has `q=2,t=5` and independence number 20;
+  more generally, lifts with `min(q,t)≤4` have no induced 40-vertex
+  witness, since a 4-colouring yields a class of size at least 10.
+  This conclusion concerns only those lifts. None of these three
+  papers supplies a new class count or input file for A–G, and none
+  changes the checked case ledger.

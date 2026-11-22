@@ -1,9 +1,9 @@
 # Lane A state
 
-Round 21, November 22, 2026. Allocation 2; directive one worker,
-0.06 core-h, 512 MiB. Independent denominator delivered to G.
-R(7) remains closed by C's accepted finite certificates (round 1),
-already replayed by A. No new candidate, proof, or case debit this round.
+Round 22, November 22, 2026. Allocation 2; independent reference and board
+binding for G, not a second solver queue. R(7) remains closed by C's accepted
+finite certificates, already replayed by A. Case R remains open. No candidate,
+new target proof or case debit by A.
 
 ## Jobs
 
@@ -11,33 +11,30 @@ already replayed by A. No new candidate, proof, or case debit this round.
 |---|---|---|---:|---|
 | — | No detached jobs | — | 0 | — |
 
-All work finished; one foreground worker at a time, `nice -n 5`,
-`timeout`, `prlimit --cpu`, 512 MiB VM. `scratch/A/r21` and
-`scratch/A/r21-clean`: 47.10 timed CPU-s (0.01308 core-h), 26,836 KiB
-peak RSS, <1 MiB staging, including development/calibration attempts.
+No target SAT. Foreground, one bounded reference worker at a time,
+`nice -n 5`, `timeout`, `prlimit --cpu`, 512 MiB VM. `scratch/A/r22`
+has the frozen output; `scratch/A/r22-final` and `scratch/A/r22-audit`
+have clean replay timings. All 15 byte comparisons and 27 input/artifact
+pins pass. `scratch/A/r22/audit.replay.log` records the comparisons. Total
+timed cost 268.46 CPU-s (0.07457 core-h), including development and the
+failed stronger-mutation attempt; largest RSS 148,224 KiB.
 
 ## Results and claims
 
 | Label | Scope / exact result | Evidence | Core-h |
 |---|---|---|---:|
-| enum (calibration) | Permanent inclusion-exclusion agrees with literal permutations on 18 aligned and 90 one-defect small slots, and the six historic h=7 fixed/fixed counts plus one h=8 control. Omitted witness, missing singleton slots, crossed triangle and singleton/singleton mutations detected. | `scratch/A/r21/control.log`, `ROUND21_H7_DENOMINATOR.md` | 0.00056 final calibration |
-| estimate | 12 priced keys from the six boards; mean/max forecast for both passes over 184 keys 46.0/68.5 CPU-s, actual 33.31. This prices counting, not solving. | `ROUND21_PRICE.md`, `scratch/A/r21/{sample.log,full.time}` | 0.00085 sample |
-| hand + enum (pending critic) | Rebound all eight frozen h=7 pilot scopes and baseline 51. Fresh union 184 canonical two-sided context keys; 5,592,650 labelled fixed alignments, one representative per key, no stabilizer weighting. Literal agrees on all 184; clean tables byte-identical. Pilots 6/8 share exactly one 70,252-weight key. | `ROUND21_H7_DENOMINATOR.md`, `ROUND21_FREEZE.sha256`, `scratch/A/r21/{alignments.tsv,prefix.tsv,full.log,clean.compare.log}` | 0.01308 all-in |
+| enum (calibration) | Historical exact one-defect class sets 129/11 at n15/16. Independently scanned all 2,576/7 n16/17 graphs at alpha<=5 and literally rebuilt 788/308 layouts; both two-defect sets empty. | `ROUND22_TWO_DEFECT.md`, `scratch/A/r22-audit/small.log` | 0.00675 per full control replay |
+| enum (pending critic) | Exact width-three n16 two-defect **toy**, alpha<=6 and no MTF: 127,086 labelled placements, 53,411 board/class incidences, 8,119 unmarked classes, exact physical rescan; independent graph checker accepts all. Aliasing deletes 59,856 placements and 1,702 unmarked classes; explicit incompatible same-mask edge bits, short padding and optional/optional witnesses. G matches four representative projections and tests alias/short clauses on physical plants. | `ROUND22_TWO_DEFECT.md`, `ROUND22_FREEZE.sha256`, `scratch/A/r22/positive`, `scratch/A/r22/positive.check.log`, `scratch/G/round22/control.log` | 0.01011 per full positive replay, plus 0.00058 independent graph check |
+| hand + enum (pending critic) | Necessary weak h=6 board census: 22,408 raw keys, 49 board orbits (9 RR, 16 RS, 24 SS), 19,651 hole-context keys. 80 root-oriented orbits; 18 swap-stabilized reps, only 16 bare-transpose fixed. Corrected label -> rep maps, independently compared by G for all raw boards and hole keys. No feasibility claim or solve. | `ROUND22_TWO_DEFECT.md`, `ROUND22_FREEZE.sha256`, `scratch/A/r22/h6.{boards,labels,holes}.tsv` | 0.00125 per cover replay |
 
 ## Next
 
-- G has the denominator on the board. For any checked subset of pilots,
-  sum each keyed row once if any of its pilot IDs was checked. Use only
-  comparable measured per-alignment prices for cost forecasting; prior
-  h=8 per-ID timing alone is not a measured h=7 comparison. No solve,
-  scaling request, 81-scope rerun, or `h<=6` extrapolation by A.
-- Critic replay: `bash ralph/lanes/A/replay_h7_alignments21.sh r21-review`
-  (or add `full` for another literal pass under the printed cap).
-- G-019 has been confirmed pub + enum. No reason to rerun its 477,142
-  prefilter, 984 outer tests or completed expansion.
-- Released r19 card interface and exact held-out roster remain in
-  `ROUND19_DELETION_CARDS.md`, `ROUND19_FREEZE.sha256`, `scratch/A/r19`.
-  Lane C owns fifth-row/join work; no generic 159-ID join, retired e168
-  strips, accepted marked 17/17, or unpriced 2.54-billion-survivor scan.
-- Earlier marks/profile weights: `ROUND17_DIRECTION_PROFILES.md`,
+- G owns calibrated h=6 target work. A has delivered both references on the
+  board. Replay from root: `bash ralph/lanes/A/replay_two_defect22.sh r22-review full`.
+  Confirm any later target coverage only against checked bindings/receipts.
+- End h=7 comparisons; do not relaunch retired h=7 contexts. No h<=5
+  extrapolation from this census. G-019 is already confirmed pub + enum.
+- R19 card interface and held-out roster: `ROUND19_DELETION_CARDS.md`,
+  `ROUND19_FREEZE.sha256`, `scratch/A/r19`. C owns fifth-row/join work.
+  Earlier profile weights: `ROUND17_DIRECTION_PROFILES.md`,
   `ROUND17_FREEZE.sha256`, `scratch/A/r17-stream/weights{16,17}.tsv`.

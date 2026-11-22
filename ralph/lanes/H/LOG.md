@@ -181,3 +181,14 @@ shores, isolated site and local cap via Hall. Used 170 controls,
 `ROUND20.sha256` at the round-20 snapshot; the critic confirmed it in
 round 020. H-036 supplies the cap and cell geometry from graph
 contacts. The open 21,125 `h=8` count was then historical after G-056.
+
+## Round 21 archive
+
+H-036 derives cap five and the physical Hall row margin from actual
+root contacts and alpha at most nine by padding with four unused
+neighbours. Equality populations and contact membership remain inputs.
+78 C13 pairs plus tight and adverse contact fixtures, 3/362 strict
+axiom reports, 0.04021 core-h; confirmed round 021. See
+`ROUND21_REVIEW.md` and the round-21 snapshot of `ROUND21.sha256`.
+No H jobs carried. G's 978 then-open `h=7` contexts are historical
+after N-010; conditional mixed core 1 has also closed.

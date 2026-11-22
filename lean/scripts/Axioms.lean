@@ -361,3 +361,10 @@ import R310
 #print axioms R310.mem_rootContact
 #print axioms R310.root_two_anchor_padding
 #print axioms R310.private_grid_row_bound_of_root_contacts
+#print axioms R310.PhysicalSlotMatching.right_inj
+#print axioms R310.PhysicalSlotMatching.pair_vertices_distinct
+#print axioms R310.foldedGridEdge_iff_adj
+#print axioms R310.guarded_folded_grid_edge
+#print axioms R310.guarded_folded_slot_edge
+#print axioms R310.disjoint_added_incidence_budget
+#print axioms R310.shared_core_degree_budget

@@ -54,3 +54,5 @@ import R310.MiddleDeficit
 import R310.PrivateGrid
 import R310.PrivateMatching
 import R310.PrivatePadding
+import R310.FoldedSlot
+import R310.CardDegreeBudget

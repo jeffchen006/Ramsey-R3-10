@@ -1,19 +1,19 @@
-# Lane B — round 21, November 22, 2026
+# Lane B — round 22, November 22, 2026
 
-**Round 21 (hand, pending; 0 solver core-h):** parked. If a saturated
-32/e108 graph has all d6 punctures at e70, it has at least four d8
-vertices. At exactly four, the induced 12-vertex d6 layer is forced and
-there are no d6–d8 edges. Four smaller controls and one fixed layer check
-pass. Five criticals still absent. `ROUND21_TIGHT_LAYER.md`.
+**Round 22 (hand, pending):** Every saturated 32/e108 graph has a d6
+puncture in `R(3,8;25,65..69)`: the Hall contact inequality and the d8
+fibres exclude every all-e70 case. No assumption on the five missing
+criticals. `ROUND22_TIGHT_FIBRES.md` and `ROUND22.sha256`.
 
-**Round 20 (hand, pending; 0 solver core-h):** stayed parked. Private
-columns imply all 32/e108 graphs of minimum degree at most five are
-addable; any saturated case has minimum degree six with every d6
-puncture in `R(3,8;25,65..70)`. Three literal smaller controls, no target
-rescan or source acquisition. Five critical keys still absent; floor
-108 unchanged. `ROUND20_SATURATION.md`.
+**Round-21 scout, CONFIRMED:** e96 complete (1,842 critical parents;
+23 old lifts only). Every spanning vertex-deleted `(3,9)` subgraph of
+each missing key has at least 97 edges (includes B-029 + N-001 for e95).
+No longer seek e96 parents or repeat the measured e98 wave. No calibrated
+e69 price, no independently supplied new key, floor 108 unchanged.
 
-**Rounds 18–19:** parked; five absent critical 32/e108 keys, no source or price.
+**Rounds 20–21, CONFIRMED (B-040/041):** private-column bound and the
+forced 12-site low layer; see `ROUND20_SATURATION.md` and
+`ROUND21_TIGHT_LAYER.md`. Round 22 uses both and removes the all-e70 branch.
 
 **Round 17:** froze the CONFIRMED B-036/B-037 **2,104,146 named blocked**
 32/e108 keys (2,017,637 cliques and 86,509 dual LRATs), **five criticals
@@ -60,19 +60,21 @@ Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 
 ## Jobs
 
-No live PIDs (0 cores) or solver launches in round 21. Old jobs: `LOG.md`.
+No live PIDs (0/2 cores) or solver launches. The e96 source is retired;
+no coverage-priced e69 source or e86 queue. Old jobs: `LOG.md`.
 
 ## Results and claims for review
 
-| Label | Round 21 result | Evidence | Core-h |
+| Label | Round 22 result | Evidence | Core-h |
 |---|---|---|---:|
-| hand (pending) / open | In the saturated slice with ≤3 d8 vertices, some d6 puncture has ≤69 edges. If all d6 punctures are e70 and n8=4, the d6 layer and its codegree-one pairs are forced; explicit d7 attachment bounds. No new coverage or pricing. | `ROUND21_TIGHT_LAYER.md`, `scratch/B/logs/r21_tight_controls.log` | 0 solver; 0.02 CPU-s controls |
+| hand (pending) + enum (controls) | All saturated 32/e108 have a d6 puncture e65..69; n8 unrestricted. At e69 the two column-size patterns are 17+8 or 18+6+1, with distinct doubles. No missing key classified. | `ROUND22_TIGHT_FIBRES.md`, `scratch/B/work/e108_r22/{low.log,low.time}` | 0 solver; <0.001 for controls |
+| pub + enum + hand (confirmed by prior critic; integrity only here) | 15 pins PASS; complete order-31/e96 source 1,842 critical + 33,312 reducible, all 23 critical inverse lifts already named. Missing-key spanning puncture floor ≥97, no new e98 run. | `ralph/critic/round_021.md`, `scratch/B/work/e108_r22/source.log` | <0.00002 this round |
 
 ### Round 20
 
 | Label | Result | Evidence | Core-h |
 |---|---|---|---:|
-| hand (pending) / open | Possible B-038 saturated gap narrowed: all degree-4 or -5 roots have legal incident additions. Any saturated 32/e108 graph has ≥8 d6 roots with punctures in e65..70 at order 25. No inference that any missing key lies in either subfamily. | `ralph/lanes/B/ROUND20_SATURATION.md`, `scratch/B/logs/r20_saturation_controls.log` | 0 solver; 0.02 CPU-s controls |
+| hand (confirmed) / open | Possible B-038 saturated gap narrowed: all degree-4 or -5 roots have legal incident additions. Any saturated 32/e108 graph has ≥8 d6 roots with punctures in e65..70 at order 25. No inference that any missing key lies in either subfamily. | `ralph/lanes/B/ROUND20_SATURATION.md`, `scratch/B/logs/r20_saturation_controls.log` | 0 solver; 0.02 CPU-s controls |
 
 ### Round 17
 
@@ -222,12 +224,10 @@ No live PIDs (0 cores) or solver launches in round 21. Old jobs: `LOG.md`.
 
 ## Next
 
-0. Stay parked. Reopen only on an independently supplied new 32/e108 key
-   or an exact coverage argument calibrated by recovering a deliberately
-   withheld known key and priced for the full slice. e109 descent would miss
-   saturated keys. The round-21 narrowing for n8<=3 is not a price; D-C8c's
-   full e<=70 source has 2,120,846,970 keys. No second e109 screen or
-   known-key ascent/descent.
+0. Reopen on an independently supplied missing 32/e108 key, or an exact
+   coverage route with a withheld-positive calibration and measured price.
+   Saturated arm now needs only e65..69, but no complete e69 input or
+   price. e109 descent still misses saturated keys; no repeated e109 scan.
 1. Critic/H: replay or audit the bounded prefix and scout proof tranche.
    `src/replay_prefix_r7.sh terminal` and `src/e108_scout_proofs_r8.sh replay work/e108_r8_scout_proofs`
    are ready. Do not re-launch prefix. Outside-prefix critical e88 after
@@ -241,9 +241,9 @@ No live PIDs (0 cores) or solver launches in round 21. Old jobs: `LOG.md`.
    local/host pilots. Require a different source or necessary coverage
    reduction with measured value before further batches.
    t9<=89 and larger t8 floors unbudgeted.
-4. Do not repeat the 545, the 7,954 or the 77-host descent. The e95 source
-   is exhausted; e96 acquisition lacks 1,818 critical parents and is not
-   priced by deck speed. Require a new source or necessary coverage reduction;
-   do not reopen broad e99..101. Keep five missing, no floor-109 claim.
+4. Do not repeat the 545, the 7,954 or the 77-host descent. e95 and e96 are
+   complete for the missing keys; known e98 waves are retired. Do not reopen
+   e86 packages without a source theorem and calibrated price, or broad e99..101.
+   Five missing, no floor-109 claim.
    At exact 2,104,151 require full order/e/alpha/distinctness audit and
    terminal checked proof cover including reducibles before floor 109.

@@ -1,5 +1,15 @@
 # Lane A state
 
+## Round 21 (history)
+
+Completed G's independent comparison denominator: 184 fresh canonical
+two-sided keys beyond 51 old keys; 5,592,650 labelled alignments with no
+stabilizer weighting. One 70,252-weight key was shared by pilots 6/8.
+All exact counts matched literal enumeration; 47.10 CPU-s including
+development/calibration. `ROUND21_H7_DENOMINATOR.md`, `ROUND21_FREEZE.sha256`,
+`scratch/A/r21/{alignments.tsv,prefix.tsv}`. Scope superseded for scheduling
+by N's six board proofs; no extra h=7 solves or extrapolation to h=6.
+
 ## Round 20 (history)
 
 Independent G-019 middle expansion reproduced all 118 exact cores,

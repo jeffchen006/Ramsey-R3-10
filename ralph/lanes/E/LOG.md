@@ -340,3 +340,26 @@ once. No fallbacks. With 16 inherited checked IDs, 32/147 were
 closed and 115 remained. Width three 11.669 vs width eight 15.898
 CPU-s within the route comparison; entire round 32.11 CPU-s. No active
 jobs. `shared74_round20.md`, `scratch/E/r20_shared/freeze.1.sha256`.
+
+## Round 21 archive (2026-11-22)
+
+Conditional mixed core 1 under E-021/E-042/E-043 closed (E-046):
+565,384 independently replayed graph/compatibility negatives + 16
+R18 checked + 16 R20 checked + 115 fresh dual-checked width-three
+terminals = 565,531 lifts, 68,323 projections and 24 branches. All
+115 actual omitted supports bound and independently clause-checked;
+no fallback or residual. ~0.024 core-h, 132 MiB staging. No active
+jobs. `shared74_round21.md`, `scratch/E/r21_shared/freeze.1.sha256`.
+
+## Round 22 archive (2026-11-22)
+
+Final three conditional mixed 11-edge cores 6, 9 and 18 closed
+pending critic: 589 disjoint shards, 677,214 projections, 5,779,378
+lifts; all 1,162 terminal proofs dual-checked and freshly replayed,
+zero residual. Combined with E-019 and prior mixed coverage this is
+the entire `t=4,δ(W)≥2,e(W)=11` stratum, not all `(2,32)`. Excluded
+`e(W)=8,P=2` via the checked 62-class 73-edge catalogue; for `P=0`
+proved at least two windows must be copies of the sole missing e74
+class (necessary only). Peak 26 slots; 2.1634 measured core-h plus
+unmeasured operator-terminated EXDEV attempt; no active jobs at
+handoff. `ROUND22.md`, `scratch/E/r22_shared/freeze.sha256`.
