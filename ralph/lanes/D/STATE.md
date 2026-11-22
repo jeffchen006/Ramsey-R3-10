@@ -1,51 +1,61 @@
-# Lane D — round 8, 2026-11-22
+# Lane D — round 9, November 22, 2026
 
-**Open: R(3), R(4); no graph candidate.** New all-R(3) induced P6
-root. Let L be the maximum *number of vertices* on a simple path in
-any edge kernel. If L=6 there are **three surviving eight-star profiles**,
-not three for all of R(3). If L>=7 one can root at an induced P7.
-Submitted for independent critic/H audit; no new unrooted Sec. 7 cert.
+**Open: R(3), R(4); no graph candidate.** Submitted for review: any R(3)
+graph must have an **induced path on eight vertices in some edge kernel**.
+A separate no-induced-P8 test eliminates the C8-only alternative; **C8
+components are not forbidden in general**. It is NOT an
+exclusion of R(3) and NOT a Section 7 certification. Previously confirmed
+D-015 (induced P6) and D-016 (three P6 profiles under global L=6) remain
+separate premises. Rounds 1–8 details are in `LOG.md` and their named files.
 
-## Results / claims
+## Results / claims this round
 
-| Label | Scope | Primary evidence | Measured CPU-h |
+| Label | Result and scope | Evidence | Measured CPU-h |
 |---|---|---|---:|
-| enum | Independent tip-root extraction from all 191 C22 classes: ten regular, three cap-three, 136 physical punctures. Both SMS formulations reproduce all 34 coloured marks and exactly all three unrooted classes. | `PUNCTURED.md`, `scratch/D/punct8/cal-{base,panel}.log` | ~0.002 |
-| open | Matched 022/223 six-anchor target pilots both with and without canonical panel+tip windows: 0/4 decisions at 60-CPU-s limits. Stop this route unchanged. | `PUNCTURED.md`, `scratch/D/punct8/{022,223}-{base,panel}.log` | 0.066 |
-| hand | Some edge kernel in every R(3) contains an induced P6. Without a simple P6 the high-diagonal graph must consist entirely of K1,3's, forcing each kernel to consist of two P3s and two P5s (matching six < seven). A closing C6 has one unit of boundary pair slack and forces an induced P7 on another edge. Works without max12, forest, or global minimum-root assumptions. | `PATH_ROOT.md`, Steps 1–2 | — |
-| hand + enum | P6 eight-star cover: 4,756 labelled / 2,434 unoriented boundary profiles. Recovered all 239 planted C22 P6 occurrences. Independent unary SAT exactly matches labelled target cover. Fixed-star path checks (component and independent walk implementations) yield 22 max6, 1,184 max7, 1,228 max8. Only the 22 can occur when global L=6. | `PATH_ROOT.md`, `scratch/D/punct8/{path,audit-boundary,audit-paths}.log` | 0.002 |
-| hand | L=6 only: local triple masks meet in edge-sharing pairs or are isolated triples, hence at most 14 triples in any neighborhood, at most two codegree-one partners per vertex, and at most 40 such unordered pairs globally. | `PATH_ROOT.md` “Local packing bound”; `scratch/D/punct8/packing-cal.log` (34 short C22 stars) | <0.001 |
-| hand + enum | L=6 only: 22 reduced to **2298,2424,2431** (zero-based `path.tsv`). 16 basic, 2 exact and 1 packing projected CNF refutations. The packing proof for 2386 depends on the *four*-profile intermediate library from the first 18. All 19 byte-identically regenerated and dual LRAT-replayed; crossed proof rejected. Four already-empty inputs use explicit `.empty.lrat` copies of the input empty clause. Projection semantics and graph-first cover remain hand/enum, not link-(a) certified. | `PATH_ROOT.md`, `scratch/D/punct8/{receipts.tsv,audit-proofs.log,packing-sat-cal.log}` | 0.046 target solver + 0.0076 final replay |
-| hand + enum / open | L=6 implies q*=12 or 13. Root at q* containing P6. Remaining 5+5 panel has five oriented types at 12, two at 13; profile 2298 is impossible at 12. At most **16 decorated roots** remain (10+6), not yet closed. Single-row overlaps and projected mask tables calibrated but no new surviving profile exclusion: first matched mask pilot six SAT, two trivially contradictory at max12. | `PATH_ROOT.md`, `scratch/D/punct8/{panel-cal,mask-overlap-cal}.log`, `{panels,masks,overmask}/` | 0.028 target solver |
+| enum / open | Matched shared-row 18-anchor attachment SATs: weak/joint both SAT projections for all three decorated survivors. 48 positive C22 marks; false library rejected. Degree-only conditional windows SAT on 3/3, stronger degree/triangle/codegree versions CPU-capped at 30 s on 3/3. No exclusion from those pilots. | `GRAFT.md`, `scratch/D/joint9/{arms,windows}/`, `{cal,windows-cal}.log` | 0.0043 + 0.025 solver |
+| hand + enum, checked row obligations | **No global L=6**. Frozen-star graft and canonical free rows exhaust 2298,2424,2431 separately in 5,347 / 5,438 / 379 nodes. Product stabilizer only after fixing all earlier rows; no decorated-panel symmetry reused. Independent labelled auditor finds explicit cap/path/I10/domination witnesses and certifies 2,471 missing-row/empty-row obligations in 105 dual-checked LRAT bundles. Omitted real child rejected. | `GRAFT.md`, `scratch/D/joint9/{graft-receipts.tsv,bindings.log,aud-*/witnesses.jsonl,audit-negative.log,free-cal.log,audit-cal.log}` | 0.0163 graph search, 0.021 audit, 0.0082 bundles |
+| hand + enum | Unrestricted nine-star P7 boundary: **484,288 labelled / 243,175 reflection orbits**. Two unrelated exhaustive constructions (seven-star marginal join from ALL 2,434 P6 keys; direct 9-core mask enumeration) agree byte-for-byte after sorting. Calibrated on 155 physical C22 P7s. | `P7_COVER.md`, `scratch/D/joint9/{long.log,direct.log,direct-match.log,long-cal.log}` | 0.006 |
+| hand + enum | **No global L=7**. No C6 or q* restriction: 243,175 → 5,131 → 2,228 → 107 → 30 → 3 → 0. Later reroot libraries use only the full preceding node-cap set. Every source key bound to an actual terminal reason, none to a cap. All 12 C22 marked orbits recovered in four exhaustive controls. No LRAT for this stratum. | `P7_COVER.md`, `scratch/D/joint9/{seven/terminal.tsv,bindings.log,exact-cal.log,seven/level4/all.out}` | 0.1082 search + 0.0035 screen |
+| hand + enum | **No global case with a simple P8 but no induced P8**. Every P8 would then close to C8. 24,962 cyclic nine-star views → 17,898 → 3,391 ten-star C8 profiles (51,041 labelled, independently regenerated by direct tenth-row completion). All 3,391 graph-first searches terminal, 3,369 in stage 1, 22 in stage 2. The 86-view final library is applied only to already closed C8s. No general C8 prohibition. | `INDUCED_EIGHT.md`, `scratch/D/joint9/eight/{terminal.tsv,bindings.log,direct.log,stage2/all.out,closing-cal.log}` | 0.0580 search + 0.0113 source/screen |
+| estimate / open | Unrestricted 500-node spread: 10/32 exhausted, 22 capped, do not scale. Unconditional C6-root pilot: all four cyclic eight-star profiles hit 10,000 nodes, not UNSAT; C16 exact control covers the 24 path marks / three individualized graphs. | `scratch/D/joint9/{all-run-sample.tsv,cyc/cal.log,cyc/r??.out}` | 0.0104 |
 
-No change to the 110 old minimum-root orbits or the round-7 dense/balanced
-split. The latter is frozen with its existing scope (`SCORE_CAP.md`);
-Farkas/enum max12 keys 19/20/22 and the key34/k6 pin remain separate.
-This round used about 0.140 timed target solver CPU-h plus control,
-construction, graph-first checks and proof replay (not exact total).
+For the third result a second, simpler run exhausts all 22 tail inputs with
+**no reroot library** (56,324 nodes, 65.4 CPU-s). See `eight/no-library/`
+and the alternate receipts column. Prefer this route when auditing the
+mathematical dependency chain.
 
 ## Jobs
 
 | PID | Command | Log | Cores | Start | Expected end |
 |---|---|---|---:|---|---|
-| none | All bounded foreground pilots, calibrations and proof checks completed; no detached or stopped lane jobs. | `scratch/D/punct8/` | 0 | — | — |
+| none | Bounded foreground searches and checkers finished; no detached or stopped jobs. | `scratch/D/joint9/` | 0 | — | — |
 
-Share was 4 cores, never exceeded. Capped or SAT nonproof LRAT streams
-discarded; all 19 witnesses used by the three-profile result retained.
-`scratch/D/round8_evidence.sha256` freezes the code, cover, CNFs, witnesses
-and experiment outputs. The checker reads actual verification strings.
+Lane share 8. No prior lane jobs existed when the round began.
+The first eighteen round-8 formula refutations and **then** the 2386
+proof remain ordered in `scratch/D/punct8/receipts.tsv`; the current
+three-root graft never removes 2431 as a premise for the other two.
 
 ## Next
 
-- H/critic: review the short direct P6 and C6→P7 arguments first, then
-  eight-star cover, contracted-link semantics, and the conditional
-  high-hole step behind the nineteenth proof. `path_audit.py . proofs`
-  replays the chain in order; independent audit requested, not assumed.
-- For L=6 try a **joint** attachment constraint: in a 16-root decorated
-  kernel all 17 kernels on the two full stars are determined by the
-  22 exterior attachments. Enforce the three-profile marginals on every
-  P6 in those stars simultaneously, not one exterior row at a time.
-  First calibrate on all 48 corresponding C22 component placements.
-- For L>=7 investigate a nine-anchor P7 boundary bound. Never carry the
-  three residual keys, packing bound, or forest assumption into this
-  branch. No higher core allocation requested.
+- H/critic: audit `GRAFT.md`, then `P7_COVER.md` separately. In particular
+  check star stabilizers, the two-ended P7 gluing, the independent-set
+  edge-forcing rule, and the alternating-matching support projection. The
+  105 LRATs prove local CNFs, **not** the correctness of the source cover.
+  `audit7/replay.log` reproduces 41 chunks, 2,368 attempts, 629,180 nodes.
+  Then audit `INDUCED_EIGHT.md`, especially the C8-only qualifier on the
+  matching lookup. All evidence/inputs/outputs are indexed in
+  `scratch/D/round9_evidence.sha256`.
+- No restart of old L=6 full target SAT or complete 238-kernel wave. Preserve
+  C6 in all longer-path reasoning; a simple P8 may close to C8.
+- Next: construct/cost the ten-star **induced P8** boundary by joining two
+  unrestricted P7s along eight shared stars. Unlike the C8 case, the two
+  outside endpoints are nonadjacent: their exterior mask intersections need
+  not be empty. Use all applicable unrestricted parents, calibrate on the
+  real C22 induced P8s, and cost the join before materializing it. The
+  prejoin is already measured: 31 physical C22 controls; 187,712 oriented
+  half-candidates, 1,829 matching eight-star signatures, **23,088,908 raw
+  parent pairs before endpoint overlaps**, about 7.3 CPU-s to count. See
+  `induced_join_cost.py`, `scratch/D/joint9/induced-cost.log`; not a count
+  of ten-star cases. Try a stratified joint-cell overlap pilot next. Do not
+  import any L=6, L=7 or no-induced-P8 survivor list. Marks on graphs still
+  form a cover, not an unmarked partition. No extra cores requested.

@@ -1,5 +1,20 @@
 # Lane A state
 
+## Round 8 (history)
+
+Independent terminal source and CNF joins for both-path/leaf c1/δ2
+at the two low-n8 e168 pins (17,194 keys), and mixed d8/j4 at
+`(2,7,4,27)` (5,179 keys). G dual-checked every key; A independently
+replayed 36 lower, 295 mixed prefix and dispersed mixed traces, plus
+all pin maps and CNF/proof hashes. Exact source c1: 191 cores ->
+18,333,381 extensions -> 20,181 marks -> 17,194 marked orbits.
+`ROUND8_REPLAY.md`, `scratch/A/strip8/round8.freeze.sha256`. A's 42
+eager pilot choices vs G's 32 original/no eager + 10 eager retries
+are corrected in Round 9. No distribution closed. Boundary arcs
+retained 24/24 pilot keys; order-27 projections are conditional on
+mark-preserving extendibility and miss all 1,767 δ3 marked keys.
+Neither route was scaled. All jobs retired in Round 8.
+
 ## Round 7 (history)
 
 Independent terminal replay of the c=3 both-path/leaf slice on the two

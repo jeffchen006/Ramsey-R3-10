@@ -193,3 +193,16 @@ proof IDs. Matched graph-only vs graph-first: 785 -> 57, 10.55 vs
 520 positive and 520 negative. See `shared74.md`,
 `scratch/E/r7_shared/freeze.3.sha256` and `ralph/critic/round_007.md`.
 No closure outside this mixed core; no live jobs at round end.
+
+## Round 8 archive (2026-11-22)
+
+``G?bF`w`` (mixed core 2) alone excluded: 49,330 exact projections /
+556,561 lifts. Graph-only 40,880 → marked 5,488 → fused 932; all
+932 fresh-CNF CakeLRATs. The critic confirmed this limited scope in
+`ralph/critic/round_008.md`. Fusion maintains full fixed-set lower and
+upper graphs in the same labels across all four omissions, with exact
+degree rows and separately checked window steps. Six-vertex calibration
+preserves all solutions on 67 controls and rejects 12 infeasible ones.
+Terminal work ~0.55 core-h; intentionally stopped broad pilot ~0.24
+core-h is not a TIMEOUT. All old wrappers collected before round 9.
+See `shared74_round8.md` and `scratch/E/r8_shared/freeze.final.2.sha256`.

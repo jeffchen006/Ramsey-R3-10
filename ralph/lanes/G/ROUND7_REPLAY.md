@@ -118,12 +118,9 @@ nice -n 5 timeout 90s "$py" -B "$src/index_strip_proofs.py" lowdegree26.canon.ke
 cmp c2.delta3.replay.index.tsv c2.delta3.certificates.tsv
 ```
 
-For codegree one/minimum degree two, use pilot `lowdegree25.pilot.keys`
-with directory `proof-low25-eager` and production `lowdegree25.pending.keys`
-with `proof-low25`. The arguments for both are `--eager 10000 --cut-budget`.
-Require the union of their `CERT` keys to equal `lowdegree25.canon.keys`
-before any claim. The 17,194 representative list is not a census of
-all `(3,8;25)` graphs or all paired windows of order 25.
+For codegree one/minimum degree two, use the terminal, variant-specific
+recipe in `ROUND8_REPLAY.md`. The 17,194 representative list is not a
+census of all `(3,8;25)` graphs or all paired windows of order 25.
 
 ## Mixed codegree four (batch in progress)
 

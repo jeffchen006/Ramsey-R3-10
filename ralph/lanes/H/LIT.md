@@ -201,3 +201,12 @@ Search scope: arXiv and exact DOI/title lookups; EJC/DS1, ACM, IJCAI, Springer a
   order-32/e108 count, not a revised D-C9a order-30 count. E/F have no
   substituted public e74 list or order-39 bulk source. D has no new
   published replacement for a covered rooted template family.
+## Round 9: no new premise imported
+
+Narrow recent-preprint and data-repository discovery queries did not
+supply a new usable premise. Did not repeat the publisher/catalogue
+refetches in round 8. The public evidence cited above still supports
+40–41, not a decision or a claim of universal nonavailability of the
+dense order-30 or order-39 files. For the current mixed pilot use the
+existing 191-class order-22 source via rooted gluing, not an assumed
+published full order-26 census; see `ROUND9_REVIEW.md`.

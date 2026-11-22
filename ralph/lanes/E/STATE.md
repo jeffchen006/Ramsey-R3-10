@@ -1,39 +1,40 @@
-# Lane E state — round 8 complete
+# Lane E state — round 9 complete
 
-2026-11-22; allocation and hard working ceiling 16 cores. No candidate
-or Ramsey verdict. All symmetry work uses all graphs, not MTF.
+2026-11-22. Round 9 allocation: 22 cores; foreground peak 7 worker
+slots, with independent stages and flow-counter checks. No candidate
+or Ramsey verdict. Symmetry work uses all graphs, not MTF.
 
 ## Jobs
 
-No live lane E solver/checker and no detached workers. The following
-foreground batches in `scratch/E/r8_shared` are collected. The
-`jobs.*.tsv` files bind timeout wrappers to exact slot/log.
+No live or detached lane E jobs. The round-8 wrappers were absent
+at collection. All listed round-9 jobs finished. Logs are relative
+to `scratch/E/r9_shared`; commands use `nice -n 5`, `timeout`, and
+`limited.sh` (16 GiB). Times are CET, 2026-11-22.
 
-| Wrapper PID(s) | Command (all nice 5 and 16 GiB max) | Start / deadline | Cores, logs |
-|---|---|---|---|
-| 2010706, 2010712, 2010718, 2010726, 2010730, 2010734, 2010738, 2010744, 2010747 | `batch_shared74.py cover.2.jsonl scan.2.graphfirst.jsonl proof.2 --offset 0..8 --stride 9`, CPU 850 s/wall 1500 s, per-solver CPU 15 s/wall 40 s | 00:45:48 / stopped intentionally 00:50:39 | 9; `batch.2.{0..8}.log`, `stop.batch.2.log` |
-| 2010753, 2010761, 2010767, 2010775, 2010782, 2010792, 2010797 | shard `replay_shared74.py COVER TRACE`, CPU 150 s/wall 300 s | 00:45:48 / finished before 00:46:49 | 7; `replay.2.{00..06}.log` |
-| see `jobs.scan.tsv` | septuple exact scans graph-only and graph-first, plus independent cover bind | 00:43:00 / finished before 00:45:30 | 15; `parts.2/*.log`, `bind.cover.2.log` |
-| 2254155, 2254157, 2254164, 2254170, 2254174, 2254181, 2254187, 2254194, 2254198, 2254205, 2254209, 2254218 | `batch_shared74.py cover.2.jsonl todo.final.2.jsonl proof.final.2 --offset 0..11 --stride 12`, CPU 125 s/wall 360 s; checked proofs as above | 00:51:59 / finished before 00:53:59 | 12; `batch.final.2.{0..11}.log` |
-| 2130508, 2254294 | fused propagation and deterministic replay, CPU 100 s/wall 160 s | 00:49:13 / 00:49:43; 00:51:59 / 00:52:29 | 1 per phase; `fuse.2.log`, `fuse.2.replay.log` |
-| 2355846, 2355851, 2355858, 2355860, 2355866, 2355877, 2355895, 2355902, 2355910, 2355914, 2355926, 2355942 | `bind_shared74.py cover.2.jsonl --trace rebind.final.2/trace.SHARD.jsonl --proofs rebind.final.2/proofs.SHARD`, CPU 125 s/wall 360 s | 00:54:00 / finished before 00:55:51 | 12; `rebind.final.2.{00..11}.log` |
+| Wrapper PID(s) | Command or phase | Slots | Start / wall deadline | Logs |
+|---|---|---:|---|---|
+| 198660, 201065, 201890, 217349–217351, 254382, 255241–255243 | `order_shared74.py spread` and matched scans; CPU 65–70 s/wall 120–150 s | ≤3 | 01:49:22–01:50:40 / by 01:53:10 | `spread.tail.4.log`, `*.{spread,broad,tail}.4.log` |
+| 254444–254446, 254448, 297565 | 24 graph-only pilot CaDiCaL/CakeLRAT then fresh bind; CPU 50–65 s/wall 140–220 s | 4 then 1 | 01:50:39 / 01:54:19; 01:51:17 / 01:53:37 | `proof.pilot.4.*.log`, `rebind.pilot.4.log` |
+| 297556, 297557, 297558, 297560, 297562 | `m11_support.py census --core 4 --profile 1`, matched pilot receipt replays; CPU/wall 140/350 and 55/100 s | 5 | 01:51:17 / 01:57:07 and 01:52:57 | `census.4.log`, `replay.*.*.4.log` |
+| 326366–326372 | six `order_shared74.py scan marked-first` shards plus independent exact `bind_shared74.py --key`; CPU/wall 65/140 and 100/200 s | 7 | 01:51:58 / 01:54:18 and 01:55:18 | `parts.4/scan.*.log`, `bind.cover.4.log` |
+| 350778–350779, 350781–350783, 353201 | full receipt replay, four proof slots, fresh CNF/CakeLRAT replay; CPU/wall 95/180, 60/140, 60/150 s | 5, then 2 | 01:52:36 / 01:55:36 and 01:54:56; 01:52:40 / 01:55:10 | `replay.4.log`, `proof.4.*.log`, `rebind.proof.4.log` |
 
 ## Results / claims for H and critic
 
 | Claim | Label | Evidence | Core-hours |
 |---|---|---|---:|
-| Prior profile A, mixed cores `G?Beto` and `G?bBro` unchanged and rehashed | inherited scoped hand + enum + cert | `m11.md`, `shared74.md`; `scratch/E/r8_shared/prior.freeze.log` | — |
-| Mixed core **`` G?bF`w `` only** excluded at `(2,32,t=4,δ(W)≥2,e(W)=11)` with shared E-021 e74 premise and universal `δ(G)≥5`. Independent cover replay: 49,330 projections / 556,561 lifts. All 932 residual fresh CNFs byte-match and CakeLRAT checks pass. | hand + enum + cert, pending critic | `shared74_round8.md`, `scratch/E/r8_shared/{bind.cover.2.log,compare.2.log,fuse.2.replay.log,rebind.final.2.log,freeze.final.2.sha256}` | ~0.55 terminal work incl. graph-only comparison; ~0.24 estimated for stopped broad batch |
-| Fused propagation of forced/forbidden edges across four roles with exact full fixed-degree rows. Exact queue 40,880 (graph-only) → 5,488 (marked) → 932 (fused); fusion pass 28.86 CPU-s. Exhaustive smaller all-solutions check (67 feasible controls, 12 negatives). | hand + enum, not standalone LRAT | `fuse_shared74.py`, `shared74_round8.md`, `scratch/E/r8_shared/{fuse.2.log,order.spread.2.log}` | included above |
+| Mixed core **``G?`fbo`` only** excluded at `(2,32,t=4,δ(W)≥2,e(W)=11)`, profile `(10,10,11,11)`, under universal `δ(G)≥5` and inherited E-021 all-graph e74 premise. Independent exact cover 17,840 projections / 110,716 lifts; graph-only 2,519 → marked 14 → fused 0. All 14 independently have byte-regenerated CNF/CakeLRATs, so the claim need not rely on fusion for those 14. | hand + enum + cert, pending critic | `shared74_round9.md`, `scratch/E/r9_shared/{freeze.4.sha256,bind.cover.4.log,replay.4.log,rebind.proof.4.log,measured.4.log}` | 0.02460 terminal |
+| Both orders leave identical empty residual IDs on front and rear samples across 14 first-support branches. Marked-first 9.302 vs fused-first 9.923 scanner CPU-s in sum, with opposite winner by sample; 24/24 graph-only pilot proofs measured at 0.669 CPU-s per ID plus 0.625 for fresh binding. No cross-core speed claim. | enum / estimate | `order_shared74.py`, `shared74_round9.md`, `scratch/E/r9_shared/estimate.4.txt` | pilot, excluded from terminal cost |
+| Prior mixed cores `G?Beto`, `G?bBro`, and ``G?bF`w`` unchanged. Round 8 scoped result confirmed. | inherited hand + enum + cert | `m11.md`, `shared74.md`, `shared74_round8.md`, `ralph/critic/round_008.md` | — |
 
 ## Next steps
 
-- H/critic: audit `shared74_round8.md`, especially the fused `L⊆F*⊆U`
-  invariant and exact residual identity. `freeze.final.2.sha256` is
-  the final bundle; `proof.2/` is a stopped pilot, not the claim.
-- 16 mixed cores remain. Pilot exact core 4 or 12 with learned size
-  spread. Try graph-only → fusion → marked before production only if
-  an exact matched sample preserves residual IDs and measures gain.
-  Keep K=6/7/8, distinct omitted-group roles, and all-graph scope.
-- Catalogue still 1,624/1,625; no reverse-edit repetition, no core-9/18
-  capped scans. Inherited `(5,5)` certificate and other scopes unchanged.
+- H/critic: audit the scoped core-4 closure and proof-ID binding.
+  `freeze.4.sha256` is the final bundle. Pilot proofs are not closure
+  evidence and `proof.4/` is exactly the 14 formerly fused-only IDs.
+- Fifteen mixed cores remain. Fresh pilot core 12 if assigned; reuse
+  `order_shared74.py` and sample both ends of each branch. Do not assume
+  either order wins or that the final proof queue will be empty.
+- The 1,624/1,625 catalogue is unchanged; no reverse-edit repetition or
+  core-9/18 capped scans. `(5,5)` already certified; other open scopes
+  unchanged. This does not close full `(2,32)` or prove rigidity.

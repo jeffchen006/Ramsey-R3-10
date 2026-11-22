@@ -1,12 +1,12 @@
-# Round 9 core ceilings — 80 total; not launch targets
+# Round 10 core ceilings — 80 total; not launch targets
 
-| Lane | Cores | Reason for change from round 8 |
+| Lane | Cores | Reason for change from round 9 |
 |---|---:|---|
-| A | 4 | +1: two independent source/receipt covers; verify the next lower-codegree source and provide a variant-aware proof crosswalk. |
-| B | 17 | −8: the 16-slot prefix has finished and the new 512-host sample found no missing key; no broad replacement job has passed a cost test. |
-| C | 4 | −4: keep the exact P3 reductions, but the held-out P2 index gained only 1.51×; enough for a bounded six-set test. |
-| D | 8 | +4: the induced-path cover and 22→3 conditional reduction justify matched joint-attachment pilots on the actual survivors. |
-| E | 22 | +6: one complete mixed core and a measured 40,880→932 proof queue; largest increase, conditional on a matched next-core pilot. |
-| F | 3 | +1: 99/99 signed-lift refutations after quotient reduction; one extra slot for controls on a *different* unsigned source. |
-| G | 20 | Unchanged: three terminal marked subcases; count driver/checker overlap and leave headroom below 20 before any new launch. |
-| H | 2 | Unchanged: ledger, scope review and Lean checks; no bulk proof production. |
+| A | 5 | +1: independent 7,166- and 162-role covers; use for validation, not duplicate proof production. |
+| B | 12 | −5: both new samples had zero yield; the 61-key proof tranche and new-parent pilots do not yet warrant a 17-slot replacement wave. |
+| C | 4 | Unchanged: reciprocal 22/22 results warrant one asymmetric streaming pilot, not a full census. |
+| D | 8 | Unchanged by request: induced P8 is a substantial reduction; first price endpoint overlap on actual pairs. |
+| E | 24 | +2: two successive terminal mixed cores, 2,519→14 proofs on core 4; headroom for checkers on independently priced next cores. |
+| F | 4 | +1: completed weighted (10,10) source and proof queue; extra validation slot on the different mixed-cycle source. |
+| G | 21 | +1: two terminal marked subcases; reserve for a covered residual source and producer/checker overlap. |
+| H | 2 | Unchanged: ledger, independent semantics and small Lean builds. |

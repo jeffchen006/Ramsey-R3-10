@@ -14,24 +14,38 @@ from root_glue import independent
 from strip_completion import Completion, solve
 
 
-def instance(line, path_mask, mixed_mask, case, hole_left, hole_right, hole_peer, eager):
+def instance(line, path_mask, mixed_mask, case, hole_left, hole_right, hole_peer, eager, peer_right=None):
     adj = graph.parse_graph6(line)
-    assert len(adj) == 27
+    order = len(adj)
+    assert order in (26, 27)
+    full = peer_right is not None
+    assert not full or order == 27
+    shared = 5 if full else order - 23
+    if order == 26:
+        assert min(neighbors.bit_count() for neighbors in adj) == 3
     survived = validate(adj, min(path_mask, mixed_mask), max(path_mask, mixed_mask))
-    roots = (27, 28)
-    pivots = (29, 30)
+    roots = (order, order+1)
+    pivots = (order+2, order+3)
     active = tuple(tuple(vertices(mask)) for mask in (path_mask, mixed_mask))
     stars, = [(left, right) for left, right in product(*active) if adj[left] >> right & 1]
     sides = tuple((*anchors, pivot) for anchors, pivot in zip(active, pivots, strict=True))
-    common = tuple(range(31, 35))
-    exclusive = ((35, 36), (37, 38, 39))
+    common = tuple(range(order+4, order+4+shared))
+    start = order+4+shared
+    exclusive = (tuple(range(start, start+6-shared)), tuple(range(start+6-shared, 40)))
+    assert len(exclusive[1]) == (8 if full else 7)-shared
     deleted_x = (*common, *exclusive[0], *exclusive[1])
     exterior = (*survived, *deleted_x)
     hole = (hole_left, hole_right)
     occupied = {tuple(vertices(adj[vertex] & mixed_mask)) for vertex in survived
                 if (adj[vertex] & mixed_mask).bit_count() == 2}
-    assert (case, *hole, hole_peer) in set(choices(active[1], stars[1], occupied))
-    fixed = {(left, right): bool(adj[left] >> right & 1) for left, right in combinations(range(27), 2)}
+    if full:
+        from mixed_full_cover import choices as full_choices
+        assert (case, *hole, hole_peer, peer_right) in set(full_choices(active[1], stars[1], occupied))
+        mixed_holes = (hole, (hole_peer, peer_right))
+    else:
+        assert (case, *hole, hole_peer) in set(choices(active[1], stars[1], occupied))
+        mixed_holes = (hole, (hole_peer, pivots[1]))
+    fixed = {(left, right): bool(adj[left] >> right & 1) for left, right in combinations(range(order), 2)}
     for index, (root, pivot, side) in enumerate(zip(roots, pivots, sides, strict=True)):
         for other in range(40):
             if other != root:
@@ -39,7 +53,7 @@ def instance(line, path_mask, mixed_mask, case, hole_left, hole_right, hole_peer
             if other != pivot and other not in roots:
                 fixed[tuple(sorted((pivot, other)))] = other in common or other in exclusive[index]
         wanted = Counter({(anchor,): 4 for anchor in active[index]})
-        wanted.update(pair for pair in combinations(active[index], 2) if index == 0 or pair != hole)
+        wanted.update(pair for pair in combinations(active[index], 2) if index == 0 or pair not in mixed_holes)
         seen = Counter(tuple(anchor for anchor in active[index] if adj[vertex] >> anchor & 1) for vertex in survived)
         assert all(count <= wanted[part] for part, count in seen.items())
         for vertex, part in zip(exclusive[1-index], sorted((wanted-seen).elements()), strict=True):
@@ -75,7 +89,7 @@ def instance(line, path_mask, mixed_mask, case, hole_left, hole_right, hole_peer
             for vertex, literal in zip(supports, doubles, strict=True):
                 doubles_by_vertex[vertex].append(literal)
             if index:
-                count = int((left, right) not in (hole, (hole_peer, pivots[1])))
+                count = int((left, right) not in mixed_holes)
                 problem.bound(doubles, count, count)
             elif right == pivots[0] and left != stars[0]:
                 problem.bound(doubles, 0, 1)

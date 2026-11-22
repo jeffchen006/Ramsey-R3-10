@@ -27,14 +27,17 @@ nice -n 5 timeout -k 4s 600s "$py" -Bu "$src/bind_strip_batch.py" \
 Initial receipts are 32 CERT and 10 CAP in the named pilot, 13,336
 CERT and 3,816 unwritten in the original 16-shard batch. The original
 production reached the wall cap with 12,023.36 CPU-s. The 3,826-key
-remainder took 3,409.59 CPU-s and gives only CERT receipts. The other
-pilot trace directory `proof-low25-eager` is not in G's terminal
-union, even when its formula hashes match. A independently counts it
-as ten matching alternative receipts. To replay, rebuild with
-`prove_strip_windows.py KEYS PROOF_DIR --replay --eager 10000 --cut-budget`;
-the DIMACS SHA for each key must agree with the indexed receipt.
-The three replay source subsets are `c1.first/cert.keys` split by
-pilot/production membership, and `c1.first/unclosed.keys`.
+remainder took 3,409.59 CPU-s and gives only CERT receipts. G's
+terminal union selects 32 non-eager originals, 13,336 production
+proofs and 3,826 retries. To replay with `prove_strip_windows.py
+KEYS PROOF_DIR --replay --cut-budget`, use `--eager 0` for the 32
+original CERTs in `proof-low25-pilot`, and `--eager 10000` for the
+selected production and retry proofs. Partition the terminal index
+by proof directory and join to `c1.final/cert.keys` on the full key.
+The DIMACS SHA for every key must agree with its selected receipt.
+A instead selects all 42 eager pilot proofs in its independent union.
+For 32 keys the two selected DIMACS hashes differ; never cross-use
+proofs. See `scratch/critic/r8/G/{differences,primary.check,eager.check}`.
 
 ## Mixed j=4
 

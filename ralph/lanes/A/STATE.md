@@ -1,48 +1,45 @@
 # Lane A state
 
-Round 8, November 22, 2026. Share 3. No live or stopped A jobs; no
-order-40 candidate or whole-distribution exclusion. Both terminal G
-subcases now have independent exact source, receipt, pin and CNF hash
-binding. Read `ROUND8_REPLAY.md` and `scratch/A/strip8/round8.freeze.sha256`.
-Round 1–7 history is in `LOG.md`; prior A freezes are unchanged.
+Round 9, November 22, 2026. Share 4; no live or stopped jobs.
+No order-40 candidate, whole-distribution exclusion, or Case R closure.
+Round 9 evidence: `ROUND9_REPLAY.md`, `scratch/A/strip9/round9.freeze.sha256`.
+Round 1–8 history: `LOG.md`; use the historical tracked G sources when
+checking the old R8 input manifest (see variant provenance below).
 
 ## Jobs
 
-All paths are relative to `scratch/A/strip8`; times are host local.
+The detached jobs below all ran in `scratch/A/strip9`. Times host local.
 
-| timeout PID / worker PID | Command | Evidence | Cores | Start–end |
+| timeout PID / worker PID | Command | Log and timing | Cores | Start–end |
 |---|---|---|---:|---|
-| 1949042 / 1949074 | `replay_lower_marks.sh 0` | `lower.scan.0.{keys,time}` | 1 | 00:44:14–00:47:55 complete |
-| 1949043 / 1949068 | `replay_lower_marks.sh 1` | `lower.scan.1.{keys,time}` | 1 | 00:44:14–00:47:46 complete |
-| 2254371 / 2254383 | `run_strip_audit.sh lower --fast-hash --shard 0 2` | `lower.hash.0.{log,time}` | 1 | 00:51:59–01:15 complete |
-| 2254373 / 2254394 | `run_strip_audit.sh lower --fast-hash --shard 1 2` | `lower.hash.1.{log,time}` | 1 | 00:51:59–01:15 complete |
-| 2403272 / 2403285 | `run_strip_audit.sh mixed-prefix --fast-hash --verify` | `mixed.prefix.{log,stop}` | 1 | 00:54:59–00:58 manually stopped after 295 accepted dual LRATs; slot reused |
-| 2567868 / 2567878 | `run_strip_deltas.sh` | `mixed.prefix.hash.{log,time}`, `lower.delta.hash.{log,time}` | 1 sequential | 00:59:14–01:20:54 complete |
-| 3179513 / 3179529 | `run_strip_audit.sh mixed --require-cover --fast-hash --exclude mixed.prefix.log --exclude mixed.prefix.hash.log` | `mixed.delta.hash.{log,time}` | 1 | 01:15:32–01:18:43 complete |
+| 634622 / 634629 | `run_mixed26_audit.sh --fast-hash --shard 0 3` | `mixed.hash.0.{log,time}` | 1 | 01:59:48–02:06:16 complete |
+| 634623 / 634630 | `run_mixed26_audit.sh --fast-hash --shard 1 3` | `mixed.hash.1.{log,time}` | 1 | 01:59:48–02:05:26 complete |
+| 634624 / 634631 | `run_mixed26_audit.sh --fast-hash --shard 2 3` | `mixed.hash.2.{log,time}` | 1 | 01:59:48–02:05:34 complete |
 
-All foreground controls and sample replays finished. Neither of G's
-two proof campaigns is left live; they are G's jobs, not A's.
+All foreground controls and the 162 dual replays finished; G's completed
+production jobs are not A's. The measured estimate before launch was
+883 CPU-s at 3 cores, in `mixed.terminal.estimate` (actual 840.13 CPU-s).
 
 ## Results / claims
 
 | Label | Scope and result | Evidence | A CPU-h |
 |---|---|---|---:|
-| hand + enum | Exact both-path/leaf c1/δ2 marked cover at the two e168 low-n8 pins: 191 valid core classes, 18,333,381 byte-identical labelled extensions, 20,181 independently matched marks, 17,194 distinct augmented-colour orbits. | `ROUND8_REPLAY.md`, `scratch/A/strip8/{lower.glue.log,lower.source.log,lower.scan.A.sorted}` | 0.129 |
-| cert + enum cover, pending critic | Both path/leaf, centre codegree 1, **δ(T)=2 only**, at `(2,8,2,28)` and `(2,7,4,27)`. Producer dual checked all 17,194 keys. 17,204 receipts have exactly ten declared same-CNF pilot repeats, deduped. A matched all 17,194 independent pin maps and freshly built CNF digests; 36 dispersed traces independently replayed with both checkers. No caps in terminal union. | `scratch/A/strip8/{lower.terminal.tsv,lower.union.log,lower.sample.log,lower.retry-sample.log,round8.freeze.sha256}` | 0.938 full hashes, 0.010 pilots |
-| cert + enum cover, pending critic | Mixed path/leaf and matching/incident or path/middle at `(2,7,4,27)` only, **some noncross degree-eight pivot has codegree 4**. Rebuilt 5,179 ordered roles with both side assignments; 5,179 producer dual-checked proofs, zero caps. All independent pin maps and CNF digests match. A replayed 295 prefix traces with both checkers plus dispersed samples. | `scratch/A/strip8/{mixed.source.log,mixed.terminal.tsv,mixed.union.log,mixed.prefix.log,round8.freeze.sha256}` | 0.131 full hash-only portions, plus prefix dual and controls |
-| hand + enum, not a closure | Boundary compatibility rule preserves all measured C5/C13/C35 projections and all satisfying tuples in the exhaustive three-domain controls; two negative mutations reject. Dispersed c1/δ2 pilot 24/24 marks survive. Do not scale unchanged. | `strip_boundary_arcs.py`, `scratch/A/strip8/arcs.pilot.log` | 0.015 |
-| hand + enum, conditional source only | Exact order-27 marked projection calibrated against direct addback on full order-7/8 controls (7 positives, 4 negatives). 29,113 order-26 orbits with δ=4/5/6; misses all 1,767 δ3 lower controls. Covers only mark-preserving-extendible windows, not the whole higher-minimum-degree case. | `project_marked_windows.py`, `scratch/A/strip8/{project26.log,project26.hits}` | 0.0033 |
+| hand + enum + cert, pending critic | At `(2,7,4,27)` only with mixed path/leaf and matching/incident or path/middle strips, **noncross d8 B pivot at j=3 and δ(T)=3**. Independently: 191 cores -> 2,712,471 byte-identical labelled lifts -> 2,111 exact marks -> 1,767 colour orbits -> 7,166 exact ordered roles. Both orientations, four structural addbacks and four occupied-hole negatives pass; previous j4 5,179 roles reproduced. All 7,166 G dual-checked, all independent pin maps/CNF/compressed-trace digests match, and A dual replayed 16 pilot traces. | `ROUND9_REPLAY.md`, `scratch/A/strip9/{mixed.j3.source.log,mixed.terminal.tsv,mixed.union.log,mixed.G.join.log,mixed.pilot.replay.log}` | 0.233 hash + 0.025 controls/source |
+| hand + enum + cert, pending critic | Same mixed pin, **noncross d9 B pivot at j=5**, no δ(T) restriction. Both holes retained on B; cut 5/1/3. Exactly 162 matching and zero middle roles over the exact 1,988-mark envelope, both orientations. All 162 independent pin/CNF/trace digests and dual LRATs pass. | `scratch/A/strip9/{mixedfull.source.log,mixedfull.terminal.tsv,mixedfull.G.join.log,mixedfull.dual.union.log}` | 0.015 |
+| cert provenance only | c1/δ2: both terminal indexes cover the same 17,194 keys: 17,152 identical traces, ten eager-pilot/eager-retry paths at the same CNF, 32 G `--eager 0` vs A `--eager 10000` distinct CNFs, all `--cut-budget`. Both variants of the 32 were separately dual checked by the critic, not cross-used. No new proof run. | `crosswalk_c1_variants.py`, `scratch/A/strip9/c1.variants.tsv`, `scratch/critic/r8/G/{differences,primary.check,eager.check}` | <0.001 |
+| hand + enum, no closure | Joint pure caps are redundant at δ(T)≥4: noncross leaf codegree `7-d_T`, full codegree `7-d_T` plus at most one. At δ=3 only degree-three anchors can bind. C5 plus pure structural cap-positive and overflow-negative controls agree with G's CNF. Zero standalone removals on 205/260 respective pilot rows. | `audit_joint_pivots.py`, `scratch/A/strip9/joint.audit.log` | <0.001 |
+| hand + enum/estimate, no closure | Conditional two-root source for pure order26 δ4: 604,645 order21 cores with a second root of degree 3/4, C5 double gluing recovers C13, lookup confirms 258/260 held-out marks (two not eligible). Matched addback forecast only ~1.5× better (7.45 vs 11.15 CPU-h); no proof-stage reduction demonstrated. | `profile_two_root_residue.py`, `ROUND9_REPLAY.md`, `scratch/A/strip9/{S21.full.log,S21.heldout.log,S21.matched.graft.time,S21.baseline.graft.time}` | 0.011 |
 
 ## Next
 
-- Do not repeat completed proof batches, CNF hashes, or previous c3/c2
-  proof production; the round8 freeze is terminal. H/critic can record
-  only the two scoped subcases, not subtract a distribution.
-- Higher minimum degrees at c1/c2 and smaller mixed codegrees remain
-  open. A new argument must cover the nonextendible windows separately;
-  the projection pilot is not a substitute and the arc filter did not
-  earn more cores. Review G's next bounded structural source first.
-- If genuinely new e120/e121/e122 rows arrive, bind only the deltas and
-  recheck lower alpha after deleting marked edges (`inspect-upper`).
-  Keep e169-pinned and unpinned scopes distinct. Do not reopen the old
-  R(7) routes without a new directive or quantitatively different split.
+- Critic/H: record only these two mixed scopes if accepted. Mixed d8
+  j≤2 and j=3 other δ, and d9 j≤4 remain outside them. Neither pin is
+  a whole-distribution closure. Do not repeat the terminal replays.
+- Do not scale the pure joint caps, two-root gluer or previous boundary
+  arc/projection pilots unchanged. Need a structural filter that prevents
+  large numbers of proof jobs, not merely another modest source shrink.
+- If needed, obtain the two old G source versions via `git show
+  eb5b11c:ralph/lanes/G/<file>`; both recorded R8 digests match that
+  revision. The A R8 checker itself remains byte-identical.
+- R(7) has no new pilot this round per critic direction; do not reopen
+  measured old cube routes without a materially different split.

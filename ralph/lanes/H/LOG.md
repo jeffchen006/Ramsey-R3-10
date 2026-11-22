@@ -1,5 +1,16 @@
 # Lane H — archived round 2 handoff, November 21, 2026
 
+## Round 8 archive
+
+No detached H jobs. `CompletionBridge.lean` proved arc-shrink and
+paired/rooted order/alpha bridges; 4 targeted and 284 project axiom
+reports pass (~0.043 CPU-h). H independently checked C-026's two P3
+layouts (30/60 bound residue rows and 20 required vs 16 possible single
+occurrences) and G's interrupted unique receipt counts, not final
+G production proofs. `ROUND8_REVIEW.md` and `scratch/H/round8-*.log`.
+Initial G/A/E ledger entries subsequently replaced by the critic's
+terminal scopes in round 9. Last broad literature refetch is in `LIT.md`.
+
 ## Round 7 archive
 
 H-016/H-017: pinned Lean/Mathlib v4.35.0 build, five targeted and

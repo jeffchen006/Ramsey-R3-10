@@ -212,3 +212,21 @@ python3 -SB ralph/lanes/H/check_axioms.py lean/scripts/Axioms.lean scratch/H/rou
 The 4 targeted and 284 project reports pass with only standard
 axioms. The initial narrow build failed at an overly broad `simp`
 call; `Finset.coe_sort_coe` and `Fintype.card_coe` alone fix it.
+
+## Round 9: the conditional kernel reroot lemma
+
+```sh
+bash ralph/lanes/H/build_private_signature.sh build --old R310 > scratch/H/round9-integrated.log 2>&1
+bash ralph/lanes/H/build_private_signature.sh env lean -j1 -s8192 ../ralph/lanes/H/AxiomsRound9.lean > scratch/H/round9-targeted.log 2>&1
+bash ralph/lanes/H/build_private_signature.sh env lean -j1 -s8192 scripts/Axioms.lean > scratch/H/round9-project.log 2>&1
+python3 -SB ralph/lanes/H/check_axioms.py ralph/lanes/H/AxiomsRound9.lean scratch/H/round9-targeted.log
+python3 -SB ralph/lanes/H/check_axioms.py lean/scripts/Axioms.lean scratch/H/round9-project.log
+python3 -SB ralph/lanes/H/check_round9_semantics.py
+```
+
+Pinned cache only; 2 targeted and 286 project axiom reports pass. The
+definition `R310.KernelP6` uses no axioms, and the theorem
+`R310.kernelP6_opposite_pair` uses only `propext`, `Classical.choice`,
+and `Quot.sound`. It assumes a universal profile condition for the
+marked edge. See `ROUND9_REVIEW.md` for the independent four-row property
+and the mathematical/executable boundary.

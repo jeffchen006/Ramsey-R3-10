@@ -1,10 +1,17 @@
-# Lane B — round 8, November 22, 2026
+# Lane B — round 9, November 22, 2026
 
 **Current baseline:** global degree-seven floor **108** for MTF is CONFIRMED
 (B-013); it subsumes the direct e162 `(0,2,32,6)` exclusion. Neither
-uses t8/t9 floors. No candidate graph. Share is 25 cores: keep the prefix
-at 16 slots; at most nine additional for genuinely new bounded sources.
+uses t8/t9 floors. No candidate graph. Round-9 share was 17 cores;
+only single-core foreground pilots ran. Re-read the next allocation.
 Work from `scratch/B` with `ulimit -v 16777216` and `PYTHONDONTWRITEBYTECODE=1`.
+
+**Round 9:** both round-8 freezes verify. Two new e108 sources were
+calibrated on withheld order-16/e22 critical keys (33/42 pair-union,
+38/42 nonadjacent stems), but the held-out target probes added zero.
+Stop both. No e88 restart, no complement batch and no new certificates.
+Compare `ROUND9_REPLAY.md` and `ROUND9.sha256`. Census unchanged at
+2,104,027 of 2,104,151, still missing 124 critical classes.
 
 **Round 8:** e88 prefix finished and replayed with zero completions on
 5,873,187 exact keys, including 153,612 deletion-critical keys. The full
@@ -28,7 +35,8 @@ Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 
 ## Jobs
 
-No running B jobs at round end. All foreground pilots and replays exited.
+No running B jobs at round end (0 cores). No round-9 detached jobs.
+All foreground pilots and replays exited; earlier PIDs below are gone.
 
 | PID | Command | Log | Cores | Start (CET) | Actual end (CET) |
 |---|---|---|---|---|---|
@@ -56,6 +64,14 @@ e52 TIMEOUT after the exact e63 control passed. Neither benchmark is live.
 Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitted minimum degree 3 for order 21; corrected by generating this branch and merging, no missing counts thereafter. Seed 418169 failed on `shortg`'s in-place default; 453949 passed after explicitly writing stdout. Do not interpret either failed run as empty. Upper seed PID 540708 completed successfully at ~17:23 with all GR T13 counts.
 
 ## Results and claims for review
+
+### Round 9
+
+| Label | Result | Evidence | CPU-hours |
+|---|---|---|---:|
+| enum / estimate | Pair-union repartition: exact labelled control (12 cases, 72 emissions), 33/42 withheld critical e22 reconstructions. Target 96 parents, 40 distinct old e108 keys, zero scout or novel keys; stopped. | `ROUND9_REPLAY.md`, `scratch/B/logs/e108_r9_pair_{control_replay,probe}.log` | 0.0032 |
+| enum / estimate | Nonadjacent stem e92/e93 unrestricted row-pair lift: 324 matched oracle cases, 38/42 withheld e22. Held-out 1,024 stems give zero novel keys in 3.59 CPU-s. No broader census claim; stopped. | `ROUND9_REPLAY.md`, `scratch/B/logs/e108_r9_nonadjacent_{control,heldout}.log` | 0.0025 incl. cost probe |
+| enum, diagnostic | Supplied 1,756 critical e108 graphs: 23 with a d8/e51 card, 1,246 with a d8/e52 card, none with d8/e49 or d8/e50. No necessary bound for the missing keys. | `scratch/B/logs/e108_r9_d8_{profile,bind}.log` | <0.001 |
 
 ### Round 8
 
@@ -139,8 +155,9 @@ Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitt
 
 ## Next
 
-0. Critic/A: retain exact scopes of the e43 and reducible e88 partitions,
-   and the 614 supplied-key e108 certificates. Do not recut direct e162.
+0. Critic/H: record only bounded negative probes, and retain exact scopes
+   of e43/reducible/prefix e88 and the 1,756 supplied-key e108 proofs.
+   Do not recut direct e162.
 1. Critic/H: replay or audit the bounded prefix and scout proof tranche.
    `src/replay_prefix_r7.sh terminal` and `src/e108_scout_proofs_r8.sh replay work/e108_r8_scout_proofs`
    are ready. Do not re-launch prefix. Outside-prefix critical e88 after
@@ -149,8 +166,10 @@ Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitt
    fresh `src/replay_tail87_r6.sh terminal` independently recomputes the
    tail and binds both MTF scans. Scope is only reducible e88;
    `critical88.json` proves a critical graph exists.
-3. Do not scale e52/e44, star-lift, the e108 adjacent-stem or d6/e65 pilots,
-   or old e108 local pilots. Require a new source/filter with measured yield.
+3. Do not scale e52/e44, star-lift, the e108 adjacent-stem, d6/e65, pair
+   repartition or unrestricted narrow nonadjacent-stem pilots, or old
+   local/host pilots. Require a different source or necessary coverage
+   reduction with measured value before further batches.
    t9<=89 and larger t8 floors unbudgeted.
 4. Exact e108 needs 124 more critical keys. The best current known set
    is `work/e108_r8_import/union.g6`; never call it exact. Require

@@ -40,9 +40,9 @@ def solve_key(row, args):
     try:
         if args.mixed:
             from mixed_strip_completion import instance
-            case, hole_first, hole_second, hole_peer = roles
+            case, hole_first, hole_second, hole_peer, *peer_right = roles
             problem = instance(line, int(first), int(second), case, int(hole_first), int(hole_second),
-                               int(hole_peer), args.eager)
+                               int(hole_peer), args.eager, *map(int, peer_right))
         else:
             problem = window(line, int(first), int(second), args.eager, True, args.cut_budget, args.overlays)
         if args.overlays:
