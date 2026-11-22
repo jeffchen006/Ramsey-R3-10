@@ -185,3 +185,7 @@ Exact costs and proof/replay scopes are in `ROUND4_REPLAY.md`.
 ## Round 7 (November 21–22)
 - New exact one-sided neighborhood-choice arc filter; direct/cached controls agree. See `ROUND7_REPLAY.md`.
 - Complete profiled K12-to-H19 generation (1,988,646 rooted windows). High-edge census replay and zero survivors across 317,795,664 selected maps give 16–21 edges in the smaller private K12, only for (12,14) under global f*=9, pending critic (hand + enum). 24 of 39 profiles remain open; no jobs.
+
+## Round 8 (November 22)
+- Independently rebuilt scout boundaries, replayed the missing-blocker control, and bound exactly 90 row IDs. Zero-compatible capacities excluded 34 of 105 multiset keys including every q=0 branch, but no row beyond those two layouts. Exact binding and proofs: `ROUND8_REPLAY.md`.
+- Held-out two-site bitmap index rejected 97.6% of 4,910,040 mapped requests early and matched the direct test, but construction and request filling cut net gain to 1.51×. Not a scalable broad join. No jobs.

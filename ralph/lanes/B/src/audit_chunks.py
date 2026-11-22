@@ -6,9 +6,10 @@ import re
 from pathlib import Path
 
 
-def audit(directory, degree, size, chunk_size, source=None):
+def audit(directory, degree, size, chunk_size, source=None, multi_degree=False):
     expected = [f'd{degree}_{index:05d}' for index in range((size + chunk_size - 1) // chunk_size)]
-    actual = sorted(file.stem for file in directory.glob('*.canon'))
+    pattern = f'd{degree}_*.canon' if multi_degree else '*.canon'
+    actual = sorted(file.stem for file in directory.glob(pattern))
     if actual != expected:
         raise ValueError(f'wrong chunk index set: expected {len(expected)}, found {len(actual)}')
     cpu = 0.0
@@ -44,9 +45,10 @@ if __name__ == '__main__':
     parser.add_argument('size', type=int)
     parser.add_argument('chunk_size', type=int)
     parser.add_argument('--bind', type=Path, help='verify ordered SHA-256 for each rendered input chunk')
+    parser.add_argument('--multi-degree', action='store_true')
     args = parser.parse_args()
     if args.bind is not None:
         with args.bind.open('rb') as source:
-            audit(args.directory, args.degree, args.size, args.chunk_size, source)
+            audit(args.directory, args.degree, args.size, args.chunk_size, source, args.multi_degree)
     else:
-        audit(args.directory, args.degree, args.size, args.chunk_size)
+        audit(args.directory, args.degree, args.size, args.chunk_size, multi_degree=args.multi_degree)

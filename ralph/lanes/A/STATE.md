@@ -1,45 +1,48 @@
 # Lane A state
 
-Round 7 (2026-11-21 to 2026-11-22), share 2. No graph candidate or whole
-distribution closure. Replayed the c=3 both-path/leaf subcase in full.
-Followed the critic: independently checked G's new path/leaf cover,
-sampled the new proof bindings, did not repeat the old residue sweeps or
-R(7). No new e120/e121/e122 delta was supplied. Round 1–6 history is in
-`LOG.md`; earlier freeze manifests are unchanged.
+Round 8, November 22, 2026. Share 3. No live or stopped A jobs; no
+order-40 candidate or whole-distribution exclusion. Both terminal G
+subcases now have independent exact source, receipt, pin and CNF hash
+binding. Read `ROUND8_REPLAY.md` and `scratch/A/strip8/round8.freeze.sha256`.
+Round 1–7 history is in `LOG.md`; prior A freezes are unchanged.
 
-## Round 7 jobs
+## Jobs
 
-All foreground; no live or stopped A jobs. Logs under `scratch/A/path7/`.
+All paths are relative to `scratch/A/strip8`; times are host local.
 
-| PID | Command / log | Cores | Start | End |
-|---:|---|---:|---|---|
-| 3788147 | bounded `replay_strip_marks 4 4 3`, `pair27.A.log` | 1 | 23:38:51 | 23:39:08 |
-| 3940949 | bounded `filter_strip_supports.py pair27.A.keys`, `supports.full.{log,time}` | 1 | 23:44:10 | 23:46:17 |
-| 4157781 | `audit_strip_proofs.py --shard 0 2`, `replay.0.{log,time}` | 1 | Nov 21 23:51:19 | Nov 22 00:00:15, complete |
-| 4157799 | `audit_strip_proofs.py --shard 1 2`, `replay.1.{log,time}` | 1 | Nov 21 23:51:19 | Nov 22 00:00:07, complete |
+| timeout PID / worker PID | Command | Evidence | Cores | Start–end |
+|---|---|---|---:|---|
+| 1949042 / 1949074 | `replay_lower_marks.sh 0` | `lower.scan.0.{keys,time}` | 1 | 00:44:14–00:47:55 complete |
+| 1949043 / 1949068 | `replay_lower_marks.sh 1` | `lower.scan.1.{keys,time}` | 1 | 00:44:14–00:47:46 complete |
+| 2254371 / 2254383 | `run_strip_audit.sh lower --fast-hash --shard 0 2` | `lower.hash.0.{log,time}` | 1 | 00:51:59–01:15 complete |
+| 2254373 / 2254394 | `run_strip_audit.sh lower --fast-hash --shard 1 2` | `lower.hash.1.{log,time}` | 1 | 00:51:59–01:15 complete |
+| 2403272 / 2403285 | `run_strip_audit.sh mixed-prefix --fast-hash --verify` | `mixed.prefix.{log,stop}` | 1 | 00:54:59–00:58 manually stopped after 295 accepted dual LRATs; slot reused |
+| 2567868 / 2567878 | `run_strip_deltas.sh` | `mixed.prefix.hash.{log,time}`, `lower.delta.hash.{log,time}` | 1 sequential | 00:59:14–01:20:54 complete |
+| 3179513 / 3179529 | `run_strip_audit.sh mixed --require-cover --fast-hash --exclude mixed.prefix.log --exclude mixed.prefix.hash.log` | `mixed.delta.hash.{log,time}` | 1 | 01:15:32–01:18:43 complete |
 
-The short calibration, window runs, class normalization and sample
-checks also finished. G owns its separate proof jobs.
+All foreground controls and sample replays finished. Neither of G's
+two proof campaigns is left live; they are G's jobs, not A's.
 
-## Round 7 results / claims
+## Results / claims
 
-| Label | Result | Evidence | Core-h |
+| Label | Scope and result | Evidence | A CPU-h |
 |---|---|---|---:|
-| hand | Exact one-centre H26 projection has four independent d7 anchors with four privates each and six distinct doubles; lower alpha rechecked for upper marks. Exact pair cover at c=3 by independent 7-set plus cross-endpoint construction. | `PAIRED_WINDOWS.md` | — |
-| enum / open | Positive and negative alpha/mark controls pass; checked mark at n26 e82, so the weakened cap82 standalone window does not suffice. No supplied e73/e74 marks; e74 incomplete. Cap74 and cap78 hit CPU limits. | `scratch/A/path7/{calibrate.log,n12.log,n22.log,e82.model.log,e73.tsv,e74.tsv,e74.time,e78.time}` | ~0.010 |
-| enum, cover only | Independently canonicalize both class sources (477,142 distinct), reproduce 1,988 exact paired keys/1,980 classes, reject omitted and duplicated receipts; smaller n8 agreement 21 marks, 10/410 positive rows. | `PAIRED_WINDOWS.md`, `scratch/A/path7/{lineage27.log,pair27.A.log,pair27.A.keys,control8.A.log}` | 0.006 |
-| hand + enum, necessary prefilter | Full exact c=3 support-only filter leaves 633/1,988 for `(2,7,4,27)` and 591 for `(2,8,2,28)`, union 633. Checks all cross contacts, potential MTF, degree ranges/edge identity, Hall on forced-independent cliques. Positive C7 controls and two negatives pass. No c=1,2 or mixed roles. | `filter_strip_supports.py`, `PAIRED_WINDOWS.md`, `scratch/A/path7/{supports.full.log,support-survivor.keys}` | 0.032 final |
-| cert, pending critic | The 1,988 terminal receipts join one-to-one to the exact cover. Every independently reconstructed fixed-edge map and rebuilt CNF digest matches. Both LRAT checkers accepted all 1,988; crossed, incomplete and duplicate controls fail. Scope: e168, c=3, both path/leaf on the two low-n8 pins only. | `audit_strip_proofs.py`, `PAIRED_WINDOWS.md`, `scratch/A/path7/{proof-receipts.tsv,replay.0.log,replay.1.log,freeze.sha256}` | 0.1604 full |
+| hand + enum | Exact both-path/leaf c1/δ2 marked cover at the two e168 low-n8 pins: 191 valid core classes, 18,333,381 byte-identical labelled extensions, 20,181 independently matched marks, 17,194 distinct augmented-colour orbits. | `ROUND8_REPLAY.md`, `scratch/A/strip8/{lower.glue.log,lower.source.log,lower.scan.A.sorted}` | 0.129 |
+| cert + enum cover, pending critic | Both path/leaf, centre codegree 1, **δ(T)=2 only**, at `(2,8,2,28)` and `(2,7,4,27)`. Producer dual checked all 17,194 keys. 17,204 receipts have exactly ten declared same-CNF pilot repeats, deduped. A matched all 17,194 independent pin maps and freshly built CNF digests; 36 dispersed traces independently replayed with both checkers. No caps in terminal union. | `scratch/A/strip8/{lower.terminal.tsv,lower.union.log,lower.sample.log,lower.retry-sample.log,round8.freeze.sha256}` | 0.938 full hashes, 0.010 pilots |
+| cert + enum cover, pending critic | Mixed path/leaf and matching/incident or path/middle at `(2,7,4,27)` only, **some noncross degree-eight pivot has codegree 4**. Rebuilt 5,179 ordered roles with both side assignments; 5,179 producer dual-checked proofs, zero caps. All independent pin maps and CNF digests match. A replayed 295 prefix traces with both checkers plus dispersed samples. | `scratch/A/strip8/{mixed.source.log,mixed.terminal.tsv,mixed.union.log,mixed.prefix.log,round8.freeze.sha256}` | 0.131 full hash-only portions, plus prefix dual and controls |
+| hand + enum, not a closure | Boundary compatibility rule preserves all measured C5/C13/C35 projections and all satisfying tuples in the exhaustive three-domain controls; two negative mutations reject. Dispersed c1/δ2 pilot 24/24 marks survive. Do not scale unchanged. | `strip_boundary_arcs.py`, `scratch/A/strip8/arcs.pilot.log` | 0.015 |
+| hand + enum, conditional source only | Exact order-27 marked projection calibrated against direct addback on full order-7/8 controls (7 positives, 4 negatives). 29,113 order-26 orbits with δ=4/5/6; misses all 1,767 δ3 lower controls. Covers only mark-preserving-extendible windows, not the whole higher-minimum-degree case. | `project_marked_windows.py`, `scratch/A/strip8/{project26.log,project26.hits}` | 0.0033 |
 
 ## Next
 
-- c=3 proof campaign is terminal and fully replayed; no repeat proof
-  production or replay unless hashes or binding change. H/critic can
-  record only the both-path/leaf c=3 split, not a distribution cut.
-- For c=1,2 bind G's new low-degree source or obstruction only at its
-  covered scope. Any broader move needs its own complete source.
-  Keep mixed-role windows separate.
-- If new e120/e121/e122 rows appear, bind only their deltas; use
-  `inspect-upper` to replay lower alpha after deleting marked edges.
-  Keep future e169-pinned and unpinned proofs separate. No repeated
-  full-catalogue inverse scan or old proof production.
+- Do not repeat completed proof batches, CNF hashes, or previous c3/c2
+  proof production; the round8 freeze is terminal. H/critic can record
+  only the two scoped subcases, not subtract a distribution.
+- Higher minimum degrees at c1/c2 and smaller mixed codegrees remain
+  open. A new argument must cover the nonextendible windows separately;
+  the projection pilot is not a substitute and the arc filter did not
+  earn more cores. Review G's next bounded structural source first.
+- If genuinely new e120/e121/e122 rows arrive, bind only the deltas and
+  recheck lower alpha after deleting marked edges (`inspect-upper`).
+  Keep e169-pinned and unpinned scopes distinct. Do not reopen the old
+  R(7) routes without a new directive or quantitatively different split.

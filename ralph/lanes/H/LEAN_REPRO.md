@@ -193,3 +193,22 @@ python3 -SB ralph/lanes/H/check_round6_scope.py
 Five targeted and 275 project reports passed; only standard axioms.
 The Python run checks key identities and calibrates the separate hand
 refinement on C13(1,5) (52 ordered roots). See `ROUND6_REVIEW.md`.
+
+## Round 8: completion bridges
+
+The pinned Lean/Mathlib v4.35.0 cache-backed `build --old R310`
+completed with no Mathlib source build. `R310.CompletionBridge`
+contains the two domain-shrink preservation lemmas and two exact
+window order/alpha lemmas; it does not certify an enumerator.
+
+```sh
+bash ralph/lanes/H/build_private_signature.sh build --old R310
+bash ralph/lanes/H/build_private_signature.sh env lean -j1 -s8192 ../ralph/lanes/H/AxiomsRound8.lean > scratch/H/round8-lean-axioms.log 2>&1
+bash ralph/lanes/H/build_private_signature.sh env lean -j1 -s8192 scripts/Axioms.lean > scratch/H/round8-project-axioms.log 2>&1
+python3 -SB ralph/lanes/H/check_axioms.py ralph/lanes/H/AxiomsRound8.lean scratch/H/round8-lean-axioms.log
+python3 -SB ralph/lanes/H/check_axioms.py lean/scripts/Axioms.lean scratch/H/round8-project-axioms.log
+```
+
+The 4 targeted and 284 project reports pass with only standard
+axioms. The initial narrow build failed at an overly broad `simp`
+call; `Finset.coe_sort_coe` and `Fintype.card_coe` alone fix it.

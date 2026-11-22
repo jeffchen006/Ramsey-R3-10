@@ -178,3 +178,18 @@ ran in `scratch/E` with `nice -n 5`, wall+CPU caps and 16 GiB `ulimit -v`.
   seven has multiplicity at most four. For mixed m11 all four
   windows must be the same missing class. No new class from
   complete one-/two-star and two-edge swap sweeps.
+
+## Round 7 archive (2026-11-22)
+
+Scope `(2,32,t=4,delta(W)>=2,m=11)`, mixed profile, universal
+`delta(G)>=5`, all graphs. `G?bBro` only: 7,046 exact projections,
+36,612 full supports, 4,879 projection witnesses covering 23,294
+lifts, 12,939 incompatibilities, 322 other graph witnesses and 57
+fresh-CNF CakeLRATs (~0.07 core-h final; confirmed by critic round 7).
+K=6/7/8; old non-final scan lacked K=8, corrected receipts move 12
+lifts from incompatible to graph witnesses but do not change the 57
+proof IDs. Matched graph-only vs graph-first: 785 -> 57, 10.55 vs
+16.28 CPU-s, compared with 71.32 CPU-s isomorphism-first. C13 controls
+520 positive and 520 negative. See `shared74.md`,
+`scratch/E/r7_shared/freeze.3.sha256` and `ralph/critic/round_007.md`.
+No closure outside this mixed core; no live jobs at round end.

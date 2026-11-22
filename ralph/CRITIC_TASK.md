@@ -30,4 +30,7 @@ You have NO memory of earlier rounds: read `ralph/critic/LATEST.md` (your last d
    put the ideas worth a test into the lane sections of LATEST.md, and append each dead end they measured to
    `review/ideas/TESTED.md` (one line each). Operator idea files are in `review/ideas/` (DIGEST.md first).
 
+8. The referee (Gemini, another model family) reports after the lanes: re-check each GAP it names against the files;
+   if it holds, mark the claim REJECTED or UNCHECKED and say so in LATEST.md; if not, say why in your review.
+
 You may not edit the lanes' files, `opt/`, or the flow. Start no long solver job.

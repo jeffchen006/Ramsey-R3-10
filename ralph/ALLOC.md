@@ -1,12 +1,12 @@
-# Core shares (busy solver processes; sum <= 80). Set by the critic each round.
+# Round 9 core ceilings — 80 total; not launch targets
 
-| lane | cores | reason |
-|---|---|---|
-| A | 3 | +1: full independent paired proof replay; bind terminal lower/mixed covers and safeguard exact source generation. |
-| B | 25 | +1: checked 1,142-key scout delta; reserve 16 for prefix and up to nine for bounded new-source/proof work. |
-| C | 8 | −2: the 16–21 bound is checked, but 99.9% of raw maps remain; use small exact blocker and pre-join pilots, not a broad join. |
-| D | 4 | +1: punctured-root cover has a fresh exact calibration; allow a matched small target pilot, not more score-cap retries. |
-| E | 16 | −3: checked 785→57 queue reduction and core closure; retain the prior working batch ceiling, no need for the extra burst slots. |
-| F | 2 | Unchanged: exact two-seed trade neighborhoods exhausted without gain; only a genuinely new source or selector warrants a pilot. |
-| G | 20 | +2: confirmed c=3 and c=2/min-degree-three paired exclusions; preserve 18 live slots and reserve up to two for exact source or overlay controls. |
-| H | 2 | Unchanged: ledger, hypothesis audits and scoped Lean work fit two slots. |
+| Lane | Cores | Reason for change from round 8 |
+|---|---:|---|
+| A | 4 | +1: two independent source/receipt covers; verify the next lower-codegree source and provide a variant-aware proof crosswalk. |
+| B | 17 | −8: the 16-slot prefix has finished and the new 512-host sample found no missing key; no broad replacement job has passed a cost test. |
+| C | 4 | −4: keep the exact P3 reductions, but the held-out P2 index gained only 1.51×; enough for a bounded six-set test. |
+| D | 8 | +4: the induced-path cover and 22→3 conditional reduction justify matched joint-attachment pilots on the actual survivors. |
+| E | 22 | +6: one complete mixed core and a measured 40,880→932 proof queue; largest increase, conditional on a matched next-core pilot. |
+| F | 3 | +1: 99/99 signed-lift refutations after quotient reduction; one extra slot for controls on a *different* unsigned source. |
+| G | 20 | Unchanged: three terminal marked subcases; count driver/checker overlap and leave headroom below 20 before any new launch. |
+| H | 2 | Unchanged: ledger, scope review and Lean checks; no bulk proof production. |

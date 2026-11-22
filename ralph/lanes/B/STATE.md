@@ -1,10 +1,18 @@
-# Lane B — round 7, November 21, 2026
+# Lane B — round 8, November 22, 2026
 
 **Current baseline:** global degree-seven floor **108** for MTF is CONFIRMED
 (B-013); it subsumes the direct e162 `(0,2,32,6)` exclusion. Neither
-uses t8/t9 floors. No candidate graph. Share is 24 cores: keep the prefix
-at 16 slots; at most eight additional for genuinely new bounded sources.
+uses t8/t9 floors. No candidate graph. Share is 25 cores: keep the prefix
+at 16 slots; at most nine additional for genuinely new bounded sources.
 Work from `scratch/B` with `ulimit -v 16777216` and `PYTHONDONTWRITEBYTECODE=1`.
+
+**Round 8:** e88 prefix finished and replayed with zero completions on
+5,873,187 exact keys, including 153,612 deletion-critical keys. The full
+e88 complement remains open. Separately imported 1,142 scout e108 keys; best
+census is 2,104,027 of 2,104,151, 124 missing. Certified the supplied scout
+tranche separately (761 cliques, 381 dual LRATs; pending critic). Prior 614
+proofs unchanged. Dispersed order-33 pilot was zero novel; do not scale.
+See `ROUND8_REPLAY.md`, `ROUND8_E108.sha256` and `ROUND8_PREFIX.sha256`.
 
 **Round 7:** two calibrated e108 pilots recovered no new key, so neither
 was scaled. Same partial census (1,266 missing) and 614 supplied-key
@@ -20,14 +28,14 @@ Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 
 ## Jobs
 
-| PID | Command | Log | Cores | Start (CET) | Expected end |
-|---|---|---|---|---|---|
-| 1180084 | `timeout 18h prefix_pipeline.sh 16` | `scratch/B/logs/prefix_pipeline.log` | 16; solving since ~17:24 | Nov 21 17:10:35 | estimate Nov 22 00:50–02:00, cap Nov 22 11:10 |
+No running B jobs at round end. All foreground pilots and replays exited.
 
-At Nov 21 23:41 CET there are 2,338 of 2,847 completed d6 chunks (509
-remaining, including active); d5 and d7 generation is done. No final
-prefix canonical file or terminal MTF outcome yet. All round-7
-foreground tests and pilots finished; no new detached process.
+| PID | Command | Log | Cores | Start (CET) | Actual end (CET) |
+|---|---|---|---|---|---|
+| 1180084 | `timeout 18h prefix_pipeline.sh 16` | `scratch/B/logs/prefix_pipeline.log` | 16 | Nov 21 17:10:35 | Nov 22 ~01:06, status 0 |
+
+Generation finished around Nov 22 00:57 CET (3,886 legacy chunks); the
+outer MTF scan ran ~00:58–01:06 CET with 5,736 digest-bound chunks.
 
 PID 3921182 finished at 22:30 CET, all 48 chunks bound, zero e88 outputs.
 PID 2576750 (tail87, active 22:30:40–22:52 CET) finished with zero MTF
@@ -48,6 +56,15 @@ e52 TIMEOUT after the exact e63 control passed. Neither benchmark is live.
 Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitted minimum degree 3 for order 21; corrected by generating this branch and merging, no missing counts thereafter. Seed 418169 failed on `shortg`'s in-place default; 453949 passed after explicitly writing stdout. Do not interpret either failed run as empty. Upper seed PID 540708 completed successfully at ~17:23 with all GR T13 counts.
 
 ## Results and claims for review
+
+### Round 8
+
+| Label | Result | Evidence | CPU-hours |
+|---|---|---|---:|
+| enum, partial census | Frozen scout tranche is exactly 1,142 distinct valid critical e108 keys disjoint from the old set, independently valid and critical. Combined critical count 1,756; catalogue 2,104,027 with 124 absent. | `ROUND8_REPLAY.md`, `ROUND8_E108.sha256`, `scratch/B/logs/e108_r8_import.log` | 0.0061 |
+| cert, supplied tranche only; pending critic | All 1,142 imported e108 keys excluded as degree-seven MTF duals: 761 checked demand cliques + 381 regenerated and dual-verified LRATs (291 one-line RUP, 90 CaDiCaL). Old 614 proofs unaffected. No global floor 109 or new distribution exclusion. | `ROUND8_REPLAY.md`, `ROUND8_E108.sha256`, `scratch/B/work/e108_r8_scout_proofs/` | 0.0148 |
+| enum / estimate | Bounded e120/121/122/123 order-33 host pilot, 512 fresh spaced hosts, 16,896 cards, 0 novel keys (0/CPU-h); control exactly matches known order-7/e6. Stopped, no exchange or scale-up. | `ROUND8_REPLAY.md`, `scratch/B/logs/e108_r8_hosts.log` | 0.0007 |
+| enum; pending critic | Prefix e88: 5,873,187 digest-bound MTF inputs, 0 completions, including 153,612 directly audited critical keys; SAT 24/24 negative on that critical partition. Full e86/e87 exactly matches checkpoint. Legacy generation counts/output union audited in full, input replay sampled. Prefix and reducible union have 5,873,188 keys but do not cover all e88. | `ROUND8_REPLAY.md`, `ROUND8_PREFIX.sha256`, `scratch/B/logs/prefix_r8_terminal.log` | 108.68 generation gluer; 1.82 scan gluer; ~0.16 audits |
 
 ### Round 7
 
@@ -124,12 +141,10 @@ Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitt
 
 0. Critic/A: retain exact scopes of the e43 and reducible e88 partitions,
    and the 614 supplied-key e108 certificates. Do not recut direct e162.
-1. Prefix PID 1180084 uses (5:3,6:3,7:1), sufficient for <=87 by exact
-   `tcheck.py`; output e88 is **partial only**. When the canonical file
-   appears, run `src/replay_prefix_r7.sh lower` (from scratch with limits),
-   then `terminal` after bound MTF zero, followed by a dispersed independent
-   SAT sample on prefix-critical keys. Residual critical e88 outside prefix
-   and e43 requires d6/e52 or d7/e44; still no total count or exclusion.
+1. Critic/H: replay or audit the bounded prefix and scout proof tranche.
+   `src/replay_prefix_r7.sh terminal` and `src/e108_scout_proofs_r8.sh replay work/e108_r8_scout_proofs`
+   are ready. Do not re-launch prefix. Outside-prefix critical e88 after
+   e43 still requires d6/e52 or d7/e44, ten U88 keys unchanged.
 2. The complete reducible e88 zero is ready for critic review; optional
    fresh `src/replay_tail87_r6.sh terminal` independently recomputes the
    tail and binds both MTF scans. Scope is only reducible e88;
@@ -137,7 +152,7 @@ Bootstrap 136395 and seed jobs 418169/453949 exited. First bootstrap union omitt
 3. Do not scale e52/e44, star-lift, the e108 adjacent-stem or d6/e65 pilots,
    or old e108 local pilots. Require a new source/filter with measured yield.
    t9<=89 and larger t8 floors unbudgeted.
-4. Exact e108 needs 1,266 more critical keys. The best current known set
-   is `work/e108_r6_follow/pass4/union.g6`; never call it exact. Require
+4. Exact e108 needs 124 more critical keys. The best current known set
+   is `work/e108_r8_import/union.g6`; never call it exact. Require
    order, e, alpha, Traces and strict GR count 2,104,151 before a full
    floor-109 campaign. Proof-only pilot is affordable once that is true.

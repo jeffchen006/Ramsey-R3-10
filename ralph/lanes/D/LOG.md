@@ -215,3 +215,8 @@ script passes `bash -n`; avoid live edits to it.
 - Root-to-anchor q22 cap matches 360 C20 local decisions; seed-window and floor rows replayed 13 C16. Exact forest, signed-count and compact SAT replays repeated 144 smaller solves, matching all labelled graph and pin sets. `TIGHT_FOREST.md`, `scratch/D/seed_r6/{cal,q22-cal,sat16/check,compact16/check,no22-cal}.log`.
 - Open: key34 ordinary/forest/signed probes 48 CPU-s; key32 plain compact reaches 30,001 conflicts, global q22=0 caps at 55 CPU-s. Windows feasible at key34 and inconclusive at key21; q22 and endpoint pins no demonstrated gain. Evidence `scratch/D/seed_r6/{sat40,compact40,q22,key32pins}/`.
 - No jobs at handoff. Prior PIDs 30557, 136533, 479273 absent. Round 6 ~0.21 CPU-h; evidence frozen `scratch/D/round6_evidence.sha256`.
+
+## Round 7 archive
+
+- In max12/Smax=2 the score-two edges either have an endpoint sum >=7 somewhere, or form a cubic graph with w=0 and no score-zero edges. Six-key cover per stratum, not an unrooted partition by key. The score-three keys and key32-only when max q22=0 remain as before. H hand-reviewed; no deletion.
+- `SCORE_CAP.md`, `scratch/D/score_r7/`: 2,960 local score checks, 18 C16 exact tight solves, 27,360 two-star threshold checks and 580 rerootings. At key24/k7 global off/on capped at 100 CPU-s; projected base/dense SAT, balanced capped at 45 CPU-s. No target exclusion, no active job. About 0.084 CPU-h. Round-7 evidence SHA passed again in round 8. Do not restart unchanged.

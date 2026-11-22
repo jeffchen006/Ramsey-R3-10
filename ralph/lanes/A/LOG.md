@@ -1,5 +1,17 @@
 # Lane A state
 
+## Round 7 (history)
+
+Independent terminal replay of the c=3 both-path/leaf slice on the two
+e168 low-n8 profiles: McKay/G canonical sources agree on 477,142 classes;
+the full seven-set scan found 1,988 marks on 1,980 classes. Both LRAT
+checkers accepted all 1,988 after complete independent pin/hash binding.
+Evidence `PAIRED_WINDOWS.md`, `scratch/A/path7/{replay.0.log,replay.1.log,freeze.sha256}`;
+0.1604 CPU-h. Support-only filter retains 633/1,988 on `(2,7,4,27)` and
+591 on `(2,8,2,28)` (0.032 CPU-h); no alternate scope. A checked e82
+positive demonstrates that the relaxed standalone cap82 window does
+not itself refute the path/leaf case. No whole distribution cut.
+
 Round 6 (2026-11-21), core share 2. No candidate or case closure. Worked on
 the exact e168 equality decomposition, independently of Lane G's SAT
 pilot. No e120/e121 delta was supplied during this audit. The combined

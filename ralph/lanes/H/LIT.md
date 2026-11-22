@@ -177,3 +177,27 @@ Search scope: arXiv and exact DOI/title lookups; EJC/DS1, ACM, IJCAI, Springer a
   published counts or available files. The separate E reverse
   window still depends on the missing e74 class. Source: GR DOI
   `10.37236/2824`, Table 13; McKay Ramsey data as above.
+
+## Round 8: November 22, 2026 check
+
+- Read-only refetch: DS1 rev. 18 (April 24, 2026, DOI `10.37236/21`),
+  Angeltveit EJC **32**(4) #P4.30 (November 3, 2025, DOI
+  `10.37236/12936`), and GR EJC **20**(1) #P30 (DOI `10.37236/2824`)
+  differ from yesterday's landing pages only in transient form tokens.
+  The arXiv:2401.00392 v2 (April 8, 2024), McKay and HoG bytes match.
+  The TCSExam author task remains a match to the order-39 reference,
+  not an order-40 result. No newer published bound, public bulk list of
+  the 43,225,483 known order-39 classes, or exact 30/88–99 count found.
+  The Crossref broad title search surfaced no pertinent result and the
+  narrower enumeration query hit HTTP 429. This is a limited dated
+  search, not proof of nonpublication. Snapshots: `scratch/H/lit/r8-*`;
+  request outcomes: `scratch/H/round8-literature.log`.
+- For A/G the published complete order-22 `(3,7)` list (McKay, 191)
+  supplies the two exact rooted low-degree slices only. The order-27
+  `(3,8)` list (McKay, 477,142) supplies the separate order-27 marks;
+  there is no licence to pad a general order-25/26 window to order 27.
+  C's individual P3 layout binds McKay's 30 e62 and 60 e63 rows, not
+  another layout at either level. B's **124 missing** is against GR's
+  order-32/e108 count, not a revised D-C9a order-30 count. E/F have no
+  substituted public e74 list or order-39 bulk source. D has no new
+  published replacement for a covered rooted template family.

@@ -1,5 +1,15 @@
 # Lane H — archived round 2 handoff, November 21, 2026
 
+## Round 7 archive
+
+H-016/H-017: pinned Lean/Mathlib v4.35.0 build, five targeted and
+280 project reports; 18 C5 path-window controls, 18 rejected triple
+mutations, all 32,520 generic pair accounts checked. Window cap 84,
+or 82 with no d8 in X; at least one cap-83 window on the both-path
+n8=4 branch. The common exterior must meet both pivot sets by MTF.
+Reviewed D max12/smax2 dense/balanced split; no pin closure. Critic
+confirmed these scopes in round 007 (`ROUND7_REVIEW.md`, `LIT.md`).
+
 ## Round 6 archive
 
 No detached jobs. H-013 and H-014 formalized the no-exterior-degree-

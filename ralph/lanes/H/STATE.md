@@ -1,51 +1,48 @@
-# Lane H — round 7 handoff, November 21, 2026
+# Lane H — round 8 handoff, November 22, 2026
 
-Share two cores. No flow-verified order-40 graph, no live H jobs, no
-new case subtraction. Checked through critic round 006: **278 MTF
-distributions plus Case R**, **10 conditional U88** and **20 open
-e168 degree-six** keys (11 singles, nine pairs). Latest directives
-and ledger verdicts take precedence over this handoff.
+Share two cores. No H candidate, no live H jobs, no new distribution
+subtraction. Checked through critic round 007: **278 near-regular MTF
+distributions plus Case R**, **10 conditional U88 keys** and **20 open
+e168 degree-six keys** (11 single-root, 9 paired). Keep profile-level,
+layout-level and whole-distribution statements separate. The critic's
+newest directives and ledger verdicts supersede this snapshot.
 
 ## Jobs
 
 | PID | Command | Log | Cores | Start / finish CET |
 |---|---|---|---:|---|
-| — | No live/stopped/detached H job. | — | 0 | — |
-| foreground, ended | `build_private_signature.sh build --old R310`; `env lean -j1 -s8192` targeted and project; `check_axioms.py` | `scratch/H/round7-{lean-*,final-*,axiom-audit}.log` | 1 | 23:35–23:46 |
-| foreground, ended | `python3 -SB ralph/lanes/H/check_strip_window.py`; read-only publisher/catalogue GETs | `scratch/H/round7-strip-control.log`, `scratch/H/lit/r7-*` | <1 | 23:36–23:46 |
+| — | No live, detached or stopped H job. | — | 0 | — |
+| foreground, ended | `build_private_signature.sh build --old R310`; targeted and project `env lean -j1 -s8192`; `check_axioms.py` | `scratch/H/round8-lean-*.log`, `scratch/H/round8-project-axioms.log` | 1 | 00:43–00:50 |
+| foreground, ended | `python3 -SB ralph/lanes/H/check_p3_singleton_binding.py ...`; read-only publisher/catalogue GETs | `scratch/H/round8-C-singleton.log`, `scratch/H/round8-literature.log` | <1 | 00:45–00:48 |
 
-The cache-backed pinned Lean/Mathlib v4.35.0 build and both axiom
-audits passed (5 targeted and 280 project reports). No Mathlib source
-build, SAT solve, or graph proof replay by H this round. Before final
-successful builds, fixed the import and natural-cardinality rewrite;
-the audit parser accepts the `maxrss_kib` footer as well as `maxrss`.
+Pinned Lean and Mathlib v4.35.0 use the existing local cache. No Mathlib
+source build, SAT solve, bulk scan or solver proof replay by H this round.
+Targeted attempt initially failed a cardinality simplification; the final
+integrated build and both axiom audits are successful.
 
 ## Results and claims
 
 | Label | Result | Evidence | Core-h |
 |---|---|---|---:|
-| Lean, H-016 | Marked lower-half deletion: order/alpha, retained degree seven, unique surviving common witness, exact edge level and cap `84−#knownNine`. All structural input premises are explicit. | `lean/R310/MarkedStrip.lean`, `scratch/H/round7-axiom-audit.log` | ~0.067 incl. early build attempts |
-| hand, H-017 | Single path/leaf window e≤84; e≤82 if X has no original d8, including n8=2. If n8=4 and both path/leaf, at least one window has e≤83. With two uncrossed centers, common codegree j=1..3 gives intersection order 17..19 and whole paired window order `24+j`; exact `49+9j+union deficit+exclusive cross` edge row. Every retained X hits both deleted sets. | `ROUND7_REVIEW.md` | <0.001 |
-| enum, controls | 18/18 smaller path windows give C5; 18 rejected triple mutations. Both smaller catalogues check the paired accounting on 32,520 nonedges. Nine scalar weight patterns reproduce both caps. | `check_strip_window.py`, `scratch/H/round7-strip-control.log` | <0.001 |
-| hand, audit | D's dense/balanced max12 Smax=2 split and fixed-block projection checked on paper; no re-encoding or pin closure. | `ROUND7_REVIEW.md`, `ralph/lanes/D/SCORE_CAP.md` | — |
-| pub / open | November 21 publisher/census recheck found no superseding classical bound, public bulk order-39 list, or exact 30/88–99 counts; GR Table 13 available through e77 at order 26. Corrected publisher DOI for GR. | `LIT.md`, `scratch/H/lit/r7-*.data` | — |
+| Lean, H-018 | One-step and iterated arc deletion preserve simultaneous choices. Distinct nonadjacent pivots have the exact paired window order and alpha≤7; exact degree/order root relation gives a 22-vertex alpha≤6 core. 4 targeted and 284 project axiom reports pass. These assume graph/arc premises and certify no enumeration. | `lean/R310/CompletionBridge.lean`, `scratch/H/round8-lean-axiom-audit.log`, `LEAN_REPRO.md` | ~0.043, including failed start |
+| hand + enum, C-026 (H audit) | C/scout diagonal-four P3, 8/8 arms only: both named layouts independently reconstruct and fail under singleton budget 20 required vs 16 possible. Exact e62/e63 row counts 30/60; missing, duplicate and crossed-boundary receipts rejected. Smaller C21 control has two genuine zero masks, six singles. Not the whole e62/e63 strata. | `ROUND8_REVIEW.md`, `check_p3_singleton_binding.py`, `scratch/H/round8-C-singleton.log`, `ralph/lanes/C/proofs/p3_singleton_budget.md` | <0.001 |
+| hand, G audit | Pin, hole, relabelling and eager-clause necessities reviewed for lower both-path/leaf and mixed strips. No assumptions of MTF or higher minimum degree on T; no proof/coverage rerun. Initial unique c1 receipt partition checked exactly: 13,368 cert + 3,826 missing = 17,194; do not add raw batch receipt counts. | `ROUND8_REVIEW.md`, `scratch/G/round8/c1.first/{cert,unclosed}.keys` | <0.001 |
+| pub / open | Dated source recheck: no superseding classical bound, public order-39 bulk list, or new 30/88–99 exact count located. Exact citations and limitations in `LIT.md`. | `LIT.md`, `scratch/H/lit/r8-*`, `scratch/H/round8-literature.log` | — |
 
 ## Ledger and next steps
 
-- `ralph/CLAIMS.md` records the exact round-006 verdicts: C `(12,12)`
-  only at global R(6), f*=9; E profile A plus the one mixed core,
-  keeping the last e74 class uncertainty; B's e108 proofs only for
-  the supplied 614. B/D/F round-7 entries and G's announced source
-  remain pending critic. Ingest later A/C/E/G STATE deltas next turn;
-  no inference from capped tests, partial inputs or sampled joins.
-- G/A now have the best scoped e168 route: exact order-27 cover
-  screened to 1,988 marked rows in the j=3 branch. Compare the new
-  edge/degree inequalities against completion inputs; keep j=1,2
-  and one-sided windows separate. Do not rerun the whole catalogue
-  traversal or apply this cover to single-root keys.
-- B/critic should bind the operator-reported 1,142 e108 critical
-  classes before updating the deficit (potentially 124 instead of
-  1,266); existence of keys is separate from their LRATs. Watch
-  B prefix outcome, the nearest route to an exact U88 partition.
-- Ask C/G for the next exact conditional short lemma, and continue
-  scoped key reconciliation. No extra cores required.
+- Round 007 verdicts imported: A/G paired c=3 and paired c=2/δ3,
+  E's single `G?bBro` symmetry core, C's 16–21 edge bound for K12
+  in global R(6), f*=9, (12,14), U=0; B's 1,142 keys as checked
+  enum only. B-019 is separately **pending** for proofs on that
+  tranche; 124 e108 classes remain absent even if it is accepted.
+- Ledger added C-026, G-029 and the early A/E round-8 outputs at
+  exact scopes. Ingest later lane STATE deltas/critic round 008 next
+  turn. A/G own independent c1 and mixed receipt binding; no update
+  to an e168 key without all its marked role/codegree complements.
+- B's e88 prefix may soon permit an exact partition audit; keep
+  the deletion-critical outside-prefix complement separate. The
+  20 e168 degree-six keys are disjoint from the ten conditional U88.
+- C/G please send the next exact short premise for Lean. No extra
+  cores needed. G's exact paired windows offer the strongest checked
+  route; B's 124-class gap is an important separate census target.
