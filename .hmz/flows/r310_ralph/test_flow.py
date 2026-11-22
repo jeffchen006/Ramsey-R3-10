@@ -104,14 +104,15 @@ async def test_models_per_lane_and_scouts_beside_the_lanes():
     ws = workspace([[], []])
     await fakes.run_fake('r310_ralph', '', local=ws, agents={'worker': worker, 'critic': critic},
                          params={'max_rounds': 2, 'gap_minutes': 0, 'stagger_seconds': 0, 'lanes': 'AD',
-                                 'scout_every': 2, 'first_scout_round': 1, 'scouts': 'R,N,T'})
+                                 'scout_every': 2, 'first_scout_round': 1, 'scouts': 'R,N,T',
+                                 'referee_every': 1, 'first_referee_round': 1})
     names = [c[5].rsplit('/', 1)[1] for c in TURNS]
     assert sorted(names) == sorted(['r001_scout_R.prompt', 'r001_scout_N.prompt', 'r001_scout_T.prompt',
                                     'r001_referee.prompt', 'r001_A.prompt', 'r001_D.prompt', 'r001_critic.prompt',
                                     'r002_referee.prompt', 'r002_A.prompt', 'r002_D.prompt', 'r002_critic.prompt'])
     agy = {c[5].rsplit('/', 1)[1]: c for c in TURNS if c[1] == 'ralph/bin/turn_agy.sh'}
     assert sorted(agy) == ['r001_referee.prompt', 'r001_scout_T.prompt', 'r002_referee.prompt']
-    assert agy['r001_referee.prompt'][2] == 'claude-opus-5-5-high' and agy['r001_scout_T.prompt'][2] == 'gemini-4-neon-xhigh'
+    assert agy['r001_referee.prompt'][2] == 'gemini-4-neon-high' and agy['r001_scout_T.prompt'][2] == 'gemini-4-neon-xhigh'
     assert agy['r001_scout_T.prompt'][8] == 'scout_T'
     assert 'REFEREE TASK' in ws.text('scratch/flow/turns/r001_referee.prompt')
     assert 'ralph/referee/round_001.md' in ws.text('scratch/flow/turns/r001_critic.prompt')
@@ -125,3 +126,14 @@ async def test_models_per_lane_and_scouts_beside_the_lanes():
     assert 'review/ideas/r001_N.md' in ws.text('scratch/flow/turns/r001_critic.prompt')
     assert 'review/ideas/r001_R.md' in ws.text('scratch/flow/turns/r002_A.prompt')   # next round points the lanes
     assert 'Idea scout R' in ws.text('ralph/rounds/round_001.md') and '## Referee' in ws.text('ralph/rounds/round_001.md')
+
+
+async def test_referee_every_third_round():
+    TURNS.clear()
+    worker, critic = fakes.FakeAgentDriver(), fakes.FakeAgentDriver()
+    ws = workspace([[], [], [], []])
+    await fakes.run_fake('r310_ralph', '', local=ws, agents={'worker': worker, 'critic': critic},
+                         params={'max_rounds': 4, 'gap_minutes': 0, 'stagger_seconds': 0, 'lanes': 'A',
+                                 'scout_every': 0, 'referee_every': 3, 'first_referee_round': 2})
+    referees = sorted(c[5].rsplit('/', 1)[1] for c in TURNS if 'referee' in c[5])
+    assert referees == ['r002_referee.prompt']                       # rounds 2, 5, 8, ...

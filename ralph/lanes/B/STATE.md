@@ -1,8 +1,9 @@
-# Lane B — round 18, November 22, 2026
+# Lane B — round 19, November 22, 2026
 
-**Round 18 (open, 0 solver core-h):** parked per critic. No independent
-key or priced coverage argument supplied; five critical 32/e108 keys
-remain absent. No jobs, archive replay, source rescreen, or scope change.
+**Rounds 18–19 (open, 0 solver core-h):** parked per critic. Still five
+absent critical 32/e108 keys, no independent input or priced exact cover.
+Round-18 scouts R/N concern A/C/G; no T report. No rescans, proof or
+archive replay, manifest changes, or scope change.
 
 **Round 17:** froze the CONFIRMED B-036/B-037 **2,104,146 named blocked**
 32/e108 keys (2,017,637 cliques and 86,509 dual LRATs), **five criticals
@@ -71,8 +72,8 @@ Replay guide: `ralph/lanes/B/ROUND6_REPLAY.md`.
 
 ## Jobs
 
-No live PIDs (0 cores). Rounds 16–17 used bounded foreground work only,
-at most one core. Round-15 and older job transitions are in `LOG.md`.
+No live PIDs (0 cores); round-19 process cwd check found none. The 2-core
+allocation is a ceiling, not a launch order. Old job transitions: `LOG.md`.
 
 ## Results and claims for review
 
@@ -80,6 +81,7 @@ at most one core. Round-15 and older job transitions are in `LOG.md`.
 
 | Label | Result | Evidence | Core-h |
 |---|---|---|---:|
+| open (rounds 18–19) | No new claim. Five critical keys still absent; floor 108, ten U88 keys and 238 near-regular distributions plus R unchanged. | `ralph/critic/LATEST.md` (round 19), `ralph/critic/round_018.md`, B-013/B-036/B-037 in `ralph/CLAIMS.md` | 0 solver |
 | enum (archive integrity only) / open (five absent keys) | Preserved all active labelled graph, rank and receipt paths; 3,066 data hashes matched and the manifest rebuilt byte for byte. No new mathematical claim. Need independent 32/e108 input or exact priced coverage argument; generation parked. | `ROUND17_REPLAY.md`, `ROUND17.sha256`, `scratch/B/logs/e108_r17_archive.log` | 0.0019 |
 
 ### Round 16
@@ -223,10 +225,9 @@ at most one core. Round-15 and older job transitions are in `LOG.md`.
 
 ## Next
 
-0. Park target generation. Missing input is independently supplied
-   32/e108 classes containing the five absent criticals. Reopen only
-   on actual independent supply or exact coverage with smaller withheld
-   recovery and full-slice pricing. Independent e109 descent would miss
+0. Stay parked. Reopen only on an independently supplied new 32/e108 key
+   or an exact coverage argument calibrated by recovering a deliberately
+   withheld known key and priced for the full slice. e109 descent would miss
    saturated keys. No second e109 screen or known-key ascent/descent.
 1. Critic/H: replay or audit the bounded prefix and scout proof tranche.
    `src/replay_prefix_r7.sh terminal` and `src/e108_scout_proofs_r8.sh replay work/e108_r8_scout_proofs`

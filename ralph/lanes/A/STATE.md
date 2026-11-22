@@ -1,10 +1,10 @@
 # Lane A state
 
-Round 18, November 22, 2026. Share 6; no detached A jobs or new graph,
-distribution exclusion, or whole-case closure. R(7) was closed by C's
-accepted finite certificates (round 1) and replayed independently by A.
-Marked 17/17 is accepted; do not rescan it, the R(7) cubes or the retired
-e168 strips.
+Round 19, November 22, 2026. Share 7; directive caps 2 workers, 0.20
+core-h, 512 MiB/process, 256 MiB new scratch. No detached jobs or new
+graph, distribution exclusion, or whole-case closure. R(7) was closed by
+C's accepted finite certificates (round 1) and replayed independently
+by A. Do not rescan it, accepted marked 17/17, or retired e168 strips.
 
 ## Jobs
 
@@ -12,30 +12,31 @@ e168 strips.
 |---|---|---|---:|---|
 | — | No detached A jobs | — | 0 | — |
 
-Only foreground jobs: processes under `nice -n 5`, timeout and 512 MiB
-VM limit, peak two processes for frame producer/consumer. 176.07 measured
-CPU-s = 0.04891 core-h total, including builds and clean replay. Peak
-330,904 KiB (compiler), working checks ≤90,496 KiB. About 5.1 MiB new
-allocated scratch. Clean binder 30.71 CPU-s; frozen A17/C17 pins verified.
+Foreground only, one CPU worker at a time; `nice -n 5`, `timeout`,
+`prlimit --cpu`, 512 MiB VM; workdirs `scratch/A/r19{,-clean}`.
+19.31 measured CPU-s (0.00536 core-h), including builds and clean replay.
+Peak 319,144 KiB (compiler), 40,116 KiB for binders, 636 KiB scratch.
 
 ## Results and claims
 
 | Label | Scope/result | Evidence | CPU-h |
 |---|---|---|---:|
-| enum (calibration) | 34,504 ordered 6/7 physical IDs, 31,495 both-pass, all 153 plants (142 distinct physical IDs), 2,067 archived group decisions, 29,220 destination-pair totals. | `scratch/A/r18-clean/small/result.log` | included in total |
-| enum (physical binding, pending critic) | Marked one-neutral 16/17, shapes `2333/3334`: `(67,5)` 32,340 raw → 46 both-pass; `(68,4)` 28,301 raw → 24. 12,762 group keys and 11,250 exact bucket totals. All 60,641 raw physical IDs and group bits checked using archived literal evaluator. | `ROUND18_PHYSICAL_IDS.md`, `ROUND18_FREEZE.sha256`, `scratch/A/r18/{survivors.cases.tsv,survivors.tsv,buckets.tsv,literal.oracle.tsv}` | 0.03136 literal check; 0.04891 all |
-| enum (pilot accounting) | 16 old raw IDs in each slice; only both-pass intersection is `(2501780,31298)` (old pilot row 286, `(68,4)`), so 69 both-pass IDs new to C. | `scratch/A/r18/pilot-overlap.tsv` | included in total |
+| enum (calibration) | All 438 smaller roots checked; all 105 small candidate-root queries match literal full and partial bindings. All 105 adverse singleton-edge mutations rejected, and 34,504 frozen old-margin flag rows match. | `scratch/A/r19-clean/{small.log,small-oracle.tsv}` | included in total |
+| hand + enum (lookup, pending critic) | Lossless order-12 lookup: 10 classes, 1,458 degree-three + 21 degree-four roots, 5,094 residual maps and exact same-root reconstructions; every corrupted row binding rejected. All relevant catalogue roots, not just MTF. `k≤2` deliberately unfiltered. | `ROUND19_DELETION_CARDS.md`, `ROUND19_FREEZE.sha256`, `scratch/A/r19/cards-v1.json` | 0.00068 target; 0.00536 all |
+| enum (held-out old margins, pending critic) | `(66,4)`/`(75,5)`, physical 16-frame 42679, x=0, host=97, neutral=7; 116 raw → 12 both old, exact `(00,10,01,11)=(18,86,0,12)`. Zero overlaps with 544 old raw pilot IDs. Earlier frame 42072 (x=1) skipped, one overlap. All right ID payloads match archived right projection and clean replay. | `scratch/A/r19/{selection.tsv,heldout.cases.tsv,heldout.flags.tsv,heldout.positive.cases.tsv,heldout.marked.jsonl,clean.compare.log}` | 0.00040 bin |
+| enum (prior) | Round 18 physical coverage and marginal scores 32,340→46, 28,301→24; C covered their signed joins (one shared old pilot ID, 69 fresh). | `ROUND18_PHYSICAL_IDS.md`, `ROUND18_FREEZE.sha256`, `ralph/critic/round_018.md` | prior |
 
 ## Next
 
-- Lane C owns the exact joint/terminal check, using the handed-off files.
-  A's results concern marginal existence only; no join by A. Do not
-  rescan the pilot or any new slice absent critic authorization.
-- Replay: `bash ralph/lanes/A/replay_small_slices.sh all r18-review`,
-  optionally followed by `bash ralph/lanes/A/replay_small_slices.sh literal r18-review`.
-  Use `scratch/A/r18/survivors.cases.tsv` for the pinned 14-int handoff;
-  the companion `survivors.tsv` preserves original labels and orientation.
-- Previous hand/enum results and target profile weights are preserved in
+- Lane C owns all fifth-row, terminal, and cost comparisons. A supplied
+  the pinned lookup and one held-out bin only; no fifth rows from A.
+  Do not regenerate the critic's separate 56 core-order-13 witnesses,
+  the pilot, any additional bin, or the 159-survivor generic join.
+- Replay: `bash ralph/lanes/A/replay_deletion_cards19.sh r19-review`.
+  Lane C's `heldout.cases.tsv` is the ordered 116-ID roster in 14-int
+  format. `heldout.marked.jsonl` retains the original labels and the
+  physical neutral placement (7, in the fifth pole's singleton group).
+- Earlier marks and target profile weights are preserved in
   `ROUND17_DIRECTION_PROFILES.md`, `ROUND17_FREEZE.sha256`, and
   `scratch/A/r17-stream/weights{16,17}.tsv` (not the failed `r17/` file).
   The full marginal filter was C's run. No unpriced scans of the

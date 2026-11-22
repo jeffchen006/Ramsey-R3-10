@@ -352,3 +352,6 @@ import R310
 #print axioms R310.MiddleStarBalance.tipFloors
 #print axioms R310.polePair_multiplicity_of_only_marked
 #print axioms R310.middle_star_at_seventeen_fifteen_of_mtf
+#print axioms R310.private_cell_matching_capacity
+#print axioms R310.private_grid_row_bound
+#print axioms R310.private_grid_column_bound

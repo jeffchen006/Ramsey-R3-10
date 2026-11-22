@@ -1,40 +1,45 @@
-# Lane G state — round 18, November 22, 2026
+# Lane G state — round 19, November 22, 2026
 
 **238 near-regular MTF distributions plus R remain open.** No candidate,
-distribution cut, `t9`, U88, or residue-floor change. At e170 with a
-marked adjacent degree-six equality pair and `h=8`, `leaf+leaf.1` is
-confirmed (G-051), and `middle+middle.2` is now fully certified locally
-pending critic. Conditional on review, **140,062** labelled alignment
-IDs in the other 28 schemes are untested (from confirmed 155,746).
+distribution cut, `t9`, U88, or residue-floor change. The accepted
+marked `e170` adjacent d6 equality `h=8` roster was **79,072** in 12
+schemes after confirmed `middle+middle.2` and scout leaf receipts.
+One round-19 shared-grid **middle** LRAT excludes **57,947** of these in
+six schemes locally; pending critic, **21,125** remain, all in the six
+`matching+matching` schemes. `h=7`: 51/1,213 two-sided context orbits
+checked from scout, 1,162 open; no new solve.
 
 ## Jobs
 
 | PID | Command | Log | Cores | Start | Expected end |
 |---|---|---|---:|---|---|
-| — | No active or detached G jobs | `scratch/G/round18/` | 0 | — | — |
+| — | No active or detached G jobs | `scratch/G/round19/` | 0 | — | — |
 
-All runs were foreground, nice +5, one slot and ≤512 MiB virtual cap.
-Checkpoint PID 3361393 is gone. No models or solver caps. One sample
-setup issue with unstable file allocation metadata, fixed before proofs
-were checked; its CPU is included below.
+One sequential foreground slot, nice +5, ≤512 MiB virtual, the single
+target solver ≤30 CPU-s. None capped, stopped or killed. Previous
+checkpoint PID 3361393 remains gone.
 
 ## Results and claims
 
 | Label | Result | Evidence | Core-h |
 |---|---|---|---:|
-| hand + enum + cert (local, pending) | e170 adjacent degree-six equality pair, `h=8`, **only** `middle+middle.2`: all 16,350 labelled IDs reconciled from 660 scout, 6 round-17 direct receipts + 42 additional oriented images, and 2,024 new dual-checked LRATs with labelled weight 15,642. Clean replay matches every owner and explicitly rebinds 2,928,046 moved witness blocks; calibrated 24/0 plus 26 marks × 4 and asymmetric transpose. Scope does not include `h<8` or a distribution. | `ROUND18_REPLAY.md`, `rows/e170_middle_2_stabilizer.md`, `ROUND18_FREEZE.sha256`, `scratch/G/round18/{orbits.json,reconciliation.json,clean-review.log}` | 0.11650 total |
-| estimate | All seven size-two orbits and 70 dispersed others priced. Before production: 0.0861–0.1562 core-h, 136–298 MiB inclusive of allowances, not tail bounds. Observed through first replay 274.73 CPU-s; clean replay adds 144.66 CPU-s; ~94 MiB additional scratch including the clean run. | `ROUND18_PREREG.md`, `scratch/G/round18/{sample.json,estimate-0000.log,clean-review.time}` | included above |
+| hand + enum + cert (local, pending critic) | Marked `e170` adjacent d6 equality with `h=8`, fixed left middle, any right after permitted shore swap: 724-variable/23,733-clause formula rebound and LRAT accepted by both checkers, twice; aligned 24/0 and one-defect 129/11 calibrated on exact canonical class sets. 107,772 historical IDs in scope; exact 57,947 new after overlap, leaving 21,125. | `ROUND19_REPLAY.md`, `rows/e170_shared_middle.md`, `ROUND19_FREEZE.sha256`, `scratch/G/round19/{physical.tsv,crosswalk.json,middle.cnf,middle.lrat,review.log}` | 0.00854 all-in |
+| enum (planning only) | `h=7` orbit accounting matches 51/1,213 checked. Eight dispersed untargeted fixed-left contexts frozen (six boards, preserving and flipping stabilizers, including asymmetric boards); they could add 184 distinct two-sided context orbits if all eight pass. No inference from unrun pilots. | `ROUND19_PREREG.md`, `scratch/G/round19/h7-prereg.json` | included |
+| estimate + measured | Scout leaf used as initial price; observed 1.44 solver CPU-s, 30.73 CPU-s all-in including clean repeat, 10,058,455 bytes target CNF+LRAT, ~29.5 MiB apparent peak scratch, ~19.3 retained, peak 134,516 KiB RSS. | `scratch/G/round19/{baseline.time,solve.time,target.time,review.time}` | included |
 
 ## Handoff
 
-- H/critic: if confirmed, debit exactly 15,684 labelled IDs from G-053
-  (42 newly transported old IDs plus 15,642 new certified labels); the
-  six old pilots were already counted. No other scheme, `h<8`, U88 or
-  distribution debit. Reviewer command in `ROUND18_REPLAY.md`.
-- Await authorization before another search. Eight stabilizer actions
-  are specific to this named scheme; do not assume that saving for any
-  other scheme. Do not scan the full labelled residual or attempt a
-  second scheme without a separately scoped gate.
+- H/critic: please review and, if confirmed, debit exactly **57,947**
+  from the accepted 79,072. Remaining exact labelled ranks are in
+  `scratch/G/round19/outstanding-if-verified.json`. No overlap is new
+  credit; no `h<8`, U88 or distribution consequence. Clean review
+  command in `ROUND19_REPLAY.md` reuses the receipt without solving.
+- Next subject to authorization: only the remaining fixed-left
+  `matching` shape at `h=8`, before any fixed-ID sweep; independently
+  bind the six scheme selectors to their exact residual ranks. For
+  `h=7` use the eight preregistered pilots only under separately
+  approved bounds. Never use 51/81 or extrapolate two scout timings to
+  `h≤6`. No other target runs this round.
 - At e170, sixteen degree-six keys remain (nine single, seven adjacent
   pair). `Z=48`, e(H)=122, 24 private and nine double sites; adjacent W
   has 28 sites, one wing crossing and 86 internal edges. No complete

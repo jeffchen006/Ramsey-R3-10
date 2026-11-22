@@ -145,9 +145,11 @@ class Params(FlowParams):
     scout_model: str = Field(default='gpt-6.2-astra', description="Model of the scouts ('exec' engine).")
     scout_models: str = Field(default='T:gemini-4-neon-xhigh',
                               description="Model per scout focus, as F:MODEL,...; 'gemini-*'/'claude-*' run through agy/agentlink.")
-    referee_model: str = Field(default='claude-opus-5-5-high',
+    referee_model: str = Field(default='gemini-4-neon-high',
                                description="Model of the referee beside the lanes every round ('' = no referee).")
     referee_minutes: int = Field(default=45, ge=2, le=240, description='Minutes a referee turn should take; cut 10 min later.')
+    referee_every: int = Field(default=3, ge=1, description='Run the referee every N rounds (agy quota is tight).')
+    first_referee_round: int = Field(default=19, ge=1, description='The first round with a referee (then every N).')
     scout_effort: str = Field(default='xhigh', description="Reasoning effort of the scouts ('exec' engine).")
     scout_minutes: int = Field(default=50, ge=2, le=240, description='Minutes a scout turn should take; cut 10 min later.')
 
@@ -288,7 +290,8 @@ async def r310_ralph(task: str, *, agents: Agents, envs: Envs, params: Params, c
                 head = HEADER.format(who=f'idea scout {name}', minutes=params.scout_minutes, grace=10, **common)
                 scout_prompts[s] = f'{head}{brief}\n\nYOUR_NAME: {name}\nFOCUS: {SCOUT_FOCUS[s]}\n'
         referee_prompt = ''
-        if params.referee_model and not dry:
+        if (params.referee_model and not dry and round_no >= params.first_referee_round
+                and (round_no - params.first_referee_round) % params.referee_every == 0):
             rname = f'round_{round_no:03d}'
             rhead = HEADER.format(who=f'referee ({params.referee_model})', minutes=params.referee_minutes, grace=10,
                                   **common)

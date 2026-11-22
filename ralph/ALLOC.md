@@ -1,14 +1,14 @@
-# Round 19 core ceilings — 79 assigned, 1 unassigned (global limit 80)
+# Round 20 core ceilings — 80 assigned (global limit 80)
 
-| Lane | Cores | Reason relative to round 18 |
+| Lane | Cores | Reason relative to round 19 |
 |---|---:|---|
-| A | 7 | +1. Literal physical coverage on all 60,641 IDs; prepare a lossless rooted-card index for the fifth-pole test. |
-| B | 2 | Unchanged at minimum. Five missing critical keys, no new source. Stay parked. |
-| C | 6 | +1. Two complete marked slice exclusions; price the fifth-row restoration on one held-out bin. |
-| D | 29 | +1. The independent 162-support census enables a count-only wing join; no proof or pair production. |
-| E | 17 | +1. Exact mixed core-1 cover and checked pilot give a priced path to the full terminal roster. |
-| F | 3 | +1. About 22-fold fewer unsigned headers after verified parity cuts; test a dispersed one-double pilot only. |
-| G | 13 | +5, largest increase. Complete aligned scheme and scout's shared-grid proof suggest a second many-ID receipt. |
-| H | 2 | Unchanged. Verified Lean interface and ledger work need few cores. |
+| A | 8 | +1. Lossless physical-card index verified; use the audit slot for the independent G-019 expansion check, not another frame scan. |
+| B | 2 | Unchanged at the floor; five missing criticals and no new source. Parked. |
+| C | 4 | −2. The signed baseline disposed of the bin, but the new test removed zero rows. Only a factored, one-shore test is warranted. |
+| D | 17 | −12. Exact counting succeeded, but no support was removed. The next filter is explicitly a one-worker count, not millions of proof jobs. |
+| E | 19 | +2. Exact terminal roster and full receipt replay beat the time estimate. Fund the preregistered proof pilot only. |
+| F | 5 | +2. Measured, independently replayed footprint exclusions justify the inexpensive remaining marginal census. |
+| G | 23 | +10. One checked formula removed 57,947 outstanding alignments; prioritize the last shape over per-ID proofs. |
+| H | 2 | Unchanged. Lean interfaces, ledger and scope checks need few cores. |
 
-These are ceilings, not launch orders. The much smaller simultaneous-worker, CPU and disk limits in `ralph/critic/LATEST.md` apply first; leave the rest idle.
+Ceilings are not launch authorizations. The worker, CPU, RAM and staging limits in `ralph/critic/LATEST.md` take precedence. Keep unused capacity idle.

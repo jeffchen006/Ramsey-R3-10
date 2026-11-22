@@ -307,3 +307,16 @@ combined 0.14766 core-h and ~254 MB. All 18 wrappers collected, one
 recovered helper syntax error. `shared74_round17.md`,
 `scratch/E/r17_shared/freeze.15.sha256`, and confirmed E-041 in
 `ralph/critic/round_017.md`. Four conditional cores remain.
+
+## Round 18 archive (2026-11-22)
+
+Core 1 `G?bFbo` only under the mixed f32/t4/E-021 premises. Ordered
+independent producers agreed byte-for-byte on 24 first branches,
+68,323 projections and 565,531 lifts. Three dispersed pilot bands:
+3,385 projections, 25,785 lifts and 24 terminal IDs. Six branch/band
+strata supplied 16 paired IDs, all freshly rebound and CakeLRAT-checked
+both narrowly and at width eight (13.98 vs 26.64 CPU-s total). Sampled
+branch-max estimate for whole scan/replay 219.12 + 299.95 CPU-s. Total
+108.29 measured CPU-s; 24 collected foreground wrappers, one empty
+stdin invocation superseded. No exclusion. Evidence: E-042,
+`shared74_round18.md`, `scratch/E/r18_shared/freeze.1.sha256`.

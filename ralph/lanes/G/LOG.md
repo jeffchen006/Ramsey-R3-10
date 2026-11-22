@@ -408,3 +408,16 @@ justify scaling (all four MIPs cap; no full-template cut). See
   untested; weighted direct-ID estimates were 7.53–8.65 core-h and
   16.22–22.05 GiB raw. Total 0.0389 core-h. `ROUND17_REPLAY.md` and its
   freeze carry the exact files and prices.
+
+## Round 18 archival handoff
+
+- Confirmed `e170` adjacent degree-six equality, `h=8`,
+  `middle+middle.2` only: 16,350/16,350 owner ranks. There were 660
+  scout, 6 prior direct receipts + 42 additional oriented images, and
+  2,024 new dual-checked LRATs with labelled weight 15,642. Independent
+  replay explicitly moved 2,928,046 witness blocks. Incremental debit
+  was 15,684, not 16,350; 140,062 remained after G alone, then 79,072
+  after the separate accepted 60,990-ID scout leaf receipt.
+  0.11650 core-h and ~94 MiB total. See `ROUND18_REPLAY.md`, its freeze,
+  and `scratch/G/round18/reconciliation.json`. No distribution/U88
+  change and no transfer to other hole schemes or `h<8`.
